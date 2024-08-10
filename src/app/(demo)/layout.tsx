@@ -1,7 +1,7 @@
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
-import { BottomNav } from "@/components/admin-panel/bottomnav";
+import BottomNav from "@/components/admin-panel/bottomnav";
 
-export default function DemoLayout({
+export default function DashboardLayout({
   children
 }: {
   children: React.ReactNode;

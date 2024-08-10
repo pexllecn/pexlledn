@@ -16,14 +16,14 @@ export function BottomNav() {
         "flex justify-between items-center lg:hidden",
         "bg-background/80 backdrop-blur-sm",
         "dark:bg-background/80 dark:backdrop-blur-sm",
-        "dark:shadow-secondary"
+        "dark:shadow-secondary",
+        "z-50" // Add a high z-index to ensure it stays on top
       )}
       style={{
         WebkitBackdropFilter: "blur(8px)",
         backdropFilter: "blur(8px)"
       }}
     >
-      {" "}
       <NavItem
         href="/dashboard"
         icon={<Home size={24} />}
