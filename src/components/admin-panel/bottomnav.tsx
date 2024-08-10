@@ -2,28 +2,77 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, Search, Heart, User, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
+  const pathname = usePathname();
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary border-t border-border/40 py-2 px-4 flex justify-between items-center lg:hidden">
-      <NavItem href="/dashboard" icon={<Home size={24} />} label="Home" />
-      <NavItem href="/search" icon={<Search size={24} />} label="Search" />
+    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border/40 py-3 px-4 flex justify-between items-center lg:hidden backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
+      <NavItem
+        href="/dashboard"
+        icon={<Home size={24} />}
+        label="Home"
+        isActive={pathname === "/dashboard"}
+      />
+      <NavItem
+        href="/search"
+        icon={<Search size={24} />}
+        label="Search"
+        isActive={pathname === "/search"}
+      />
       <PostButton />
-      <NavItem href="/favorites" icon={<Heart size={24} />} label="Favorites" />
-      <NavItem href="/profile" icon={<User size={24} />} label="Profile" />
+      <NavItem
+        href="/favorites"
+        icon={<Heart size={24} />}
+        label="Favorites"
+        isActive={pathname === "/favorites"}
+      />
+      <NavItem
+        href="/account"
+        icon={<User size={24} />}
+        label="Account"
+        isActive={pathname === "/account"}
+      />
     </nav>
   );
 }
 
-const NavItem: React.FC<{
+const NavItem = ({
+  href,
+  icon,
+  label,
+  isActive
+}: {
   href: string;
   icon: React.ReactElement;
   label: string;
-}> = ({ href, icon, label }) => (
+  isActive: boolean;
+}) => (
   <Link href={href} className="flex flex-col items-center">
-    <div className="p-3 rounded-xl ">{icon}</div>
+    <div
+      className={cn(
+        "p-2 transition-colors duration-200",
+        isActive ? "text-primary" : "text-muted-foreground"
+      )}
+    >
+      {React.cloneElement(icon, {
+        className: cn(
+          "transition-all duration-200",
+          isActive ? "fill-current stroke-[1.5]" : "stroke-[1.5] fill-none"
+        )
+      })}
+    </div>
+    <span
+      className={cn(
+        "text-xs transition-colors duration-200",
+        isActive ? "text-primary font-semibold" : "text-muted-foreground"
+      )}
+    >
+      {label}
+    </span>
   </Link>
 );
 
@@ -39,3 +88,5 @@ const PostButton = () => (
     </div>
   </Link>
 );
+
+export default BottomNav;

@@ -1,15 +1,18 @@
 "use client";
 import Link from "next/link";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import PlaceholderContent from "@/components/demo/placeholder-content";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger
+} from "@/components/ui/drawer";
 import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -183,6 +186,9 @@ const chartData = [
 export default function DashboardPage() {
   const [activeChart, setActiveChart] =
     useState<keyof typeof chartConfig>("desktop");
+  const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   const total = useMemo(
     () => ({
       desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
@@ -195,6 +201,73 @@ export default function DashboardPage() {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 }
   };
+
+  function TodoForm({ className }: React.ComponentProps<"form">) {
+    return (
+      <form className={className}>
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Input id="title" placeholder="Todo title..." />
+          </div>
+          <div className="grid gap-2">
+            <Textarea id="description" placeholder="Description..." />
+          </div>
+        </div>
+        <div className={isDesktop ? "flex justify-end" : ""}>
+          <Button type="submit">Confirm</Button>
+        </div>
+      </form>
+    );
+  }
+
+  const DrawerDialogDemo = () => {
+    if (isDesktop) {
+      return (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm">
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Confirm</DialogTitle>
+              <DialogDescription>
+                What do you want to get done today?
+              </DialogDescription>
+            </DialogHeader>
+            <TodoForm />
+          </DialogContent>
+        </Dialog>
+      );
+    }
+    return (
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
+          <Button size="sm">
+            <Download className="mr-2 h-4 w-4" />
+            Download
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Confirm</DrawerTitle>
+            <DrawerDescription>
+              What do you want to get done today?
+            </DrawerDescription>
+          </DrawerHeader>
+          <TodoForm className="px-4" />
+          <DrawerFooter className="pt-2">
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
+  };
+
   return (
     <ContentLayout title="Dashboard">
       <PlaceholderContent />
@@ -226,47 +299,7 @@ export default function DashboardPage() {
               >
                 Add to Calendar
               </Button>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="sm">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Confirm</DialogTitle>
-                    <DialogDescription>
-                      What do you want to get done today?
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form id="todo-form" className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Input
-                        id="title"
-                        name="title"
-                        placeholder="Todo title..."
-                        className="col-span-4"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Textarea
-                        id="description"
-                        name="description"
-                        placeholder="Description..."
-                        className="col-span-4"
-                      />
-                    </div>
-                  </form>
-                  <DialogFooter>
-                    <DialogTrigger asChild>
-                      <Button type="submit" size="sm" form="todo-form">
-                        Confirm
-                      </Button>
-                    </DialogTrigger>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <DrawerDialogDemo />
             </div>
           </div>
           <Tabs defaultValue="overview" className="space-y-4">
