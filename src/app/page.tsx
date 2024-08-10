@@ -27,7 +27,7 @@ export default function HomePage() {
               className="rounded-full w-8 h-8 bg-background"
               asChild
             >
-              <Link href="https://github.com/salimi-my/shadcn-ui-sidebar">
+              <Link href="https://github.com/pexllecn?tab=repositories">
                 <GitHubLogoIcon className="h-[1.2rem] w-[1.2rem]" />
               </Link>
             </Button>
@@ -111,7 +111,7 @@ export default function HomePage() {
             </Link>
             . The source code is available on{" "}
             <Link
-              href="https://github.com/salimi-my/shadcn-ui-sidebar"
+              href="https://github.com/pexllecn?tab=repositories"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium underline underline-offset-4"
