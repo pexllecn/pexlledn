@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
 import { UserNav } from "@/components/admin-panel/user-nav";
 import { SheetMenu } from "@/components/admin-panel/sheet-menu";
@@ -11,8 +12,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../ui/breadcrumb";
-import Link from "next/link";
+} from "@/components/ui/breadcrumb";
 import { useBreadcrumbs } from "@/components/breadcrumb-context";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
@@ -29,26 +29,30 @@ export function Navbar({ title }: NavbarProps) {
       <div className="mx-4 sm:mx-8 flex h-14 items-center">
         <div className="flex items-center space-x-4 lg:space-x-0">
           <SheetMenu />
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((item, index) => (
-                <React.Fragment key={index}>
-                  <BreadcrumbItem>
-                    {index < breadcrumbs.length - 1 ? (
-                      <BreadcrumbLink asChild>
-                        <Link href={item.href}>{item.label}</Link>
-                      </BreadcrumbLink>
-                    ) : (
-                      <BreadcrumbPage>
-                        <span className="font-bold">{item.label}</span>
-                      </BreadcrumbPage>
-                    )}
-                  </BreadcrumbItem>
-                  {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-                </React.Fragment>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
+          <div className="hidden md:block">
+            {" "}
+            {/* Hide on mobile, show on md screens and up */}
+            <Breadcrumb>
+              <BreadcrumbList>
+                {breadcrumbs.map((item, index) => (
+                  <React.Fragment key={index}>
+                    <BreadcrumbItem>
+                      {index < breadcrumbs.length - 1 ? (
+                        <BreadcrumbLink asChild>
+                          <Link href={item.href}>{item.label}</Link>
+                        </BreadcrumbLink>
+                      ) : (
+                        <BreadcrumbPage>
+                          <span className="font-bold">{item.label}</span>
+                        </BreadcrumbPage>
+                      )}
+                    </BreadcrumbItem>
+                    {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                  </React.Fragment>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
         </div>
         <div className="flex flex-1 items-center space-x-2 justify-end">
           <div className="relative">
@@ -66,3 +70,5 @@ export function Navbar({ title }: NavbarProps) {
     </header>
   );
 }
+
+export default Navbar;

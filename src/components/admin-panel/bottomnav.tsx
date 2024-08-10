@@ -65,14 +65,6 @@ const NavItem = ({
         )
       })}
     </div>
-    <span
-      className={cn(
-        "text-xs transition-colors duration-200",
-        isActive ? "text-primary font-semibold" : "text-muted-foreground"
-      )}
-    >
-      {label}
-    </span>
   </Link>
 );
 
