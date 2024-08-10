@@ -12,7 +12,7 @@ export function BottomNav() {
   return (
     <nav
       className={cn(
-        "fixed bottom-0 left-0 right-0 border-t border-border/40 py-3 px-4",
+        "fixed bottom-0 left-0 right-0 border-t border-border py-1 px-4",
         "flex justify-between items-center lg:hidden",
         "bg-background/80 backdrop-blur-sm",
         "dark:bg-background/80 dark:backdrop-blur-sm",
@@ -36,7 +36,6 @@ export function BottomNav() {
         label="Search"
         isActive={pathname === "/search"}
       />
-      <PostButton />
       <NavItem
         href="/favorites"
         icon={<Heart size={24} />}
@@ -77,19 +76,6 @@ const NavItem = ({
           isActive ? "fill-current stroke-[1.5]" : "stroke-[1.5] fill-none"
         )
       })}
-    </div>
-  </Link>
-);
-
-const PostButton = () => (
-  <Link href="/post" className="flex flex-col items-center -mt-6">
-    <div
-      className={cn(
-        "p-4 rounded-full bg-primary text-primary-foreground shadow-lg",
-        "transition-transform duration-200 ease-in-out transform hover:scale-110"
-      )}
-    >
-      <Plus size={24} />
     </div>
   </Link>
 );
