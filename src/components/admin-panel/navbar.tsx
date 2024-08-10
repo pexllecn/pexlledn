@@ -16,6 +16,7 @@ import {
 import { useBreadcrumbs } from "@/components/breadcrumb-context";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
   title: string;
@@ -25,7 +26,19 @@ export function Navbar({ title }: NavbarProps) {
   const { breadcrumbs } = useBreadcrumbs();
 
   return (
-    <header className="sticky top-0 z-10 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
+    <header
+      className={cn(
+        "sticky top-0 z-10 w-full",
+        "bg-background/80 backdrop-blur-sm",
+        "dark:bg-background/80 dark:backdrop-blur-sm",
+        "dark:shadow-secondary"
+      )}
+      style={{
+        WebkitBackdropFilter: "blur(8px)",
+        backdropFilter: "blur(8px)"
+      }}
+    >
+      {" "}
       <div className="mx-4 sm:mx-8 flex h-14 items-center">
         <div className="flex items-center space-x-4 lg:space-x-0">
           <SheetMenu />

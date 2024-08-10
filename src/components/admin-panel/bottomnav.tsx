@@ -10,7 +10,20 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border/40 py-3 px-4 flex justify-between items-center lg:hidden backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
+    <nav
+      className={cn(
+        "fixed bottom-0 left-0 right-0 border-t border-border/40 py-3 px-4",
+        "flex justify-between items-center lg:hidden",
+        "bg-background/80 backdrop-blur-sm",
+        "dark:bg-background/80 dark:backdrop-blur-sm",
+        "dark:shadow-secondary"
+      )}
+      style={{
+        WebkitBackdropFilter: "blur(8px)",
+        backdropFilter: "blur(8px)"
+      }}
+    >
+      {" "}
       <NavItem
         href="/dashboard"
         icon={<Home size={24} />}
