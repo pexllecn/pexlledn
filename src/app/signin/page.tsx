@@ -1,19 +1,28 @@
 "use client";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import UserAuthForm from "@/components/user-auth-form";
 import Image from "next/image";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const DynamicUserAuthForm = dynamic(
+  () => import("@/components/user-auth-form"),
+  {
+    ssr: false
+  }
+);
+
+const DynamicGoogleSignInButton = dynamic(
+  () => import("@/components/github-auth-button"),
+  {
+    ssr: false
+  }
+);
+
 export default function AuthenticationPage() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Determine which logo to use based on the theme
   const logoSrc = theme === "dark" ? "/pexllelight.png" : "/pexlle.png";
@@ -34,9 +43,7 @@ export default function AuthenticationPage() {
       <div className="relative z-10 w-full max-w-md p-8 bg-white/50 dark:bg-muted/80 rounded-lg shadow-lg">
         <div className="flex justify-center mb-8">
           <Link href="/">
-            {mounted && (
-              <Image src={logoSrc} alt="Pexlle Logo" width={150} height={50} />
-            )}
+            <Image src={logoSrc} alt="Pexlle Logo" width={150} height={50} />
           </Link>
         </div>
 
@@ -50,7 +57,9 @@ export default function AuthenticationPage() {
             </p>
           </div>
 
-          <UserAuthForm />
+          <Suspense fallback={<div>Loading...</div>}>
+            <DynamicUserAuthForm />
+          </Suspense>
 
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
