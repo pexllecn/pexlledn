@@ -9,27 +9,50 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
+const LogoSection = ({ logo }: { logo: string }) => (
+  <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
+    <Link href="/">
+      <div
+        className="logo-container"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%"
+        }}
+      >
+        <Image
+          src={logo}
+          alt="Pexlle Logo"
+          className="logo-image py-2"
+          width={150}
+          height={50}
+        />
+      </div>
+    </Link>
+  </div>
+);
 export default function HomePage() {
+  const { theme = "light", setTheme } = useTheme();
+  const [logo, setLogo] = useState("/pexlleh.png");
+  useEffect(() => {
+    const effectiveTheme = theme === "system" ? "light" : theme;
+    setLogo(effectiveTheme === "light" ? "/pexlleh.png" : "/pexllelight.png");
+  }, [theme]);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm dark:bg-black/[0.6] border-border/40">
+    <div className="flex flex-col min-h-screen relative">
+      <div className="absolute top-0 z-[-2] h-screen w-screen bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+      <header className="z-[50] sticky top-0 w-full bg-background/35 border-b backdrop-blur-sm dark:bg-black/35 border-border/40">
         <div className="container h-14 flex items-center">
-          <Link
-            href="/"
-            className="flex justify-start items-center hover:opacity-85 transition-opacity duration-300"
-          >
-            <PanelsTopLeft className="w-6 h-6 mr-3" />
-            <span className="font-bold">Pexlle</span>
-            <span className="sr-only">Pexlle</span>
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <LogoSection logo={logo} />
           </Link>
           <nav className="ml-auto flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-full w-8 h-8 bg-background"
-              asChild
-            >
+            <Button variant="ghost" size="icon" className="w-8 h-8" asChild>
               <Link href="https://github.com/pexllecn?tab=repositories">
                 <GitHubLogoIcon className="h-[1.2rem] w-[1.2rem]" />
               </Link>

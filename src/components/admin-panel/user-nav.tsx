@@ -30,9 +30,9 @@ export function UserNav() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="relative h-8 w-8 rounded-full"
+                className="relative p-2 h-8 w-8 rounded-full"
               >
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-7 w-7">
                   <AvatarImage src="/avatar.jpg" alt="Avatar" />
                   <AvatarFallback className="bg-transparent">JD</AvatarFallback>
                 </Avatar>
@@ -69,8 +69,10 @@ export function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
-          <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
-          Sign out
+          <Link href="/signin" className="flex items-center">
+            <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
+            Sign out
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

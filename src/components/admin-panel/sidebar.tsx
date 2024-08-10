@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { PanelsTopLeft } from "lucide-react";
 import React, { useState, useEffect } from "react";
