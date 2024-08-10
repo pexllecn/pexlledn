@@ -13,8 +13,6 @@ import {
   RiUser3Line,
   RiUser3Fill
 } from "react-icons/ri";
-import { GoHome, GoHomeFill } from "react-icons/go";
-
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -37,8 +35,8 @@ export function BottomNav() {
     >
       <NavItem
         href="/dashboard"
-        icon={<GoHome size={24} />}
-        activeIcon={<GoHomeFill size={24} />}
+        icon={<RiHome4Line size={24} />}
+        activeIcon={<RiHome4Fill size={24} />}
         label="Home"
         isActive={pathname === "/dashboard"}
       />
@@ -89,6 +87,14 @@ const NavItem = ({
     >
       {isActive ? activeIcon : icon}
     </div>
+    <span
+      className={cn(
+        "text-xs transition-colors duration-200",
+        isActive ? "text-primary font-semibold" : "text-muted-foreground"
+      )}
+    >
+      {label}
+    </span>
   </Link>
 );
 
