@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Ellipsis, LogOut } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
@@ -22,7 +22,17 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const menuList = getMenuList(pathname);
+
+  const handleSignOut = async () => {
+    // Perform any sign-out logic here (e.g., clearing tokens, etc.)
+    // For example, if you're using next-auth:
+    // await signOut();
+
+    // Then navigate to the sign-in page
+    router.push("/signin");
+  };
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -108,7 +118,7 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={handleSignOut}
                     variant="outline"
                     className="w-full justify-center h-10 mt-5"
                   >

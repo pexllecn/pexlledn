@@ -73,7 +73,7 @@ export function Navbar({ title }: NavbarProps) {
             <Input
               type="search"
               placeholder="Search..."
-              className="pl-8 w-[200px] h-9"
+              className="pl-8 bg-muted border-none shadow-none dark:shadow-none w-[200px] h-9"
             />
           </div>
           <ModeToggle />

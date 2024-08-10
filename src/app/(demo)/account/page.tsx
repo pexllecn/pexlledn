@@ -60,9 +60,9 @@ export default function AccountPage() {
       return (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button size="sm">
+            <Button>
               <Download className="mr-2 h-4 w-4" />
-              Download
+              Click here!
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -106,6 +106,8 @@ export default function AccountPage() {
   return (
     <ContentLayout title="Account">
       <PlaceholderContent />
+      <DrawerDialogDemo />
+
       <Button
         variant="outline"
         onClick={() =>
@@ -120,7 +122,6 @@ export default function AccountPage() {
       >
         Show Toast
       </Button>
-      <DrawerDialogDemo />
     </ContentLayout>
   );
 }
