@@ -3,7 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { PanelsTopLeft } from "lucide-react";
 import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
-
+import AnimatedGridPattern from "@/components/magicui/animated-grid-pattern";
+import { ChevronRight } from "lucide-react";
+import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -37,29 +40,51 @@ export default function HomePage() {
       </header>
       <main className="min-h-[calc(100vh-57px-97px)] flex-1">
         <div className="container relative pb-10">
-          <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-6">
-            <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
-              Sidebar example built on top of shadcn/ui
-            </h1>
-            <span className="max-w-[750px] text-center text-lg font-light text-foreground">
-              A stunning and functional retractable sidebar for Next.js using
-              shadcn/ui complete with desktop and mobile responsiveness.
-            </span>
-            <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-6">
-              <Button variant="default" asChild>
-                <Link href="/dashboard">
-                  Demo
-                  <ArrowRightIcon className="ml-2" />
-                </Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link
-                  href="https://ui.shadcn.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+          <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-8 md:pb-8 lg:py-8 lg:pb-6">
+            <div className="z-10 flex  items-center justify-center">
+              <AnimatedGradientText>
+                🎉 <hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300" />{" "}
+                <span
+                  className={cn(
+                    `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                  )}
                 >
-                  Learn shadcn/ui
-                </Link>
+                  Introducing Pexlle
+                </span>
+                <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+              </AnimatedGradientText>
+            </div>
+            <span
+              style={{
+                transform: "translateY(20px)",
+                animation: "fadeUp 2s ease-out 0.25s forwards"
+              }}
+              className="text-center text-5xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]"
+            >
+              <span className="text-gradient_indigo-purple font-bold">
+                Build your {""}
+              </span>
+              website Beautifully.
+            </span>
+            <span
+              style={{
+                transform: "translateY(20px)",
+                animation: "fadeUp 2s ease-out 0.35s forwards"
+              }}
+              className="max-w-[750px] text-lg text-center text-muted-foreground"
+            >
+              My aim is to start a journey where we build beautiful looking
+              websites, Shadcn provided the best components so far, Vercel made
+              it easier than ever to deploy your project. Let the journey
+              start!.
+            </span>
+            <div className="flex w-full items-center justify-center space-x-4 py-8 ">
+              <Button
+                variant="expandIcon"
+                Icon={ArrowRightIcon}
+                iconPlacement="right"
+              >
+                <Link href="/signin">Enter the demo</Link>{" "}
               </Button>
             </div>
           </section>

@@ -55,7 +55,7 @@ export function Sidebar() {
       )}
     >
       <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
-      <div className="relative bg-muted h-full flex flex-col pl-2 py-4 overflow-y-auto">
+      <div className="relative bg-muted h-full flex flex-col pl-2 pt-4 overflow-y-auto">
         <Button
           className={cn(
             "transition-transform ease-in-out duration-300 mb-1",
