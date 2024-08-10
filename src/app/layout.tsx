@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
-
 import "./globals.css";
-
 import { ThemeProvider } from "@/providers/theme-provider";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
+import { BottomNav } from "@/components/admin-panel/bottomnav";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -46,7 +45,10 @@ export default function RootLayout({
       <body className={GeistSans.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BreadcrumbProvider>
-            {children}
+            <div className="flex flex-col min-h-screen">
+              <div className="flex-grow">{children}</div>
+              <BottomNav />
+            </div>
             <Toaster />
           </BreadcrumbProvider>
         </ThemeProvider>

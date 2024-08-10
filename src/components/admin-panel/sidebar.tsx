@@ -34,7 +34,7 @@ const LogoSection = ({ logo }: { logo: string }) => (
   </div>
 );
 export function Sidebar() {
-  const { theme = "light", setTheme } = useTheme(); // Default to 'light' if theme is undefined
+  const { theme = "light", setTheme } = useTheme();
   const [logo, setLogo] = useState("/pexlleh.png");
 
   useEffect(() => {
@@ -50,7 +50,8 @@ export function Sidebar() {
     <aside
       className={cn(
         "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
-        sidebar?.isOpen === false ? "w-[60px]" : "w-52"
+        sidebar?.isOpen === false ? "w-[60px]" : "w-52",
+        "hidden lg:block" // Hide on mobile, show on large screens
       )}
     >
       <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
