@@ -8,15 +8,12 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage
 } from "@/components/ui/form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import GoogleSignInButton from "@/components/github-auth-button";
-import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" })
@@ -26,8 +23,6 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     email: ""
@@ -38,10 +33,11 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    signIn("credentials", {
-      email: data.email,
-      callbackUrl: callbackUrl ?? "/dashboard"
-    });
+    setLoading(true);
+    // TODO: Implement actual sign-in logic
+    console.log("Sign in with email:", data.email);
+    router.push("/dashboard");
+    setLoading(false);
   };
 
   return (
@@ -86,8 +82,8 @@ export default function UserAuthForm() {
       <Button
         disabled={loading}
         className="ml-auto w-full"
-        type="button" // Change the type to 'button' to prevent form submission
-        onClick={() => router.push("/dashboard")} // Replace '/dashboard' with your dashboard route
+        type="button"
+        onClick={() => router.push("/dashboard")}
       >
         Without email
       </Button>
