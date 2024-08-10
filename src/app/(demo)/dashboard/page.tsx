@@ -25,7 +25,6 @@ import {
 import { toast } from "sonner";
 import { Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/registry/default/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Overview } from "@/components/overview";
 import { RecentSales } from "@/components/recent-sales";
