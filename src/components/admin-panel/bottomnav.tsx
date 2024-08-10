@@ -3,7 +3,18 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Heart, User, Plus } from "lucide-react";
+import {
+  RiHome4Line,
+  RiHome4Fill,
+  RiSearch2Line,
+  RiSearch2Fill,
+  RiHeartLine,
+  RiHeartFill,
+  RiUser3Line,
+  RiUser3Fill
+} from "react-icons/ri";
+import { GoHome, GoHomeFill } from "react-icons/go";
+
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -26,25 +37,29 @@ export function BottomNav() {
     >
       <NavItem
         href="/dashboard"
-        icon={<Home size={24} />}
+        icon={<GoHome size={24} />}
+        activeIcon={<GoHomeFill size={24} />}
         label="Home"
         isActive={pathname === "/dashboard"}
       />
       <NavItem
         href="/search"
-        icon={<Search size={24} />}
+        icon={<RiSearch2Line size={24} />}
+        activeIcon={<RiSearch2Fill size={24} />}
         label="Search"
         isActive={pathname === "/search"}
       />
       <NavItem
         href="/favorites"
-        icon={<Heart size={24} />}
+        icon={<RiHeartLine size={24} />}
+        activeIcon={<RiHeartFill size={24} />}
         label="Favorites"
         isActive={pathname === "/favorites"}
       />
       <NavItem
         href="/account"
-        icon={<User size={24} />}
+        icon={<RiUser3Line size={24} />}
+        activeIcon={<RiUser3Fill size={24} />}
         label="Account"
         isActive={pathname === "/account"}
       />
@@ -55,11 +70,13 @@ export function BottomNav() {
 const NavItem = ({
   href,
   icon,
+  activeIcon,
   label,
   isActive
 }: {
   href: string;
   icon: React.ReactElement;
+  activeIcon: React.ReactElement;
   label: string;
   isActive: boolean;
 }) => (
@@ -70,12 +87,7 @@ const NavItem = ({
         isActive ? "text-primary" : "text-muted-foreground"
       )}
     >
-      {React.cloneElement(icon, {
-        className: cn(
-          "transition-all duration-200",
-          isActive ? "fill-current stroke-[1.5]" : "stroke-[1.5] fill-none"
-        )
-      })}
+      {isActive ? activeIcon : icon}
     </div>
   </Link>
 );
