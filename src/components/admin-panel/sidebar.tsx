@@ -9,7 +9,10 @@ import { Menu } from "@/components/admin-panel/menu";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { SidebarToggle } from "@/components/admin-panel/sidebar-toggle";
 
-const LogoSection = ({ logo, isOpen }) => (
+const LogoSection: React.FC<{ logo: string; isOpen: boolean }> = ({
+  logo,
+  isOpen
+}) => (
   <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
     <Link href="/">
       <div
