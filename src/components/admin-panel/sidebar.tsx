@@ -1,39 +1,39 @@
-"use client";
-import Link from "next/link";
-import { PanelsTopLeft } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/hooks/use-store";
 import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/admin-panel/menu";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { SidebarToggle } from "@/components/admin-panel/sidebar-toggle";
-import { useTheme } from "next-themes";
-import Image from "next/image";
 
-const LogoSection = ({ logo }: { logo: string }) => (
+const LogoSection = ({ logo, isOpen }) => (
   <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
     <Link href="/">
       <div
-        className="logo-container"
+        className="logo-container relative"
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%"
+          width: isOpen ? "160px" : "20px",
+          height: "30px",
+          overflow: "hidden",
+          transition: "width 0.3s ease-in-out"
         }}
       >
         <Image
           src={logo}
           alt="Pexlle Logo"
-          className="logo-image py-2"
-          width={150}
-          height={50}
+          layout="fill"
+          objectFit="cover"
+          objectPosition="left"
+          className="logo-image"
         />
       </div>
     </Link>
   </div>
 );
+
 export function Sidebar() {
   const { theme = "light", setTheme } = useTheme();
   const [logo, setLogo] = useState("/pexlleh.png");
@@ -52,7 +52,7 @@ export function Sidebar() {
       className={cn(
         "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
         sidebar?.isOpen === false ? "w-[60px]" : "w-52",
-        "hidden lg:block" // Hide on mobile, show on large screens
+        "hidden lg:block"
       )}
     >
       <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
@@ -66,7 +66,7 @@ export function Sidebar() {
           asChild
         >
           <Link href="/dashboard" className="flex items-center gap-2">
-            <LogoSection logo={logo} />
+            <LogoSection logo={logo} isOpen={sidebar?.isOpen} />
           </Link>
         </Button>
         <Menu isOpen={sidebar?.isOpen} />

@@ -309,7 +309,314 @@ export default function DashboardPage() {
               <TabsTrigger value="reports">Reports</TabsTrigger>
               <TabsTrigger value="summary">Summary</TabsTrigger>
             </TabsList>
-
+            <TabsContent value="overview" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-muted border-none">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Total Revenue
+                    </CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">$45,231.89</div>
+                    <p className="text-xs text-muted-foreground">
+                      +20.1% from last month
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-muted border-none">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Subscriptions
+                    </CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-[#ff646c]">
+                      -350
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      +180.1% from last month
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-muted border-none">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <rect width="20" height="14" x="2" y="5" rx="2" />
+                      <path d="M2 10h20" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-[#11c678]">
+                      +12,234
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      +19% from last month
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-muted border-none">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Active Now
+                    </CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">+573</div>
+                    <p className="text-xs text-muted-foreground">
+                      +21 since last hour
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
+                <Card className="col-span-4 bg-muted border-none ">
+                  <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+                    <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+                      <CardTitle>Bar Chart - Interactive</CardTitle>
+                      <CardDescription>
+                        Showing total visitors for the last 3 months
+                      </CardDescription>
+                    </div>
+                    <div className="flex">
+                      {["desktop", "mobile"].map((key) => {
+                        const chart = key as keyof typeof chartConfig;
+                        return (
+                          <button
+                            key={chart}
+                            data-active={activeChart === chart}
+                            className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                            onClick={() => setActiveChart(chart)}
+                          >
+                            <span className="text-xs text-muted-foreground">
+                              {chartConfig[chart].label}
+                            </span>
+                            <span className="text-lg font-bold leading-none sm:text-3xl">
+                              {total[
+                                key as keyof typeof total
+                              ].toLocaleString()}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-2 sm:p-6">
+                    <ChartContainer
+                      config={chartConfig}
+                      className="aspect-auto h-[250px] w-full"
+                    >
+                      <BarChart
+                        accessibilityLayer
+                        data={chartData}
+                        margin={{
+                          left: 12,
+                          right: 12
+                        }}
+                      >
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="date"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          minTickGap={32}
+                          tickFormatter={(value) => {
+                            const date = new Date(value);
+                            return date.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric"
+                            });
+                          }}
+                        />
+                        <ChartTooltip
+                          content={
+                            <ChartTooltipContent
+                              className="w-[150px]"
+                              nameKey="views"
+                              labelFormatter={(value) => {
+                                return new Date(value).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric"
+                                  }
+                                );
+                              }}
+                            />
+                          }
+                        />
+                        <Bar
+                          dataKey={activeChart}
+                          fill={`var(--color-${activeChart})`}
+                        />
+                      </BarChart>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
+                <Card className="col-span-4 bg-muted border-none md:col-span-3">
+                  <CardHeader>
+                    <CardTitle>Recent Sales</CardTitle>
+                    <CardDescription>
+                      You made 265 sales this month.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <RecentSales />
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
+                <Card className="col-span-4">
+                  <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+                    <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+                      <CardTitle>Line Chart - Interactive</CardTitle>
+                      <CardDescription>
+                        Showing total visitors for the last 3 months
+                      </CardDescription>
+                    </div>
+                    <div className="flex">
+                      {["desktop", "mobile"].map((key) => {
+                        const chart = key as keyof typeof chartConfig;
+                        return (
+                          <button
+                            key={chart}
+                            data-active={activeChart === chart}
+                            className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                            onClick={() => setActiveChart(chart)}
+                          >
+                            <span className="text-xs text-muted-foreground">
+                              {chartConfig[chart].label}
+                            </span>
+                            <span className="text-lg font-bold leading-none sm:text-3xl">
+                              {total[
+                                key as keyof typeof total
+                              ].toLocaleString()}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-2 sm:p-6">
+                    <ChartContainer
+                      config={chartConfig}
+                      className="aspect-auto h-[250px] w-full"
+                    >
+                      <LineChart
+                        accessibilityLayer
+                        data={chartData}
+                        margin={{
+                          left: 12,
+                          right: 12
+                        }}
+                      >
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="date"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          minTickGap={32}
+                          tickFormatter={(value) => {
+                            const date = new Date(value);
+                            return date.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric"
+                            });
+                          }}
+                        />
+                        <ChartTooltip
+                          content={
+                            <ChartTooltipContent
+                              className="w-[150px]"
+                              nameKey="views"
+                              labelFormatter={(value) => {
+                                return new Date(value).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric"
+                                  }
+                                );
+                              }}
+                            />
+                          }
+                        />
+                        <Line
+                          dataKey={activeChart}
+                          type="monotone"
+                          stroke={`var(--color-${activeChart})`}
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
+                <Card className="col-span-4 md:col-span-3">
+                  <CardHeader>
+                    <CardTitle>Recent Sales</CardTitle>
+                    <CardDescription>
+                      You made 265 sales this month.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <RecentSales />
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
             <TabsContent value="analytics" className="space-y-4">
               <div className="chart-wrapper flex max-w-6xl flex-col flex-wrap items-start gap-6 sm:flex-row ">
                 <div className="grid w-full gap-6 sm:grid-cols-2 lg:max-w-[22rem] lg:grid-cols-1 xl:max-w-[25rem]">
@@ -1218,208 +1525,6 @@ export default function DashboardPage() {
                     </CardContent>
                   </Card>
                 </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="overview" className="space-y-4">
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4 bg-muted border-none ">
-                  <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-                    <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-                      <CardTitle>Bar Chart - Interactive</CardTitle>
-                      <CardDescription>
-                        Showing total visitors for the last 3 months
-                      </CardDescription>
-                    </div>
-                    <div className="flex">
-                      {["desktop", "mobile"].map((key) => {
-                        const chart = key as keyof typeof chartConfig;
-                        return (
-                          <button
-                            key={chart}
-                            data-active={activeChart === chart}
-                            className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
-                            onClick={() => setActiveChart(chart)}
-                          >
-                            <span className="text-xs text-muted-foreground">
-                              {chartConfig[chart].label}
-                            </span>
-                            <span className="text-lg font-bold leading-none sm:text-3xl">
-                              {total[
-                                key as keyof typeof total
-                              ].toLocaleString()}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="px-2 sm:p-6">
-                    <ChartContainer
-                      config={chartConfig}
-                      className="aspect-auto h-[250px] w-full"
-                    >
-                      <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                          left: 12,
-                          right: 12
-                        }}
-                      >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                          dataKey="date"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          minTickGap={32}
-                          tickFormatter={(value) => {
-                            const date = new Date(value);
-                            return date.toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric"
-                            });
-                          }}
-                        />
-                        <ChartTooltip
-                          content={
-                            <ChartTooltipContent
-                              className="w-[150px]"
-                              nameKey="views"
-                              labelFormatter={(value) => {
-                                return new Date(value).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric"
-                                  }
-                                );
-                              }}
-                            />
-                          }
-                        />
-                        <Bar
-                          dataKey={activeChart}
-                          fill={`var(--color-${activeChart})`}
-                        />
-                      </BarChart>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
-                <Card className="col-span-4 bg-muted border-none md:col-span-3">
-                  <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
-                    <CardDescription>
-                      You made 265 sales this month.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RecentSales />
-                  </CardContent>
-                </Card>
-              </div>
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                  <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-                    <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-                      <CardTitle>Line Chart - Interactive</CardTitle>
-                      <CardDescription>
-                        Showing total visitors for the last 3 months
-                      </CardDescription>
-                    </div>
-                    <div className="flex">
-                      {["desktop", "mobile"].map((key) => {
-                        const chart = key as keyof typeof chartConfig;
-                        return (
-                          <button
-                            key={chart}
-                            data-active={activeChart === chart}
-                            className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
-                            onClick={() => setActiveChart(chart)}
-                          >
-                            <span className="text-xs text-muted-foreground">
-                              {chartConfig[chart].label}
-                            </span>
-                            <span className="text-lg font-bold leading-none sm:text-3xl">
-                              {total[
-                                key as keyof typeof total
-                              ].toLocaleString()}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="px-2 sm:p-6">
-                    <ChartContainer
-                      config={chartConfig}
-                      className="aspect-auto h-[250px] w-full"
-                    >
-                      <LineChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                          left: 12,
-                          right: 12
-                        }}
-                      >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                          dataKey="date"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          minTickGap={32}
-                          tickFormatter={(value) => {
-                            const date = new Date(value);
-                            return date.toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric"
-                            });
-                          }}
-                        />
-                        <ChartTooltip
-                          content={
-                            <ChartTooltipContent
-                              className="w-[150px]"
-                              nameKey="views"
-                              labelFormatter={(value) => {
-                                return new Date(value).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric"
-                                  }
-                                );
-                              }}
-                            />
-                          }
-                        />
-                        <Line
-                          dataKey={activeChart}
-                          type="monotone"
-                          stroke={`var(--color-${activeChart})`}
-                          strokeWidth={2}
-                          dot={false}
-                        />
-                      </LineChart>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
-                <Card className="col-span-4 md:col-span-3">
-                  <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
-                    <CardDescription>
-                      You made 265 sales this month.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RecentSales />
-                  </CardContent>
-                </Card>
               </div>
             </TabsContent>
           </Tabs>
