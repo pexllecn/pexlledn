@@ -45,8 +45,8 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen relative">
-      <div className="absolute top-0 z-[-2] h-screen w-screen bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-      <header className="z-[50] sticky top-0 w-full bg-background/35 border-b backdrop-blur-sm dark:bg-black/35 border-border/40">
+      <div className="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+      <header className="z-[50] sticky top-0 w-full border-b backdrop-blur-sm border-border/40">
         <div className="container h-14 flex items-center">
           <Link href="/dashboard" className="flex items-center gap-2">
             <LogoSection logo={logo} />
