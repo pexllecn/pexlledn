@@ -122,10 +122,11 @@ export default function AccountPage() {
     );
   };
 
-  function ComputerIcon(props) {
+  function ComputerIcon({ className, ...rest }: React.SVGProps<SVGSVGElement>) {
     return (
       <svg
-        {...props}
+        {...rest}
+        className={className}
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -144,7 +145,7 @@ export default function AccountPage() {
     );
   }
 
-  function XIcon(props) {
+  function XIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
       <svg
         {...props}
