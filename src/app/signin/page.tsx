@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
@@ -23,9 +24,27 @@ const DynamicGoogleSignInButton = dynamic(
 
 export default function AuthenticationPage() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  // Determine which logo to use based on the theme
-  const logoSrc = theme === "dark" ? "/pexllelight.png" : "/pexlle.png";
+  // Effect for setting mounted state
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Determine which logo and background to use based on the theme
+  const logoSrc =
+    !mounted || theme === "system" || theme === "light"
+      ? "/pexlle.png"
+      : "/pexllelight.png";
+  const backgroundImage =
+    !mounted || theme === "system" || theme === "light"
+      ? "/login.jpeg"
+      : "/darklogin.jpg";
+
+  // Render a blank div if the component hasn't mounted yet
+  if (!mounted) {
+    return <div style={{ height: "100vh" }} />;
+  }
 
   return (
     <div className="relative h-screen flex items-center justify-center">
@@ -33,7 +52,7 @@ export default function AuthenticationPage() {
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: 'url("/login.jpeg")',
+          backgroundImage: `url("${backgroundImage}")`,
           backgroundSize: "cover",
           backgroundPosition: "center"
         }}
@@ -85,14 +104,8 @@ export default function AuthenticationPage() {
               size="icon"
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             >
-              <Moon
-                className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-                strokeWidth={1}
-              />
-              <Sun
-                className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-                strokeWidth={1}
-              />
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             </Button>
           </div>
         </div>

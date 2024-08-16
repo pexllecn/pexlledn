@@ -302,8 +302,8 @@ export default function DashboardPage() {
               <DrawerDialogDemo />
             </div>
           </div>
-          <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList>
+          <Tabs defaultValue="overview" className="space-y-4 font-">
+            <TabsList className="font-thin">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="reports">Reports</TabsTrigger>
