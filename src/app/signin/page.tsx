@@ -24,7 +24,7 @@ const DynamicGoogleSignInButton = dynamic(
 );
 
 export default function AuthenticationPage() {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -34,11 +34,16 @@ export default function AuthenticationPage() {
   // Use a function to determine the correct asset based on the theme
   const getAsset = (lightAsset: string, darkAsset: string) => {
     if (!mounted) return lightAsset; // Default to light theme asset
-    return theme === "dark" ? darkAsset : lightAsset;
+    const effectiveTheme = resolvedTheme || theme;
+    return effectiveTheme === "dark" ? darkAsset : lightAsset;
   };
 
   const logoSrc = getAsset("/pexlle.png", "/pexllelight.png");
   const backgroundImage = getAsset("/login.jpeg", "/darklogin.jpg");
+
+  if (!mounted) {
+    return null; // or a loading placeholder
+  }
 
   return (
     <div className="relative h-screen flex items-center justify-center">
@@ -99,18 +104,22 @@ export default function AuthenticationPage() {
             .
           </p>
 
-          {mounted && (
-            <div className="flex justify-center">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              >
-                <Sun className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              </Button>
-            </div>
-          )}
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            >
+              <Sun
+                strokeWidth={1}
+                className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+              />
+              <Moon
+                strokeWidth={1}
+                className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+              />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
