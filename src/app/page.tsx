@@ -1,29 +1,20 @@
 "use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { PanelsTopLeft } from "lucide-react";
 import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
-import AnimatedGridPattern from "@/components/magicui/animated-grid-pattern";
 import { ChevronRight } from "lucide-react";
+import { useTheme } from "next-themes";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 
 const LogoSection = ({ logo }: { logo: string }) => (
   <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
     <Link href="/">
-      <div
-        className="logo-container"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%"
-        }}
-      >
+      <div className="logo-container flex justify-center items-center h-full">
         <Image
           src={logo}
           alt="Pexlle Logo"
@@ -35,13 +26,21 @@ const LogoSection = ({ logo }: { logo: string }) => (
     </Link>
   </div>
 );
+
 export default function HomePage() {
-  const { theme = "light", setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [logo, setLogo] = useState("/pexlleh.png");
+
   useEffect(() => {
+    setMounted(true);
     const effectiveTheme = theme === "system" ? "light" : theme;
     setLogo(effectiveTheme === "light" ? "/pexlleh.png" : "/pexllelight.png");
   }, [theme]);
+
+  if (!mounted) {
+    return null; // or a loading placeholder
+  }
 
   return (
     <div className="flex flex-col min-h-screen relative">
@@ -64,7 +63,7 @@ export default function HomePage() {
       <main className="min-h-[calc(100vh-57px-97px)] flex-1">
         <div className="container relative pb-10">
           <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-8 md:pb-8 lg:py-8 lg:pb-6">
-            <div className="z-10 flex  items-center justify-center">
+            <div className="z-10 flex items-center justify-center">
               <AnimatedGradientText>
                 🎉 <hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300" />{" "}
                 <span
@@ -77,25 +76,13 @@ export default function HomePage() {
                 <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
               </AnimatedGradientText>
             </div>
-            <span
-              style={{
-                transform: "translateY(20px)",
-                animation: "fadeUp 2s ease-out 0.25s forwards"
-              }}
-              className="text-center text-5xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]"
-            >
+            <span className="text-center text-5xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
               <span className="text-gradient_indigo-purple font-bold">
                 Build your {""}
               </span>
               website Beautifully.
             </span>
-            <span
-              style={{
-                transform: "translateY(20px)",
-                animation: "fadeUp 2s ease-out 0.35s forwards"
-              }}
-              className="max-w-[750px] text-lg text-center text-muted-foreground"
-            >
+            <span className="max-w-[750px] text-lg text-center text-muted-foreground">
               My aim is to start a journey where we build beautiful looking
               websites, Shadcn provided the best components so far, Vercel made
               it easier than ever to deploy your project. Let the journey

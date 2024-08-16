@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
@@ -26,25 +27,18 @@ export default function AuthenticationPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Effect for setting mounted state
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Determine which logo and background to use based on the theme
-  const logoSrc =
-    !mounted || theme === "system" || theme === "light"
-      ? "/pexlle.png"
-      : "/pexllelight.png";
-  const backgroundImage =
-    !mounted || theme === "system" || theme === "light"
-      ? "/login.jpeg"
-      : "/darklogin.jpg";
+  // Use a function to determine the correct asset based on the theme
+  const getAsset = (lightAsset: string, darkAsset: string) => {
+    if (!mounted) return lightAsset; // Default to light theme asset
+    return theme === "dark" ? darkAsset : lightAsset;
+  };
 
-  // Render a blank div if the component hasn't mounted yet
-  if (!mounted) {
-    return <div style={{ height: "100vh" }} />;
-  }
+  const logoSrc = getAsset("/pexlle.png", "/pexllelight.png");
+  const backgroundImage = getAsset("/login.jpeg", "/darklogin.jpg");
 
   return (
     <div className="relative h-screen flex items-center justify-center">
@@ -62,7 +56,14 @@ export default function AuthenticationPage() {
       <div className="relative z-10 w-full max-w-md p-8 bg-white/50 dark:bg-muted/80 rounded-lg shadow-lg">
         <div className="flex justify-center mb-8">
           <Link href="/">
-            <Image src={logoSrc} alt="Pexlle Logo" width={150} height={50} />
+            <div style={{ width: 150, height: 50, position: "relative" }}>
+              <Image
+                src={logoSrc}
+                alt="Pexlle Logo"
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
           </Link>
         </div>
 
@@ -98,16 +99,18 @@ export default function AuthenticationPage() {
             .
           </p>
 
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            >
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
-          </div>
+          {mounted && (
+            <div className="flex justify-center">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              >
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
