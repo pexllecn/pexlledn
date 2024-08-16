@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -38,41 +39,48 @@ const LogoSection: React.FC<{ logo: string; isOpen: boolean }> = ({
 );
 
 export function Sidebar() {
-  const { theme = "light", setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [logo, setLogo] = useState("/pexlleh.png");
 
   useEffect(() => {
-    const effectiveTheme = theme === "system" ? "light" : theme;
-    setLogo(effectiveTheme === "light" ? "/pexlleh.png" : "/pexllelight.png");
-  }, [theme]);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      const effectiveTheme = resolvedTheme || theme;
+      setLogo(effectiveTheme === "dark" ? "/pexllelight.png" : "/pexlleh.png");
+    }
+  }, [theme, resolvedTheme, mounted]);
 
   const sidebar = useStore(useSidebarToggle, (state) => state);
 
-  if (!sidebar) return null;
+  if (!mounted || !sidebar) return null;
 
   return (
     <aside
       className={cn(
         "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
-        sidebar?.isOpen === false ? "w-[60px]" : "w-52",
+        sidebar.isOpen === false ? "w-[60px]" : "w-52",
         "hidden lg:block"
       )}
     >
-      <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
+      <SidebarToggle isOpen={sidebar.isOpen} setIsOpen={sidebar.setIsOpen} />
       <div className="relative bg-muted h-full flex flex-col pl-2 pt-4 overflow-y-auto">
         <Button
           className={cn(
             "transition-transform ease-in-out duration-300 mb-1",
-            sidebar?.isOpen === false ? "translate-x-1" : "translate-x-0"
+            sidebar.isOpen === false ? "translate-x-1" : "translate-x-0"
           )}
           variant="link"
           asChild
         >
           <Link href="/dashboard" className="flex items-center gap-2">
-            <LogoSection logo={logo} isOpen={sidebar?.isOpen} />
+            <LogoSection logo={logo} isOpen={sidebar.isOpen} />
           </Link>
         </Button>
-        <Menu isOpen={sidebar?.isOpen} />
+        <Menu isOpen={sidebar.isOpen} />
       </div>
     </aside>
   );

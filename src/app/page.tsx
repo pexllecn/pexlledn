@@ -28,15 +28,15 @@ const LogoSection = ({ logo }: { logo: string }) => (
 );
 
 export default function HomePage() {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [logo, setLogo] = useState("/pexlleh.png");
 
   useEffect(() => {
     setMounted(true);
-    const effectiveTheme = theme === "system" ? "light" : theme;
-    setLogo(effectiveTheme === "light" ? "/pexlleh.png" : "/pexllelight.png");
-  }, [theme]);
+    const effectiveTheme = resolvedTheme || theme;
+    setLogo(effectiveTheme === "dark" ? "/pexllelight.png" : "/pexlleh.png");
+  }, [theme, resolvedTheme]);
 
   if (!mounted) {
     return null; // or a loading placeholder
