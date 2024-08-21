@@ -115,13 +115,13 @@ export default function PricingPage() {
   };
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      transition={{ duration: 0.4 }}
-      variants={variants1}
-    >
-      <ContentLayout title="Pricing">
+    <ContentLayout title="Pricing">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.4 }}
+        variants={variants1}
+      >
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-4xl font-bold text-center mb-4">Pricing</h1>
           <p className="text-center text-muted-foreground font-light mb-8 max-w-3xl mx-auto">
@@ -206,7 +206,7 @@ export default function PricingPage() {
             />
           </div>
         </div>
-      </ContentLayout>
-    </motion.div>
+      </motion.div>
+    </ContentLayout>
   );
 }
