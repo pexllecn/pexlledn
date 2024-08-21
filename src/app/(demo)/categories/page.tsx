@@ -128,7 +128,7 @@ export default function CategoriesPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
         variants={variants1}
       >
         <div className="flex-1 space-y-1">

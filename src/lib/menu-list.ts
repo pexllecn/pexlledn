@@ -4,7 +4,8 @@ import {
   Settings,
   Bookmark,
   SquarePen,
-  LayoutGrid
+  LayoutGrid,
+  DollarSign
 } from "lucide-react";
 
 type Submenu = {
@@ -73,6 +74,13 @@ export function getMenuList(pathname: string): Group[] {
           label: "Tags",
           active: pathname.includes("/tags"),
           icon: Tag,
+          submenus: []
+        },
+        {
+          href: "/pricing",
+          label: "Pricing",
+          active: pathname.includes("/pricing"),
+          icon: DollarSign,
           submenus: []
         }
       ]
