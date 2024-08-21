@@ -168,10 +168,9 @@ export default function AccountPage() {
   return (
     <ContentLayout title="Account">
       <PlaceholderContent />
-
       <div className="w-full max-w-4xl mx-auto py-12 px-4 md:px-6">
         <Tabs defaultValue="account" className="space-y-8">
-          <TabsList className="flex border-b">
+          <TabsList className="flex">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
@@ -179,7 +178,7 @@ export default function AccountPage() {
           </TabsList>
           <TabsContent value="account">
             <div className="grid gap-6">
-              <Card>
+              <Card className="shadow-none">
                 <CardHeader>
                   <CardTitle>Account Information</CardTitle>
                   <CardDescription>
@@ -225,7 +224,7 @@ export default function AccountPage() {
           </TabsContent>
           <TabsContent value="notifications">
             <div className="grid gap-6">
-              <Card>
+              <Card className="shadow-none">
                 <CardHeader>
                   <CardTitle>Notification Settings</CardTitle>
                   <CardDescription>
@@ -260,7 +259,7 @@ export default function AccountPage() {
           </TabsContent>
           <TabsContent value="preferences">
             <div className="grid gap-6">
-              <Card>
+              <Card className="shadow-none">
                 <CardHeader>
                   <CardTitle>Preferences</CardTitle>
                   <CardDescription>
@@ -318,7 +317,7 @@ export default function AccountPage() {
           </TabsContent>
           <TabsContent value="security">
             <div className="grid gap-6">
-              <Card>
+              <Card className="shadow-none">
                 <CardHeader>
                   <CardTitle>Security</CardTitle>
                   <CardDescription>
