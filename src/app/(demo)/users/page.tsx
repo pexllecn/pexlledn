@@ -69,7 +69,7 @@ const users = [
 ];
 
 const UserCard = ({ user }: { user: (typeof users)[number] }) => (
-  <Card className=" hover:shadow-md shadow-none">
+  <Card className=" hover:border-ring shadow-none">
     <CardContent className="p-6">
       <div className="flex items-center space-x-4">
         <Avatar className="h-16 w-16">
@@ -79,14 +79,14 @@ const UserCard = ({ user }: { user: (typeof users)[number] }) => (
         <div>
           <Link
             href={`/users/${user.id}`}
-            className="text-lg font-semibold hover:underline"
+            className="text-lg font-semibold hover:underline hover:text-ring"
           >
             {user.name}
           </Link>
           <p className="text-sm text-muted-foreground">{user.email}</p>
           <div className="flex items-center mt-2 space-x-2">
-            <Badge variant="secondary">{user.role}</Badge>
-            <Badge variant="outline">{user.department}</Badge>
+            <Badge variant="default">{user.role}</Badge>
+            <Badge variant="secondary">{user.department}</Badge>
           </div>
         </div>
       </div>
@@ -107,8 +107,8 @@ const UserListItem = ({ user }: { user: (typeof users)[number] }) => (
       <p className="text-sm text-muted-foreground">{user.email}</p>
     </div>
     <div className="flex items-center space-x-2">
-      <Badge variant="secondary">{user.role}</Badge>
-      <Badge variant="outline">{user.department}</Badge>
+      <Badge variant="default">{user.role}</Badge>
+      <Badge variant="secondary">{user.department}</Badge>
     </div>
   </div>
 );
@@ -136,7 +136,7 @@ export default function UsersPage() {
               <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
-                className="bg-background pl-8"
+                className="shadow-none bg-background pl-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -146,16 +146,17 @@ export default function UsersPage() {
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add User
               </Button>
+
               <Button
                 variant={view === "grid" ? "default" : "outline"}
-                size="icon"
+                size="sm"
                 onClick={() => setView("grid")}
               >
                 <GridIcon className="h-4 w-4" />
               </Button>
               <Button
                 variant={view === "list" ? "default" : "outline"}
-                size="icon"
+                size="sm"
                 onClick={() => setView("list")}
               >
                 <ListIcon className="h-4 w-4" />
@@ -172,7 +173,7 @@ export default function UsersPage() {
           ))}
         </div>
       ) : (
-        <Card>
+        <Card className="shadow-none">
           <CardContent className="p-0">
             {filteredUsers.map((user) => (
               <UserListItem key={user.id} user={user} />

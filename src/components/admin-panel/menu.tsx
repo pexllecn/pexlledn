@@ -40,7 +40,7 @@ export function Menu({ isOpen }: MenuProps) {
           {menuList.map(({ groupLabel, menus }, index) => (
             <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
               {(isOpen && groupLabel) || isOpen === undefined ? (
-                <p className="text-sm font-medium px-4 pb-2 max-w-[248px] truncate">
+                <p className="text-sm font-medium px-4 pb-2 max-w-[248px] truncate ">
                   {groupLabel}
                 </p>
               ) : !isOpen && isOpen !== undefined && groupLabel ? (
@@ -69,7 +69,7 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "outline" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-10 mb-1",
+                                "w-full justify-start h-10 mb-1 ",
                                 !active && "text-muted-foreground font-normal"
                               )}
                               asChild
