@@ -58,7 +58,7 @@ export default function AuthenticationPage() {
       />
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-md p-8 bg-white/50 dark:bg-muted/80 rounded-lg shadow-lg">
+      <div className="relative z-10 w-full max-w-md p-8 backdrop-blur-md bg-white/50 dark:bg-muted/40 rounded-lg shadow-lg">
         <div className="flex justify-center mb-8">
           <Link href="/">
             <div style={{ width: 150, height: 50, position: "relative" }}>
