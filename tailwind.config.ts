@@ -59,6 +59,15 @@ const config = {
         sm: "calc(var(--radius) - 4px)"
       },
       keyframes: {
+        shine: {
+          from: { backgroundPosition: "200% 0" },
+          to: { backgroundPosition: "-200% 0" }
+        },
+        gradient: {
+          to: {
+            backgroundPosition: "var(--bg-size) 0"
+          }
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" }
@@ -80,7 +89,9 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down": "collapsible-down 0.2s ease-out",
-        "collapsible-up": "collapsible-up 0.2s ease-out"
+        "collapsible-up": "collapsible-up 0.2s ease-out",
+        gradient: "gradient 8s linear infinite",
+        shine: "shine 8s ease-in-out infinite"
       }
     }
   },
