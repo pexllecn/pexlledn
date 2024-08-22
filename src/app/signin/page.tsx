@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
 
 const DynamicGoogleSignInButton = dynamic(
@@ -21,22 +20,6 @@ const DynamicGoogleSignInButton = dynamic(
   }
 );
 
-// Define image sources and blur data URLs
-const imageSources = {
-  logo: {
-    light: "/pexlle.png",
-    dark: "/pexllelight.png",
-    blurDataURL:
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==" // Replace with actual blur data URL
-  },
-  background: {
-    light: "/login.jpeg",
-    dark: "/darklogin.jpg",
-    blurDataURL:
-      "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL+AD//Z" // Replace with actual blur data URL
-  }
-};
-
 export default function AuthenticationPage() {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -44,22 +27,16 @@ export default function AuthenticationPage() {
 
   useEffect(() => {
     setMounted(true);
-    // Preload both versions of the images
-    Object.values(imageSources).forEach(({ light, dark }) => {
-      const preloadLight = new window.Image();
-      preloadLight.src = light;
-      const preloadDark = new window.Image();
-      preloadDark.src = dark;
-    });
   }, []);
 
-  const getAsset = (imageType: "logo" | "background") => {
-    if (!mounted) return imageSources[imageType].light;
+  const getAsset = (lightAsset: string, darkAsset: string) => {
+    if (!mounted) return lightAsset;
     const effectiveTheme = resolvedTheme || theme;
-    return effectiveTheme === "dark"
-      ? imageSources[imageType].dark
-      : imageSources[imageType].light;
+    return effectiveTheme === "dark" ? darkAsset : lightAsset;
   };
+
+  const logoSrc = getAsset("/pexlle.png", "/pexllelight.png");
+  const backgroundImage = getAsset("/login.jpeg", "/darklogin.jpg");
 
   if (!mounted) {
     return null;
@@ -67,30 +44,24 @@ export default function AuthenticationPage() {
 
   return (
     <div className="relative h-screen flex items-center justify-center">
-      <Image
-        src={getAsset("background")}
-        alt="Background"
-        layout="fill"
-        objectFit="cover"
-        quality={100}
-        priority
-        placeholder="blur"
-        blurDataURL={imageSources.background.blurDataURL}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url("${backgroundImage}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
       />
 
       <div className="relative z-10 w-full max-w-md p-8 backdrop-blur-md bg-white/30 dark:bg-muted/40 rounded-lg shadow-lg">
         <div className="flex justify-center mb-8">
           <Link href="/">
-            <div className="relative w-[150px] h-[50px]">
+            <div style={{ width: 150, height: 50, position: "relative" }}>
               <Image
-                src={getAsset("logo")}
+                src={logoSrc}
                 alt="Pexlle Logo"
                 layout="fill"
                 objectFit="contain"
-                quality={100}
-                priority
-                placeholder="blur"
-                blurDataURL={imageSources.logo.blurDataURL}
               />
             </div>
           </Link>
