@@ -1,31 +1,9 @@
 "use client";
-import PlaceholderContent from "@/components/demo/placeholder-content";
+import React from "react";
+import { useTheme } from "next-themes";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { useMemo, useState } from "react";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from "@/components/ui/drawer";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog";
-import { ComputerIcon, Download, XIcon } from "lucide-react";
-import { Textarea } from "@/registry/default/ui/textarea";
+import PlaceholderContent from "@/components/demo/placeholder-content";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Card,
@@ -35,9 +13,12 @@ import {
   CardContent,
   CardFooter
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectTrigger,
@@ -45,336 +26,350 @@ import {
   SelectContent,
   SelectItem
 } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  User,
+  Bell,
+  Settings,
+  Shield,
+  Moon,
+  Sun,
+  Upload,
+  Trash2,
+  LogOut,
+  Smartphone,
+  Globe,
+  X
+} from "lucide-react";
 
 export default function AccountPage() {
-  const [open, setOpen] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  const variants1 = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 }
-  };
-
-  function TodoForm({ className }: React.ComponentProps<"form">) {
-    return (
-      <form className={className}>
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Input id="title" placeholder="Todo title..." />
-          </div>
-          <div className="grid gap-2">
-            <Textarea id="description" placeholder="Description..." />
-          </div>
-        </div>
-        <div className={isDesktop ? "flex justify-end" : ""}>
-          <Button type="submit">Confirm</Button>
-        </div>
-      </form>
-    );
-  }
-
-  const DrawerDialogDemo = () => {
-    if (isDesktop) {
-      return (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Download className="mr-2 h-4 w-4" />
-              Click here!
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Confirm</DialogTitle>
-              <DialogDescription>
-                What do you want to get done today?
-              </DialogDescription>
-            </DialogHeader>
-            <TodoForm />
-          </DialogContent>
-        </Dialog>
-      );
-    }
-    return (
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            Download
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Confirm</DrawerTitle>
-            <DrawerDescription>
-              What do you want to get done today?
-            </DrawerDescription>
-          </DrawerHeader>
-          <TodoForm className="px-4" />
-          <DrawerFooter className="pt-2">
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    );
-  };
-
-  function ComputerIcon({ className, ...rest }: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg
-        {...rest}
-        className={className}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect width="14" height="8" x="5" y="2" rx="2" />
-        <rect width="20" height="8" x="2" y="14" rx="2" />
-        <path d="M6 18h2" />
-        <path d="M12 18h6" />
-      </svg>
-    );
-  }
-
-  function XIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg
-        {...props}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M18 6 6 18" />
-        <path d="m6 6 12 12" />
-      </svg>
-    );
-  }
+  const { theme, setTheme } = useTheme();
 
   return (
     <ContentLayout title="Account">
       <PlaceholderContent />
-      <div className="w-full max-w-4xl mx-auto py-12 px-4 md:px-6">
-        <Tabs defaultValue="account" className="space-y-8">
-          <TabsList className="flex">
-            <TabsTrigger value="account">Account</TabsTrigger>
+      <div className="container mx-auto p-6 max-w-4xl">
+        <h1 className="text-3xl font-bold mb-2">Account Settings</h1>
+        <p className="text-muted-foreground mb-6">
+          Manage your account preferences and settings
+        </p>
+
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
           </TabsList>
-          <TabsContent value="account">
-            <div className="grid gap-6">
-              <Card className="shadow-none">
-                <CardHeader>
-                  <CardTitle>Account Information</CardTitle>
-                  <CardDescription>
-                    Update your personal information.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" defaultValue="John Doe" />
+
+          <TabsContent value="profile" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile Information</CardTitle>
+                <CardDescription>
+                  Update your personal details and profile picture
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-24 w-24">
+                    <AvatarImage
+                      src="/placeholder-avatar.jpg"
+                      alt="Profile picture"
+                    />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <Button variant="outline" size="sm" className="mb-2">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload new picture
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Remove picture
+                    </Button>
                   </div>
-                  <div className="grid gap-2">
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input id="firstName" placeholder="John" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input id="lastName" placeholder="Doe" />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
-                      defaultValue="john@example.com"
+                      placeholder="john@example.com"
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" />
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+1 (555) 123-4567"
+                    />
                   </div>
-                  <div className="grid gap-2">
-                    <Label>Profile Picture</Label>
-                    <div className="flex items-center gap-4">
-                      <Avatar className="h-16 w-16">
-                        <AvatarImage
-                          src="/placeholder-user.jpg"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <Button variant="outline">Change</Button>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button>Save Changes</Button>
-                </CardFooter>
-              </Card>
-            </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bio</Label>
+                  <Textarea id="bio" placeholder="Tell us about yourself..." />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save Changes</Button>
+              </CardFooter>
+            </Card>
           </TabsContent>
-          <TabsContent value="notifications">
-            <div className="grid gap-6">
-              <Card className="shadow-none">
-                <CardHeader>
-                  <CardTitle>Notification Settings</CardTitle>
-                  <CardDescription>
-                    Choose what you want to be notified about.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label>Email Notifications</Label>
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="email-notifications" defaultChecked />
-                      <Label htmlFor="email-notifications">
-                        Receive email notifications
-                      </Label>
-                    </div>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Push Notifications</Label>
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="push-notifications" defaultChecked />
-                      <Label htmlFor="push-notifications">
-                        Receive push notifications
-                      </Label>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button>Save Changes</Button>
-                </CardFooter>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="preferences">
-            <div className="grid gap-6">
-              <Card className="shadow-none">
-                <CardHeader>
-                  <CardTitle>Preferences</CardTitle>
-                  <CardDescription>
-                    Customize your account preferences.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label>Dark Mode</Label>
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="dark-mode" />
-                      <Label htmlFor="dark-mode">Enable dark mode</Label>
-                    </div>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="language">Language</Label>
-                    <Select>
-                      <SelectTrigger id="language">
-                        <SelectValue placeholder="Select language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="es">Español</SelectItem>
-                        <SelectItem value="fr">Français</SelectItem>
-                        <SelectItem value="de">Deutsch</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="timezone">Time Zone</Label>
-                    <Select>
-                      <SelectTrigger id="timezone">
-                        <SelectValue placeholder="Select time zone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="utc">UTC</SelectItem>
-                        <SelectItem value="est">
-                          EST (Eastern Standard Time)
-                        </SelectItem>
-                        <SelectItem value="pst">
-                          PST (Pacific Standard Time)
-                        </SelectItem>
-                        <SelectItem value="cst">
-                          CST (Central Standard Time)
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button>Save Changes</Button>
-                </CardFooter>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="security">
-            <div className="grid gap-6">
-              <Card className="shadow-none">
-                <CardHeader>
-                  <CardTitle>Security</CardTitle>
-                  <CardDescription>
-                    Manage your account security settings.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label>Two-Factor Authentication</Label>
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="two-factor" />
-                      <Label htmlFor="two-factor">
-                        Enable two-factor authentication
-                      </Label>
-                    </div>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Authorized Devices</Label>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <ComputerIcon className="w-5 h-5" />
-                          <div>
-                            <div className="font-medium">iPhone 12</div>
-                            <div className="text-muted-foreground text-sm">
-                              Logged in 2 hours ago
-                            </div>
-                          </div>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <XIcon className="w-4 h-4" />
-                        </Button>
+
+          <TabsContent value="notifications" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Notification Preferences</CardTitle>
+                <CardDescription>
+                  Customize how you receive notifications
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  {["Email", "Push", "SMS", "In-app"].map((type) => (
+                    <div
+                      key={type}
+                      className="flex items-center justify-between"
+                    >
+                      <div>
+                        <h3 className="font-medium">{type} Notifications</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Receive {type.toLowerCase()} notifications
+                        </p>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <ComputerIcon className="w-5 h-5" />
-                          <div>
-                            <div className="font-medium">MacBook Pro</div>
-                            <div className="text-muted-foreground text-sm">
-                              Logged in 1 day ago
-                            </div>
-                          </div>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <XIcon className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      <Switch />
                     </div>
+                  ))}
+                </div>
+                <div className="space-y-4">
+                  <h3 className="font-medium">Notification Categories</h3>
+                  {[
+                    "Account activity",
+                    "New features",
+                    "Marketing",
+                    "Security alerts"
+                  ].map((category) => (
+                    <div key={category} className="flex items-center space-x-2">
+                      <Switch id={category.replace(" ", "-")} />
+                      <Label htmlFor={category.replace(" ", "-")}>
+                        {category}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save Preferences</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="preferences" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Account Preferences</CardTitle>
+                <CardDescription>
+                  Customize your account settings
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Theme</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Choose your preferred theme
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setTheme(theme === "dark" ? "light" : "dark")
+                    }
+                  >
+                    {theme === "dark" ? (
+                      <Sun className="h-4 w-4 mr-2" />
+                    ) : (
+                      <Moon className="h-4 w-4 mr-2" />
+                    )}
+                    {theme === "dark" ? "Light" : "Dark"} mode
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="language">Language</Label>
+                  <Select defaultValue="en">
+                    <SelectTrigger id="language">
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="es">Español</SelectItem>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="de">Deutsch</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="timezone">Time Zone</Label>
+                  <Select defaultValue="utc">
+                    <SelectTrigger id="timezone">
+                      <SelectValue placeholder="Select time zone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="utc">UTC</SelectItem>
+                      <SelectItem value="est">
+                        EST (Eastern Standard Time)
+                      </SelectItem>
+                      <SelectItem value="pst">
+                        PST (Pacific Standard Time)
+                      </SelectItem>
+                      <SelectItem value="cet">
+                        CET (Central European Time)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save Preferences</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="security" className="space-y-4">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Password</CardTitle>
+                  <CardDescription>
+                    Change your password or enable two-factor authentication
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="current-password">Current Password</Label>
+                    <Input id="current-password" type="password" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <Input id="new-password" type="password" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password">
+                      Confirm New Password
+                    </Label>
+                    <Input id="confirm-password" type="password" />
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button>Save Changes</Button>
+                  <Button>Change Password</Button>
                 </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Two-Factor Authentication</CardTitle>
+                  <CardDescription>
+                    Add an extra layer of security to your account
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium">Two-Factor Authentication</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Protect your account with 2FA
+                      </p>
+                    </div>
+                    <Switch />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="outline">
+                      <Smartphone className="h-4 w-4 mr-1" />
+                      SMS
+                    </Badge>
+                    <Badge variant="outline">
+                      <Globe className="h-4 w-4 mr-1" />
+                      Authenticator App
+                    </Badge>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="outline">Set Up 2FA</Button>
+                </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Active Sessions</CardTitle>
+                  <CardDescription>
+                    Manage your active sessions and devices
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {[
+                    {
+                      device: "MacBook Pro",
+                      location: "San Francisco, CA",
+                      lastActive: "2 minutes ago"
+                    },
+                    {
+                      device: "iPhone 12",
+                      location: "New York, NY",
+                      lastActive: "1 hour ago"
+                    }
+                  ].map((session, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="bg-primary/10 p-2 rounded-full">
+                          <Smartphone className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">{session.device}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {session.location} • {session.lastActive}
+                          </p>
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        <X className="h-4 w-4 mr-2" />
+                        End Session
+                      </Button>
+                    </div>
+                  ))}
+                </CardContent>
               </Card>
             </div>
           </TabsContent>
         </Tabs>
+
+        <div className="mt-8 flex justify-between items-center">
+          <Button variant="outline" className="text-destructive">
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign out of all devices
+          </Button>
+          <Button variant="destructive">
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete Account
+          </Button>
+        </div>
       </div>
     </ContentLayout>
   );
