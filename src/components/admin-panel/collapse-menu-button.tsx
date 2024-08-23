@@ -1,7 +1,5 @@
-"use client";
-
+import React, { useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
 import { ChevronDown, Dot, LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -57,17 +55,13 @@ export function CollapseMenuButton({
       onOpenChange={setIsCollapsed}
       className="w-full"
     >
-      <CollapsibleTrigger
-        className="[&[data-state=open]>div>div>svg]:rotate-180 mb-1"
-        asChild
-      >
+      <CollapsibleTrigger className="w-full mb-1 cursor-pointer" asChild>
         <Button
           variant={active ? "outline" : "ghost"}
           className={cn(
-            "w-full justify-start h-10 mb-1",
+            "w-full justify-start h-10 mb-1 hover:bg-muted",
             !active && "text-muted-foreground font-normal"
           )}
-          asChild
         >
           <div className="w-full items-center flex justify-between">
             <div className="flex items-center">
@@ -95,7 +89,10 @@ export function CollapseMenuButton({
             >
               <ChevronDown
                 size={18}
-                className="transition-transform duration-200"
+                className={cn(
+                  "transition-transform duration-200",
+                  isCollapsed ? "rotate-180" : "rotate-0"
+                )}
               />
             </div>
           </div>
@@ -139,7 +136,7 @@ export function CollapseMenuButton({
             <DropdownMenuTrigger asChild>
               <Button
                 variant={active ? "outline" : "ghost"}
-                className="w-full justify-start h-10 mb-1"
+                className="w-full justify-start h-10 mb-1 hover:bg-muted"
               >
                 <div className="w-full items-center flex justify-between">
                   <div className="flex items-center">

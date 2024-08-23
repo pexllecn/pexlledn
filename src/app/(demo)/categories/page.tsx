@@ -168,7 +168,7 @@ export default function Component() {
         variants={variants1}
         className="w-full overflow-x-hidden"
       >
-        <div className="container mx-auto px-4 py-8">
+        <div className=" mx-auto px-4 py-8">
           <Card className="mb-12 overflow-hidden shadow-lg rounded-lg">
             <motion.div
               className="relative h-60 sm:h-80"
