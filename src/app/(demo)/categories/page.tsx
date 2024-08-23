@@ -267,22 +267,31 @@ export default function Component() {
           </div>
         </div>
 
-        <div className="overflow-x-auto mb-4">
-          <div className="flex space-x-1 bg-background p-2 rounded-lg min-w-max">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`px-3 py-1.5 text-sm font-medium transition-all duration-200 outline-none rounded-full ${
-                  activeCategory === category
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+        <div className="flex space-x-1 bg-background pl-2 py-4 rounded-lg min-w-max">
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-200 outline-none  ${
+                activeCategory === category
+                  ? "text-secondary"
+                  : "text-gray-500 hover:text-foreground"
+              }`}
+              onClick={() => setActiveCategory(category)}
+            >
+              {activeCategory === category && (
+                <motion.div
+                  className="absolute inset-0 bg-foreground rounded-full z-0"
+                  layoutId="activeBackground"
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 30
+                  }}
+                />
+              )}
+              <span className="relative z-10">{category}</span>
+            </button>
+          ))}
         </div>
 
         <div
