@@ -63,7 +63,7 @@ export default function AccountPage() {
           </TabsList>
 
           <TabsContent value="profile" className="space-y-4">
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
                 <CardDescription>

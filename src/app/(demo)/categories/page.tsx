@@ -1,127 +1,163 @@
 "use client";
-
-import Image from "next/image";
-import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-export default function CategoriesPage() {
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
+import {
+  LayoutGridIcon,
+  ListIcon,
+  MapPinIcon,
+  ClockIcon,
+  UserIcon,
+  DollarSignIcon,
+  TagIcon,
+  SearchIcon
+} from "lucide-react";
+
+const categories = [
+  "All",
+  "For Sale",
+  "Housing",
+  "Jobs",
+  "Services",
+  "Community",
+  "Events"
+];
+
+const ads = [
+  {
+    id: 1,
+    title: "Vintage Record Player",
+    price: 150,
+    category: "For Sale",
+    image:
+      "https://plus.unsplash.com/premium_photo-1682125853703-896a05629709?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    location: "Downtown",
+    date: "2023-06-15",
+    seller: "VinylEnthusiast",
+    description:
+      "Beautiful vintage record player from the 60s. Perfect working condition."
+  },
+  {
+    id: 2,
+    title: "Cozy Studio Apartment",
+    price: 1200,
+    category: "Housing",
+    image:
+      "https://plus.unsplash.com/premium_photo-1664304552814-51e8a869e556?q=80&w=3473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    location: "Westside",
+    date: "2023-06-14",
+    seller: "CityLiving",
+    description:
+      "Modern studio apartment with great amenities. Available for immediate move-in."
+  },
+  {
+    id: 3,
+    title: "Web Developer Needed",
+    price: null,
+    category: "Jobs",
+    image:
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    location: "Remote",
+    date: "2023-06-13",
+    seller: "TechStartup",
+    description:
+      "Looking for an experienced web developer. Full-time position with competitive salary."
+  },
+  {
+    id: 4,
+    title: "Professional Photography",
+    price: 200,
+    category: "Services",
+    image:
+      "https://images.unsplash.com/photo-1711289469553-d14537c6b636?q=80&w=3448&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    location: "Citywide",
+    date: "2023-06-12",
+    seller: "SnapMaster",
+    description:
+      "Offering professional photography services for events, portraits, and more."
+  },
+  {
+    id: 5,
+    title: "Community Gardening Event",
+    price: null,
+    category: "Community",
+    image:
+      "https://plus.unsplash.com/premium_photo-1663100129347-d7bd2de42c32?q=80&w=3544&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    location: "Central Park",
+    date: "2023-06-20",
+    seller: "GreenThumb",
+    description: "Join us for a community gardening event. All ages welcome!"
+  },
+  {
+    id: 6,
+    title: "Vintage Guitar",
+    price: 500,
+    category: "For Sale",
+    image:
+      "https://images.unsplash.com/photo-1565829577241-474d81bf757c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    location: "Eastside",
+    date: "2023-06-11",
+    seller: "MusicLover",
+    description:
+      "1970s Fender Stratocaster in excellent condition. A true collector's item."
+  }
+];
+export default function Component() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [isGridView, setIsGridView] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+  const [filteredAds, setFilteredAds] = useState(ads);
+  const [featuredAd, setFeaturedAd] = useState(ads[0]);
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 }
   };
 
-  const FirstTabData = [
-    {
-      key: "all",
-      title: "All"
-    },
-    {
-      key: "electronics",
-      title: " Electronics "
-    },
-    {
-      key: "cars",
-      title: "Cars"
-    },
-    {
-      key: "realstate",
-      title: "Real State"
-    },
-    {
-      key: "clothes",
-      title: "Clothes"
-    },
-    {
-      key: "other",
-      title: "Other"
-    }
-  ];
+  useEffect(() => {
+    const filtered = ads
+      .filter(
+        (ad) => activeCategory === "All" || ad.category === activeCategory
+      )
+      .filter(
+        (ad) =>
+          ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          ad.description.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .sort((a, b) => {
+        if (sortBy === "date")
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        if (sortBy === "price") return (b.price || 0) - (a.price || 0);
+        return 0;
+      });
+    setFilteredAds(filtered);
+  }, [activeCategory, searchTerm, sortBy]);
 
-  const SecondTabData = [
-    {
-      key: "popular",
-      title: "Popular"
-    },
-    {
-      key: "newreleases",
-      title: "New  Releases"
-    },
-    {
-      key: "recentadded",
-      title: "Recent Added"
-    },
-    {
-      key: "foryou",
-      title: "For You"
-    }
-  ];
-
-  const selectedTabData = [
-    {
-      price: "$200",
-      productName: "Mac Book",
-      location: "Pakistan",
-      productType: "cars",
-      rating: "4.7",
-      imagePath: "/images/car.jpg",
-      imageWidth: 200,
-      imageHeight: 110
-    },
-    {
-      price: "$500",
-      productName: "IPhone 15 pro max",
-      location: "Bahrain",
-      productType: "electronics",
-      rating: "4.7",
-      imagePath: "/images/mobile.jpg",
-      imageWidth: 200,
-      imageHeight: 110
-    },
-    {
-      price: "$2000",
-      productName: "House of Dream",
-      location: "Dubai",
-      productType: "realstate",
-      rating: "4.7",
-      imagePath: "/images/realState.jpg",
-      imageWidth: 200,
-      imageHeight: 110
-    },
-    {
-      price: "$20",
-      productName: "Movie",
-      location: "Galway",
-      productType: "other",
-      rating: "4.7",
-      imagePath: "/images/a.avif",
-      imageWidth: 200,
-      imageHeight: 110
-    },
-    {
-      price: "1500$",
-      productName: "Beautiful House",
-      location: "Maddina",
-      productType: "realstate",
-      rating: "4.7",
-      imagePath: "/images/realState.jpg",
-      imageWidth: 200,
-      imageHeight: 110
-    },
-    {
-      price: "$20",
-      productName: "Clothes",
-      location: "Maka",
-      productType: "clothes",
-      rating: "4.7",
-      imagePath: "/images/cloths.jfif",
-      imageWidth: 200,
-      imageHeight: 110
-    }
-
-    // ... add more product data here
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFeaturedAd(ads[Math.floor(Math.random() * ads.length)]);
+    }, 10000); // Change featured ad every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <ContentLayout title="Categories">
@@ -130,175 +166,197 @@ export default function CategoriesPage() {
         animate="visible"
         transition={{ duration: 0.4 }}
         variants={variants1}
+        className="w-full overflow-x-hidden"
       >
-        <div className="flex-1 space-y-1">
-          <div className="flex w-full flex-col">
-            <Tabs defaultValue="all" className="space-y-4  rounded-md p-3">
-              <div
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between overflow-x-auto"
-                style={{ scrollbarWidth: "none" }}
-              >
-                <TabsList className="flex gap-2 mb-2 sm:mb-0">
-                  {FirstTabData.map((tab) => (
-                    <TabsTrigger key={tab.key} value={tab.key}>
-                      {tab.title}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="text-black font-semibold dark:text-white">
-                  Featured Ads
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="icon">
-                    <ChevronLeftIcon className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <ChevronRightIcon className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              {FirstTabData.map((tab) => (
-                <TabsContent
-                  key={tab.key}
-                  value={tab.key}
-                  className="space-y-4 pb-8"
-                >
-                  <div
-                    className="flex justify-start space-x-4 overflow-x-auto hide-scrollbar overflow-hidden"
-                    style={{
-                      scrollbarWidth: "thin",
-                      scrollbarColor: "transparent transparent",
-                      msOverflowStyle: "none"
-                    }}
-                  >
-                    {selectedTabData
-                      .filter(
-                        (product) =>
-                          product.productType === tab.key || tab.key === "all"
-                      )
-                      .map((product) => (
-                        <div
-                          key={`${product.productName}-${product.price}-${product.location}`}
-                          className="max-w-md rounded-lg p-1 mb-3 hover:shadow-lg hover:bg-gray-200 dark:hover:shadow-lg dark:hover:bg-gray-900"
-                          style={{ width: 210, height: 370 }}
-                        >
-                          <div
-                            className="relative flex-shrink-0 overflow-hidden"
-                            style={{ width: 200, height: 300 }}
-                          >
-                            <Image
-                              src={product.imagePath}
-                              alt="Product Image"
-                              width={product.imageWidth}
-                              height={product.imageHeight}
-                              className="rounded-lg object-cover"
-                              style={{ width: "100%", height: "100%" }}
-                            />
-                            <div className="absolute top-0 right-0 m-2 from-transparent to-black rounded-sm px-2 py-1">
-                              <p className="bg-white dark:bg-gray-800 rounded-sm px-1 font-bold text-xs dark:text-white">
-                                {product.rating}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between p-1">
-                            <div>
-                              <p className="text-lg font-bold text-gray-800 dark:text-white">
-                                {product.price}
-                              </p>
-                              <p className="text-sm text-gray-600 dark:text-white">
-                                {product.productName}
-                              </p>
-                              <p className="text-sm text-gray-500 dark:text-white">
-                                {product.location}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+        <div className="container mx-auto px-4 py-8">
+          <Card className="mb-12 overflow-hidden shadow-lg rounded-lg">
+            <motion.div
+              className="relative h-60 sm:h-80"
+              key={featuredAd.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <img
+                src={featuredAd.image}
+                alt={featuredAd.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                <Badge className="mb-2">{featuredAd.category}</Badge>
+                <h2 className="text-xl sm:text-3xl font-bold mb-2">
+                  Featured: {featuredAd.title}
+                </h2>
+                <p className="mb-4 text-sm sm:text-lg line-clamp-2 sm:line-clamp-none">
+                  {featuredAd.description}
+                </p>
+                <div className="flex items-center gap-4 text-xs sm:text-sm">
+                  <div className="flex items-center gap-1">
+                    <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span>{featuredAd.location}</span>
                   </div>
-
-                  <Tabs
-                    defaultValue="popular"
-                    className="space-y-4 rounded-md p-3"
-                  >
-                    <div
-                      className="flex flex-col sm:flex-row items-start sm:items-center justify-between overflow-x-auto"
-                      style={{ scrollbarWidth: "none" }}
-                    >
-                      <TabsList className="flex gap-2 mb-2 sm:mb-0">
-                        {SecondTabData.map((tabs) => (
-                          <TabsTrigger key={tabs.key} value={tabs.key}>
-                            {tabs.title}
-                          </TabsTrigger>
-                        ))}
-                      </TabsList>
-                      <Button variant="secondary" className="sm:ml-4">
-                        Show All
-                      </Button>
+                  {featuredAd.price && (
+                    <div className="flex items-center gap-1">
+                      <DollarSignIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span>${featuredAd.price}</span>
                     </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </Card>
 
-                    {SecondTabData.map((tabs) => (
-                      <TabsContent
-                        key={tabs.key}
-                        value={tabs.key}
-                        className="space-y-4"
-                      >
-                        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                          {selectedTabData
-                            .filter(
-                              (product) =>
-                                product.productType === tab.key ||
-                                tab.key === "all"
-                            )
-                            .map((product) => (
-                              <div
-                                key={`${product.productName}-${product.price}-${product.location}`}
-                                className="max-w-md rounded-lg p-1 mb-2 hover:shadow-lg hover:bg-gray-200 overflow-hidden dark:hover:shadow-lg dark:hover:bg-gray-900"
-                                style={{ width: "100%", height: 300 }}
-                              >
-                                <div
-                                  className="relative flex-shrink-0 overflow-hidden"
-                                  style={{ width: "100%", height: 200 }}
-                                >
-                                  <Image
-                                    src={product.imagePath}
-                                    alt="Product Image"
-                                    width={product.imageWidth}
-                                    height={product.imageHeight}
-                                    className="rounded-lg object-cover"
-                                    style={{ width: "100%", height: "100%" }}
-                                  />
-                                  <div className="absolute top-0 right-0 m-2 from-transparent to-black rounded-sm px-2 py-1">
-                                    <p className="bg-white dark:bg-gray-800 rounded-sm px-1 font-bold text-xs dark:text-white">
-                                      {product.rating}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center justify-between p-1">
-                                  <div>
-                                    <p className="text-lg font-bold text-gray-800 dark:text-white">
-                                      {product.price}
-                                    </p>
-                                    <p className="text-sm text-gray-600 dark:text-white">
-                                      {product.productName}
-                                    </p>
-                                    <p className="text-sm text-gray-500 dark:text-white">
-                                      {product.location}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </TabsContent>
-                    ))}
-                  </Tabs>
-                </TabsContent>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div className="relative w-full sm:w-auto">
+              <Input
+                placeholder="Search ads..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full sm:w-80 border-none bg-muted shadow-none focus:ring-2 focus:ring-primary"
+              />
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full sm:w-[180px] border-none bg-muted shadow-none">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Date (Newest first)</SelectItem>
+                  <SelectItem value="price">Price (Highest first)</SelectItem>
+                </SelectContent>
+              </Select>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={isGridView ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setIsGridView(true)}
+                      className="border-gray-300 dark:border-gray-700"
+                    >
+                      <LayoutGridIcon className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Grid view</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={!isGridView ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setIsGridView(false)}
+                      className="border-gray-300 dark:border-gray-700 "
+                    >
+                      <ListIcon className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>List view</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto mb-4">
+            <div className="flex space-x-1 bg-background p-2 rounded-lg min-w-max">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-200 outline-none ${
+                    activeCategory === category
+                      ? "text-gray-900 text-secondary"
+                      : "text-gray-500 hover:text-foreground"
+                  }`}
+                  onClick={() => setActiveCategory(category)}
+                >
+                  {activeCategory === category && (
+                    <motion.div
+                      className="absolute inset-0 bg-primary rounded-full z-0"
+                      layoutId="activeBackground"
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10">{category}</span>
+                </button>
               ))}
-            </Tabs>
+            </div>
+          </div>
+
+          <div
+            className={`grid gap-4 sm:gap-8 ${
+              isGridView
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                : "grid-cols-1"
+            }`}
+          >
+            {filteredAds.map((ad) => (
+              <Card
+                key={ad.id}
+                className={`overflow-hidden transition-shadow duration-300 hover:shadow-xl rounded-lg flex flex-col ${
+                  isGridView ? "h-[400px]" : "h-[200px] flex-row"
+                }`}
+              >
+                <div
+                  className={`relative ${isGridView ? "h-48" : "w-1/3 h-full"}`}
+                >
+                  <img
+                    src={ad.image}
+                    alt={ad.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <Badge className="absolute top-2 left-2">{ad.category}</Badge>
+                  {ad.price && (
+                    <Badge
+                      variant="secondary"
+                      className="absolute top-2 right-2"
+                    >
+                      ${ad.price}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex flex-col flex-grow">
+                  <CardContent className="p-4 flex-grow">
+                    <h2 className="text-lg font-semibold text-foreground mb-2 line-clamp-1">
+                      {ad.title}
+                    </h2>
+                    <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+                      {ad.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
+                      <div className="flex items-center gap-1">
+                        <MapPinIcon className="w-3 h-3" />
+                        <span>{ad.location}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <ClockIcon className="w-3 h-3" />
+                        <span>{new Date(ad.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <UserIcon className="w-3 h-3" />
+                        <span>{ad.seller}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="p-4 bg-muted/50 mt-auto">
+                    <Button className="w-full" variant="secondary">
+                      View Details
+                    </Button>
+                  </CardFooter>
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </motion.div>
