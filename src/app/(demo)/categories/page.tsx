@@ -210,19 +210,48 @@ export default function Component() {
           </Card>
         )}
 
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div className="relative w-full sm:w-auto">
+        <div className="mb-12">
+          <div className="relative max-w-3xl mx-auto">
             <Input
-              placeholder="Search ads..."
+              placeholder="Search for anything..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full sm:w-80 border-none bg-muted shadow-none focus:ring-2 focus:ring-primary"
+              className="pl-12 pr-4 py-3 w-full border-none bg-muted shadow-md focus:ring-2 focus:ring-primary rounded-md"
             />
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between mb-8 gap-4">
+          <div className="flex space-x-1 bg-background rounded-lg overflow-x-auto pl-4">
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`relative px-3 py-2 text-sm font-medium transition-all duration-200 outline-none whitespace-nowrap ${
+                  activeCategory === category
+                    ? "text-secondary"
+                    : "text-gray-500 hover:text-foreground"
+                }`}
+                onClick={() => setActiveCategory(category)}
+              >
+                {activeCategory === category && (
+                  <motion.div
+                    className="absolute inset-0 bg-foreground rounded-full z-0"
+                    layoutId="activeBackground"
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 30
+                    }}
+                  />
+                )}
+                <span className="relative z-10">{category}</span>
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full sm:w-[180px] border-none bg-muted shadow-none">
+              <SelectTrigger className="w-[180px] border-none bg-muted shadow-none">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -265,33 +294,6 @@ export default function Component() {
               </Tooltip>
             </TooltipProvider>
           </div>
-        </div>
-
-        <div className="flex space-x-1 bg-background pl-2 py-4 rounded-lg min-w-max">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-200 outline-none  ${
-                activeCategory === category
-                  ? "text-secondary"
-                  : "text-gray-500 hover:text-foreground"
-              }`}
-              onClick={() => setActiveCategory(category)}
-            >
-              {activeCategory === category && (
-                <motion.div
-                  className="absolute inset-0 bg-foreground rounded-full z-0"
-                  layoutId="activeBackground"
-                  transition={{
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 30
-                  }}
-                />
-              )}
-              <span className="relative z-10">{category}</span>
-            </button>
-          ))}
         </div>
 
         <div

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -69,6 +69,24 @@ export default function DarkModeCompatibleProductListing() {
   const prevImage = () => {
     setSelectedImage((prev) => (prev - 1 + images.length) % images.length);
   };
+
+  // New function to handle keydown events
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowLeft") {
+      prevImage();
+    } else if (event.key === "ArrowRight") {
+      nextImage();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <ContentLayout title="Categories">

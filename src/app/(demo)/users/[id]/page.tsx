@@ -5,122 +5,248 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import {
   CalendarIcon,
   MailIcon,
   PhoneIcon,
   MapPinIcon,
-  BriefcaseIcon
+  TagIcon,
+  ShoppingBagIcon,
+  UsersIcon,
+  StarIcon,
+  Star
 } from "lucide-react";
 
 // This would typically come from an API or database
 const user = {
   id: 1,
-  name: "Alice Johnson",
-  email: "alice@example.com",
-  role: "Admin",
-  avatarUrl: "https://i.pravatar.cc/150?img=1",
-  department: "IT",
-  joinDate: "2022-03-15",
-  phone: "+1 (555) 123-4567",
-  location: "New York, NY",
-  bio: "Experienced IT professional with a passion for cybersecurity and cloud computing. Always eager to learn and implement new technologies.",
-  skills: ["Python", "React", "AWS", "Docker", "Kubernetes"],
-  projects: [
-    { name: "Cloud Migration", status: "Completed" },
-    { name: "Security Audit", status: "In Progress" },
-    { name: "DevOps Pipeline", status: "Planning" }
+  name: "Karry Woodson",
+  email: "karry@example.com",
+  role: "Professional Seller",
+  avatarUrl: "https://i.pravatar.cc/150?img=5",
+  location: "New York, USA",
+  joinDate: "2020-01-15",
+  phone: "+1 (555) 987-6543",
+  bio: "Passionate about finding unique items and connecting buyers with sellers. Let's make every transaction a story worth telling!",
+  items: 899,
+  followers: "16k",
+  favoriteTags: [
+    "vintage",
+    "electronics",
+    "handmade",
+    "collectibles",
+    "fashion",
+    "home",
+    "garden",
+    "sports"
+  ],
+  featuredListings: [
+    { name: "Rare Finds", image: "https://picsum.photos/seed/rare/300/200" },
+    { name: "Tech Deals", image: "https://picsum.photos/seed/tech/300/200" },
+    { name: "Vintage", image: "https://picsum.photos/seed/vintage/300/200" },
+    { name: "Local Pickup", image: "https://picsum.photos/seed/local/300/200" },
+    { name: "Best Sellers", image: "https://picsum.photos/seed/best/300/200" }
+  ],
+  itemFeed: [
+    {
+      name: "Antique Clock",
+      image: "https://picsum.photos/seed/clock/300/300",
+      price: "$250"
+    },
+    {
+      name: "Vintage Camera",
+      image: "https://picsum.photos/seed/camera/300/300",
+      price: "$180"
+    },
+    {
+      name: "Retro Console",
+      image: "https://picsum.photos/seed/console/300/300",
+      price: "$120"
+    },
+    {
+      name: "Leather Jacket",
+      image: "https://picsum.photos/seed/jacket/300/300",
+      price: "$90"
+    },
+    {
+      name: "Vinyl Records",
+      image: "https://picsum.photos/seed/vinyl/300/300",
+      price: "$45"
+    },
+    {
+      name: "Handmade Pottery",
+      image: "https://picsum.photos/seed/pottery/300/300",
+      price: "$75"
+    }
   ]
 };
 
-export default function UserProfilePage() {
+export default function MarketplaceProfilePage() {
   return (
     <ContentLayout title={`Profile: ${user.name}`}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1">
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center">
-              <Avatar className="h-32 w-32 mb-4">
-                <AvatarImage src={user.avatarUrl} alt={user.name} />
-                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <h2 className="text-2xl font-bold mb-2">{user.name}</h2>
-              <p className="text-muted-foreground mb-4">{user.email}</p>
-              <div className="flex space-x-2 mb-4">
-                <Badge>{user.role}</Badge>
-                <Badge variant="outline">{user.department}</Badge>
+      <div className="container flex flex-col lg:flex-row gap-6">
+        <div className="w-full lg:w-1/3 xl:w-1/4">
+          <Card className="bg-muted border-none shadow-none h-full">
+            <CardContent className="p-4 flex flex-col h-full">
+              <div className="flex flex-col items-center">
+                <Avatar className="h-24 w-24 mb-4">
+                  <AvatarImage src={user.avatarUrl} alt={user.name} />
+                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <h2 className="text-xl font-bold mb-2">{user.name}</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {user.email}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2 mb-4">
+                  <Badge>{user.role}</Badge>
+                  <Badge variant="outline">{user.items} items</Badge>
+                  <Badge variant="outline">{user.followers} followers</Badge>
+                </div>
+                <div className="w-full space-y-2">
+                  <Button className="w-full">Follow</Button>
+                  <Button className="w-full" variant="outline">
+                    Message
+                  </Button>
+                </div>
               </div>
-              <Button className="w-full">Edit Profile</Button>
-            </div>
-            <div className="mt-6 space-y-4">
-              <div className="flex items-center">
-                <CalendarIcon className="h-5 w-5 mr-2 text-muted-foreground" />
-                <span>Joined {user.joinDate}</span>
+              <div className="mt-6 space-y-4 text-sm">
+                <div className="flex items-center">
+                  <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <span>Joined {user.joinDate}</span>
+                </div>
+                <div className="flex items-center">
+                  <PhoneIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <span>{user.phone}</span>
+                </div>
+                <div className="flex items-center">
+                  <MapPinIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <span>{user.location}</span>
+                </div>
               </div>
-              <div className="flex items-center">
-                <PhoneIcon className="h-5 w-5 mr-2 text-muted-foreground" />
-                <span>{user.phone}</span>
-              </div>
-              <div className="flex items-center">
-                <MapPinIcon className="h-5 w-5 mr-2 text-muted-foreground" />
-                <span>{user.location}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="md:col-span-2">
-          <CardContent className="p-6">
-            <Tabs defaultValue="overview">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="projects">Projects</TabsTrigger>
-                <TabsTrigger value="activity">Activity</TabsTrigger>
-              </TabsList>
-              <TabsContent value="overview" className="mt-6">
-                <h3 className="text-lg font-semibold mb-2">Bio</h3>
-                <p className="text-muted-foreground mb-4">{user.bio}</p>
-                <h3 className="text-lg font-semibold mb-2">Skills</h3>
-                <div className="flex flex-wrap gap-2">
-                  {user.skills.map((skill, index) => (
-                    <Badge key={index} variant="secondary">
-                      {skill}
+              {/* About section moved here */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2">About</h3>
+                <p className="text-sm text-muted-foreground mb-4">{user.bio}</p>
+                <h4 className="font-semibold mb-2">Seller Stats</h4>
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-background p-2 rounded-lg flex items-center">
+                    <ShoppingBagIcon className="h-6 w-6 mr-2 text-primary" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">
+                        Items Sold
+                      </p>
+                      <p className="text-sm font-bold">1,234</p>
+                    </div>
+                  </div>
+                  <div className="bg-background p-2 rounded-lg flex items-center">
+                    <Star
+                      className="text-yellow-400 mr-2"
+                      fill={"currentColor"}
+                    />
+                    <div>
+                      <p className="text-xs text-muted-foreground">
+                        Avg Rating
+                      </p>
+                      <p className="text-sm font-bold">4.8/5</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h3 className="font-semibold mb-2 text-sm">Favorite Tags</h3>
+                <div className="flex flex-wrap gap-1">
+                  {user.favoriteTags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="bg-background text-xs"
+                    >
+                      {tag}
                     </Badge>
                   ))}
                 </div>
-              </TabsContent>
-              <TabsContent value="projects" className="mt-6">
-                <h3 className="text-lg font-semibold mb-4">Projects</h3>
-                <div className="space-y-4">
-                  {user.projects.map((project, index) => (
-                    <Card key={index}>
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center">
-                          <h4 className="font-medium">{project.name}</h4>
-                          <Badge
-                            variant={
-                              project.status === "Completed"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {project.status}
-                          </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="flex-1">
+          <div className="bg-background h-full">
+            <div className="p-4">
+              <div className="mb-4">
+                <Input
+                  type="search"
+                  placeholder="Search items..."
+                  className="w-full"
+                />
+              </div>
+              <Tabs defaultValue="listings" className="h-full">
+                <TabsList className="w-full">
+                  <TabsTrigger value="listings" className="flex-1">
+                    Listings
+                  </TabsTrigger>
+                  <TabsTrigger value="reviews" className="flex-1">
+                    Reviews
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="listings" className="mt-4">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Featured Listings
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+                    {user.featuredListings.map((listing, index) => (
+                      <div
+                        key={index}
+                        className="border rounded-lg overflow-hidden"
+                      >
+                        <img
+                          src={listing.image}
+                          alt={listing.name}
+                          className="w-full h-32 object-cover"
+                        />
+                        <div className="p-2">
+                          <p className="text-sm font-medium">{listing.name}</p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="activity" className="mt-6">
-                <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-                <p className="text-muted-foreground">
-                  Activity feed coming soon...
-                </p>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                      </div>
+                    ))}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-4">Item Feed</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {user.itemFeed.map((item, index) => (
+                      <div
+                        key={index}
+                        className="border rounded-lg overflow-hidden"
+                      >
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-40 object-cover"
+                        />
+                        <div className="p-2">
+                          <p className="font-medium text-sm">{item.name}</p>
+                          <p className="text-muted-foreground text-sm">
+                            {item.price}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="reviews" className="mt-4">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Customer Reviews
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Customer reviews coming soon...
+                  </p>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        </div>
       </div>
     </ContentLayout>
   );

@@ -61,22 +61,22 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
-        sidebar.isOpen === false ? "w-[60px]" : "w-52",
+        "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-all ease-in-out duration-300",
+        sidebar.isOpen ? "w-52" : "w-16",
         "hidden lg:block"
       )}
     >
       <SidebarToggle isOpen={sidebar.isOpen} setIsOpen={sidebar.setIsOpen} />
-      <div className="relative bg-muted h-full flex flex-col pl-2 pt-4 overflow-y-auto">
+      <div className="relative bg-muted h-full flex flex-col overflow-hidden pl-2 pr-1 pt-4">
         <Button
           className={cn(
-            "transition-transform ease-in-out duration-300 mb-1",
-            sidebar.isOpen === false ? "translate-x-1" : "translate-x-0"
+            "transition-all ease-in-out duration-300 mb-1",
+            sidebar.isOpen ? "px-4" : "px-2"
           )}
           variant="link"
           asChild
         >
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center">
             <LogoSection logo={logo} isOpen={sidebar.isOpen} />
           </Link>
         </Button>

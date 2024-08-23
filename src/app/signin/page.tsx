@@ -12,18 +12,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot
+} from "@/components/ui/input-otp";
+import { toast } from "@/components/ui/use-toast";
 
 const DynamicGoogleSignInButton = dynamic(
   () => import("@/components/google-auth-button"),
-  {
-    ssr: false
-  }
+  { ssr: false }
 );
 
 export default function AuthenticationPage() {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isOtpInvalid, setIsOtpInvalid] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -37,6 +52,29 @@ export default function AuthenticationPage() {
 
   const logoSrc = getAsset("/pexlle.png", "/pexllelight.png");
   const backgroundImage = getAsset("/login.jpeg", "/darklogin.jpg");
+
+  const handleLogin = () => {
+    setIsDialogOpen(true);
+    setOtp("");
+    setIsOtpInvalid(false);
+  };
+
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
+    if (value.length < 6) {
+      setIsOtpInvalid(false);
+    } else if (value === "111111") {
+      setIsDialogOpen(false);
+      router.push("/dashboard");
+    } else {
+      setIsOtpInvalid(true);
+      toast({
+        title: "Invalid OTP",
+        description: "Please enter the correct OTP.",
+        variant: "destructive"
+      });
+    }
+  };
 
   if (!mounted) {
     return null;
@@ -100,10 +138,7 @@ export default function AuthenticationPage() {
                   type="password"
                 />
               </div>
-              <Button
-                className="w-full"
-                onClick={() => router.push("/dashboard")}
-              >
+              <Button className="w-full" onClick={handleLogin}>
                 Login
               </Button>
             </div>
@@ -202,6 +237,39 @@ export default function AuthenticationPage() {
           </Button>
         </div>
       </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter OTP</DialogTitle>
+            <DialogDescription>
+              Please enter the 6-digit OTP sent to your device.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center py-4">
+            <InputOTP maxLength={6} value={otp} onChange={handleOtpChange}>
+              <InputOTPGroup>
+                {[0, 1, 2].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className={isOtpInvalid ? "border-red-500" : ""}
+                  />
+                ))}
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                {[3, 4, 5].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className={isOtpInvalid ? "border-red-500" : ""}
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
