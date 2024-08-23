@@ -175,7 +175,7 @@ export default function Component() {
 
   return (
     <ContentLayout title="Categories">
-      <div className="mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         {featuredAd && (
           <Card className="mb-12 overflow-hidden shadow-lg rounded-lg">
             <div className="relative h-60 sm:h-80">
