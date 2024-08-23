@@ -1,12 +1,6 @@
-import Link from "next/link";
-
-import PlaceholderContent from "@/components/demo/placeholder-content";
+"use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 
-export default function NewPostPage() {
-  return (
-    <ContentLayout title="New Post">
-      <PlaceholderContent />
-    </ContentLayout>
-  );
+export default function DarkModeCompatibleProductListing() {
+  return <ContentLayout title="New post" children={undefined}></ContentLayout>;
 }

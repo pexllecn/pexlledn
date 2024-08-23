@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -128,6 +128,8 @@ export default function Component() {
   const [sortBy, setSortBy] = useState("date");
   const [filteredAds, setFilteredAds] = useState(ads);
   const [featuredAd, setFeaturedAd] = useState(ads[0]);
+  const scrollPositionRef = useRef(0);
+
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 }
@@ -159,25 +161,24 @@ export default function Component() {
     return () => clearInterval(interval);
   }, []);
 
+  // Save scroll position when component unmounts or active category changes
+  useEffect(() => {
+    return () => {
+      scrollPositionRef.current = window.pageYOffset;
+    };
+  }, [activeCategory]);
+
+  // Restore scroll position when component mounts or filtered ads update
+  useLayoutEffect(() => {
+    window.scrollTo(0, scrollPositionRef.current);
+  }, [filteredAds]);
+
   return (
     <ContentLayout title="Categories">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.4 }}
-        variants={variants1}
-        className="w-full overflow-x-hidden"
-      >
-        <div className=" mx-auto px-4 py-8">
+      <div className="mx-auto px-4 py-8">
+        {featuredAd && (
           <Card className="mb-12 overflow-hidden shadow-lg rounded-lg">
-            <motion.div
-              className="relative h-60 sm:h-80"
-              key={featuredAd.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="relative h-60 sm:h-80">
               <img
                 src={featuredAd.image}
                 alt={featuredAd.title}
@@ -205,161 +206,147 @@ export default function Component() {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </Card>
+        )}
 
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-            <div className="relative w-full sm:w-auto">
-              <Input
-                placeholder="Search ads..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full sm:w-80 border-none bg-muted shadow-none focus:ring-2 focus:ring-primary"
-              />
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
-            <div className="flex gap-2 w-full sm:w-auto">
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full sm:w-[180px] border-none bg-muted shadow-none">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date">Date (Newest first)</SelectItem>
-                  <SelectItem value="price">Price (Highest first)</SelectItem>
-                </SelectContent>
-              </Select>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={isGridView ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setIsGridView(true)}
-                      className="border-gray-300 dark:border-gray-700"
-                    >
-                      <LayoutGridIcon className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Grid view</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={!isGridView ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setIsGridView(false)}
-                      className="border-gray-300 dark:border-gray-700 "
-                    >
-                      <ListIcon className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>List view</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div className="relative w-full sm:w-auto">
+            <Input
+              placeholder="Search ads..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full sm:w-80 border-none bg-muted shadow-none focus:ring-2 focus:ring-primary"
+            />
+            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
-
-          <div className="overflow-x-auto mb-4">
-            <div className="flex space-x-1 bg-background p-2 rounded-lg min-w-max">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-200 outline-none ${
-                    activeCategory === category
-                      ? "text-gray-900 text-secondary"
-                      : "text-gray-500 hover:text-foreground"
-                  }`}
-                  onClick={() => setActiveCategory(category)}
-                >
-                  {activeCategory === category && (
-                    <motion.div
-                      className="absolute inset-0 bg-primary rounded-full z-0"
-                      layoutId="activeBackground"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 30
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{category}</span>
-                </button>
-              ))}
-            </div>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full sm:w-[180px] border-none bg-muted shadow-none">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date">Date (Newest first)</SelectItem>
+                <SelectItem value="price">Price (Highest first)</SelectItem>
+              </SelectContent>
+            </Select>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={isGridView ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setIsGridView(true)}
+                    className="border-gray-300 dark:border-gray-700"
+                  >
+                    <LayoutGridIcon className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Grid view</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={!isGridView ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setIsGridView(false)}
+                    className="border-gray-300 dark:border-gray-700"
+                  >
+                    <ListIcon className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>List view</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
+        </div>
 
-          <div
-            className={`grid gap-4 sm:gap-8 ${
-              isGridView
-                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                : "grid-cols-1"
-            }`}
-          >
-            {filteredAds.map((ad) => (
-              <Card
-                key={ad.id}
-                className={`overflow-hidden transition-shadow duration-300 hover:shadow-xl rounded-lg flex flex-col ${
-                  isGridView ? "h-[400px]" : "h-[200px] flex-row"
+        <div className="overflow-x-auto mb-4">
+          <div className="flex space-x-1 bg-background p-2 rounded-lg min-w-max">
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`px-3 py-1.5 text-sm font-medium transition-all duration-200 outline-none rounded-full ${
+                  activeCategory === category
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
+                onClick={() => setActiveCategory(category)}
               >
-                <div
-                  className={`relative ${isGridView ? "h-48" : "w-1/3 h-full"}`}
-                >
-                  <img
-                    src={ad.image}
-                    alt={ad.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <Badge className="absolute top-2 left-2">{ad.category}</Badge>
-                  {ad.price && (
-                    <Badge
-                      variant="secondary"
-                      className="absolute top-2 right-2"
-                    >
-                      ${ad.price}
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex flex-col flex-grow">
-                  <CardContent className="p-4 flex-grow">
-                    <h2 className="text-lg font-semibold text-foreground mb-2 line-clamp-1">
-                      {ad.title}
-                    </h2>
-                    <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
-                      {ad.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
-                      <div className="flex items-center gap-1">
-                        <MapPinIcon className="w-3 h-3" />
-                        <span>{ad.location}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <ClockIcon className="w-3 h-3" />
-                        <span>{new Date(ad.date).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <UserIcon className="w-3 h-3" />
-                        <span>{ad.seller}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="p-4 bg-muted/50 mt-auto">
-                    <Button className="w-full" variant="secondary">
-                      View Details
-                    </Button>
-                  </CardFooter>
-                </div>
-              </Card>
+                {category}
+              </button>
             ))}
           </div>
         </div>
-      </motion.div>
+
+        <div
+          className={`grid gap-4 sm:gap-8 ${
+            isGridView
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              : "grid-cols-1"
+          }`}
+        >
+          {filteredAds.map((ad) => (
+            <Card
+              key={ad.id}
+              className={`overflow-hidden transition-shadow duration-300 hover:shadow-xl hover:border-ring rounded-lg flex flex-col ${
+                isGridView ? "h-[400px]" : "h-[200px] flex-row"
+              }`}
+            >
+              <div
+                className={`relative ${isGridView ? "h-48" : "w-1/3 h-full"}`}
+              >
+                <img
+                  src={ad.image}
+                  alt={ad.title}
+                  className="w-full h-full object-cover"
+                />
+                <Badge className="absolute top-2 left-2">{ad.category}</Badge>
+                {ad.price && (
+                  <Badge variant="secondary" className="absolute top-2 right-2">
+                    ${ad.price}
+                  </Badge>
+                )}
+              </div>
+              <div className="flex flex-col flex-grow">
+                <CardContent className="p-4 flex-grow">
+                  <h2 className="text-lg font-semibold text-foreground mb-2 line-clamp-1">
+                    {ad.title}
+                  </h2>
+                  <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+                    {ad.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
+                    <div className="flex items-center gap-1">
+                      <MapPinIcon className="w-3 h-3" />
+                      <span>{ad.location}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <ClockIcon className="w-3 h-3" />
+                      <span>{new Date(ad.date).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <UserIcon className="w-3 h-3" />
+                      <span>{ad.seller}</span>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="p-4 bg-muted/50 mt-auto">
+                  <Button className="w-full" variant="secondary">
+                    View Details
+                  </Button>
+                </CardFooter>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
     </ContentLayout>
   );
 }
