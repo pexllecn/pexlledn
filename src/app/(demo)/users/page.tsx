@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -293,6 +293,10 @@ export default function UsersPage() {
   const [sortBy, setSortBy] = useState<keyof User>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [filterRole, setFilterRole] = useState<string>("All");
+  const variants1 = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 }
+  };
 
   const filteredAndSortedUsers = useMemo(() => {
     return users
@@ -328,232 +332,241 @@ export default function UsersPage() {
   };
   return (
     <ContentLayout title="Users">
-      <Card className="bg-muted shadow-none border-none mb-8">
-        <CardHeader>
-          <CardTitle>User Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-y-0 sm:space-x-4">
-            <div className="flex space-x-2">
-              <div className="relative">
-                <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search users..."
-                  className="pl-8 w-[300px]  bg-background "
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size={"sm"}>
-                    <FilterIcon className="mr-2 h-4 w-4" />
-                    Filter
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setFilterRole("All")}>
-                    All Roles
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilterRole("Admin")}>
-                    Admin
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilterRole("User")}>
-                    User
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilterRole("Editor")}>
-                    Editor
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
-                <PlusIcon className="h-4 w-4 mr-2" />
-                Add User
-              </Button>
-              <Button
-                variant={view === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setView("grid")}
-              >
-                <GridIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={view === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setView("list")}
-              >
-                <ListIcon className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {selectedUsers.length > 0 && (
-        <div className="mb-4 p-4 bg-muted rounded-lg flex justify-between items-center">
-          <span>{selectedUsers.length} users selected</span>
-          <div className="space-x-2">
-            <Button size="sm" variant="outline">
-              <MailIcon className="mr-2 h-4 w-4" />
-              Email Selected
-            </Button>
-            <Button size="sm" variant="destructive">
-              <TrashIcon className="mr-2 h-4 w-4" />
-              Delete Selected
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {view === "grid" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredAndSortedUsers.map((user) => (
-            <UserCard
-              key={user.id}
-              user={user}
-              onSelect={toggleUserSelection}
-              isSelected={selectedUsers.includes(user.id)}
-            />
-          ))}
-        </div>
-      ) : (
-        <Card>
-          <Table>
-            <TableHeader className="bg-muted">
-              <TableRow>
-                <TableHead className="w-[50px] rounded-tl-lg">
-                  <Checkbox
-                    checked={
-                      selectedUsers.length === filteredAndSortedUsers.length
-                    }
-                    onCheckedChange={(checked) => {
-                      setSelectedUsers(
-                        checked ? filteredAndSortedUsers.map((u) => u.id) : []
-                      );
-                    }}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.4 }}
+        variants={variants1}
+      >
+        <Card className="bg-muted shadow-none border-none mb-8">
+          <CardHeader>
+            <CardTitle>User Management</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-y-0 sm:space-x-4">
+              <div className="flex space-x-2">
+                <div className="relative">
+                  <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search users..."
+                    className="pl-8 w-[300px]  bg-background "
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                </TableHead>
-                <TableHead
-                  className="cursor-pointer"
-                  onClick={() => toggleSort("name")}
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size={"sm"}>
+                      <FilterIcon className="mr-2 h-4 w-4" />
+                      Filter
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setFilterRole("All")}>
+                      All Roles
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterRole("Admin")}>
+                      Admin
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterRole("User")}>
+                      User
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterRole("Editor")}>
+                      Editor
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm">
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  Add User
+                </Button>
+                <Button
+                  variant={view === "grid" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setView("grid")}
                 >
-                  Name{" "}
-                  {sortBy === "name" &&
-                    (sortOrder === "asc" ? (
-                      <SortAscIcon className="inline h-4 w-4" />
-                    ) : (
-                      <SortDescIcon className="inline h-4 w-4" />
-                    ))}
-                </TableHead>
-                <TableHead
-                  className="cursor-pointer"
-                  onClick={() => toggleSort("email")}
+                  <GridIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={view === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setView("list")}
                 >
-                  Email{" "}
-                  {sortBy === "email" &&
-                    (sortOrder === "asc" ? (
-                      <SortAscIcon className="inline h-4 w-4" />
-                    ) : (
-                      <SortDescIcon className="inline h-4 w-4" />
-                    ))}
-                </TableHead>
-                <TableHead
-                  className="cursor-pointer"
-                  onClick={() => toggleSort("role")}
-                >
-                  Role{" "}
-                  {sortBy === "role" &&
-                    (sortOrder === "asc" ? (
-                      <SortAscIcon className="inline h-4 w-4" />
-                    ) : (
-                      <SortDescIcon className="inline h-4 w-4" />
-                    ))}
-                </TableHead>
-                <TableHead
-                  className="cursor-pointer"
-                  onClick={() => toggleSort("department")}
-                >
-                  Department{" "}
-                  {sortBy === "department" &&
-                    (sortOrder === "asc" ? (
-                      <SortAscIcon className="inline h-4 w-4" />
-                    ) : (
-                      <SortDescIcon className="inline h-4 w-4" />
-                    ))}
-                </TableHead>
-                <TableHead
-                  className="cursor-pointer"
-                  onClick={() => toggleSort("status")}
-                >
-                  Status{" "}
-                  {sortBy === "status" &&
-                    (sortOrder === "asc" ? (
-                      <SortAscIcon className="inline h-4 w-4" />
-                    ) : (
-                      <SortDescIcon className="inline h-4 w-4" />
-                    ))}
-                </TableHead>
-                <TableHead className="rounded-tr-lg">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAndSortedUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedUsers.includes(user.id)}
-                      onCheckedChange={() => toggleUserSelection(user.id)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.avatarUrl} alt={user.name} />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <span>{user.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{user.role}</Badge>
-                  </TableCell>
-                  <TableCell>{user.department}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={user.status === "Active" ? "success" : "decline"}
-                    >
-                      {user.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontalIcon className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem>
-                          <UserPlusIcon className="mr-2 h-4 w-4" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <MailIcon className="mr-2 h-4 w-4" /> Email
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          <TrashIcon className="mr-2 h-4 w-4" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                  <ListIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
         </Card>
-      )}
+
+        {selectedUsers.length > 0 && (
+          <div className="mb-4 p-4 bg-muted rounded-lg flex justify-between items-center">
+            <span>{selectedUsers.length} users selected</span>
+            <div className="space-x-2">
+              <Button size="sm" variant="outline">
+                <MailIcon className="mr-2 h-4 w-4" />
+                Email Selected
+              </Button>
+              <Button size="sm" variant="destructive">
+                <TrashIcon className="mr-2 h-4 w-4" />
+                Delete Selected
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {view === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredAndSortedUsers.map((user) => (
+              <UserCard
+                key={user.id}
+                user={user}
+                onSelect={toggleUserSelection}
+                isSelected={selectedUsers.includes(user.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <Table>
+              <TableHeader className="bg-muted">
+                <TableRow>
+                  <TableHead className="w-[50px] rounded-tl-lg">
+                    <Checkbox
+                      checked={
+                        selectedUsers.length === filteredAndSortedUsers.length
+                      }
+                      onCheckedChange={(checked) => {
+                        setSelectedUsers(
+                          checked ? filteredAndSortedUsers.map((u) => u.id) : []
+                        );
+                      }}
+                    />
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer"
+                    onClick={() => toggleSort("name")}
+                  >
+                    Name{" "}
+                    {sortBy === "name" &&
+                      (sortOrder === "asc" ? (
+                        <SortAscIcon className="inline h-4 w-4" />
+                      ) : (
+                        <SortDescIcon className="inline h-4 w-4" />
+                      ))}
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer"
+                    onClick={() => toggleSort("email")}
+                  >
+                    Email{" "}
+                    {sortBy === "email" &&
+                      (sortOrder === "asc" ? (
+                        <SortAscIcon className="inline h-4 w-4" />
+                      ) : (
+                        <SortDescIcon className="inline h-4 w-4" />
+                      ))}
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer"
+                    onClick={() => toggleSort("role")}
+                  >
+                    Role{" "}
+                    {sortBy === "role" &&
+                      (sortOrder === "asc" ? (
+                        <SortAscIcon className="inline h-4 w-4" />
+                      ) : (
+                        <SortDescIcon className="inline h-4 w-4" />
+                      ))}
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer"
+                    onClick={() => toggleSort("department")}
+                  >
+                    Department{" "}
+                    {sortBy === "department" &&
+                      (sortOrder === "asc" ? (
+                        <SortAscIcon className="inline h-4 w-4" />
+                      ) : (
+                        <SortDescIcon className="inline h-4 w-4" />
+                      ))}
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer"
+                    onClick={() => toggleSort("status")}
+                  >
+                    Status{" "}
+                    {sortBy === "status" &&
+                      (sortOrder === "asc" ? (
+                        <SortAscIcon className="inline h-4 w-4" />
+                      ) : (
+                        <SortDescIcon className="inline h-4 w-4" />
+                      ))}
+                  </TableHead>
+                  <TableHead className="rounded-tr-lg">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredAndSortedUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedUsers.includes(user.id)}
+                        onCheckedChange={() => toggleUserSelection(user.id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.avatarUrl} alt={user.name} />
+                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span>{user.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{user.role}</Badge>
+                    </TableCell>
+                    <TableCell>{user.department}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          user.status === "Active" ? "success" : "decline"
+                        }
+                      >
+                        {user.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontalIcon className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>
+                            <UserPlusIcon className="mr-2 h-4 w-4" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <MailIcon className="mr-2 h-4 w-4" /> Email
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            <TrashIcon className="mr-2 h-4 w-4" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+      </motion.div>
     </ContentLayout>
   );
 }
