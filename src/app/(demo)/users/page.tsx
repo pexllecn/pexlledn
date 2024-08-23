@@ -37,7 +37,18 @@ import {
   MailIcon
 } from "lucide-react";
 
-// Expanded sample user data with 10 demo users
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  avatarUrl: string;
+  department: string;
+  joinDate: string;
+  status: string;
+  lastActive: string;
+};
+
 const users = [
   {
     id: 1,
@@ -151,7 +162,15 @@ const users = [
   }
 ];
 
-const UserCard = ({ user, onSelect, isSelected }) => (
+const UserCard = ({
+  user,
+  onSelect,
+  isSelected
+}: {
+  user: User;
+  onSelect: (id: number) => void;
+  isSelected: boolean;
+}) => (
   <Card
     className={`hover:border-ring shadow-none ${
       isSelected ? "border-primary" : ""
@@ -214,7 +233,15 @@ const UserCard = ({ user, onSelect, isSelected }) => (
   </Card>
 );
 
-const UserListItem = ({ user, onSelect, isSelected }) => (
+const UserListItem = ({
+  user,
+  onSelect,
+  isSelected
+}: {
+  user: User;
+  onSelect: (id: number) => void;
+  isSelected: boolean;
+}) => (
   <div
     className={`flex items-center space-x-4 p-4 hover:bg-muted/50 rounded-lg transition-colors ${
       isSelected ? "bg-muted" : ""
@@ -262,10 +289,10 @@ const UserListItem = ({ user, onSelect, isSelected }) => (
 export default function UsersPage() {
   const [view, setView] = useState("grid");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [sortBy, setSortBy] = useState("name");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [filterRole, setFilterRole] = useState("All");
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [sortBy, setSortBy] = useState<keyof User>("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [filterRole, setFilterRole] = useState<string>("All");
 
   const filteredAndSortedUsers = useMemo(() => {
     return users
@@ -283,7 +310,7 @@ export default function UsersPage() {
       });
   }, [searchTerm, sortBy, sortOrder, filterRole]);
 
-  const toggleUserSelection = (userId) => {
+  const toggleUserSelection = (userId: number) => {
     setSelectedUsers((prev) =>
       prev.includes(userId)
         ? prev.filter((id) => id !== userId)
@@ -291,7 +318,7 @@ export default function UsersPage() {
     );
   };
 
-  const toggleSort = (field) => {
+  const toggleSort = (field: keyof User) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -299,7 +326,6 @@ export default function UsersPage() {
       setSortOrder("asc");
     }
   };
-
   return (
     <ContentLayout title="Users">
       <Card className="bg-muted shadow-none border-none mb-8">
