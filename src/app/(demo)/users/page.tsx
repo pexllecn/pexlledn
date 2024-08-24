@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
@@ -24,6 +25,13 @@ import {
   TableRow
 } from "@/components/ui/table";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import {
   GridIcon,
   ListIcon,
   SearchIcon,
@@ -34,7 +42,11 @@ import {
   MoreHorizontalIcon,
   TrashIcon,
   UserPlusIcon,
-  MailIcon
+  MailIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon
 } from "lucide-react";
 
 type User = {
@@ -293,6 +305,9 @@ export default function UsersPage() {
   const [sortBy, setSortBy] = useState<keyof User>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [filterRole, setFilterRole] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 }
@@ -314,6 +329,13 @@ export default function UsersPage() {
       });
   }, [searchTerm, sortBy, sortOrder, filterRole]);
 
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    return filteredAndSortedUsers.slice(startIndex, startIndex + rowsPerPage);
+  }, [filteredAndSortedUsers, currentPage, rowsPerPage]);
+
+  const totalPages = Math.ceil(filteredAndSortedUsers.length / rowsPerPage);
+
   const toggleUserSelection = (userId: number) => {
     setSelectedUsers((prev) =>
       prev.includes(userId)
@@ -330,6 +352,7 @@ export default function UsersPage() {
       setSortOrder("asc");
     }
   };
+
   return (
     <ContentLayout title="Users">
       <motion.div
@@ -401,25 +424,9 @@ export default function UsersPage() {
           </CardContent>
         </Card>
 
-        {selectedUsers.length > 0 && (
-          <div className="mb-4 p-4 bg-muted rounded-lg flex justify-between items-center">
-            <span>{selectedUsers.length} users selected</span>
-            <div className="space-x-2">
-              <Button size="sm" variant="outline">
-                <MailIcon className="mr-2 h-4 w-4" />
-                Email Selected
-              </Button>
-              <Button size="sm" variant="destructive">
-                <TrashIcon className="mr-2 h-4 w-4" />
-                Delete Selected
-              </Button>
-            </div>
-          </div>
-        )}
-
         {view === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredAndSortedUsers.map((user) => (
+            {paginatedUsers.map((user) => (
               <UserCard
                 key={user.id}
                 user={user}
@@ -429,10 +436,10 @@ export default function UsersPage() {
             ))}
           </div>
         ) : (
-          <Card>
+          <Card className="border-none">
             <Table>
-              <TableHeader className="bg-muted">
-                <TableRow>
+              <TableHeader className="bg-muted border-none">
+                <TableRow className="border-none">
                   <TableHead className="w-[50px] rounded-tl-lg">
                     <Checkbox
                       checked={
@@ -510,7 +517,7 @@ export default function UsersPage() {
               </TableHeader>
               <TableBody>
                 {filteredAndSortedUsers.map((user) => (
-                  <TableRow key={user.id}>
+                  <TableRow key={user.id} className="border-none">
                     <TableCell>
                       <Checkbox
                         checked={selectedUsers.includes(user.id)}
@@ -566,6 +573,79 @@ export default function UsersPage() {
             </Table>
           </Card>
         )}
+
+        <div className="flex items-center justify-between space-x-2 py-4">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {selectedUsers.length} of {filteredAndSortedUsers.length} row(s)
+            selected.
+          </div>
+          <div className="flex items-center space-x-6 lg:space-x-8">
+            <div className="flex items-center space-x-2">
+              <p className="text-sm font-medium">Rows per page</p>
+              <Select
+                value={`${rowsPerPage}`}
+                onValueChange={(value) => {
+                  setRowsPerPage(Number(value));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="h-8 w-[70px]">
+                  <SelectValue placeholder={rowsPerPage} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+              Page {currentPage} of {totalPages}
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
+                <span className="sr-only">Go to first page</span>
+                <ChevronsLeftIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <ChevronLeftIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                <span className="sr-only">Go to next page</span>
+                <ChevronRightIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+              >
+                <span className="sr-only">Go to last page</span>
+                <ChevronsRightIcon className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </ContentLayout>
   );

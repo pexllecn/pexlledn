@@ -49,7 +49,7 @@ export function Navbar({ title }: NavbarProps) {
         backdropFilter: "blur(8px)"
       }}
     >
-      <div className="mx-4 sm:mx-8 flex h-14 items-center">
+      <div className="mx-4 sm:mx-8 flex h-16 items-center">
         <div className="flex items-center space-x-4 lg:space-x-0">
           <SheetMenu />
           <div className="hidden md:block">
@@ -75,13 +75,13 @@ export function Navbar({ title }: NavbarProps) {
             </Breadcrumb>
           </div>
         </div>
-        <div className="flex flex-1 items-center space-x-2 justify-end">
-          <form onSubmit={handleSearch} className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="flex-1 flex justify-center items-center px-4">
+          <form onSubmit={handleSearch} className="relative w-full max-w-2xl">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search..."
-              className="pl-8 bg-muted border-none shadow-none dark:shadow-none w-[200px] h-9"
+              className="pl-8 bg-muted border-none shadow-none dark:shadow-none w-[600px] h-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -89,6 +89,8 @@ export function Navbar({ title }: NavbarProps) {
               Search
             </Button>
           </form>
+        </div>
+        <div className="flex items-center space-x-2">
           <ModeToggle />
           <UserNav />
         </div>
