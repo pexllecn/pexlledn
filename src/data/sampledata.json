@@ -1,0 +1,79 @@
+{
+  "categories": [
+    "All",
+    "For Sale",
+    "Housing",
+    "Jobs",
+    "Services",
+    "Community",
+    "Events"
+  ],
+  "ads": [
+    {
+      "id": 1,
+      "title": "Vintage Record Player",
+      "price": 150,
+      "category": "For Sale",
+      "image": "https://plus.unsplash.com/premium_photo-1682125853703-896a05629709?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "location": "Downtown",
+      "date": "2023-06-15",
+      "seller": "VinylEnthusiast",
+      "description": "Beautiful vintage record player from the 60s. Perfect working condition."
+    },
+    {
+      "id": 2,
+      "title": "Cozy Studio Apartment",
+      "price": 1200,
+      "category": "Housing",
+      "image": "https://plus.unsplash.com/premium_photo-1664304552814-51e8a869e556?q=80&w=3473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "location": "Westside",
+      "date": "2023-06-14",
+      "seller": "CityLiving",
+      "description": "Modern studio apartment with great amenities. Available for immediate move-in."
+    },
+    {
+      "id": 3,
+      "title": "Web Developer Needed",
+      "price": null,
+      "category": "Jobs",
+      "image": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "location": "Remote",
+      "date": "2023-06-13",
+      "seller": "TechStartup",
+      "description": "Looking for an experienced web developer. Full-time position with competitive salary."
+    },
+    {
+      "id": 4,
+      "title": "Professional Photography",
+      "price": 200,
+      "category": "Services",
+      "image": "https://images.unsplash.com/photo-1711289469553-d14537c6b636?q=80&w=3448&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "location": "Citywide",
+      "date": "2023-06-12",
+      "seller": "SnapMaster",
+      "description": "Offering professional photography services for events, portraits, and more."
+    },
+    {
+      "id": 5,
+      "title": "Community Gardening Event",
+      "price": null,
+      "category": "Community",
+      "image": "https://plus.unsplash.com/premium_photo-1663100129347-d7bd2de42c32?q=80&w=3544&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "location": "Central Park",
+      "date": "2023-06-20",
+      "seller": "GreenThumb",
+      "description": "Join us for a community gardening event. All ages welcome!"
+    },
+    {
+      "id": 6,
+      "title": "Vintage Guitar",
+      "price": 15000,
+      "category": "For Sale",
+      "image": "https://images.unsplash.com/photo-1565829577241-474d81bf757c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "location": "Eastside",
+      "date": "2023-06-11",
+      "seller": "MusicLover",
+      "description": "1970s Fender Stratocaster in excellent condition. A true collector's item."
+    }
+  ]
+}

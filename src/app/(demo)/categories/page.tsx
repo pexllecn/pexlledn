@@ -1,12 +1,6 @@
 "use client";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
-
 import {
   Select,
   SelectContent,
@@ -14,6 +8,9 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -21,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip";
+import { Card } from "@/components/ui/card";
 import {
   LayoutGridIcon,
   ListIcon,
@@ -28,115 +26,26 @@ import {
   ClockIcon,
   UserIcon,
   DollarSignIcon,
-  TagIcon,
   SearchIcon
 } from "lucide-react";
+import AdCard from "./adcard";
+import sampleData from "@/data/sampleData.json";
 
-const categories = [
-  "All",
-  "For Sale",
-  "Housing",
-  "Jobs",
-  "Services",
-  "Community",
-  "Events"
-];
+const variants1 = {
+  hidden: { filter: "blur(10px)", opacity: 0 },
+  visible: { filter: "blur(0px)", opacity: 1 }
+};
 
-const ads = [
-  {
-    id: 1,
-    title: "Vintage Record Player",
-    price: 150,
-    category: "For Sale",
-    image:
-      "https://plus.unsplash.com/premium_photo-1682125853703-896a05629709?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Downtown",
-    date: "2023-06-15",
-    seller: "VinylEnthusiast",
-    description:
-      "Beautiful vintage record player from the 60s. Perfect working condition."
-  },
-  {
-    id: 2,
-    title: "Cozy Studio Apartment",
-    price: 1200,
-    category: "Housing",
-    image:
-      "https://plus.unsplash.com/premium_photo-1664304552814-51e8a869e556?q=80&w=3473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Westside",
-    date: "2023-06-14",
-    seller: "CityLiving",
-    description:
-      "Modern studio apartment with great amenities. Available for immediate move-in."
-  },
-  {
-    id: 3,
-    title: "Web Developer Needed",
-    price: null,
-    category: "Jobs",
-    image:
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Remote",
-    date: "2023-06-13",
-    seller: "TechStartup",
-    description:
-      "Looking for an experienced web developer. Full-time position with competitive salary."
-  },
-  {
-    id: 4,
-    title: "Professional Photography",
-    price: 200,
-    category: "Services",
-    image:
-      "https://images.unsplash.com/photo-1711289469553-d14537c6b636?q=80&w=3448&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Citywide",
-    date: "2023-06-12",
-    seller: "SnapMaster",
-    description:
-      "Offering professional photography services for events, portraits, and more."
-  },
-  {
-    id: 5,
-    title: "Community Gardening Event",
-    price: null,
-    category: "Community",
-    image:
-      "https://plus.unsplash.com/premium_photo-1663100129347-d7bd2de42c32?q=80&w=3544&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Central Park",
-    date: "2023-06-20",
-    seller: "GreenThumb",
-    description: "Join us for a community gardening event. All ages welcome!"
-  },
-  {
-    id: 6,
-    title: "Vintage Guitar",
-    price: 15000,
-    category: "For Sale",
-    image:
-      "https://images.unsplash.com/photo-1565829577241-474d81bf757c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Eastside",
-    date: "2023-06-11",
-    seller: "MusicLover",
-    description:
-      "1970s Fender Stratocaster in excellent condition. A true collector's item."
-  }
-];
 export default function Component() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isGridView, setIsGridView] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("date");
-  const [filteredAds, setFilteredAds] = useState(ads);
-  const [featuredAd, setFeaturedAd] = useState(ads[0]);
-  const scrollPositionRef = useRef(0);
+  const [filteredAds, setFilteredAds] = useState(sampleData.ads);
+  const [featuredAd, setFeaturedAd] = useState(sampleData.ads[0]);
 
-  const variants1 = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 }
-  };
-
-  useEffect(() => {
-    const filtered = ads
+  const filterAds = useCallback(() => {
+    const filtered = sampleData.ads
       .filter(
         (ad) => activeCategory === "All" || ad.category === activeCategory
       )
@@ -155,23 +64,86 @@ export default function Component() {
   }, [activeCategory, searchTerm, sortBy]);
 
   useEffect(() => {
+    filterAds();
+  }, [filterAds]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setFeaturedAd(ads[Math.floor(Math.random() * ads.length)]);
-    }, 10000); // Change featured ad every 10 seconds
+      setFeaturedAd(
+        sampleData.ads[Math.floor(Math.random() * sampleData.ads.length)]
+      );
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
-  // Save scroll position when component unmounts or active category changes
-  useEffect(() => {
-    return () => {
-      scrollPositionRef.current = window.pageYOffset;
-    };
-  }, [activeCategory]);
+  const FeaturedAdCard = useMemo(
+    () => (
+      <Card className="mb-6 sm:mb-12 overflow-hidden shadow-lg rounded-lg">
+        <div className="relative h-48 sm:h-60 md:h-80">
+          <img
+            src={featuredAd.image}
+            alt={featuredAd.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white">
+            <Badge className="mb-1 sm:mb-2">{featuredAd.category}</Badge>
+            <h2 className="text-lg sm:text-xl md:text-3xl font-bold mb-1 sm:mb-2">
+              Featured: {featuredAd.title}
+            </h2>
+            <p className="mb-2 sm:mb-4 text-xs sm:text-sm md:text-base line-clamp-2">
+              {featuredAd.description}
+            </p>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+              <div className="flex items-center gap-1">
+                <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span>{featuredAd.location}</span>
+              </div>
+              {featuredAd.price && (
+                <div className="flex items-center gap-1">
+                  <DollarSignIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>${featuredAd.price}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </Card>
+    ),
+    [featuredAd]
+  );
 
-  // Restore scroll position when component mounts or filtered ads update
-  useLayoutEffect(() => {
-    window.scrollTo(0, scrollPositionRef.current);
-  }, [filteredAds]);
+  const CategoryButtons = useMemo(
+    () => (
+      <div className="w-full sm:w-auto flex space-x-1 bg-background rounded-lg overflow-x-auto px-2 py-1">
+        {sampleData.categories.map((category) => (
+          <button
+            key={category}
+            className={`relative px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium outline-none whitespace-nowrap ${
+              activeCategory === category
+                ? "text-secondary"
+                : "text-gray-500 hover:text-foreground"
+            }`}
+            onClick={() => setActiveCategory(category)}
+          >
+            {activeCategory === category && (
+              <motion.div
+                className="absolute inset-0 bg-foreground rounded-full z-0"
+                layoutId="activeBackground"
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 30
+                }}
+              />
+            )}
+            <span className="relative z-10">{category}</span>
+          </button>
+        ))}
+      </div>
+    ),
+    [activeCategory]
+  );
 
   return (
     <ContentLayout title="Categories">
@@ -182,39 +154,7 @@ export default function Component() {
         variants={variants1}
       >
         <div className="container mx-auto px-4 py-4 sm:py-8">
-          {featuredAd && (
-            <Card className="mb-6 sm:mb-12 overflow-hidden shadow-lg rounded-lg">
-              <div className="relative h-48 sm:h-60 md:h-80">
-                <img
-                  src={featuredAd.image}
-                  alt={featuredAd.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white">
-                  <Badge className="mb-1 sm:mb-2">{featuredAd.category}</Badge>
-                  <h2 className="text-lg sm:text-xl md:text-3xl font-bold mb-1 sm:mb-2">
-                    Featured: {featuredAd.title}
-                  </h2>
-                  <p className="mb-2 sm:mb-4 text-xs sm:text-sm md:text-base line-clamp-2">
-                    {featuredAd.description}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-                    <div className="flex items-center gap-1">
-                      <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span>{featuredAd.location}</span>
-                    </div>
-                    {featuredAd.price && (
-                      <div className="flex items-center gap-1">
-                        <DollarSignIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span>${featuredAd.price}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          )}
+          {FeaturedAdCard}
 
           <div className="mb-6 sm:mb-12">
             <div className="relative max-w-3xl mx-auto">
@@ -229,32 +169,7 @@ export default function Component() {
           </div>
 
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-6 sm:mb-8 gap-4">
-            <div className="w-full sm:w-auto flex space-x-1 bg-background rounded-lg overflow-x-auto px-2 py-1">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`relative px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium transition-all duration-200 outline-none whitespace-nowrap ${
-                    activeCategory === category
-                      ? "text-secondary"
-                      : "text-gray-500 hover:text-foreground"
-                  }`}
-                  onClick={() => setActiveCategory(category)}
-                >
-                  {activeCategory === category && (
-                    <motion.div
-                      className="absolute inset-0 bg-foreground rounded-full z-0"
-                      layoutId="activeBackground"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 30
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{category}</span>
-                </button>
-              ))}
-            </div>
+            {CategoryButtons}
             <div className="flex items-center gap-2">
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[140px] sm:w-[180px] border-none bg-muted shadow-none text-xs sm:text-sm">
@@ -309,124 +224,11 @@ export default function Component() {
                 : "grid-cols-1"
             }`}
           >
-            {filteredAds.map((ad) => (
-              <Card
-                key={ad.id}
-                className={`overflow-hidden hover:shadow-xl  rounded-lg ${
-                  isGridView
-                    ? "h-[300px] sm:h-[350px] md:h-[400px]"
-                    : "h-auto sm:h-[200px] flex flex-col sm:flex-row"
-                }`}
-              >
-                {isGridView ? (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={ad.image}
-                      alt={ad.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-                    <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
-                      <div className="flex justify-between items-start">
-                        <Badge className="bg-black/80 text-white text-xs">
-                          {ad.category}
-                        </Badge>
-                        {ad.price && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-white/60 backdrop-blur-sm text-sm font-bold text-black"
-                          >
-                            ${ad.price}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="mt-auto">
-                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
-                          {ad.title}
-                        </h2>
-                        <p className="text-white/90 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
-                          {ad.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 sm:gap-3 text-xs text-white/80 mb-2 sm:mb-4">
-                          <div className="flex items-center gap-1">
-                            <MapPinIcon className="w-3 h-3" />
-                            <span>{ad.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <ClockIcon className="w-3 h-3" />
-                            <span>
-                              {new Date(ad.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <UserIcon className="w-3 h-3" />
-                            <span>{ad.seller}</span>
-                          </div>
-                        </div>
-                        <Button className="w-full bg-white text-black hover:bg-white/90 text-xs sm:text-sm">
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="relative w-full sm:w-1/3 h-40 sm:h-full">
-                      <img
-                        src={ad.image}
-                        alt={ad.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <Badge className="absolute top-2 left-2 text-xs">
-                        {ad.category}
-                      </Badge>
-                      {ad.price && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-background/40 backdrop-blur-sm dark:bg-background/40 dark:backdrop-blur-sm text-sm absolute top-2 right-2"
-                        >
-                          ${ad.price}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex flex-col flex-grow">
-                      <CardContent className="p-3 sm:p-4 flex-grow">
-                        <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2 line-clamp-1">
-                          {ad.title}
-                        </h2>
-                        <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
-                          {ad.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
-                          <div className="flex items-center gap-1">
-                            <MapPinIcon className="w-3 h-3" />
-                            <span>{ad.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <ClockIcon className="w-3 h-3" />
-                            <span>
-                              {new Date(ad.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <UserIcon className="w-3 h-3" />
-                            <span>{ad.seller}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-3 sm:p-4 bg-muted/50 mt-auto">
-                        <Button
-                          className="w-full text-xs sm:text-sm"
-                          variant="secondary"
-                        >
-                          View Details
-                        </Button>
-                      </CardFooter>
-                    </div>
-                  </>
-                )}
-              </Card>
-            ))}
+            <AnimatePresence>
+              {filteredAds.map((ad) => (
+                <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
+              ))}
+            </AnimatePresence>
           </div>
         </div>
       </motion.div>

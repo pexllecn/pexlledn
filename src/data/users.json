@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "role": "Admin",
+    "avatarUrl": "https://i.pravatar.cc/150?img=1",
+    "department": "IT",
+    "joinDate": "2022-03-15",
+    "status": "Active",
+    "lastActive": "2023-08-23T14:30:00Z"
+  },
+  {
+    "id": 2,
+    "name": "Bob Smith",
+    "email": "bob@example.com",
+    "role": "User",
+    "avatarUrl": "https://i.pravatar.cc/150?img=2",
+    "department": "Sales",
+    "joinDate": "2021-11-02",
+    "status": "Active",
+    "lastActive": "2023-08-22T10:15:00Z"
+  },
+  {
+    "id": 3,
+    "name": "Charlie Brown",
+    "email": "charlie@example.com",
+    "role": "Editor",
+    "avatarUrl": "https://i.pravatar.cc/150?img=3",
+    "department": "Marketing",
+    "joinDate": "2023-01-20",
+    "status": "Inactive",
+    "lastActive": "2023-07-15T09:00:00Z"
+  },
+  {
+    "id": 4,
+    "name": "Diana Prince",
+    "email": "diana@example.com",
+    "role": "User",
+    "avatarUrl": "https://i.pravatar.cc/150?img=4",
+    "department": "HR",
+    "joinDate": "2022-07-11",
+    "status": "Active",
+    "lastActive": "2023-08-21T16:45:00Z"
+  },
+  {
+    "id": 5,
+    "name": "Ethan Hunt",
+    "email": "ethan@example.com",
+    "role": "Admin",
+    "avatarUrl": "https://i.pravatar.cc/150?img=5",
+    "department": "Operations",
+    "joinDate": "2021-09-30",
+    "status": "Active",
+    "lastActive": "2023-08-23T11:30:00Z"
+  },
+  {
+    "id": 6,
+    "name": "Fiona Gallagher",
+    "email": "fiona@example.com",
+    "role": "User",
+    "avatarUrl": "https://i.pravatar.cc/150?img=6",
+    "department": "Finance",
+    "joinDate": "2023-04-05",
+    "status": "Active",
+    "lastActive": "2023-08-22T13:20:00Z"
+  },
+  {
+    "id": 7,
+    "name": "George Lucas",
+    "email": "george@example.com",
+    "role": "Editor",
+    "avatarUrl": "https://i.pravatar.cc/150?img=7",
+    "department": "Creative",
+    "joinDate": "2022-12-18",
+    "status": "Active",
+    "lastActive": "2023-08-23T09:10:00Z"
+  },
+  {
+    "id": 8,
+    "name": "Hannah Montana",
+    "email": "hannah@example.com",
+    "role": "User",
+    "avatarUrl": "https://i.pravatar.cc/150?img=8",
+    "department": "Entertainment",
+    "joinDate": "2023-02-28",
+    "status": "Inactive",
+    "lastActive": "2023-07-01T09:15:00Z"
+  },
+  {
+    "id": 9,
+    "name": "Ian Malcolm",
+    "email": "ian@example.com",
+    "role": "User",
+    "avatarUrl": "https://i.pravatar.cc/150?img=9",
+    "department": "Research",
+    "joinDate": "2022-08-14",
+    "status": "Active",
+    "lastActive": "2023-08-23T15:40:00Z"
+  },
+  {
+    "id": 10,
+    "name": "Julia Roberts",
+    "email": "julia@example.com",
+    "role": "Editor",
+    "avatarUrl": "https://i.pravatar.cc/150?img=10",
+    "department": "Public Relations",
+    "joinDate": "2023-05-20",
+    "status": "Active",
+    "lastActive": "2023-08-22T17:55:00Z"
+  }
+]

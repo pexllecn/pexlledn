@@ -1,0 +1,136 @@
+{
+  "1": {
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "role": "Admin",
+    "avatarUrl": "https://i.pravatar.cc/150?img=1",
+    "department": "IT",
+    "joinDate": "2022-03-15",
+    "status": "Active",
+    "lastActive": "2023-08-23T14:30:00Z",
+    "location": "San Francisco, USA",
+    "phone": "+1 (555) 123-4567",
+    "bio": "Experienced IT professional with a passion for cybersecurity and network optimization.",
+    "items": 150,
+    "followers": "5.2k",
+    "favoriteTags": ["cybersecurity", "networking", "cloud", "devops", "ai"],
+    "featuredListings": [
+      {
+        "name": "Security Tools",
+        "image": "https://picsum.photos/seed/security/300/200"
+      },
+      {
+        "name": "Network Gear",
+        "image": "https://picsum.photos/seed/network/300/200"
+      },
+      {
+        "name": "Cloud Solutions",
+        "image": "https://picsum.photos/seed/cloud/300/200"
+      },
+      {
+        "name": "Dev Environments",
+        "image": "https://picsum.photos/seed/dev/300/200"
+      }
+    ],
+    "itemFeed": [
+      {
+        "name": "Firewall System",
+        "image": "https://picsum.photos/seed/firewall/300/300",
+        "price": "$1200"
+      },
+      {
+        "name": "Network Switch",
+        "image": "https://picsum.photos/seed/switch/300/300",
+        "price": "$450"
+      },
+      {
+        "name": "Cloud Server",
+        "image": "https://picsum.photos/seed/server/300/300",
+        "price": "$800"
+      },
+      {
+        "name": "Dev Laptop",
+        "image": "https://picsum.photos/seed/laptop/300/300",
+        "price": "$1500"
+      },
+      {
+        "name": "AI Textbook",
+        "image": "https://picsum.photos/seed/ai/300/300",
+        "price": "$85"
+      },
+      {
+        "name": "Cybersecurity Course",
+        "image": "https://picsum.photos/seed/course/300/300",
+        "price": "$299"
+      }
+    ]
+  },
+  "2": {
+    "id": 2,
+    "name": "Bob Smith",
+    "email": "bob@example.com",
+    "role": "User",
+    "avatarUrl": "https://i.pravatar.cc/150?img=2",
+    "department": "Sales",
+    "joinDate": "2021-11-02",
+    "status": "Active",
+    "lastActive": "2023-08-22T10:15:00Z",
+    "location": "New York, USA",
+    "phone": "+1 (555) 987-6543",
+    "bio": "Results-driven sales professional with a track record of exceeding targets and building strong client relationships.",
+    "items": 75,
+    "followers": "3.8k",
+    "favoriteTags": ["sales", "marketing", "crm", "negotiation", "business"],
+    "featuredListings": [
+      {
+        "name": "Sales Tools",
+        "image": "https://picsum.photos/seed/sales/300/200"
+      },
+      {
+        "name": "CRM Software",
+        "image": "https://picsum.photos/seed/crm/300/200"
+      },
+      {
+        "name": "Business Books",
+        "image": "https://picsum.photos/seed/books/300/200"
+      },
+      {
+        "name": "Office Gear",
+        "image": "https://picsum.photos/seed/office/300/200"
+      }
+    ],
+    "itemFeed": [
+      {
+        "name": "CRM Subscription",
+        "image": "https://picsum.photos/seed/crmsub/300/300",
+        "price": "$99/mo"
+      },
+      {
+        "name": "Sales Playbook",
+        "image": "https://picsum.photos/seed/playbook/300/300",
+        "price": "$150"
+      },
+      {
+        "name": "Negotiation Course",
+        "image": "https://picsum.photos/seed/negotiate/300/300",
+        "price": "$299"
+      },
+      {
+        "name": "Business Suit",
+        "image": "https://picsum.photos/seed/suit/300/300",
+        "price": "$500"
+      },
+      {
+        "name": "Presentation Kit",
+        "image": "https://picsum.photos/seed/present/300/300",
+        "price": "$75"
+      },
+      {
+        "name": "Networking Event Ticket",
+        "image": "https://picsum.photos/seed/network/300/300",
+        "price": "$200"
+      }
+    ]
+  }
+}
