@@ -73,7 +73,7 @@ export default function AccountPage() {
             </TabsList>
 
             <TabsContent value="profile" className="space-y-4">
-              <Card className="shadow-none">
+              <Card className="shadow-none border-none">
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
                   <CardDescription>
@@ -145,7 +145,7 @@ export default function AccountPage() {
             </TabsContent>
 
             <TabsContent value="notifications" className="space-y-4">
-              <Card>
+              <Card className="shadow-none border-none">
                 <CardHeader>
                   <CardTitle>Notification Preferences</CardTitle>
                   <CardDescription>
@@ -196,7 +196,7 @@ export default function AccountPage() {
             </TabsContent>
 
             <TabsContent value="preferences" className="space-y-4">
-              <Card>
+              <Card className="shadow-none border-none">
                 <CardHeader>
                   <CardTitle>Account Preferences</CardTitle>
                   <CardDescription>
@@ -268,7 +268,7 @@ export default function AccountPage() {
 
             <TabsContent value="security" className="space-y-4">
               <div className="space-y-6">
-                <Card>
+                <Card className="shadow-none border-none">
                   <CardHeader>
                     <CardTitle>Password</CardTitle>
                     <CardDescription>
@@ -296,7 +296,7 @@ export default function AccountPage() {
                   </CardFooter>
                 </Card>
 
-                <Card>
+                <Card className="shadow-none border-none">
                   <CardHeader>
                     <CardTitle>Two-Factor Authentication</CardTitle>
                     <CardDescription>
@@ -331,7 +331,7 @@ export default function AccountPage() {
                   </CardFooter>
                 </Card>
 
-                <Card>
+                <Card className="shadow-none border-none">
                   <CardHeader>
                     <CardTitle>Active Sessions</CardTitle>
                     <CardDescription>
@@ -377,7 +377,6 @@ export default function AccountPage() {
               </div>
             </TabsContent>
           </Tabs>
-
           <div className="mt-8 flex justify-between items-center">
             <Button variant="outline" className="text-destructive">
               <LogOut className="h-4 w-4 mr-2" />

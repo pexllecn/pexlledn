@@ -110,7 +110,7 @@ const ads = [
   {
     id: 6,
     title: "Vintage Guitar",
-    price: 500,
+    price: 15000,
     category: "For Sale",
     image:
       "https://images.unsplash.com/photo-1565829577241-474d81bf757c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -312,7 +312,7 @@ export default function Component() {
             {filteredAds.map((ad) => (
               <Card
                 key={ad.id}
-                className={`overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-[1.02] rounded-lg ${
+                className={`overflow-hidden hover:shadow-xl hover:scale-[1.02] rounded-lg ${
                   isGridView ? "h-[400px]" : "h-[200px] flex flex-row"
                 }`}
               >
@@ -332,7 +332,7 @@ export default function Component() {
                         {ad.price && (
                           <Badge
                             variant="secondary"
-                            className="text-lg font-bold bg-white text-black"
+                            className="bg-white/60 backdrop-blur-sm text-md font-bold text-black"
                           >
                             ${ad.price}
                           </Badge>
@@ -381,7 +381,7 @@ export default function Component() {
                       {ad.price && (
                         <Badge
                           variant="secondary"
-                          className="absolute top-2 right-2"
+                          className="bg-background/40 backdrop-blur-sm dark:bg-background/40 dark:backdrop-blur-sm text-md absolute top-2 right-2"
                         >
                           ${ad.price}
                         </Badge>

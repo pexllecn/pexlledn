@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
@@ -17,7 +16,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
+  DialogFooter
 } from "@/components/ui/dialog";
 import {
   InputOTP,
@@ -27,18 +27,23 @@ import {
 } from "@/components/ui/input-otp";
 import { toast } from "@/components/ui/use-toast";
 
-const DynamicGoogleSignInButton = dynamic(
+const DynamicAuthButtons = dynamic(
   () => import("@/components/google-auth-button"),
-  { ssr: false }
+  {
+    ssr: false
+  }
 );
 
 export default function AuthenticationPage() {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
+  const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] =
+    useState(false);
   const [otp, setOtp] = useState("");
   const [isOtpInvalid, setIsOtpInvalid] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -54,7 +59,7 @@ export default function AuthenticationPage() {
   const backgroundImage = getAsset("/login.jpeg", "/darklogin.jpg");
 
   const handleLogin = () => {
-    setIsDialogOpen(true);
+    setIsOtpDialogOpen(true);
     setOtp("");
     setIsOtpInvalid(false);
   };
@@ -64,7 +69,7 @@ export default function AuthenticationPage() {
     if (value.length < 6) {
       setIsOtpInvalid(false);
     } else if (value === "111111") {
-      setIsDialogOpen(false);
+      setIsOtpDialogOpen(false);
       router.push("/dashboard");
     } else {
       setIsOtpInvalid(true);
@@ -74,6 +79,18 @@ export default function AuthenticationPage() {
         variant: "destructive"
       });
     }
+  };
+
+  const handleForgotPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Implement password reset logic here
+    console.log("Password reset requested for:", forgotPasswordEmail);
+    toast({
+      title: "Password Reset Requested",
+      description:
+        "If an account exists for this email, you will receive reset instructions."
+    });
+    setIsForgotPasswordDialogOpen(false);
   };
 
   if (!mounted) {
@@ -138,6 +155,14 @@ export default function AuthenticationPage() {
                   type="password"
                 />
               </div>
+              <div className="text-sm text-right">
+                <button
+                  onClick={() => setIsForgotPasswordDialogOpen(true)}
+                  className="text-primary hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <Button className="w-full" onClick={handleLogin}>
                 Login
               </Button>
@@ -151,7 +176,7 @@ export default function AuthenticationPage() {
               </div>
             </div>
             <Suspense fallback={<div>Loading...</div>}>
-              <DynamicGoogleSignInButton />
+              <DynamicAuthButtons />
             </Suspense>
           </TabsContent>
 
@@ -168,7 +193,7 @@ export default function AuthenticationPage() {
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
-                  className="bg-background"
+                  className="bg-background border-none"
                   id="name"
                   type="text"
                   placeholder="John Doe"
@@ -177,7 +202,7 @@ export default function AuthenticationPage() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  className="bg-background"
+                  className="bg-background border-none"
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -186,7 +211,7 @@ export default function AuthenticationPage() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
-                  className="bg-background"
+                  className="bg-background border-none"
                   id="password"
                   type="password"
                 />
@@ -197,12 +222,13 @@ export default function AuthenticationPage() {
               <div className="absolute inset-0 flex items-center"></div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className=" px-2 text-muted-foreground">
-                  Or continue with
+                  Or Register with
                 </span>
               </div>
             </div>
             <Suspense fallback={<div>Loading...</div>}>
-              <DynamicGoogleSignInButton />
+              {" "}
+              <DynamicAuthButtons />
             </Suspense>
           </TabsContent>
         </Tabs>
@@ -237,7 +263,9 @@ export default function AuthenticationPage() {
           </Button>
         </div>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+
+      {/* OTP Dialog */}
+      <Dialog open={isOtpDialogOpen} onOpenChange={setIsOtpDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enter OTP</DialogTitle>
@@ -268,6 +296,40 @@ export default function AuthenticationPage() {
               </InputOTPGroup>
             </InputOTP>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Forgot Password Dialog */}
+      <Dialog
+        open={isForgotPasswordDialogOpen}
+        onOpenChange={setIsForgotPasswordDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you instructions to reset
+              your password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword}>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="reset-email">Email</Label>
+                <Input
+                  id="reset-email"
+                  type="email"
+                  placeholder="m@example.com"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <DialogFooter className="mt-4">
+              <Button type="submit">Send Reset Instructions</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

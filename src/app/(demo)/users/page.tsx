@@ -184,8 +184,8 @@ const UserCard = ({
   isSelected: boolean;
 }) => (
   <Card
-    className={`hover:border-ring shadow-none ${
-      isSelected ? "border-primary" : ""
+    className={`hover:border-ring shadow-none bg-muted border-none ${
+      isSelected ? "border-ring" : ""
     }`}
   >
     <CardContent className="p-4">
@@ -193,7 +193,7 @@ const UserCard = ({
         <Checkbox
           checked={isSelected}
           onCheckedChange={() => onSelect(user.id)}
-          className="self-start mt-1"
+          className="bg-background border-grey self-start mt-1 "
         />
         <Avatar className="h-12 w-12">
           <AvatarImage src={user.avatarUrl} alt={user.name} />

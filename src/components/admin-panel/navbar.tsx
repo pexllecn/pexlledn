@@ -49,50 +49,56 @@ export function Navbar({ title }: NavbarProps) {
         backdropFilter: "blur(8px)"
       }}
     >
-      <div className="mx-4 sm:mx-8 flex h-16 items-center">
-        <div className="flex items-center space-x-4 lg:space-x-0">
-          <SheetMenu />
-          <div className="hidden md:block">
-            <Breadcrumb>
-              <BreadcrumbList>
-                {breadcrumbs.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <BreadcrumbItem>
-                      {index < breadcrumbs.length - 1 ? (
-                        <BreadcrumbLink asChild>
-                          <Link href={item.href}>{item.label}</Link>
-                        </BreadcrumbLink>
-                      ) : (
-                        <BreadcrumbPage>
-                          <span className="font-bold">{item.label}</span>
-                        </BreadcrumbPage>
+      <div className="mx-4 sm:mx-8 h-16 flex items-center">
+        <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div className="flex items-center space-x-4">
+            <SheetMenu />
+            <div className="hidden md:block overflow-hidden">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  {breadcrumbs.map((item, index) => (
+                    <React.Fragment key={index}>
+                      <BreadcrumbItem>
+                        {index < breadcrumbs.length - 1 ? (
+                          <BreadcrumbLink asChild>
+                            <Link href={item.href}>{item.label}</Link>
+                          </BreadcrumbLink>
+                        ) : (
+                          <BreadcrumbPage>
+                            <span className="font-bold">{item.label}</span>
+                          </BreadcrumbPage>
+                        )}
+                      </BreadcrumbItem>
+                      {index < breadcrumbs.length - 1 && (
+                        <BreadcrumbSeparator />
                       )}
-                    </BreadcrumbItem>
-                    {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-                  </React.Fragment>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
+                    </React.Fragment>
+                  ))}
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
           </div>
-        </div>
-        <div className="flex-1 flex justify-center items-center px-4">
-          <form onSubmit={handleSearch} className="relative w-full max-w-2xl">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="pl-8 bg-muted border-none shadow-none dark:shadow-none w-[600px] h-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Button type="submit" className="sr-only">
-              Search
-            </Button>
-          </form>
-        </div>
-        <div className="flex items-center space-x-2">
-          <ModeToggle />
-          <UserNav />
+
+          <div className="flex-1 flex justify-center items-center px-4">
+            <form onSubmit={handleSearch} className="relative w-full max-w-2xl">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search..."
+                className="pl-8 bg-muted border-none shadow-none dark:shadow-none lg:w-[600px] h-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button type="submit" className="sr-only">
+                Search
+              </Button>
+            </form>
+          </div>
+
+          <div className="flex items-center space-x-2 justify-end">
+            <ModeToggle />
+            <UserNav />
+          </div>
         </div>
       </div>
     </header>
