@@ -181,25 +181,25 @@ export default function Component() {
         transition={{ duration: 0.4 }}
         variants={variants1}
       >
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 sm:py-8">
           {featuredAd && (
-            <Card className="mb-12 overflow-hidden shadow-lg rounded-lg">
-              <div className="relative h-60 sm:h-80">
+            <Card className="mb-6 sm:mb-12 overflow-hidden shadow-lg rounded-lg">
+              <div className="relative h-48 sm:h-60 md:h-80">
                 <img
                   src={featuredAd.image}
                   alt={featuredAd.title}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                  <Badge className="mb-2">{featuredAd.category}</Badge>
-                  <h2 className="text-xl sm:text-3xl font-bold mb-2">
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white">
+                  <Badge className="mb-1 sm:mb-2">{featuredAd.category}</Badge>
+                  <h2 className="text-lg sm:text-xl md:text-3xl font-bold mb-1 sm:mb-2">
                     Featured: {featuredAd.title}
                   </h2>
-                  <p className="mb-4 text-sm sm:text-lg line-clamp-2 sm:line-clamp-none">
+                  <p className="mb-2 sm:mb-4 text-xs sm:text-sm md:text-base line-clamp-2">
                     {featuredAd.description}
                   </p>
-                  <div className="flex items-center gap-4 text-xs sm:text-sm">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                     <div className="flex items-center gap-1">
                       <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span>{featuredAd.location}</span>
@@ -216,24 +216,24 @@ export default function Component() {
             </Card>
           )}
 
-          <div className="mb-12">
+          <div className="mb-6 sm:mb-12">
             <div className="relative max-w-3xl mx-auto">
               <Input
                 placeholder="Search for anything..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-3 w-full border-none bg-muted shadow-md focus:ring-2 focus:ring-primary rounded-md"
+                className="pl-10 pr-4 py-2 w-full border-none bg-muted shadow-md focus:ring-2 focus:ring-primary rounded-md"
               />
-              <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between mb-8 gap-4">
-            <div className="flex space-x-1 bg-background rounded-lg overflow-x-auto px-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-6 sm:mb-8 gap-4">
+            <div className="w-full sm:w-auto flex space-x-1 bg-background rounded-lg overflow-x-auto px-2 py-1">
               {categories.map((category) => (
                 <button
                   key={category}
-                  className={`relative px-3 py-2 text-sm font-medium transition-all duration-200 outline-none whitespace-nowrap ${
+                  className={`relative px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium transition-all duration-200 outline-none whitespace-nowrap ${
                     activeCategory === category
                       ? "text-secondary"
                       : "text-gray-500 hover:text-foreground"
@@ -257,7 +257,7 @@ export default function Component() {
             </div>
             <div className="flex items-center gap-2">
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px] border-none bg-muted shadow-none">
+                <SelectTrigger className="w-[140px] sm:w-[180px] border-none bg-muted shadow-none text-xs sm:text-sm">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -274,7 +274,7 @@ export default function Component() {
                       onClick={() => setIsGridView(true)}
                       className="border-gray-300 dark:border-gray-700"
                     >
-                      <LayoutGridIcon className="h-5 w-5" />
+                      <LayoutGridIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -291,7 +291,7 @@ export default function Component() {
                       onClick={() => setIsGridView(false)}
                       className="border-gray-300 dark:border-gray-700"
                     >
-                      <ListIcon className="h-5 w-5" />
+                      <ListIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -303,7 +303,7 @@ export default function Component() {
           </div>
 
           <div
-            className={`grid gap-4 sm:gap-8 ${
+            className={`grid gap-4 sm:gap-6 md:gap-8 ${
               isGridView
                 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 : "grid-cols-1"
@@ -312,8 +312,10 @@ export default function Component() {
             {filteredAds.map((ad) => (
               <Card
                 key={ad.id}
-                className={`overflow-hidden hover:shadow-xl hover:scale-[1.02] rounded-lg ${
-                  isGridView ? "h-[400px]" : "h-[200px] flex flex-row"
+                className={`overflow-hidden hover:shadow-xl  rounded-lg ${
+                  isGridView
+                    ? "h-[300px] sm:h-[350px] md:h-[400px]"
+                    : "h-auto sm:h-[200px] flex flex-col sm:flex-row"
                 }`}
               >
                 {isGridView ? (
@@ -324,28 +326,28 @@ export default function Component() {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-                    <div className="absolute inset-0 p-4 flex flex-col justify-between">
+                    <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
                       <div className="flex justify-between items-start">
-                        <Badge className="bg-black/80 text-white">
+                        <Badge className="bg-black/80 text-white text-xs">
                           {ad.category}
                         </Badge>
                         {ad.price && (
                           <Badge
                             variant="secondary"
-                            className="bg-white/60 backdrop-blur-sm text-md font-bold text-black"
+                            className="bg-white/60 backdrop-blur-sm text-sm font-bold text-black"
                           >
                             ${ad.price}
                           </Badge>
                         )}
                       </div>
                       <div className="mt-auto">
-                        <h2 className="text-2xl font-bold text-white mb-2 line-clamp-2">
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
                           {ad.title}
                         </h2>
-                        <p className="text-white/90 text-sm line-clamp-2 mb-4">
+                        <p className="text-white/90 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
                           {ad.description}
                         </p>
-                        <div className="flex flex-wrap gap-3 text-xs text-white/80 mb-4">
+                        <div className="flex flex-wrap gap-2 sm:gap-3 text-xs text-white/80 mb-2 sm:mb-4">
                           <div className="flex items-center gap-1">
                             <MapPinIcon className="w-3 h-3" />
                             <span>{ad.location}</span>
@@ -361,7 +363,7 @@ export default function Component() {
                             <span>{ad.seller}</span>
                           </div>
                         </div>
-                        <Button className="w-full bg-white text-black hover:bg-white/90">
+                        <Button className="w-full bg-white text-black hover:bg-white/90 text-xs sm:text-sm">
                           View Details
                         </Button>
                       </div>
@@ -369,30 +371,30 @@ export default function Component() {
                   </div>
                 ) : (
                   <>
-                    <div className="relative w-1/3 h-full">
+                    <div className="relative w-full sm:w-1/3 h-40 sm:h-full">
                       <img
                         src={ad.image}
                         alt={ad.title}
                         className="w-full h-full object-cover"
                       />
-                      <Badge className="absolute top-2 left-2">
+                      <Badge className="absolute top-2 left-2 text-xs">
                         {ad.category}
                       </Badge>
                       {ad.price && (
                         <Badge
                           variant="secondary"
-                          className="bg-background/40 backdrop-blur-sm dark:bg-background/40 dark:backdrop-blur-sm text-md absolute top-2 right-2"
+                          className="bg-background/40 backdrop-blur-sm dark:bg-background/40 dark:backdrop-blur-sm text-sm absolute top-2 right-2"
                         >
                           ${ad.price}
                         </Badge>
                       )}
                     </div>
                     <div className="flex flex-col flex-grow">
-                      <CardContent className="p-4 flex-grow">
-                        <h2 className="text-lg font-semibold text-foreground mb-2 line-clamp-1">
+                      <CardContent className="p-3 sm:p-4 flex-grow">
+                        <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2 line-clamp-1">
                           {ad.title}
                         </h2>
-                        <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+                        <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
                           {ad.description}
                         </p>
                         <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
@@ -412,8 +414,11 @@ export default function Component() {
                           </div>
                         </div>
                       </CardContent>
-                      <CardFooter className="p-4 bg-muted/50 mt-auto">
-                        <Button className="w-full" variant="secondary">
+                      <CardFooter className="p-3 sm:p-4 bg-muted/50 mt-auto">
+                        <Button
+                          className="w-full text-xs sm:text-sm"
+                          variant="secondary"
+                        >
                           View Details
                         </Button>
                       </CardFooter>
