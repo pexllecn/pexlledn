@@ -1,4 +1,5 @@
 "use client";
+import sampleData from "@/data/sampleData.json";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -29,7 +30,6 @@ import {
   SearchIcon
 } from "lucide-react";
 import AdCard from "./adcard";
-import sampleData from "@/data/sampleData.json";
 
 const variants1 = {
   hidden: { filter: "blur(10px)", opacity: 0 },
