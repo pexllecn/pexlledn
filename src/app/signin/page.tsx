@@ -241,262 +241,174 @@ export default function AuthenticationPage() {
   }
 
   return (
-    <ContentLayout title="Categories">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.4 }}
-        variants={variants1}
-      >
-        <div className="container mx-auto px-4 py-4 sm:py-8">
-          {featuredAd && (
-            <Card className="mb-6 sm:mb-12 overflow-hidden shadow-lg rounded-lg">
-              <div className="relative h-48 sm:h-60 md:h-80">
-                <img
-                  src={featuredAd.image}
-                  alt={featuredAd.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white">
-                  <Badge className="mb-1 sm:mb-2">{featuredAd.category}</Badge>
-                  <h2 className="text-lg sm:text-xl md:text-3xl font-bold mb-1 sm:mb-2">
-                    Featured: {featuredAd.title}
-                  </h2>
-                  <p className="mb-2 sm:mb-4 text-xs sm:text-sm md:text-base line-clamp-2">
-                    {featuredAd.description}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-                    <div className="flex items-center gap-1">
-                      <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span>{featuredAd.location}</span>
-                    </div>
-                    {featuredAd.price && (
-                      <div className="flex items-center gap-1">
-                        <DollarSignIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span>${featuredAd.price}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          )}
+    <div className="relative h-screen flex items-center justify-center">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url("${backgroundImage}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
+      />
 
-          <div className="mb-6 sm:mb-12">
-            <div className="relative max-w-3xl mx-auto">
-              <Input
-                placeholder="Search for anything..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border-none bg-muted shadow-md focus:ring-2 focus:ring-primary rounded-md"
+      <div className="relative z-10 w-full max-w-md p-8 backdrop-blur-md bg-white/30 dark:bg-muted/40 rounded-lg shadow-lg">
+        <div className="flex justify-center mb-8">
+          <Link href="/">
+            <div style={{ width: 150, height: 50, position: "relative" }}>
+              <Image
+                src={logoSrc}
+                alt="Pexlle Logo"
+                layout="fill"
+                objectFit="contain"
               />
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-6 sm:mb-8 gap-4">
-            <div className="w-full sm:w-auto flex space-x-1 bg-background rounded-lg overflow-x-auto px-2 py-1">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`relative px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium transition-all duration-200 outline-none whitespace-nowrap ${
-                    activeCategory === category
-                      ? "text-secondary"
-                      : "text-gray-500 hover:text-foreground"
-                  }`}
-                  onClick={() => setActiveCategory(category)}
-                >
-                  {activeCategory === category && (
-                    <motion.div
-                      className="absolute inset-0 bg-foreground rounded-full z-0"
-                      layoutId="activeBackground"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 30
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{category}</span>
-                </button>
-              ))}
-            </div>
-            <div className="flex items-center gap-2">
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[140px] sm:w-[180px] border-none bg-muted shadow-none text-xs sm:text-sm">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date">Date (Newest first)</SelectItem>
-                  <SelectItem value="price">Price (Highest first)</SelectItem>
-                </SelectContent>
-              </Select>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={isGridView ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setIsGridView(true)}
-                      className="border-gray-300 dark:border-gray-700"
-                    >
-                      <LayoutGridIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Grid view</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={!isGridView ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setIsGridView(false)}
-                      className="border-gray-300 dark:border-gray-700"
-                    >
-                      <ListIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>List view</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-
-          <div
-            className={`grid gap-4 sm:gap-6 md:gap-8 ${
-              isGridView
-                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                : "grid-cols-1"
-            }`}
-          >
-            {filteredAds.map((ad) => (
-              <Card
-                key={ad.id}
-                className={`overflow-hidden hover:shadow-xl transition-all duration-300 rounded-lg ${
-                  isGridView
-                    ? "h-[300px] sm:h-[350px] md:h-[400px]"
-                    : "h-auto sm:h-[200px] flex flex-col sm:flex-row"
-                }`}
-              >
-                {isGridView ? (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={ad.image}
-                      alt={ad.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-                    <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
-                      <div className="flex justify-between items-start">
-                        <Badge className="bg-black/80 text-white text-xs">
-                          {ad.category}
-                        </Badge>
-                        {ad.price && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-white/60 backdrop-blur-sm text-sm font-bold text-black"
-                          >
-                            ${ad.price}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="mt-auto">
-                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
-                          {ad.title}
-                        </h2>
-                        <p className="text-white/90 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
-                          {ad.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 sm:gap-3 text-xs text-white/80 mb-2 sm:mb-4">
-                          <div className="flex items-center gap-1">
-                            <MapPinIcon className="w-3 h-3" />
-                            <span>{ad.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <ClockIcon className="w-3 h-3" />
-                            <span>
-                              {new Date(ad.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <UserIcon className="w-3 h-3" />
-                            <span>{ad.seller}</span>
-                          </div>
-                        </div>
-                        <Button className="w-full bg-white text-black hover:bg-white/90 text-xs sm:text-sm">
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="relative w-full sm:w-1/3 h-40 sm:h-full">
-                      <img
-                        src={ad.image}
-                        alt={ad.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <Badge className="absolute top-2 left-2 text-xs">
-                        {ad.category}
-                      </Badge>
-                      {ad.price && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-background/40 backdrop-blur-sm dark:bg-background/40 dark:backdrop-blur-sm text-sm absolute top-2 right-2"
-                        >
-                          ${ad.price}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex flex-col flex-grow">
-                      <CardContent className="p-3 sm:p-4 flex-grow">
-                        <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2 line-clamp-1">
-                          {ad.title}
-                        </h2>
-                        <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
-                          {ad.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
-                          <div className="flex items-center gap-1">
-                            <MapPinIcon className="w-3 h-3" />
-                            <span>{ad.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <ClockIcon className="w-3 h-3" />
-                            <span>
-                              {new Date(ad.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <UserIcon className="w-3 h-3" />
-                            <span>{ad.seller}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-3 sm:p-4 bg-muted/50 mt-auto">
-                        <Button
-                          className="w-full text-xs sm:text-sm"
-                          variant="secondary"
-                        >
-                          View Details
-                        </Button>
-                      </CardFooter>
-                    </div>
-                  </>
-                )}
-              </Card>
-            ))}
-          </div>
+          </Link>
         </div>
-      </motion.div>
-    </ContentLayout>
+
+        <Tabs defaultValue="login" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="register">Register</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="login" className="space-y-4">
+            <div className="space-y-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Welcome back
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Enter your credentials to access your account
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  className="bg-background"
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  className="bg-background"
+                  id="password"
+                  type="password"
+                />
+              </div>
+              <div className="text-sm text-right">
+                <button
+                  onClick={() => setIsForgotPasswordOpen(true)}
+                  className="text-primary hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+              <Button className="w-full" onClick={handleLogin}>
+                Login
+              </Button>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center"></div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <Suspense fallback={<div>Loading...</div>}>
+              <DynamicAuthButtons />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="register" className="space-y-4">
+            <div className="space-y-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Create an account
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Enter your details below to create your account
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  className="bg-background border-none"
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  className="bg-background border-none"
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  className="bg-background border-none"
+                  id="password"
+                  type="password"
+                />
+              </div>
+              <Button className="w-full">Create account</Button>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center"></div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className=" px-2 text-muted-foreground">
+                  Or Register with
+                </span>
+              </div>
+            </div>
+            <Suspense fallback={<div>Loading...</div>}>
+              {" "}
+              <DynamicAuthButtons />
+            </Suspense>
+          </TabsContent>
+        </Tabs>
+
+        <p className="mt-4 px-8 text-center text-xs text-muted-foreground">
+          By clicking continue, you agree to our{" "}
+          <Link
+            href="/terms"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="/privacy"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
+
+        <div className="mt-6 flex justify-center">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        </div>
+      </div>
+
+      <ResponsiveOTP />
+      <ResponsiveForgotPassword />
+    </div>
   );
 }
