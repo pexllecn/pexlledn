@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import PlaceholderContent from "@/components/demo/placeholder-content";
 import { motion } from "framer-motion";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardHeader,
@@ -28,6 +28,12 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
   User,
   Bell,
   Settings,
@@ -39,15 +45,25 @@ import {
   LogOut,
   Smartphone,
   Globe,
-  X
+  X,
+  ChevronDown
 } from "lucide-react";
 
 export default function AccountPage() {
   const { theme, setTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState("profile");
+
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 }
   };
+
+  const tabOptions = [
+    { value: "profile", label: "Profile" },
+    { value: "notifications", label: "Notifications" },
+    { value: "preferences", label: "Preferences" },
+    { value: "security", label: "Security" }
+  ];
 
   return (
     <ContentLayout title="Account">
@@ -57,22 +73,58 @@ export default function AccountPage() {
         transition={{ duration: 0.4 }}
         variants={variants1}
       >
-        <PlaceholderContent />
-        <div className="container mx-auto p-6 max-w-4xl">
-          <h1 className="text-3xl font-bold mb-2">Account Settings</h1>
-          <p className="text-muted-foreground mb-6">
-            Manage your account preferences and settings
-          </p>
+        <div className="container mx-auto p-4 sm:p-6 max-w-4xl">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold">
+                Account Settings
+              </h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Manage your account preferences and settings
+              </p>
+            </div>
+          </div>
 
-          <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="preferences">Preferences</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-            </TabsList>
+          <div className="mb-6">
+            <div className="sm:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    {tabOptions.find((tab) => tab.value === activeTab)?.label}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[calc(100vw-2rem)]">
+                  {tabOptions.map((tab) => (
+                    <DropdownMenuItem
+                      key={tab.value}
+                      onSelect={() => setActiveTab(tab.value)}
+                    >
+                      {tab.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div className="hidden sm:block">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <TabsList className="grid w-full grid-cols-4">
+                  {tabOptions.map((tab) => (
+                    <TabsTrigger key={tab.value} value={tab.value}>
+                      {tab.label}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
 
-            <TabsContent value="profile" className="space-y-4">
+          <div className="space-y-6">
+            {activeTab === "profile" && (
               <Card className="shadow-none border-none">
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
@@ -81,7 +133,7 @@ export default function AccountPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-4">
                     <Avatar className="h-24 w-24">
                       <AvatarImage
                         src="/placeholder-avatar.jpg"
@@ -89,8 +141,8 @@ export default function AccountPage() {
                       />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
-                    <div>
-                      <Button variant="outline" size="sm" className="mb-2">
+                    <div className="flex flex-col space-y-2">
+                      <Button variant="outline" size="sm">
                         <Upload className="h-4 w-4 mr-2" />
                         Upload new picture
                       </Button>
@@ -104,7 +156,7 @@ export default function AccountPage() {
                       </Button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name</Label>
                       <Input id="firstName" placeholder="John" />
@@ -142,9 +194,9 @@ export default function AccountPage() {
                   <Button>Save Changes</Button>
                 </CardFooter>
               </Card>
-            </TabsContent>
+            )}
 
-            <TabsContent value="notifications" className="space-y-4">
+            {activeTab === "notifications" && (
               <Card className="shadow-none border-none">
                 <CardHeader>
                   <CardTitle>Notification Preferences</CardTitle>
@@ -193,9 +245,9 @@ export default function AccountPage() {
                   <Button>Save Preferences</Button>
                 </CardFooter>
               </Card>
-            </TabsContent>
+            )}
 
-            <TabsContent value="preferences" className="space-y-4">
+            {activeTab === "preferences" && (
               <Card className="shadow-none border-none">
                 <CardHeader>
                   <CardTitle>Account Preferences</CardTitle>
@@ -264,9 +316,9 @@ export default function AccountPage() {
                   <Button>Save Preferences</Button>
                 </CardFooter>
               </Card>
-            </TabsContent>
+            )}
 
-            <TabsContent value="security" className="space-y-4">
+            {activeTab === "security" && (
               <div className="space-y-6">
                 <Card className="shadow-none border-none">
                   <CardHeader>
@@ -300,7 +352,7 @@ export default function AccountPage() {
                   <CardHeader>
                     <CardTitle>Two-Factor Authentication</CardTitle>
                     <CardDescription>
-                      Add an extra layer of security to your account
+                      Protect your account with 2FA
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -310,25 +362,25 @@ export default function AccountPage() {
                           Two-Factor Authentication
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          Protect your account with 2FA
+                          Add an extra layer of security
                         </p>
                       </div>
                       <Switch />
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge variant="outline">
-                        <Smartphone className="h-4 w-4 mr-1" />
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="text-sm">
+                        <Smartphone className="h-3 w-3 mr-1" />
                         SMS
                       </Badge>
-                      <Badge variant="outline">
-                        <Globe className="h-4 w-4 mr-1" />
+                      <Badge variant="outline" className="text-sm">
+                        <Globe className="h-3 w-3 mr-1" />
                         Authenticator App
                       </Badge>
                     </div>
+                    <Button variant="outline" size="sm">
+                      Set Up 2FA
+                    </Button>
                   </CardContent>
-                  <CardFooter>
-                    <Button variant="outline">Set Up 2FA</Button>
-                  </CardFooter>
                 </Card>
 
                 <Card className="shadow-none border-none">
@@ -355,34 +407,42 @@ export default function AccountPage() {
                         key={index}
                         className="flex items-center justify-between"
                       >
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-3">
                           <div className="bg-primary/10 p-2 rounded-full">
-                            <Smartphone className="h-5 w-5 text-primary" />
+                            <Smartphone className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <h3 className="font-medium">{session.device}</h3>
-                            <p className="text-sm text-muted-foreground">
+                            <h3 className="font-medium text-sm">
+                              {session.device}
+                            </h3>
+                            <p className="text-xs text-muted-foreground">
                               {session.location} • {session.lastActive}
                             </p>
                           </div>
                         </div>
                         <Button variant="ghost" size="sm">
-                          <X className="h-4 w-4 mr-2" />
-                          End Session
+                          <X className="h-4 w-4" />
+                          <span className="sr-only sm:not-sr-only sm:ml-2">
+                            End Session
+                          </span>
                         </Button>
                       </div>
                     ))}
                   </CardContent>
                 </Card>
               </div>
-            </TabsContent>
-          </Tabs>
-          <div className="mt-8 flex justify-between items-center">
-            <Button variant="outline" className="text-destructive">
+            )}
+          </div>
+
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+            <Button
+              variant="outline"
+              className="text-destructive w-full sm:w-auto"
+            >
               <LogOut className="h-4 w-4 mr-2" />
               Sign out of all devices
             </Button>
-            <Button variant="destructive">
+            <Button variant="destructive" className="w-full sm:w-auto">
               <Trash2 className="h-4 w-4 mr-2" />
               Delete Account
             </Button>

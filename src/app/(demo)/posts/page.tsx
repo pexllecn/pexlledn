@@ -203,11 +203,24 @@ export default function DarkModeCompatibleProductListing() {
                     </h2>
                     <Tabs defaultValue="description">
                       <TabsList className="grid w-full grid-cols-3 mb-4">
-                        <TabsTrigger value="description">
+                        <TabsTrigger
+                          value="description"
+                          className="text-xs sm:text-sm "
+                        >
                           Description
                         </TabsTrigger>
-                        <TabsTrigger value="specs">Specifications</TabsTrigger>
-                        <TabsTrigger value="condition">Condition</TabsTrigger>
+                        <TabsTrigger
+                          value="specs"
+                          className="text-xs sm:text-sm "
+                        >
+                          Specifications
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="condition"
+                          className="text-xs sm:text-sm "
+                        >
+                          Condition
+                        </TabsTrigger>
                       </TabsList>
                       <TabsContent
                         value="description"

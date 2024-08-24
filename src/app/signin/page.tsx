@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useCallback } from "react";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
@@ -16,10 +17,8 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from "@/components/ui/dialog";
 import {
   Drawer,
@@ -28,8 +27,7 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
+  DrawerTitle
 } from "@/components/ui/drawer";
 import {
   InputOTP,
@@ -41,10 +39,175 @@ import { toast } from "@/components/ui/use-toast";
 
 const DynamicAuthButtons = dynamic(
   () => import("@/components/google-auth-button"),
-  {
-    ssr: false
-  }
+  { ssr: false }
 );
+
+interface ResponsiveOTPProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  otp: string;
+  onOtpChange: (value: string) => void;
+  isOtpInvalid: boolean;
+}
+
+const ResponsiveOTP: React.FC<ResponsiveOTPProps> = ({
+  isOpen,
+  onOpenChange,
+  otp,
+  onOtpChange,
+  isOtpInvalid
+}) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
+  const Content = (
+    <form onSubmit={handleSubmit}>
+      <div className="flex justify-center py-4">
+        <InputOTP maxLength={6} value={otp} onChange={onOtpChange} autoFocus>
+          <InputOTPGroup>
+            {[0, 1, 2].map((index) => (
+              <InputOTPSlot
+                key={index}
+                index={index}
+                className={`h-12 w-12 text-center ${
+                  isOtpInvalid ? "border-red-500" : ""
+                }`}
+              />
+            ))}
+          </InputOTPGroup>
+          <InputOTPSeparator />
+          <InputOTPGroup>
+            {[3, 4, 5].map((index) => (
+              <InputOTPSlot
+                key={index}
+                index={index}
+                className={`h-12 w-12 text-center ${
+                  isOtpInvalid ? "border-red-500" : ""
+                }`}
+              />
+            ))}
+          </InputOTPGroup>
+        </InputOTP>
+      </div>
+    </form>
+  );
+
+  if (isDesktop) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter OTP</DialogTitle>
+            <DialogDescription>
+              Please enter the 6-digit OTP sent to your device.
+            </DialogDescription>
+          </DialogHeader>
+          {Content}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={isOpen} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Enter OTP</DrawerTitle>
+          <DrawerDescription>
+            Please enter the 6-digit OTP sent to your device.
+          </DrawerDescription>
+        </DrawerHeader>
+        {Content}
+        <DrawerFooter className="pt-4">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
+interface ResponsiveForgotPasswordProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  email: string;
+  onEmailChange: (email: string) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
+
+const ResponsiveForgotPassword: React.FC<ResponsiveForgotPasswordProps> = ({
+  isOpen,
+  onOpenChange,
+  email,
+  onEmailChange,
+  onSubmit
+}) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const Content = (
+    <form onSubmit={onSubmit}>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="reset-email">Email</Label>
+          <Input
+            id="reset-email"
+            type="email"
+            placeholder="m@example.com"
+            value={email}
+            onChange={(e) => onEmailChange(e.target.value)}
+            required
+          />
+        </div>
+      </div>
+      <div className={isDesktop ? "flex justify-end mt-4" : "mt-4"}>
+        <Button type="submit" className="w-full">
+          Send Reset Instructions
+        </Button>
+      </div>
+    </form>
+  );
+
+  if (isDesktop) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you instructions to reset
+              your password.
+            </DialogDescription>
+          </DialogHeader>
+          {Content}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={isOpen} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Reset Password</DrawerTitle>
+          <DrawerDescription>
+            Enter your email address and we'll send you instructions to reset
+            your password.
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">{Content}</div>
+        <DrawerFooter className="pt-4">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};
 
 export default function AuthenticationPage() {
   const { theme, resolvedTheme, setTheme } = useTheme();
@@ -55,7 +218,6 @@ export default function AuthenticationPage() {
   const [otp, setOtp] = useState("");
   const [isOtpInvalid, setIsOtpInvalid] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
-  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   useEffect(() => {
     setMounted(true);
@@ -76,172 +238,49 @@ export default function AuthenticationPage() {
     setIsOtpInvalid(false);
   };
 
-  const handleOtpChange = (value: string) => {
-    setOtp(value);
-    if (value.length < 6) {
-      setIsOtpInvalid(false);
-    } else if (value === "111111") {
-      setIsOtpOpen(false);
-      router.push("/dashboard");
-    } else {
-      setIsOtpInvalid(true);
+  const handleOtpChange = useCallback(
+    (value: string) => {
+      setOtp(value);
+      if (value.length === 6) {
+        if (value === "111111") {
+          setIsOtpOpen(false);
+          router.push("/dashboard");
+        } else {
+          setIsOtpInvalid(true);
+          toast({
+            title: "Invalid OTP",
+            description: "Please enter the correct OTP.",
+            variant: "destructive"
+          });
+        }
+      } else {
+        setIsOtpInvalid(false);
+      }
+    },
+    [router]
+  );
+
+  const handleForgotPassword = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      // Implement password reset logic here
+      console.log("Password reset requested for:", forgotPasswordEmail);
       toast({
-        title: "Invalid OTP",
-        description: "Please enter the correct OTP.",
-        variant: "destructive"
+        title: "Password Reset Requested",
+        description:
+          "If an account exists for this email, you will receive reset instructions."
       });
-    }
-  };
-
-  const handleForgotPassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Implement password reset logic here
-    console.log("Password reset requested for:", forgotPasswordEmail);
-    toast({
-      title: "Password Reset Requested",
-      description:
-        "If an account exists for this email, you will receive reset instructions."
-    });
-    setIsForgotPasswordOpen(false);
-  };
-
-  const ResponsiveOTP = () => {
-    const Content = (
-      <>
-        <div className="flex justify-center py-4">
-          <InputOTP maxLength={6} value={otp} onChange={handleOtpChange}>
-            <InputOTPGroup>
-              {[0, 1, 2].map((index) => (
-                <InputOTPSlot
-                  key={index}
-                  index={index}
-                  className={isOtpInvalid ? "border-red-500" : ""}
-                />
-              ))}
-            </InputOTPGroup>
-            <InputOTPSeparator />
-            <InputOTPGroup>
-              {[3, 4, 5].map((index) => (
-                <InputOTPSlot
-                  key={index}
-                  index={index}
-                  className={isOtpInvalid ? "border-red-500" : ""}
-                />
-              ))}
-            </InputOTPGroup>
-          </InputOTP>
-        </div>
-      </>
-    );
-
-    if (isDesktop) {
-      return (
-        <Dialog open={isOtpOpen} onOpenChange={setIsOtpOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Enter OTP</DialogTitle>
-              <DialogDescription>
-                Please enter the 6-digit OTP sent to your device.
-              </DialogDescription>
-            </DialogHeader>
-            {Content}
-          </DialogContent>
-        </Dialog>
-      );
-    }
-
-    return (
-      <Drawer open={isOtpOpen} onOpenChange={setIsOtpOpen}>
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Enter OTP</DrawerTitle>
-            <DrawerDescription>
-              Please enter the 6-digit OTP sent to your device.
-            </DrawerDescription>
-          </DrawerHeader>
-          {Content}
-          <DrawerFooter className="pt-2">
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    );
-  };
-
-  const ResponsiveForgotPassword = () => {
-    const Content = (
-      <form onSubmit={handleForgotPassword}>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="reset-email">Email</Label>
-            <Input
-              id="reset-email"
-              type="email"
-              placeholder="m@example.com"
-              value={forgotPasswordEmail}
-              onChange={(e) => setForgotPasswordEmail(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-        <div className={isDesktop ? "flex justify-end mt-4" : ""}>
-          <Button type="submit">Send Reset Instructions</Button>
-        </div>
-      </form>
-    );
-
-    if (isDesktop) {
-      return (
-        <Dialog
-          open={isForgotPasswordOpen}
-          onOpenChange={setIsForgotPasswordOpen}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Reset Password</DialogTitle>
-              <DialogDescription>
-                Enter your email address and we'll send you instructions to
-                reset your password.
-              </DialogDescription>
-            </DialogHeader>
-            {Content}
-          </DialogContent>
-        </Dialog>
-      );
-    }
-
-    return (
-      <Drawer
-        open={isForgotPasswordOpen}
-        onOpenChange={setIsForgotPasswordOpen}
-      >
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Reset Password</DrawerTitle>
-            <DrawerDescription>
-              Enter your email address and we'll send you instructions to reset
-              your password.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="px-4">{Content}</div>
-          <DrawerFooter className="pt-2">
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    );
-  };
+      setIsForgotPasswordOpen(false);
+    },
+    [forgotPasswordEmail]
+  );
 
   if (!mounted) {
     return null;
   }
 
   return (
-    <div className="relative h-screen flex items-center justify-center">
+    <div className="relative h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -251,13 +290,13 @@ export default function AuthenticationPage() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-md p-8 backdrop-blur-md bg-white/30 dark:bg-muted/40 rounded-lg shadow-lg">
-        <div className="flex justify-center mb-8">
+      <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/80 dark:bg-muted/60 rounded-lg shadow-lg">
+        <div className="flex justify-center mb-6">
           <Link href="/">
             <div style={{ width: 150, height: 50, position: "relative" }}>
               <Image
                 src={logoSrc}
-                alt="Pexlle Logo"
+                alt="Logo"
                 layout="fill"
                 objectFit="contain"
               />
@@ -265,135 +304,83 @@ export default function AuthenticationPage() {
           </Link>
         </div>
 
-        <Tabs defaultValue="login" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
+        <Tabs defaultValue="email" className="w-full">
+          <TabsList className="grid grid-cols-2 mb-4">
+            <TabsTrigger value="email">Login with Email</TabsTrigger>
+            <TabsTrigger value="phone">Login with Phone</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="login" className="space-y-4">
-            <div className="space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Welcome back
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Enter your credentials to access your account
-              </p>
-            </div>
+          <TabsContent value="email">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  className="bg-background"
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  className="bg-background"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
-                  className="bg-background"
                   id="password"
                   type="password"
+                  placeholder="Your password"
+                  className="bg-background"
                 />
               </div>
-              <div className="text-sm text-right">
-                <button
-                  onClick={() => setIsForgotPasswordOpen(true)}
-                  className="text-primary hover:underline"
-                >
-                  Forgot password?
-                </button>
-              </div>
-              <Button className="w-full" onClick={handleLogin}>
-                Login
-              </Button>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center"></div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="px-2 text-muted-foreground">
-                  Or continue with
-                </span>
+              <div className="flex justify-between items-center">
+                <Button onClick={handleLogin} className="w-full">
+                  Log in
+                </Button>
               </div>
             </div>
-            <Suspense fallback={<div>Loading...</div>}>
-              <DynamicAuthButtons />
-            </Suspense>
           </TabsContent>
 
-          <TabsContent value="register" className="space-y-4">
-            <div className="space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Create an account
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Enter your details below to create your account
-              </p>
-            </div>
+          <TabsContent value="phone">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="phone">Phone Number</Label>
                 <Input
-                  className="bg-background border-none"
-                  id="name"
-                  type="text"
-                  placeholder="John Doe"
+                  id="phone"
+                  type="tel"
+                  placeholder="+1 234 567 890"
+                  className="bg-background"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  className="bg-background border-none"
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  className="bg-background border-none"
-                  id="password"
-                  type="password"
-                />
-              </div>
-              <Button className="w-full">Create account</Button>
+              <Button onClick={handleLogin} className="w-full">
+                Send OTP
+              </Button>
             </div>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center"></div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className=" px-2 text-muted-foreground">
-                  Or Register with
-                </span>
-              </div>
-            </div>
-            <Suspense fallback={<div>Loading...</div>}>
-              {" "}
-              <DynamicAuthButtons />
-            </Suspense>
           </TabsContent>
         </Tabs>
 
-        <p className="mt-4 px-8 text-center text-xs text-muted-foreground">
-          By clicking continue, you agree to our{" "}
-          <Link
-            href="/terms"
-            className="underline underline-offset-4 hover:text-primary"
+        <div className="mt-4 text-center">
+          <Button
+            variant="link"
+            size="sm"
+            onClick={() => setIsForgotPasswordOpen(true)}
           >
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link
-            href="/privacy"
-            className="underline underline-offset-4 hover:text-primary"
-          >
-            Privacy Policy
-          </Link>
-          .
-        </p>
+            Forgot Password?
+          </Button>
+        </div>
 
+        <div className="flex justify-center mt-4">
+          <Suspense fallback={<div>Loading...</div>}>
+            <DynamicAuthButtons />
+          </Suspense>
+        </div>
+        <div className="mt-2 text-center">
+          <p className="text-sm">
+            Don't have an account?{" "}
+            <Link href="/register" passHref>
+              <Button variant="link" size="sm">
+                Create one
+              </Button>
+            </Link>
+          </p>
+        </div>
         <div className="mt-6 flex justify-center">
           <Button
             variant="outline"
@@ -407,8 +394,21 @@ export default function AuthenticationPage() {
         </div>
       </div>
 
-      <ResponsiveOTP />
-      <ResponsiveForgotPassword />
+      <ResponsiveOTP
+        isOpen={isOtpOpen}
+        onOpenChange={setIsOtpOpen}
+        otp={otp}
+        onOtpChange={handleOtpChange}
+        isOtpInvalid={isOtpInvalid}
+      />
+
+      <ResponsiveForgotPassword
+        isOpen={isForgotPasswordOpen}
+        onOpenChange={setIsForgotPasswordOpen}
+        email={forgotPasswordEmail}
+        onEmailChange={setForgotPasswordEmail}
+        onSubmit={handleForgotPassword}
+      />
     </div>
   );
 }
