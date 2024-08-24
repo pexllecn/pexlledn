@@ -1,5 +1,5 @@
 "use client";
-import AdCard from "./AdCard";
+import AdCard from "./adcard";
 import sampleData from "./sampleData.json";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
