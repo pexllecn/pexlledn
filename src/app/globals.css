@@ -114,3 +114,17 @@ body {
 .otp-input-error input {
   border-color: red;
 }
+
+.card.expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  border-radius: 0;
+  z-index: 1000;
+}

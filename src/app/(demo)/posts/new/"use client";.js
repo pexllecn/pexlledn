@@ -1,4 +1,216 @@
 "use client";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
+
+const data = [
+  {
+    id: "1",
+    category: "Productivity",
+    title: "Task Manager",
+    image:
+      "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80"
+  },
+  {
+    id: "2",
+    category: "Photo & Video",
+    title: "Photo Editor",
+    image:
+      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80"
+  },
+  {
+    id: "3",
+    category: "Food & Drink",
+    title: "Recipe Finder",
+    image:
+      "https://images.unsplash.com/photo-1495195134817-aeb325a55b65?w=500&q=80"
+  },
+  {
+    id: "4",
+    category: "Education",
+    title: "Language Learner",
+    image:
+      "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=500&q=80"
+  },
+  {
+    id: "5",
+    category: "Lifestyle",
+    title: "Meditation Guide",
+    image:
+      "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=500&q=80"
+  },
+  {
+    id: "6",
+    category: "Entertainment",
+    title: "Music Streamer",
+    image:
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80"
+  }
+];
+
+export default function Component() {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  return (
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-8">
+      <h1 className="text-2xl font-bold mb-6">App Store</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {data.map((item) => (
+          <motion.div
+            key={item.id}
+            layoutId={`card-${item.id}`}
+            onClick={() => setSelectedId(item.id)}
+            className="cursor-pointer rounded-2xl shadow-md overflow-hidden relative aspect-[3/4]"
+          >
+            <motion.img
+              layoutId={`image-${item.id}`}
+              src={item.image}
+              alt={`${item.title} app icon`}
+              className="w-full h-full object-cover"
+            />
+            <motion.div
+              layoutId={`gradient-${item.id}`}
+              className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
+            />
+            <motion.div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <motion.p
+                layoutId={`category-${item.id}`}
+                className="text-sm opacity-75 mb-1"
+              >
+                {item.category}
+              </motion.p>
+              <motion.h2
+                layoutId={`title-${item.id}`}
+                className="text-lg font-semibold"
+              >
+                {item.title}
+              </motion.h2>
+            </motion.div>
+          </motion.div>
+        ))}
+      </div>
+
+      <AnimatePresence>
+        {selectedId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setSelectedId(null)}
+          >
+            <motion.div
+              layoutId={`card-${selectedId}`}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {data.map((item) => {
+                if (item.id === selectedId) {
+                  return (
+                    <React.Fragment key={item.id}>
+                      <div className="relative">
+                        <motion.img
+                          layoutId={`image-${item.id}`}
+                          src={item.image}
+                          alt={`${item.title} app screenshot`}
+                          className="w-full aspect-video object-cover"
+                        />
+                        <motion.div
+                          layoutId={`gradient-${item.id}`}
+                          className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
+                        />
+                        <motion.div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                          <motion.p
+                            layoutId={`category-${item.id}`}
+                            className="text-sm opacity-75 mb-1"
+                          >
+                            {item.category}
+                          </motion.p>
+                          <motion.h2
+                            layoutId={`title-${item.id}`}
+                            className="text-2xl font-semibold"
+                          >
+                            {item.title}
+                          </motion.h2>
+                        </motion.div>
+                      </div>
+                      <motion.div className="p-6">
+                        <p className="text-gray-600 mb-4">
+                          Experience the power of {item.title.toLowerCase()}{" "}
+                          with our intuitive and feature-rich app. Designed to
+                          enhance your {item.category.toLowerCase()} experience,
+                          this app brings cutting-edge technology to your
+                          fingertips.
+                        </p>
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded-full w-full">
+                          Get
+                        </button>
+                      </motion.div>
+                    </React.Fragment>
+                  );
+                }
+                return null;
+              })}
+              <button
+                onClick={() => setSelectedId(null)}
+                className="absolute top-4 right-4 text-white hover:text-gray-200"
+                aria-label="Close"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client";
 
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";

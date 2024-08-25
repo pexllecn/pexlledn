@@ -48,6 +48,7 @@ import {
   X,
   ChevronDown
 } from "lucide-react";
+import Head from "next/head";
 
 export default function AccountPage() {
   const { theme, setTheme } = useTheme();
@@ -67,6 +68,9 @@ export default function AccountPage() {
 
   return (
     <ContentLayout title="Account">
+      <Head>
+        <title>Account Settings</title> {/* Add title for the browser tab */}
+      </Head>
       <motion.div
         initial="hidden"
         animate="visible"
