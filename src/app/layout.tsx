@@ -41,12 +41,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" suppressHydrationWarning>
       <body className={GeistSans.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BreadcrumbProvider>
-            <div className="flex flex-col min-h-screen">
-              <div className="flex-grow">{children}</div>
+            <div id="root" className="h-full overflow-auto">
+              {children}
             </div>
             <Toaster />
           </BreadcrumbProvider>
