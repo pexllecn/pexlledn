@@ -224,7 +224,7 @@ export default function DarkModeCompatibleProductListing() {
                       </TabsList>
                       <TabsContent
                         value="description"
-                        className="text-gray-600 dark:text-gray-300"
+                        className="text-sm text-gray-600 dark:text-gray-300"
                       >
                         <p>
                           Experience unparalleled performance and stunning
@@ -261,7 +261,7 @@ export default function DarkModeCompatibleProductListing() {
                       </TabsContent>
                       <TabsContent
                         value="condition"
-                        className="text-gray-600 dark:text-gray-300"
+                        className="text-sm text-gray-600 dark:text-gray-300"
                       >
                         <p className="mb-4">
                           This iMac is in excellent condition, showing minimal
@@ -350,16 +350,16 @@ export default function DarkModeCompatibleProductListing() {
                       </Badge>
                     </div>
                     <div className="space-y-4 mb-6">
-                      <div className="flex items-center text-gray-600 dark:text-gray-300">
-                        <MapPin className="w-5 h-5 mr-2 text-gray-400 dark:text-gray-500" />
+                      <div className="text-sm flex items-center text-gray-600 dark:text-gray-300">
+                        <MapPin className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>San Francisco, CA</span>
                       </div>
-                      <div className="flex items-center text-gray-600 dark:text-gray-300">
-                        <Calendar className="w-5 h-5 mr-2 text-gray-400 dark:text-gray-500" />
+                      <div className="text-sm flex items-center text-gray-600 dark:text-gray-300">
+                        <Calendar className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Posted on: August 22, 2023</span>
                       </div>
-                      <div className="flex items-center text-gray-600 dark:text-gray-300">
-                        <Monitor className="w-5 h-5 mr-2 text-gray-400 dark:text-gray-500" />
+                      <div className="text-sm flex items-center text-gray-600 dark:text-gray-300">
+                        <Monitor className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Condition: Used - Excellent</span>
                       </div>
                     </div>
