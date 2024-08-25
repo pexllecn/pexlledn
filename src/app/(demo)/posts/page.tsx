@@ -29,7 +29,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Info,
-  Check
+  Check,
+  MapPinIcon,
+  ClockIcon,
+  UserIcon
 } from "lucide-react";
 
 const MapComponent = () => (
@@ -454,35 +457,61 @@ export default function DarkModeCompatibleProductListing() {
               </div>
             </div>
 
-            <Card className="mt-8 bg-muted border-none">
+            <Card className="mt-8 border-none">
               <CardContent className="p-6">
                 <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
                   Similar Listings
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {[1, 2, 3, 4].map((item) => (
-                    <Card key={item} className="overflow-hidden">
-                      <img
-                        src={`https://picsum.photos/seed/${item}/300/200`}
-                        alt={`Similar item ${item}`}
-                        className="w-full h-40 object-cover"
-                      />
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
-                          iMac 21.5" (2019)
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                          Excellent condition, barely used
-                        </p>
-                        <div className="flex justify-between items-center">
-                          <span className="font-bold text-gray-900 dark:text-gray-100">
-                            $999
-                          </span>
-                          <Badge variant="secondary" className="text-xs">
-                            Used
-                          </Badge>
+                    <Card
+                      key={item}
+                      className="overflow-hidden relative h-[300px] sm:h-[350px]"
+                    >
+                      <div className="relative w-full h-full">
+                        <img
+                          src={`https://picsum.photos/seed/${item}/300/400`}
+                          alt={`Similar item ${item}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+                        <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
+                          <div className="flex justify-between items-start">
+                            <Badge className="bg-black/80 text-white text-xs">
+                              Used
+                            </Badge>
+                            <Badge
+                              variant="secondary"
+                              className="bg-white/60 text-sm font-bold text-black"
+                            >
+                              $999
+                            </Badge>
+                          </div>
+                          <div className="mt-auto">
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
+                              iMac 21.5" (2019)
+                            </h3>
+                            <p className="text-white/90 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
+                              Excellent condition, barely used. Perfect for home
+                              office or creative work.
+                            </p>
+                            <div className="flex flex-wrap gap-2 sm:gap-3 text-xs text-white/80 mb-2 sm:mb-4">
+                              <div className="flex items-center gap-1">
+                                <MapPinIcon className="w-3 h-3" />
+                                <span>San Francisco, CA</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ClockIcon className="w-3 h-3" />
+                                <span>{new Date().toLocaleDateString()}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <UserIcon className="w-3 h-3" />
+                                <span>John Doe</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   ))}
                 </div>
