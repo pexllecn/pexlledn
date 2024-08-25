@@ -1,8 +1,9 @@
 "use client";
 import AdCard from "./adcard";
+import { motion } from "framer-motion";
 import sampleData from "./sampleData.json";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -14,27 +15,14 @@ import { Input } from "@/components/ui/input";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
 import {
   LayoutGridIcon,
   ListIcon,
   MapPinIcon,
-  ClockIcon,
-  UserIcon,
   DollarSignIcon,
   SearchIcon
 } from "lucide-react";
-
-const variants1 = {
-  hidden: { filter: "blur(10px)", opacity: 0 },
-  visible: { filter: "blur(0px)", opacity: 1 }
-};
 
 export default function Component() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -43,6 +31,11 @@ export default function Component() {
   const [sortBy, setSortBy] = useState("date");
   const [filteredAds, setFilteredAds] = useState(sampleData.ads);
   const [featuredAd, setFeaturedAd] = useState(sampleData.ads[0]);
+
+  const variants = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 }
+  };
 
   const filterAds = useCallback(() => {
     const filtered = sampleData.ads
@@ -78,23 +71,25 @@ export default function Component() {
 
   const FeaturedAdCard = useMemo(
     () => (
-      <Card className="mb-6 sm:mb-12 overflow-hidden shadow-lg rounded-lg">
-        <div className="relative h-48 sm:h-60 md:h-80">
-          <img
+      <Card className="mb-4 sm:mb-6 overflow-hidden shadow-lg rounded-lg">
+        <div className="relative h-48 sm:h-60">
+          <Image
             src={featuredAd.image}
             alt={featuredAd.title}
-            className="w-full h-full object-cover"
+            layout="fill"
+            objectFit="cover"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white">
+          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
             <Badge className="mb-1 sm:mb-2">{featuredAd.category}</Badge>
-            <h2 className="text-lg sm:text-xl md:text-3xl font-bold mb-1 sm:mb-2">
+            <h2 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">
               Featured: {featuredAd.title}
             </h2>
-            <p className="mb-2 sm:mb-4 text-xs sm:text-sm md:text-base line-clamp-2">
+            <p className="mb-2 text-xs sm:text-sm line-clamp-2">
               {featuredAd.description}
             </p>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+            <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
               <div className="flex items-center gap-1">
                 <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>{featuredAd.location}</span>
@@ -115,29 +110,18 @@ export default function Component() {
 
   const CategoryButtons = useMemo(
     () => (
-      <div className="w-full sm:w-auto flex space-x-1 bg-background rounded-lg overflow-x-auto px-2 py-1">
+      <div className="w-full sm:w-auto flex flex-wrap gap-2 bg-background rounded-lg overflow-x-auto p-2">
         {sampleData.categories.map((category) => (
           <button
             key={category}
-            className={`relative px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium outline-none whitespace-nowrap ${
+            className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-full ${
               activeCategory === category
-                ? "text-secondary"
-                : "text-gray-500 hover:text-foreground"
+                ? "bg-foreground text-background"
+                : "bg-muted text-foreground hover:bg-muted-foreground hover:text-background"
             }`}
             onClick={() => setActiveCategory(category)}
           >
-            {activeCategory === category && (
-              <motion.div
-                className="absolute inset-0 bg-foreground rounded-full z-0"
-                layoutId="activeBackground"
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 30
-                }}
-              />
-            )}
-            <span className="relative z-10">{category}</span>
+            {category}
           </button>
         ))}
       </div>
@@ -151,12 +135,13 @@ export default function Component() {
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.4 }}
-        variants={variants1}
+        variants={variants}
+        className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
           {FeaturedAdCard}
 
-          <div className="mb-6 sm:mb-12">
+          <div className="mb-4 sm:mb-6">
             <div className="relative max-w-3xl mx-auto">
               <Input
                 placeholder="Search for anything..."
@@ -168,7 +153,7 @@ export default function Component() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-6 sm:mb-8 gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-4 sm:mb-6 gap-4">
             {CategoryButtons}
             <div className="flex items-center gap-2">
               <Select value={sortBy} onValueChange={setSortBy}>
@@ -180,55 +165,35 @@ export default function Component() {
                   <SelectItem value="price">Price (Highest first)</SelectItem>
                 </SelectContent>
               </Select>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={isGridView ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setIsGridView(true)}
-                      className="border-gray-300 dark:border-gray-700"
-                    >
-                      <LayoutGridIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Grid view</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={!isGridView ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setIsGridView(false)}
-                      className="border-gray-300 dark:border-gray-700"
-                    >
-                      <ListIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>List view</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Button
+                variant={isGridView ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setIsGridView(true)}
+                className="border-gray-300 dark:border-gray-700"
+              >
+                <LayoutGridIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+              <Button
+                variant={!isGridView ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setIsGridView(false)}
+                className="border-gray-300 dark:border-gray-700"
+              >
+                <ListIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
             </div>
           </div>
 
           <div
-            className={`grid gap-4 sm:gap-6 md:gap-8 ${
+            className={`grid gap-4 sm:gap-6 ${
               isGridView
                 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 : "grid-cols-1"
             }`}
           >
-            <AnimatePresence>
-              {filteredAds.map((ad) => (
-                <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
-              ))}
-            </AnimatePresence>
+            {filteredAds.map((ad) => (
+              <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
+            ))}
           </div>
         </div>
       </motion.div>
