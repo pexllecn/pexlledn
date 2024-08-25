@@ -69,7 +69,7 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "outline" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-10 mb-1 ",
+                                "w-full justify-start h-10 mb-1 p-3",
                                 !active && "text-muted-foreground font-normal"
                               )}
                               asChild

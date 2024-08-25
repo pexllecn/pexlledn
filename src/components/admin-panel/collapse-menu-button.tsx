@@ -59,7 +59,7 @@ export function CollapseMenuButton({
         <Button
           variant={active ? "outline" : "ghost"}
           className={cn(
-            "w-full justify-start h-10 mb-1 hover:bg-muted",
+            "w-full justify-start h-10 mb-1 hover:bg-muted ",
             !active && "text-muted-foreground font-normal"
           )}
         >
@@ -136,7 +136,7 @@ export function CollapseMenuButton({
             <DropdownMenuTrigger asChild>
               <Button
                 variant={active ? "outline" : "ghost"}
-                className="w-full justify-start h-10 mb-1 hover:bg-muted"
+                className="w-full justify-start h-10 mb-1 hover:bg-muted p-3"
               >
                 <div className="w-full items-center flex justify-between">
                   <div className="flex items-center">
