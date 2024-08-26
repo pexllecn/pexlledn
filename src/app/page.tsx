@@ -76,8 +76,8 @@ export default function HomePage() {
                 <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
               </AnimatedGradientText>
             </div>
-            <span className="text-center text-5xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
-              <span className="text-gradient_indigo-purple font-bold">
+            <span className="text-center text-5xl font-normal leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
+              <span className="text-gradient_indigo-purple font-normal">
                 Build your {""}
               </span>
               website Beautifully.
@@ -140,7 +140,7 @@ export default function HomePage() {
               href="https://ui.shadcn.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium underline underline-offset-4"
+              className="font-normal underline underline-offset-4"
             >
               shadcn/ui
             </Link>
@@ -149,7 +149,7 @@ export default function HomePage() {
               href="https://github.com/pexllecn?tab=repositories"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium underline underline-offset-4"
+              className="font-normal underline underline-offset-4"
             >
               GitHub
             </Link>

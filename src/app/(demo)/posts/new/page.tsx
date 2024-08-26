@@ -20,8 +20,8 @@ const data = [
       "Smart task categorization",
       "Customizable reminders",
       "Progress tracking",
-      "Collaboration tools"
-    ]
+      "Collaboration tools",
+    ],
   },
   {
     id: "2",
@@ -37,8 +37,8 @@ const data = [
       "Advanced filters",
       "Layer support",
       "AI-powered enhancements",
-      "Social media integration"
-    ]
+      "Social media integration",
+    ],
   },
   {
     id: "3",
@@ -54,8 +54,8 @@ const data = [
       "Personalized recommendations",
       "Dietary filters",
       "Step-by-step instructions",
-      "Meal planning"
-    ]
+      "Meal planning",
+    ],
   },
   {
     id: "4",
@@ -71,8 +71,8 @@ const data = [
       "Speech recognition",
       "Adaptive learning",
       "Offline mode",
-      "Cultural insights"
-    ]
+      "Cultural insights",
+    ],
   },
   {
     id: "5",
@@ -88,8 +88,8 @@ const data = [
       "Guided sessions",
       "Sleep stories",
       "Ambient sounds",
-      "Progress tracking"
-    ]
+      "Progress tracking",
+    ],
   },
   {
     id: "6",
@@ -105,15 +105,15 @@ const data = [
       "Personalized playlists",
       "Offline listening",
       "Lyrics display",
-      "Social sharing"
-    ]
-  }
+      "Social sharing",
+    ],
+  },
 ];
 
 const transitionProps = {
   type: "spring",
   stiffness: 300,
-  damping: 30
+  damping: 30,
 };
 
 export default function Component() {
@@ -126,7 +126,7 @@ export default function Component() {
 
   return (
     <div className="w-full max-w-3xl mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-6">App Store</h1>
+      <h1 className="text-3xl font-normal mb-6">App Store</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {data.map((item) => (
           <motion.div
@@ -161,7 +161,7 @@ export default function Component() {
               </motion.p>
               <motion.h2
                 layoutId={`title-${item.id}`}
-                className="text-lg font-semibold"
+                className="text-lg font-normal"
                 transition={transitionProps}
               >
                 {item.title}
@@ -216,7 +216,7 @@ export default function Component() {
                           </motion.p>
                           <motion.h2
                             layoutId={`title-${item.id}`}
-                            className="text-2xl font-semibold"
+                            className="text-2xl font-normal"
                             transition={transitionProps}
                           >
                             {item.title}
@@ -249,7 +249,7 @@ export default function Component() {
                         </div>
                         <p className="text-gray-600 mb-4">{item.description}</p>
                         <div className="mb-4">
-                          <h3 className="font-semibold mb-2">Key Features:</h3>
+                          <h3 className="font-normal mb-2">Key Features:</h3>
                           <ul className="list-disc list-inside">
                             {item.features.map((feature, index) => (
                               <li key={index} className="text-sm text-gray-600">

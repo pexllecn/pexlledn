@@ -10,14 +10,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
   MoreHorizontalIcon,
   UserPlusIcon,
   MailIcon,
-  TrashIcon
+  TrashIcon,
 } from "lucide-react";
 
 interface UserCardProps {
@@ -47,24 +47,17 @@ export const UserCard: React.FC<UserCardProps> = React.memo(
           <div className="flex-1 min-w-0">
             <Link
               href={`/user/${user.id}`}
-              className="text-sm font-semibold hover:underline hover:text-ring truncate block"
+              className="text-sm font-normal hover:underline hover:text-ring truncate block"
             >
               {user.name}
             </Link>
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-sm text-muted-foreground truncate">
               {user.email}
             </p>
-            <div className="flex flex-wrap items-center mt-1 gap-1">
-              <Badge variant="default" className="text-xs">
-                {user.role}
-              </Badge>
-              <Badge variant="secondary" className="text-xs">
-                {user.department}
-              </Badge>
-              <Badge
-                variant={user.status === "Active" ? "success" : "destructive"}
-                className="text-xs"
-              >
+            <div className="text-xs flex flex-wrap items-center mt-1 gap-1">
+              <Badge variant="default">{user.role}</Badge>
+              <Badge variant="info">{user.department}</Badge>
+              <Badge variant={user.status === "Active" ? "success" : "decline"}>
                 {user.status}
               </Badge>
             </div>

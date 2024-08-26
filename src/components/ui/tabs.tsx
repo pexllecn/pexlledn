@@ -54,9 +54,9 @@ const TabsList = React.forwardRef<
           setBackgroundStyle({
             width: `${activeTabElement.clientWidth}px`,
             transform: `translateX(${activeTabElement.offsetLeft}px)`,
-            height: "calc(100% - 0.5rem)", // Subtracting 0.5rem (8px) for padding
-            top: "0.25rem", // Adding 0.25rem (4px) top padding
-            transition: "all 0.3s ease"
+            height: "calc(100% - 0.6rem)", // Subtracting 0.5rem (8px) for padding
+            top: "0.3rem", // Adding 0.25rem (4px) top padding
+            transition: "all 0.3s ease",
           });
         }
       }
@@ -84,7 +84,7 @@ const TabsList = React.forwardRef<
     <TabsPrimitive.List
       ref={combinedRef}
       className={cn(
-        "inline-flex h-10 items-center justify-center rounded-[calc(var(--radius)-0.25rem)] bg-muted p-1 text-muted-foreground relative",
+        "inline-flex h-10 items-center justify-center rounded-[calc(var(--radius)-0.05rem)] bg-muted p-1 text-muted-foreground relative",
         className
       )}
       {...props}
@@ -106,7 +106,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground relative z-10",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] px-3 py-1.5 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground relative z-10",
       className
     )}
     {...props}

@@ -8,13 +8,13 @@ import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-  TooltipProvider
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 type Submenu = {
@@ -44,7 +44,7 @@ export function CollapseMenuButton({
   label,
   active,
   submenus,
-  isOpen
+  isOpen,
 }: CollapseMenuButtonProps) {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
@@ -105,7 +105,7 @@ export function CollapseMenuButton({
             variant={active ? "outline" : "ghost"}
             className={cn(
               "w-full justify-start h-10 mb-1",
-              !active && "text-muted-foreground font-normal"
+              !active && "text-muted-foreground"
             )}
             asChild
           >

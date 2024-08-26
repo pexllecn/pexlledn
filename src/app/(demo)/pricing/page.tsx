@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 // Custom CheckIcon component
 const CheckIcon = ({ className }: { className?: string }) => (
@@ -46,7 +47,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
   isHighlighted,
   billingPeriod,
   isDisabled,
-  hideBillingPeriod
+  hideBillingPeriod,
 }) => (
   <div
     className={`rounded-lg overflow-hidden border ${
@@ -54,11 +55,11 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
     } flex flex-col h-full`}
   >
     <div className="bg-muted p-6 flex flex-col h-[250px]">
-      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      <h2 className="text-2xl font-normal mb-2">{title}</h2>
       <p className="text-sm text-muted-foreground font-light mb-4 flex-grow">
         {description}
       </p>
-      <p className="text-3xl font-bold mb-4">
+      <p className="text-3xl font-normal mb-4">
         {billingPeriod === "monthly" ? monthlyPrice : annualPrice}
         {!hideBillingPeriod && (
           <span className="text-lg font-normal text-muted-foreground">
@@ -89,9 +90,9 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
               {feature.text}
             </span>
             {feature.isNew && (
-              <span className="ml-2 bg-teal-400/10 text-teal-400 text-xs px-2 py-0.5 rounded-full font-medium">
+              <Badge className="ml-2" variant="teal">
                 New
-              </span>
+              </Badge>
             )}
           </li>
         ))}
@@ -111,7 +112,7 @@ export default function PricingPage() {
 
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 }
+    visible: { filter: "blur(0px)", opacity: 1 },
   };
 
   return (
@@ -123,7 +124,7 @@ export default function PricingPage() {
         variants={variants1}
       >
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-4xl font-bold text-center mb-4">Pricing</h1>
+          <h1 className="text-4xl font-normal text-center mb-4">Pricing</h1>
           <p className="text-center text-muted-foreground font-light mb-8 max-w-3xl mx-auto">
             We want to empower every builder to learn coding best practices,
             create beautiful interfaces, and fully functioning apps. From
@@ -159,7 +160,7 @@ export default function PricingPage() {
               annualPrice="$0"
               features={[
                 { text: "Access to v0.dev/chat", isNew: true },
-                { text: "200 credits/month" }
+                { text: "200 credits/month" },
               ]}
               buttonText="Current Plan"
               isCurrentPlan={true}
@@ -178,7 +179,7 @@ export default function PricingPage() {
                 { text: "Optional credits purchase" },
                 { text: "Vision generations" },
                 { text: "Custom themes" },
-                { text: "Private generations" }
+                { text: "Private generations" },
               ]}
               buttonText="Choose Premium"
               isHighlighted={true}
@@ -198,7 +199,7 @@ export default function PricingPage() {
                 { text: "Custom themes" },
                 { text: "Private generations" },
                 { text: "SAML SSO" },
-                { text: "7 other features" }
+                { text: "7 other features" },
               ]}
               buttonText="Talk to Sales"
               billingPeriod={billingPeriod}

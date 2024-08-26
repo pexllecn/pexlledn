@@ -48,14 +48,14 @@ const AdCard: React.FC<AdCardProps> = React.memo(({ ad, isGridView }) => {
               {ad.price && (
                 <Badge
                   variant="secondary"
-                  className="bg-white/60 text-sm font-bold text-black"
+                  className="bg-white/60 text-sm font-normal text-black"
                 >
                   ${ad.price}
                 </Badge>
               )}
             </div>
             <div className="mt-auto">
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
+              <h2 className="text-lg sm:text-xl font-normal text-white mb-1 sm:mb-2 line-clamp-2">
                 {ad.title}
               </h2>
               <p className="text-white/90 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
@@ -105,7 +105,7 @@ const AdCard: React.FC<AdCardProps> = React.memo(({ ad, isGridView }) => {
           </div>
           <div className="flex flex-col flex-grow">
             <CardContent className="p-3 sm:p-4 flex-grow">
-              <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2 line-clamp-1">
+              <h2 className="text-base sm:text-lg font-normal text-foreground mb-1 sm:mb-2 line-clamp-1">
                 {ad.title}
               </h2>
               <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">

@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter
+  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,14 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
   SelectContent,
-  SelectItem
+  SelectItem,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   User,
@@ -46,7 +46,7 @@ import {
   Smartphone,
   Globe,
   X,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
 import Head from "next/head";
 
@@ -56,14 +56,14 @@ export default function AccountPage() {
 
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 }
+    visible: { filter: "blur(0px)", opacity: 1 },
   };
 
   const tabOptions = [
     { value: "profile", label: "Profile" },
     { value: "notifications", label: "Notifications" },
     { value: "preferences", label: "Preferences" },
-    { value: "security", label: "Security" }
+    { value: "security", label: "Security" },
   ];
 
   return (
@@ -80,7 +80,7 @@ export default function AccountPage() {
         <div className="container mx-auto p-4 sm:p-6 max-w-4xl">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">
+              <h1 className="text-2xl sm:text-3xl font-normal">
                 Account Settings
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground">
@@ -216,7 +216,7 @@ export default function AccountPage() {
                         className="flex items-center justify-between"
                       >
                         <div>
-                          <h3 className="font-medium">{type} Notifications</h3>
+                          <h3 className="font-normal">{type} Notifications</h3>
                           <p className="text-sm text-muted-foreground">
                             Receive {type.toLowerCase()} notifications
                           </p>
@@ -226,12 +226,12 @@ export default function AccountPage() {
                     ))}
                   </div>
                   <div className="space-y-4">
-                    <h3 className="font-medium">Notification Categories</h3>
+                    <h3 className="font-normal">Notification Categories</h3>
                     {[
                       "Account activity",
                       "New features",
                       "Marketing",
-                      "Security alerts"
+                      "Security alerts",
                     ].map((category) => (
                       <div
                         key={category}
@@ -262,7 +262,7 @@ export default function AccountPage() {
                 <CardContent className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-medium">Theme</h3>
+                      <h3 className="font-normal">Theme</h3>
                       <p className="text-sm text-muted-foreground">
                         Choose your preferred theme
                       </p>
@@ -362,7 +362,7 @@ export default function AccountPage() {
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-medium">
+                        <h3 className="font-normal">
                           Two-Factor Authentication
                         </h3>
                         <p className="text-sm text-muted-foreground">
@@ -399,13 +399,13 @@ export default function AccountPage() {
                       {
                         device: "MacBook Pro",
                         location: "San Francisco, CA",
-                        lastActive: "2 minutes ago"
+                        lastActive: "2 minutes ago",
                       },
                       {
                         device: "iPhone 12",
                         location: "New York, NY",
-                        lastActive: "1 hour ago"
-                      }
+                        lastActive: "1 hour ago",
+                      },
                     ].map((session, index) => (
                       <div
                         key={index}
@@ -416,7 +416,7 @@ export default function AccountPage() {
                             <Smartphone className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <h3 className="font-medium text-sm">
+                            <h3 className="font-normal text-sm">
                               {session.device}
                             </h3>
                             <p className="text-xs text-muted-foreground">

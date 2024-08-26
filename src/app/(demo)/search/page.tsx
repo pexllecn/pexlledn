@@ -91,7 +91,7 @@ export default function SearchPage() {
           <CardTitle className="flex items-center">
             <Link
               href={href}
-              className="text-xl font-semibold hover:underline flex-grow"
+              className="text-xl font-normal hover:underline flex-grow"
             >
               {result.title}
             </Link>
@@ -164,7 +164,7 @@ export default function SearchPage() {
 
         {results && (
           <>
-            <h1 className="text-3xl font-bold mb-6 text-center">
+            <h1 className="text-3xl font-normal mb-6 text-center">
               Search Results for &#34;{query}&#34;
             </h1>
             {results.results.length > 0 ? (

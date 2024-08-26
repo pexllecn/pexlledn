@@ -9,14 +9,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
   MoreHorizontalIcon,
   UserPlusIcon,
   MailIcon,
-  TrashIcon
+  TrashIcon,
 } from "lucide-react";
 
 interface UserListItemProps {
@@ -48,8 +48,8 @@ export const UserListItem: React.FC<UserListItemProps> = React.memo(
       </div>
       <div className="flex items-center space-x-2">
         <Badge variant="default">{user.role}</Badge>
-        <Badge variant="secondary">{user.department}</Badge>
-        <Badge variant={user.status === "Active" ? "success" : "destructive"}>
+        <Badge variant="info">{user.department}</Badge>
+        <Badge variant={user.status === "Active" ? "success" : "decline"}>
           {user.status}
         </Badge>
       </div>

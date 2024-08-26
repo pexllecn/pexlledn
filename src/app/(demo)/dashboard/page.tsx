@@ -11,7 +11,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { TrendingUp } from "lucide-react";
@@ -23,7 +23,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Download } from "lucide-react";
@@ -37,7 +37,7 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
   Card,
@@ -45,7 +45,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import {
   Area,
@@ -63,7 +63,7 @@ import {
   Rectangle,
   ReferenceLine,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 
 import { motion } from "framer-motion";
@@ -72,15 +72,15 @@ import { useMemo, useState } from "react";
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--chart-1))"
+    color: "hsl(var(--chart-1))",
   },
   mobile: {
     label: "Mobile",
-    color: "hsl(var(--chart-2))"
+    color: "hsl(var(--chart-2))",
   },
   views: {
-    label: "Page Views"
-  }
+    label: "Page Views",
+  },
 } satisfies ChartConfig;
 
 const chartData = [
@@ -180,7 +180,7 @@ const chartData = [
   { date: "2024-06-27", desktop: 448, mobile: 490 },
   { date: "2024-06-28", desktop: 149, mobile: 200 },
   { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 }
+  { date: "2024-06-30", desktop: 446, mobile: 400 },
 ];
 
 export default function DashboardPage() {
@@ -192,14 +192,14 @@ export default function DashboardPage() {
   const total = useMemo(
     () => ({
       desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0)
+      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
     }),
     []
   );
 
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 }
+    visible: { filter: "blur(0px)", opacity: 1 },
   };
 
   function TodoForm({ className }: React.ComponentProps<"form">) {
@@ -279,9 +279,7 @@ export default function DashboardPage() {
       >
         <div className="flex-1 space-y-4 p-4 pt-6">
           <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Hi Khaled, Welcome back 👋
-            </h2>
+            <h2 className="text-3xl font-normal">Hi Khaled, Welcome back 👋</h2>
             <div className="hidden md:flex items-center space-x-2">
               <CalendarDateRangePicker />
               <Button
@@ -292,8 +290,8 @@ export default function DashboardPage() {
                     description: "Sunday, December 03, 2023 at 9:00 AM",
                     action: {
                       label: "Undo",
-                      onClick: () => console.log("Undo")
-                    }
+                      onClick: () => console.log("Undo"),
+                    },
                   })
                 }
               >
@@ -302,8 +300,8 @@ export default function DashboardPage() {
               <DrawerDialogDemo />
             </div>
           </div>
-          <Tabs defaultValue="overview" className="space-y-4 font-">
-            <TabsList className="font-thin">
+          <Tabs defaultValue="overview" className="space-y-4">
+            <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="reports">Reports</TabsTrigger>
@@ -313,7 +311,7 @@ export default function DashboardPage() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card className="bg-muted border-none">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm font-normal">
                       Total Revenue
                     </CardTitle>
                     <svg
@@ -330,7 +328,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
+                    <div className="text-2xl font-normal">$45,231.89</div>
                     <p className="text-xs text-muted-foreground">
                       +20.1% from last month
                     </p>
@@ -338,7 +336,7 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="bg-muted border-none">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm font-normal">
                       Subscriptions
                     </CardTitle>
                     <svg
@@ -357,7 +355,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-[#ff646c]">
+                    <div className="text-2xl font-normal text-[#ff646c]">
                       -350
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -367,7 +365,7 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="bg-muted border-none">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                    <CardTitle className="text-sm font-normal">Sales</CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -383,7 +381,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-[#11c678]">
+                    <div className="text-2xl font-normal text-[#11c678]">
                       +12,234
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -393,7 +391,7 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="bg-muted border-none">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm font-normal">
                       Active Now
                     </CardTitle>
                     <svg
@@ -410,7 +408,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+573</div>
+                    <div className="text-2xl font-normal">+573</div>
                     <p className="text-xs text-muted-foreground">
                       +21 since last hour
                     </p>
@@ -439,7 +437,7 @@ export default function DashboardPage() {
                             <span className="text-xs text-muted-foreground">
                               {chartConfig[chart].label}
                             </span>
-                            <span className="text-lg font-bold leading-none sm:text-3xl">
+                            <span className="text-lg font-normal leading-none sm:text-3xl">
                               {total[
                                 key as keyof typeof total
                               ].toLocaleString()}
@@ -459,7 +457,7 @@ export default function DashboardPage() {
                         data={chartData}
                         margin={{
                           left: 12,
-                          right: 12
+                          right: 12,
                         }}
                       >
                         <CartesianGrid vertical={false} />
@@ -473,7 +471,7 @@ export default function DashboardPage() {
                             const date = new Date(value);
                             return date.toLocaleDateString("en-US", {
                               month: "short",
-                              day: "numeric"
+                              day: "numeric",
                             });
                           }}
                         />
@@ -488,7 +486,7 @@ export default function DashboardPage() {
                                   {
                                     month: "short",
                                     day: "numeric",
-                                    year: "numeric"
+                                    year: "numeric",
                                   }
                                 );
                               }}
@@ -537,7 +535,7 @@ export default function DashboardPage() {
                             <span className="text-xs text-muted-foreground">
                               {chartConfig[chart].label}
                             </span>
-                            <span className="text-lg font-bold leading-none sm:text-3xl">
+                            <span className="text-lg font-normal leading-none sm:text-3xl">
                               {total[
                                 key as keyof typeof total
                               ].toLocaleString()}
@@ -557,7 +555,7 @@ export default function DashboardPage() {
                         data={chartData}
                         margin={{
                           left: 12,
-                          right: 12
+                          right: 12,
                         }}
                       >
                         <CartesianGrid vertical={false} />
@@ -571,7 +569,7 @@ export default function DashboardPage() {
                             const date = new Date(value);
                             return date.toLocaleDateString("en-US", {
                               month: "short",
-                              day: "numeric"
+                              day: "numeric",
                             });
                           }}
                         />
@@ -586,7 +584,7 @@ export default function DashboardPage() {
                                   {
                                     month: "short",
                                     day: "numeric",
-                                    year: "numeric"
+                                    year: "numeric",
                                   }
                                 );
                               }}
@@ -638,45 +636,45 @@ export default function DashboardPage() {
                         config={{
                           steps: {
                             label: "Steps",
-                            color: "hsl(var(--chart-1))"
-                          }
+                            color: "hsl(var(--chart-1))",
+                          },
                         }}
                       >
                         <BarChart
                           accessibilityLayer
                           margin={{
                             left: -4,
-                            right: -4
+                            right: -4,
                           }}
                           data={[
                             {
                               date: "2024-01-01",
-                              steps: 2000
+                              steps: 2000,
                             },
                             {
                               date: "2024-01-02",
-                              steps: 2100
+                              steps: 2100,
                             },
                             {
                               date: "2024-01-03",
-                              steps: 2200
+                              steps: 2200,
                             },
                             {
                               date: "2024-01-04",
-                              steps: 1300
+                              steps: 1300,
                             },
                             {
                               date: "2024-01-05",
-                              steps: 1400
+                              steps: 1400,
                             },
                             {
                               date: "2024-01-06",
-                              steps: 2500
+                              steps: 2500,
                             },
                             {
                               date: "2024-01-07",
-                              steps: 1600
-                            }
+                              steps: 1600,
+                            },
                           ]}
                         >
                           <Bar
@@ -695,7 +693,7 @@ export default function DashboardPage() {
                               return new Date(value).toLocaleDateString(
                                 "en-US",
                                 {
-                                  weekday: "short"
+                                  weekday: "short",
                                 }
                               );
                             }}
@@ -711,7 +709,7 @@ export default function DashboardPage() {
                                     {
                                       day: "numeric",
                                       month: "long",
-                                      year: "numeric"
+                                      year: "numeric",
                                     }
                                   );
                                 }}
@@ -746,14 +744,14 @@ export default function DashboardPage() {
                     <CardFooter className="flex-col items-start gap-1">
                       <CardDescription>
                         Over the past 7 days, you have walked{" "}
-                        <span className="font-medium text-foreground">
+                        <span className="font-normal text-foreground">
                           53,305
                         </span>{" "}
                         steps.
                       </CardDescription>
                       <CardDescription>
                         You need{" "}
-                        <span className="font-medium text-foreground">
+                        <span className="font-normal text-foreground">
                           12,584
                         </span>{" "}
                         more steps to reach your goal.
@@ -789,8 +787,8 @@ export default function DashboardPage() {
                         config={{
                           resting: {
                             label: "Resting",
-                            color: "hsl(var(--chart-1))"
-                          }
+                            color: "hsl(var(--chart-1))",
+                          },
                         }}
                         className="w-full"
                       >
@@ -799,37 +797,37 @@ export default function DashboardPage() {
                           margin={{
                             left: 14,
                             right: 14,
-                            top: 10
+                            top: 10,
                           }}
                           data={[
                             {
                               date: "2024-01-01",
-                              resting: 62
+                              resting: 62,
                             },
                             {
                               date: "2024-01-02",
-                              resting: 72
+                              resting: 72,
                             },
                             {
                               date: "2024-01-03",
-                              resting: 35
+                              resting: 35,
                             },
                             {
                               date: "2024-01-04",
-                              resting: 62
+                              resting: 62,
                             },
                             {
                               date: "2024-01-05",
-                              resting: 52
+                              resting: 52,
                             },
                             {
                               date: "2024-01-06",
-                              resting: 62
+                              resting: 62,
                             },
                             {
                               date: "2024-01-07",
-                              resting: 70
-                            }
+                              resting: 70,
+                            },
                           ]}
                         >
                           <CartesianGrid
@@ -851,7 +849,7 @@ export default function DashboardPage() {
                               return new Date(value).toLocaleDateString(
                                 "en-US",
                                 {
-                                  weekday: "short"
+                                  weekday: "short",
                                 }
                               );
                             }}
@@ -866,7 +864,7 @@ export default function DashboardPage() {
                             activeDot={{
                               fill: "var(--color-resting)",
                               stroke: "var(--color-resting)",
-                              r: 4
+                              r: 4,
                             }}
                           />
                           <ChartTooltip
@@ -879,7 +877,7 @@ export default function DashboardPage() {
                                     {
                                       day: "numeric",
                                       month: "long",
-                                      year: "numeric"
+                                      year: "numeric",
                                     }
                                   );
                                 }}
@@ -905,7 +903,7 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent className="grid gap-4">
                       <div className="grid auto-rows-min gap-2">
-                        <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                        <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                           12,453
                           <span className="text-sm font-normal text-muted-foreground">
                             steps/day
@@ -915,8 +913,8 @@ export default function DashboardPage() {
                           config={{
                             steps: {
                               label: "Steps",
-                              color: "hsl(var(--chart-1))"
-                            }
+                              color: "hsl(var(--chart-1))",
+                            },
                           }}
                           className="aspect-auto h-[32px] w-full"
                         >
@@ -927,13 +925,13 @@ export default function DashboardPage() {
                               left: 0,
                               top: 0,
                               right: 0,
-                              bottom: 0
+                              bottom: 0,
                             }}
                             data={[
                               {
                                 date: "2024",
-                                steps: 12435
-                              }
+                                steps: 12435,
+                              },
                             ]}
                           >
                             <Bar
@@ -961,7 +959,7 @@ export default function DashboardPage() {
                         </ChartContainer>
                       </div>
                       <div className="grid auto-rows-min gap-2">
-                        <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                        <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                           10,103
                           <span className="text-sm font-normal text-muted-foreground">
                             steps/day
@@ -971,8 +969,8 @@ export default function DashboardPage() {
                           config={{
                             steps: {
                               label: "Steps",
-                              color: "hsl(var(--muted))"
-                            }
+                              color: "hsl(var(--muted))",
+                            },
                           }}
                           className="aspect-auto h-[32px] w-full"
                         >
@@ -983,13 +981,13 @@ export default function DashboardPage() {
                               left: 0,
                               top: 0,
                               right: 0,
-                              bottom: 0
+                              bottom: 0,
                             }}
                             data={[
                               {
                                 date: "2023",
-                                steps: 10103
-                              }
+                                steps: 10103,
+                              },
                             ]}
                           >
                             <Bar
@@ -1030,7 +1028,7 @@ export default function DashboardPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-0">
-                      <div className="flex items-baseline gap-1 text-3xl font-bold tabular-nums leading-none">
+                      <div className="flex items-baseline gap-1 text-3xl font-normal tabular-nums leading-none">
                         12.5
                         <span className="text-sm font-normal text-muted-foreground">
                           miles/day
@@ -1040,8 +1038,8 @@ export default function DashboardPage() {
                         config={{
                           steps: {
                             label: "Steps",
-                            color: "hsl(var(--chart-1))"
-                          }
+                            color: "hsl(var(--chart-1))",
+                          },
                         }}
                         className="ml-auto w-[72px]"
                       >
@@ -1051,37 +1049,37 @@ export default function DashboardPage() {
                             left: 0,
                             right: 0,
                             top: 0,
-                            bottom: 0
+                            bottom: 0,
                           }}
                           data={[
                             {
                               date: "2024-01-01",
-                              steps: 2000
+                              steps: 2000,
                             },
                             {
                               date: "2024-01-02",
-                              steps: 2100
+                              steps: 2100,
                             },
                             {
                               date: "2024-01-03",
-                              steps: 2200
+                              steps: 2200,
                             },
                             {
                               date: "2024-01-04",
-                              steps: 1300
+                              steps: 1300,
                             },
                             {
                               date: "2024-01-05",
-                              steps: 1400
+                              steps: 1400,
                             },
                             {
                               date: "2024-01-06",
-                              steps: 2500
+                              steps: 2500,
                             },
                             {
                               date: "2024-01-07",
-                              steps: 1600
-                            }
+                              steps: 1600,
+                            },
                           ]}
                         >
                           <Bar
@@ -1112,16 +1110,16 @@ export default function DashboardPage() {
                         config={{
                           move: {
                             label: "Move",
-                            color: "hsl(var(--chart-1))"
+                            color: "hsl(var(--chart-1))",
                           },
                           stand: {
                             label: "Stand",
-                            color: "hsl(var(--chart-2))"
+                            color: "hsl(var(--chart-2))",
                           },
                           exercise: {
                             label: "Exercise",
-                            color: "hsl(var(--chart-3))"
-                          }
+                            color: "hsl(var(--chart-3))",
+                          },
                         }}
                         className="h-[140px] w-full"
                       >
@@ -1130,27 +1128,27 @@ export default function DashboardPage() {
                             left: 0,
                             right: 0,
                             top: 0,
-                            bottom: 10
+                            bottom: 10,
                           }}
                           data={[
                             {
                               activity: "stand",
                               value: (8 / 12) * 100,
                               label: "8/12 hr",
-                              fill: "var(--color-stand)"
+                              fill: "var(--color-stand)",
                             },
                             {
                               activity: "exercise",
                               value: (46 / 60) * 100,
                               label: "46/60 min",
-                              fill: "var(--color-exercise)"
+                              fill: "var(--color-exercise)",
                             },
                             {
                               activity: "move",
                               value: (245 / 360) * 100,
                               label: "245/360 kcal",
-                              fill: "var(--color-move)"
-                            }
+                              fill: "var(--color-move)",
+                            },
                           ]}
                           layout="vertical"
                           barSize={32}
@@ -1183,7 +1181,7 @@ export default function DashboardPage() {
                           <div className="text-xs text-muted-foreground">
                             Move
                           </div>
-                          <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                          <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                             562
                             <span className="text-sm font-normal text-muted-foreground">
                               kcal
@@ -1198,7 +1196,7 @@ export default function DashboardPage() {
                           <div className="text-xs text-muted-foreground">
                             Exercise
                           </div>
-                          <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                          <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                             73
                             <span className="text-sm font-normal text-muted-foreground">
                               min
@@ -1213,7 +1211,7 @@ export default function DashboardPage() {
                           <div className="text-xs text-muted-foreground">
                             Stand
                           </div>
-                          <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                          <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                             14
                             <span className="text-sm font-normal text-muted-foreground">
                               hr
@@ -1235,7 +1233,7 @@ export default function DashboardPage() {
                           <div className="text-sm text-muted-foreground">
                             Move
                           </div>
-                          <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                          <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
                             562/600
                             <span className="text-sm font-normal text-muted-foreground">
                               kcal
@@ -1246,7 +1244,7 @@ export default function DashboardPage() {
                           <div className="text-sm text-muted-foreground">
                             Exercise
                           </div>
-                          <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                          <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
                             73/120
                             <span className="text-sm font-normal text-muted-foreground">
                               min
@@ -1257,7 +1255,7 @@ export default function DashboardPage() {
                           <div className="text-sm text-muted-foreground">
                             Stand
                           </div>
-                          <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                          <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
                             8/12
                             <span className="text-sm font-normal text-muted-foreground">
                               hr
@@ -1269,16 +1267,16 @@ export default function DashboardPage() {
                         config={{
                           move: {
                             label: "Move",
-                            color: "hsl(var(--chart-1))"
+                            color: "hsl(var(--chart-1))",
                           },
                           exercise: {
                             label: "Exercise",
-                            color: "hsl(var(--chart-2))"
+                            color: "hsl(var(--chart-2))",
                           },
                           stand: {
                             label: "Stand",
-                            color: "hsl(var(--chart-3))"
-                          }
+                            color: "hsl(var(--chart-3))",
+                          },
                         }}
                         className="mx-auto aspect-square w-full max-w-[80%]"
                       >
@@ -1287,24 +1285,24 @@ export default function DashboardPage() {
                             left: -10,
                             right: -10,
                             top: -10,
-                            bottom: -10
+                            bottom: -10,
                           }}
                           data={[
                             {
                               activity: "stand",
                               value: (8 / 12) * 100,
-                              fill: "var(--color-stand)"
+                              fill: "var(--color-stand)",
                             },
                             {
                               activity: "exercise",
                               value: (46 / 60) * 100,
-                              fill: "var(--color-exercise)"
+                              fill: "var(--color-exercise)",
                             },
                             {
                               activity: "move",
                               value: (245 / 360) * 100,
-                              fill: "var(--color-move)"
-                            }
+                              fill: "var(--color-move)",
+                            },
                           ]}
                           innerRadius="20%"
                           barSize={24}
@@ -1338,7 +1336,7 @@ export default function DashboardPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-2">
-                      <div className="flex items-baseline gap-2 text-3xl font-bold tabular-nums leading-none">
+                      <div className="flex items-baseline gap-2 text-3xl font-normal tabular-nums leading-none">
                         1,254
                         <span className="text-sm font-normal text-muted-foreground">
                           kcal/day
@@ -1348,8 +1346,8 @@ export default function DashboardPage() {
                         config={{
                           calories: {
                             label: "Calories",
-                            color: "hsl(var(--chart-1))"
-                          }
+                            color: "hsl(var(--chart-1))",
+                          },
                         }}
                         className="ml-auto w-[64px]"
                       >
@@ -1359,37 +1357,37 @@ export default function DashboardPage() {
                             left: 0,
                             right: 0,
                             top: 0,
-                            bottom: 0
+                            bottom: 0,
                           }}
                           data={[
                             {
                               date: "2024-01-01",
-                              calories: 354
+                              calories: 354,
                             },
                             {
                               date: "2024-01-02",
-                              calories: 514
+                              calories: 514,
                             },
                             {
                               date: "2024-01-03",
-                              calories: 345
+                              calories: 345,
                             },
                             {
                               date: "2024-01-04",
-                              calories: 734
+                              calories: 734,
                             },
                             {
                               date: "2024-01-05",
-                              calories: 645
+                              calories: 645,
                             },
                             {
                               date: "2024-01-06",
-                              calories: 456
+                              calories: 456,
                             },
                             {
                               date: "2024-01-07",
-                              calories: 345
-                            }
+                              calories: 345,
+                            },
                           ]}
                         >
                           <Bar
@@ -1433,8 +1431,8 @@ export default function DashboardPage() {
                         config={{
                           time: {
                             label: "Time",
-                            color: "hsl(var(--chart-2))"
-                          }
+                            color: "hsl(var(--chart-2))",
+                          },
                         }}
                       >
                         <AreaChart
@@ -1442,38 +1440,38 @@ export default function DashboardPage() {
                           data={[
                             {
                               date: "2024-01-01",
-                              time: 8.5
+                              time: 8.5,
                             },
                             {
                               date: "2024-01-02",
-                              time: 7.2
+                              time: 7.2,
                             },
                             {
                               date: "2024-01-03",
-                              time: 8.1
+                              time: 8.1,
                             },
                             {
                               date: "2024-01-04",
-                              time: 6.2
+                              time: 6.2,
                             },
                             {
                               date: "2024-01-05",
-                              time: 5.2
+                              time: 5.2,
                             },
                             {
                               date: "2024-01-06",
-                              time: 8.1
+                              time: 8.1,
                             },
                             {
                               date: "2024-01-07",
-                              time: 7.0
-                            }
+                              time: 7.0,
+                            },
                           ]}
                           margin={{
                             left: 0,
                             right: 0,
                             top: 0,
-                            bottom: 0
+                            bottom: 0,
                           }}
                         >
                           <XAxis dataKey="date" hide />
@@ -1511,7 +1509,7 @@ export default function DashboardPage() {
                             formatter={(value) => (
                               <div className="flex min-w-[120px] items-center text-xs text-muted-foreground">
                                 Time in bed
-                                <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+                                <div className="ml-auto flex items-baseline gap-0.5 font-mono font-normal tabular-nums text-foreground">
                                   {value}
                                   <span className="font-normal text-muted-foreground">
                                     hr

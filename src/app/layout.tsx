@@ -18,31 +18,31 @@ export const metadata: Metadata = {
   description:
     "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
   alternates: {
-    canonical: "/"
+    canonical: "/",
   },
   openGraph: {
     url: "/",
     title: "Pexlle",
     description:
       "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
-    type: "website"
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Pexlle",
     description:
-      "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness."
-  }
+      "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
+  },
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={GeistSans.className}>
+      <body className={`${GeistSans.className} font-light text-sm`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BreadcrumbProvider>
             <div id="root" className="h-full overflow-auto">

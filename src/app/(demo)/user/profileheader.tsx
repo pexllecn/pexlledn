@@ -21,14 +21,16 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = React.memo(
           <img src="/Verified_Badge.svg" alt="Verified" className="w-6 h-6" />
         </div>
       </div>
-      <h2 className="text-xl font-bold mb-2">{user.name}</h2>
+      <h2 className="text-xl font-normal mb-2">{user.name}</h2>
       <p className="text-sm text-muted-foreground mb-4">{user.email}</p>
       <div className="flex flex-wrap justify-center gap-2 mb-4">
         <Badge variant="outline">{user.items} items</Badge>
         <Badge variant="outline">{user.followers} followers</Badge>
       </div>
-      <div className="w-full space-y-2">
-        <Button className="w-full bg-black text-white">Follow</Button>
+      <div className="flex space-x-2">
+        <Button className="w-full" variant={"default"}>
+          Follow
+        </Button>
         <Button className="w-full" variant="outline">
           Message
         </Button>

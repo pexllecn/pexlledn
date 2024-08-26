@@ -12,7 +12,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useBreadcrumbs } from "@/components/breadcrumb-context";
 import { Search } from "lucide-react";
@@ -46,7 +46,7 @@ export function Navbar({ title }: NavbarProps) {
       )}
       style={{
         WebkitBackdropFilter: "blur(8px)",
-        backdropFilter: "blur(8px)"
+        backdropFilter: "blur(8px)",
       }}
     >
       <div className="mx-4 sm:mx-8 h-16 flex items-center">
@@ -65,7 +65,7 @@ export function Navbar({ title }: NavbarProps) {
                           </BreadcrumbLink>
                         ) : (
                           <BreadcrumbPage>
-                            <span className="font-bold">{item.label}</span>
+                            <span className="font-medium">{item.label}</span>
                           </BreadcrumbPage>
                         )}
                       </BreadcrumbItem>

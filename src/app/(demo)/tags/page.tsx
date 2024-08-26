@@ -15,7 +15,7 @@ import {
   Rectangle,
   ReferenceLine,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 import {
   Card,
@@ -23,12 +23,12 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
@@ -44,7 +44,7 @@ export default function Charts() {
               <CardDescription>Today</CardDescription>
               <CardTitle className="text-4xl tabular-nums">
                 12,584{" "}
-                <span className="font-sans text-sm font-normal tracking-normal text-muted-foreground">
+                <span className="text-sm tracking-normal text-muted-foreground">
                   steps
                 </span>
               </CardTitle>
@@ -54,45 +54,45 @@ export default function Charts() {
                 config={{
                   steps: {
                     label: "Steps",
-                    color: "hsl(var(--chart-1))"
-                  }
+                    color: "hsl(var(--chart-1))",
+                  },
                 }}
               >
                 <BarChart
                   accessibilityLayer
                   margin={{
                     left: -4,
-                    right: -4
+                    right: -4,
                   }}
                   data={[
                     {
                       date: "2024-01-01",
-                      steps: 2000
+                      steps: 2000,
                     },
                     {
                       date: "2024-01-02",
-                      steps: 2100
+                      steps: 2100,
                     },
                     {
                       date: "2024-01-03",
-                      steps: 2200
+                      steps: 2200,
                     },
                     {
                       date: "2024-01-04",
-                      steps: 1300
+                      steps: 1300,
                     },
                     {
                       date: "2024-01-05",
-                      steps: 1400
+                      steps: 1400,
                     },
                     {
                       date: "2024-01-06",
-                      steps: 2500
+                      steps: 2500,
                     },
                     {
                       date: "2024-01-07",
-                      steps: 1600
-                    }
+                      steps: 1600,
+                    },
                   ]}
                 >
                   <Bar
@@ -109,7 +109,7 @@ export default function Charts() {
                     tickMargin={4}
                     tickFormatter={(value) => {
                       return new Date(value).toLocaleDateString("en-US", {
-                        weekday: "short"
+                        weekday: "short",
                       });
                     }}
                   />
@@ -122,7 +122,7 @@ export default function Charts() {
                           return new Date(value).toLocaleDateString("en-US", {
                             day: "numeric",
                             month: "long",
-                            year: "numeric"
+                            year: "numeric",
                           });
                         }}
                       />
@@ -156,12 +156,12 @@ export default function Charts() {
             <CardFooter className="flex-col items-start gap-1">
               <CardDescription>
                 Over the past 7 days, you have walked{" "}
-                <span className="font-medium text-foreground">53,305</span>{" "}
+                <span className="font-normal text-foreground">53,305</span>{" "}
                 steps.
               </CardDescription>
               <CardDescription>
                 You need{" "}
-                <span className="font-medium text-foreground">12,584</span> more
+                <span className="font-normal text-foreground">12,584</span> more
                 steps to reach your goal.
               </CardDescription>
             </CardFooter>
@@ -195,8 +195,8 @@ export default function Charts() {
                 config={{
                   resting: {
                     label: "Resting",
-                    color: "hsl(var(--chart-1))"
-                  }
+                    color: "hsl(var(--chart-1))",
+                  },
                 }}
                 className="w-full"
               >
@@ -205,37 +205,37 @@ export default function Charts() {
                   margin={{
                     left: 14,
                     right: 14,
-                    top: 10
+                    top: 10,
                   }}
                   data={[
                     {
                       date: "2024-01-01",
-                      resting: 62
+                      resting: 62,
                     },
                     {
                       date: "2024-01-02",
-                      resting: 72
+                      resting: 72,
                     },
                     {
                       date: "2024-01-03",
-                      resting: 35
+                      resting: 35,
                     },
                     {
                       date: "2024-01-04",
-                      resting: 62
+                      resting: 62,
                     },
                     {
                       date: "2024-01-05",
-                      resting: 52
+                      resting: 52,
                     },
                     {
                       date: "2024-01-06",
-                      resting: 62
+                      resting: 62,
                     },
                     {
                       date: "2024-01-07",
-                      resting: 70
-                    }
+                      resting: 70,
+                    },
                   ]}
                 >
                   <CartesianGrid
@@ -252,7 +252,7 @@ export default function Charts() {
                     tickMargin={8}
                     tickFormatter={(value) => {
                       return new Date(value).toLocaleDateString("en-US", {
-                        weekday: "short"
+                        weekday: "short",
                       });
                     }}
                   />
@@ -266,7 +266,7 @@ export default function Charts() {
                     activeDot={{
                       fill: "var(--color-resting)",
                       stroke: "var(--color-resting)",
-                      r: 4
+                      r: 4,
                     }}
                   />
                   <ChartTooltip
@@ -277,7 +277,7 @@ export default function Charts() {
                           return new Date(value).toLocaleDateString("en-US", {
                             day: "numeric",
                             month: "long",
-                            year: "numeric"
+                            year: "numeric",
                           });
                         }}
                       />
@@ -299,7 +299,7 @@ export default function Charts() {
             </CardHeader>
             <CardContent className="grid gap-4">
               <div className="grid auto-rows-min gap-2">
-                <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                   12,453
                   <span className="text-sm font-normal text-muted-foreground">
                     steps/day
@@ -309,8 +309,8 @@ export default function Charts() {
                   config={{
                     steps: {
                       label: "Steps",
-                      color: "hsl(var(--chart-1))"
-                    }
+                      color: "hsl(var(--chart-1))",
+                    },
                   }}
                   className="aspect-auto h-[32px] w-full"
                 >
@@ -321,13 +321,13 @@ export default function Charts() {
                       left: 0,
                       top: 0,
                       right: 0,
-                      bottom: 0
+                      bottom: 0,
                     }}
                     data={[
                       {
                         date: "2024",
-                        steps: 12435
-                      }
+                        steps: 12435,
+                      },
                     ]}
                   >
                     <Bar
@@ -350,7 +350,7 @@ export default function Charts() {
                 </ChartContainer>
               </div>
               <div className="grid auto-rows-min gap-2">
-                <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                   10,103
                   <span className="text-sm font-normal text-muted-foreground">
                     steps/day
@@ -360,8 +360,8 @@ export default function Charts() {
                   config={{
                     steps: {
                       label: "Steps",
-                      color: "hsl(var(--muted))"
-                    }
+                      color: "hsl(var(--muted))",
+                    },
                   }}
                   className="aspect-auto h-[32px] w-full"
                 >
@@ -372,13 +372,13 @@ export default function Charts() {
                       left: 0,
                       top: 0,
                       right: 0,
-                      bottom: 0
+                      bottom: 0,
                     }}
                     data={[
                       {
                         date: "2023",
-                        steps: 10103
-                      }
+                        steps: 10103,
+                      },
                     ]}
                   >
                     <Bar
@@ -411,7 +411,7 @@ export default function Charts() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-0">
-              <div className="flex items-baseline gap-1 text-3xl font-bold tabular-nums leading-none">
+              <div className="flex items-baseline gap-1 text-3xl font-normal tabular-nums leading-none">
                 12.5
                 <span className="text-sm font-normal text-muted-foreground">
                   miles/day
@@ -421,8 +421,8 @@ export default function Charts() {
                 config={{
                   steps: {
                     label: "Steps",
-                    color: "hsl(var(--chart-1))"
-                  }
+                    color: "hsl(var(--chart-1))",
+                  },
                 }}
                 className="ml-auto w-[72px]"
               >
@@ -432,37 +432,37 @@ export default function Charts() {
                     left: 0,
                     right: 0,
                     top: 0,
-                    bottom: 0
+                    bottom: 0,
                   }}
                   data={[
                     {
                       date: "2024-01-01",
-                      steps: 2000
+                      steps: 2000,
                     },
                     {
                       date: "2024-01-02",
-                      steps: 2100
+                      steps: 2100,
                     },
                     {
                       date: "2024-01-03",
-                      steps: 2200
+                      steps: 2200,
                     },
                     {
                       date: "2024-01-04",
-                      steps: 1300
+                      steps: 1300,
                     },
                     {
                       date: "2024-01-05",
-                      steps: 1400
+                      steps: 1400,
                     },
                     {
                       date: "2024-01-06",
-                      steps: 2500
+                      steps: 2500,
                     },
                     {
                       date: "2024-01-07",
-                      steps: 1600
-                    }
+                      steps: 1600,
+                    },
                   ]}
                 >
                   <Bar
@@ -490,16 +490,16 @@ export default function Charts() {
                 config={{
                   move: {
                     label: "Move",
-                    color: "hsl(var(--chart-1))"
+                    color: "hsl(var(--chart-1))",
                   },
                   stand: {
                     label: "Stand",
-                    color: "hsl(var(--chart-2))"
+                    color: "hsl(var(--chart-2))",
                   },
                   exercise: {
                     label: "Exercise",
-                    color: "hsl(var(--chart-3))"
-                  }
+                    color: "hsl(var(--chart-3))",
+                  },
                 }}
                 className="h-[140px] w-full"
               >
@@ -508,27 +508,27 @@ export default function Charts() {
                     left: 0,
                     right: 0,
                     top: 0,
-                    bottom: 10
+                    bottom: 10,
                   }}
                   data={[
                     {
                       activity: "stand",
                       value: (8 / 12) * 100,
                       label: "8/12 hr",
-                      fill: "var(--color-stand)"
+                      fill: "var(--color-stand)",
                     },
                     {
                       activity: "exercise",
                       value: (46 / 60) * 100,
                       label: "46/60 min",
-                      fill: "var(--color-exercise)"
+                      fill: "var(--color-exercise)",
                     },
                     {
                       activity: "move",
                       value: (245 / 360) * 100,
                       label: "245/360 kcal",
-                      fill: "var(--color-move)"
-                    }
+                      fill: "var(--color-move)",
+                    },
                   ]}
                   layout="vertical"
                   barSize={32}
@@ -559,7 +559,7 @@ export default function Charts() {
               <div className="flex w-full items-center gap-2">
                 <div className="grid flex-1 auto-rows-min gap-0.5">
                   <div className="text-xs text-muted-foreground">Move</div>
-                  <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                     562
                     <span className="text-sm font-normal text-muted-foreground">
                       kcal
@@ -569,7 +569,7 @@ export default function Charts() {
                 <Separator orientation="vertical" className="mx-2 h-10 w-px" />
                 <div className="grid flex-1 auto-rows-min gap-0.5">
                   <div className="text-xs text-muted-foreground">Exercise</div>
-                  <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                     73
                     <span className="text-sm font-normal text-muted-foreground">
                       min
@@ -579,7 +579,7 @@ export default function Charts() {
                 <Separator orientation="vertical" className="mx-2 h-10 w-px" />
                 <div className="grid flex-1 auto-rows-min gap-0.5">
                   <div className="text-xs text-muted-foreground">Stand</div>
-                  <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
                     14
                     <span className="text-sm font-normal text-muted-foreground">
                       hr
@@ -596,7 +596,7 @@ export default function Charts() {
               <div className="grid items-center gap-2">
                 <div className="grid flex-1 auto-rows-min gap-0.5">
                   <div className="text-sm text-muted-foreground">Move</div>
-                  <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
                     562/600
                     <span className="text-sm font-normal text-muted-foreground">
                       kcal
@@ -605,7 +605,7 @@ export default function Charts() {
                 </div>
                 <div className="grid flex-1 auto-rows-min gap-0.5">
                   <div className="text-sm text-muted-foreground">Exercise</div>
-                  <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
                     73/120
                     <span className="text-sm font-normal text-muted-foreground">
                       min
@@ -614,7 +614,7 @@ export default function Charts() {
                 </div>
                 <div className="grid flex-1 auto-rows-min gap-0.5">
                   <div className="text-sm text-muted-foreground">Stand</div>
-                  <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
                     8/12
                     <span className="text-sm font-normal text-muted-foreground">
                       hr
@@ -626,16 +626,16 @@ export default function Charts() {
                 config={{
                   move: {
                     label: "Move",
-                    color: "hsl(var(--chart-1))"
+                    color: "hsl(var(--chart-1))",
                   },
                   exercise: {
                     label: "Exercise",
-                    color: "hsl(var(--chart-2))"
+                    color: "hsl(var(--chart-2))",
                   },
                   stand: {
                     label: "Stand",
-                    color: "hsl(var(--chart-3))"
-                  }
+                    color: "hsl(var(--chart-3))",
+                  },
                 }}
                 className="mx-auto aspect-square w-full max-w-[80%]"
               >
@@ -644,24 +644,24 @@ export default function Charts() {
                     left: -10,
                     right: -10,
                     top: -10,
-                    bottom: -10
+                    bottom: -10,
                   }}
                   data={[
                     {
                       activity: "stand",
                       value: (8 / 12) * 100,
-                      fill: "var(--color-stand)"
+                      fill: "var(--color-stand)",
                     },
                     {
                       activity: "exercise",
                       value: (46 / 60) * 100,
-                      fill: "var(--color-exercise)"
+                      fill: "var(--color-exercise)",
                     },
                     {
                       activity: "move",
                       value: (245 / 360) * 100,
-                      fill: "var(--color-move)"
-                    }
+                      fill: "var(--color-move)",
+                    },
                   ]}
                   innerRadius="20%"
                   barSize={24}
@@ -687,7 +687,7 @@ export default function Charts() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-2">
-              <div className="flex items-baseline gap-2 text-3xl font-bold tabular-nums leading-none">
+              <div className="flex items-baseline gap-2 text-3xl font-normal tabular-nums leading-none">
                 1,254
                 <span className="text-sm font-normal text-muted-foreground">
                   kcal/day
@@ -697,8 +697,8 @@ export default function Charts() {
                 config={{
                   calories: {
                     label: "Calories",
-                    color: "hsl(var(--chart-1))"
-                  }
+                    color: "hsl(var(--chart-1))",
+                  },
                 }}
                 className="ml-auto w-[64px]"
               >
@@ -708,37 +708,37 @@ export default function Charts() {
                     left: 0,
                     right: 0,
                     top: 0,
-                    bottom: 0
+                    bottom: 0,
                   }}
                   data={[
                     {
                       date: "2024-01-01",
-                      calories: 354
+                      calories: 354,
                     },
                     {
                       date: "2024-01-02",
-                      calories: 514
+                      calories: 514,
                     },
                     {
                       date: "2024-01-03",
-                      calories: 345
+                      calories: 345,
                     },
                     {
                       date: "2024-01-04",
-                      calories: 734
+                      calories: 734,
                     },
                     {
                       date: "2024-01-05",
-                      calories: 645
+                      calories: 645,
                     },
                     {
                       date: "2024-01-06",
-                      calories: 456
+                      calories: 456,
                     },
                     {
                       date: "2024-01-07",
-                      calories: 345
-                    }
+                      calories: 345,
+                    },
                   ]}
                 >
                   <Bar
@@ -779,8 +779,8 @@ export default function Charts() {
                 config={{
                   time: {
                     label: "Time",
-                    color: "hsl(var(--chart-2))"
-                  }
+                    color: "hsl(var(--chart-2))",
+                  },
                 }}
               >
                 <AreaChart
@@ -788,38 +788,38 @@ export default function Charts() {
                   data={[
                     {
                       date: "2024-01-01",
-                      time: 8.5
+                      time: 8.5,
                     },
                     {
                       date: "2024-01-02",
-                      time: 7.2
+                      time: 7.2,
                     },
                     {
                       date: "2024-01-03",
-                      time: 8.1
+                      time: 8.1,
                     },
                     {
                       date: "2024-01-04",
-                      time: 6.2
+                      time: 6.2,
                     },
                     {
                       date: "2024-01-05",
-                      time: 5.2
+                      time: 5.2,
                     },
                     {
                       date: "2024-01-06",
-                      time: 8.1
+                      time: 8.1,
                     },
                     {
                       date: "2024-01-07",
-                      time: 7.0
-                    }
+                      time: 7.0,
+                    },
                   ]}
                   margin={{
                     left: 0,
                     right: 0,
                     top: 0,
-                    bottom: 0
+                    bottom: 0,
                   }}
                 >
                   <XAxis dataKey="date" hide />
@@ -851,7 +851,7 @@ export default function Charts() {
                     formatter={(value) => (
                       <div className="flex min-w-[120px] items-center text-xs text-muted-foreground">
                         Time in bed
-                        <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+                        <div className="ml-auto flex items-baseline gap-0.5 font-mono font-normal tabular-nums text-foreground">
                           {value}
                           <span className="font-normal text-muted-foreground">
                             hr

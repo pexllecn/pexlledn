@@ -9,7 +9,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
@@ -21,7 +21,7 @@ import {
   ListIcon,
   MapPinIcon,
   DollarSignIcon,
-  SearchIcon
+  SearchIcon,
 } from "lucide-react";
 
 export default function Component() {
@@ -34,7 +34,7 @@ export default function Component() {
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 }
+    visible: { filter: "blur(0px)", opacity: 1 },
   };
 
   const filterAds = useCallback(() => {
@@ -83,7 +83,7 @@ export default function Component() {
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
             <Badge className="mb-1 sm:mb-2">{featuredAd.category}</Badge>
-            <h2 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">
+            <h2 className="text-lg sm:text-xl font-normal mb-1 sm:mb-2">
               Featured: {featuredAd.title}
             </h2>
             <p className="mb-2 text-xs sm:text-sm line-clamp-2">
@@ -114,7 +114,7 @@ export default function Component() {
         {sampleData.categories.map((category) => (
           <button
             key={category}
-            className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-full ${
+            className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-normal rounded-full ${
               activeCategory === category
                 ? "bg-foreground text-background"
                 : "bg-muted text-foreground hover:bg-muted-foreground hover:text-background"

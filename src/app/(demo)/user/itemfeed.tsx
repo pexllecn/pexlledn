@@ -7,7 +7,7 @@ interface ItemFeedProps {
 
 export const ItemFeed: React.FC<ItemFeedProps> = React.memo(({ items }) => (
   <div>
-    <h3 className="text-lg font-semibold mb-4">Item Feed</h3>
+    <h3 className="text-lg font-normal mb-4">Item Feed</h3>
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       {items.map((item, index) => (
         <div key={index} className="border rounded-lg overflow-hidden">
@@ -17,7 +17,7 @@ export const ItemFeed: React.FC<ItemFeedProps> = React.memo(({ items }) => (
             className="w-full h-40 object-cover"
           />
           <div className="p-2">
-            <p className="font-medium text-sm">{item.name}</p>
+            <p className="font-normal text-sm">{item.name}</p>
             <p className="text-muted-foreground text-sm">{item.price}</p>
           </div>
         </div>
