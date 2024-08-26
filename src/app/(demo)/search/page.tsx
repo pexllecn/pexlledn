@@ -131,7 +131,7 @@ export default function SearchPage() {
 
   return (
     <ContentLayout title="Search Results">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto pb-6">
         <form onSubmit={handleSearch} className="mb-8">
           <div className="flex items-center">
             <div className="relative flex-grow">

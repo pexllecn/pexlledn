@@ -12,7 +12,7 @@ import { SidebarToggle } from "@/components/admin-panel/sidebar-toggle";
 
 const LogoSection: React.FC<{ logo: string; isOpen: boolean }> = ({
   logo,
-  isOpen
+  isOpen,
 }) => (
   <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
     <Link href="/">
@@ -22,7 +22,7 @@ const LogoSection: React.FC<{ logo: string; isOpen: boolean }> = ({
           width: isOpen ? "160px" : "20px",
           height: "30px",
           overflow: "hidden",
-          transition: "width 0.3s ease-in-out"
+          transition: "width 0.3s ease-in-out",
         }}
       >
         <Image
