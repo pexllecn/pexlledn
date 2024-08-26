@@ -106,13 +106,13 @@ export default function SearchPage() {
               className="ml-2"
             >
               {result.matchType === "route" && (
-                <LinkIcon size={14} className="mr-1" />
+                <LinkIcon size={10} className="mr-1" />
               )}
               {result.matchType === "title" && (
-                <FileText size={14} className="mr-1" />
+                <FileText size={10} className="mr-1" />
               )}
               {result.matchType === "content" && (
-                <Search size={14} className="mr-1" />
+                <Search size={10} className="mr-1" />
               )}
               {result.matchType}
             </Badge>

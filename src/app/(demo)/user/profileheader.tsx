@@ -28,7 +28,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = React.memo(
         <Badge variant="outline">{user.followers} followers</Badge>
       </div>
       <div className="flex space-x-2">
-        <Button className="w-full" variant={"default"}>
+        <Button className="w-full" variant="default">
           Follow
         </Button>
         <Button className="w-full" variant="outline">
