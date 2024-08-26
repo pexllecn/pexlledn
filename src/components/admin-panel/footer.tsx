@@ -6,7 +6,7 @@ export function Footer() {
 
   return (
     <div className="z-20 w-full bg-muted dark:bg-muted">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl sm:pt-4 pb-16">
         <div className="flex flex-col justify-center items-center relative">
           {/* ... (previous logo and text content) ... */}
 

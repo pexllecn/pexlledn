@@ -7,7 +7,7 @@ import { Sidebar } from "@/components/admin-panel/sidebar";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 
 export default function AdminPanelLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -21,7 +21,7 @@ export default function AdminPanelLayout({
       <div className="p-2 bg-muted ">
         <main
           className={cn(
-            "pt-4 border border-muted-background shadow-sm  rounded-xl	min-h-[calc(100vh_-_52px)] bg-background transition-[margin-left] ease-in-out duration-300",
+            "pt-4 mb-4 shadow-md rounded-xl dark:border dark:border-muted-background min-h-[calc(100vh_-_52px)] bg-background transition-[margin-left] ease-in-out duration-300",
             sidebar?.isOpen === false ? "lg:ml-[60px]" : "lg:ml-52"
           )}
         >
