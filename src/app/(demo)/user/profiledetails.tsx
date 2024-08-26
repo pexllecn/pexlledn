@@ -19,22 +19,7 @@ export const ProfileDetails: React.FC<ProfileDetailsProps> = React.memo(
     <div className="mt-6 space-y-4">
       <div>
         <h3 className="font-normal mb-2">About</h3>
-        <p className="text-sm text-muted-foreground mb-4">{user.bio}</p>
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex items-center">
-          <CalendarIcon className="h-3 w-3 mr-2" />
-          <span>Joined {user.joinDate}</span>
-        </div>
-        <div className="flex items-center">
-          <PhoneIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-          <span>{user.phone}</span>
-        </div>
-        <div className="flex items-center">
-          <MapPinIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-          <span>{user.location}</span>
-        </div>
+        <p className="text-sm text-muted-foreground">{user.bio}</p>
       </div>
 
       <div>

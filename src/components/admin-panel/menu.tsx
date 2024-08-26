@@ -40,7 +40,7 @@ export function Menu({ isOpen }: MenuProps) {
           {menuList.map(({ groupLabel, menus }, index) => (
             <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
               {(isOpen && groupLabel) || isOpen === undefined ? (
-                <p className="text-sm font-normal px-4 pb-2 max-w-[248px] truncate ">
+                <p className="text-sm font-normal px-3 pb-2 max-w-[248px] truncate ">
                   {groupLabel}
                 </p>
               ) : !isOpen && isOpen !== undefined && groupLabel ? (
@@ -64,7 +64,7 @@ export function Menu({ isOpen }: MenuProps) {
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
                       <TooltipProvider disableHoverableContent>
-                        <Tooltip delayDuration={100}>
+                        <Tooltip delayDuration={50}>
                           <TooltipTrigger asChild>
                             <Button
                               variant={active ? "outline" : "ghost"}
@@ -76,9 +76,9 @@ export function Menu({ isOpen }: MenuProps) {
                             >
                               <Link href={href}>
                                 <span
-                                  className={cn(isOpen === false ? "" : "mr-4")}
+                                  className={cn(isOpen === false ? "" : "mr-2")}
                                 >
-                                  <Icon size={18} />
+                                  <Icon size={16} />
                                 </span>
                                 <p
                                   className={cn(
@@ -117,15 +117,15 @@ export function Menu({ isOpen }: MenuProps) {
           ))}
           <li className="w-full grow flex items-end">
             <TooltipProvider disableHoverableContent>
-              <Tooltip delayDuration={100}>
+              <Tooltip delayDuration={50}>
                 <TooltipTrigger asChild>
                   <Button
                     onClick={handleSignOut}
                     variant="outline"
                     className="w-full justify-center h-10"
                   >
-                    <span className={cn(isOpen === false ? "" : "mr-4")}>
-                      <LogOut size={18} />
+                    <span className={cn(isOpen === false ? "" : "mr-2")}>
+                      <LogOut size={16} />
                     </span>
                     <p
                       className={cn(

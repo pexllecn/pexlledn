@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   GridIcon,
   ListIcon,
   SearchIcon,
   PlusIcon,
-  FilterIcon
+  FilterIcon,
 } from "lucide-react";
 
 interface UserManagementHeaderProps {
@@ -27,7 +27,7 @@ export const UserManagementHeader: React.FC<UserManagementHeaderProps> =
   React.memo(({ view, setView, searchTerm, setSearchTerm }) => (
     <Card className="bg-muted shadow-none border-none mb-8">
       <CardHeader>
-        <CardTitle>User Management</CardTitle>
+        <CardTitle className="font-normal">User Management</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-y-0 sm:space-x-4">

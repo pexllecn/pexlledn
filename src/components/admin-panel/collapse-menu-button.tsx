@@ -59,14 +59,14 @@ export function CollapseMenuButton({
         <Button
           variant={active ? "outline" : "ghost"}
           className={cn(
-            "w-full justify-start h-10 mb-1 hover:bg-muted ",
+            "w-full justify-start h-10 mb-1 p-3 hover:bg-muted ",
             !active && "text-muted-foreground font-normal"
           )}
         >
           <div className="w-full items-center flex justify-between">
             <div className="flex items-center">
-              <span className="mr-4">
-                <Icon size={18} />
+              <span className="mr-2">
+                <Icon size={16} />
               </span>
               <p
                 className={cn(
@@ -88,7 +88,7 @@ export function CollapseMenuButton({
               )}
             >
               <ChevronDown
-                size={18}
+                size={16}
                 className={cn(
                   "transition-transform duration-200",
                   isCollapsed ? "rotate-180" : "rotate-0"
@@ -131,7 +131,7 @@ export function CollapseMenuButton({
   ) : (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
-        <Tooltip delayDuration={100}>
+        <Tooltip delayDuration={50}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button
@@ -140,8 +140,12 @@ export function CollapseMenuButton({
               >
                 <div className="w-full items-center flex justify-between">
                   <div className="flex items-center">
-                    <span className={cn(isOpen === false ? "" : "mr-4")}>
-                      <Icon size={18} />
+                    <span
+                      className={cn(
+                        isOpen === false ? "text-muted-background" : "mr-2"
+                      )}
+                    >
+                      <Icon size={16} />
                     </span>
                     <p
                       className={cn(

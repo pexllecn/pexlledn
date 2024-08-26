@@ -9,7 +9,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  TooltipProvider
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
@@ -18,14 +18,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export function UserNav() {
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
-        <Tooltip delayDuration={100}>
+        <Tooltip delayDuration={50}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button

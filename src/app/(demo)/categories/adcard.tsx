@@ -42,13 +42,11 @@ const AdCard: React.FC<AdCardProps> = React.memo(({ ad, isGridView }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
           <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
             <div className="flex justify-between items-start">
-              <Badge className="bg-black/80 text-white text-xs">
-                {ad.category}
-              </Badge>
+              <Badge className=" text-white text-xs">{ad.category}</Badge>
               {ad.price && (
                 <Badge
                   variant="secondary"
-                  className="bg-white/60 text-sm font-normal text-black"
+                  className=" text-sm font-normal text-black"
                 >
                   ${ad.price}
                 </Badge>

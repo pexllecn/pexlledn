@@ -134,7 +134,6 @@ export default function Component() {
             layoutId={`card-${item.id}`}
             onClick={() => setSelectedId(item.id)}
             className="cursor-pointer rounded-lg shadow-md overflow-hidden relative aspect-[3/4]"
-            whileHover={{ scale: 1.05 }}
             transition={transitionProps}
           >
             <motion.img
@@ -223,12 +222,7 @@ export default function Component() {
                           </motion.h2>
                         </motion.div>
                       </div>
-                      <motion.div
-                        className="p-6"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, ...transitionProps }}
-                      >
+                      <div className="p-6">
                         <div className="flex items-center mb-4">
                           <div className="flex items-center mr-2">
                             {[...Array(5)].map((_, i) => (
@@ -261,7 +255,7 @@ export default function Component() {
                         <Button className="w-full">
                           <Download className="mr-2 h-4 w-4" /> Get
                         </Button>
-                      </motion.div>
+                      </div>
                     </React.Fragment>
                   );
                 }
