@@ -325,16 +325,27 @@ export default function Component() {
                     </Avatar>
                   )}
                   <div
-                    className={`max-w-[75%] md:max-w-[70%] ${
-                      message.sender === "You"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    } rounded-[var(--radius)] py-2 px-3`}
+                    className={`flex flex-col ${
+                      message.sender === "You" ? "items-end" : "items-start"
+                    }`}
                   >
-                    <p className="text-sm">{message.content}</p>
-                    <div className="text-xs opacity-70 flex justify-between items-center">
+                    <div
+                      className={`${
+                        message.sender === "You"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      } rounded-[var(--radius)] py-2 px-3`}
+                    >
+                      <p className="text-sm">{message.content}</p>
+                    </div>
+                    <div
+                      className={`text-xs opacity-70 mt-1 ${
+                        message.sender === "You"
+                          ? "mr-1 text-right"
+                          : "ml-1 text-left"
+                      }`}
+                    >
                       <span>{message.time}</span>
-                      {message.sender === "You"}
                     </div>
                   </div>
                   {message.sender === "You" && (
