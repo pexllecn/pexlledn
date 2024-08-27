@@ -123,7 +123,7 @@ export default function PricingPage() {
         transition={{ duration: 0.4 }}
         variants={variants1}
       >
-        <div className="container mx-auto px-4 py-6">
+        <div className="lg:container mx-auto px-2 py-6">
           <h1 className="text-4xl font-normal text-center mb-4">Pricing</h1>
           <p className="text-center text-muted-foreground font-light mb-8 max-w-3xl mx-auto">
             We want to empower every builder to learn coding best practices,

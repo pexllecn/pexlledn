@@ -18,7 +18,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Drawer,
@@ -27,13 +27,13 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
-  DrawerTitle
+  DrawerTitle,
 } from "@/components/ui/drawer";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
-  InputOTPSlot
+  InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { toast } from "@/components/ui/use-toast";
 
@@ -55,7 +55,7 @@ const ResponsiveOTP: React.FC<ResponsiveOTPProps> = ({
   onOpenChange,
   otp,
   onOtpChange,
-  isOtpInvalid
+  isOtpInvalid,
 }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -144,7 +144,7 @@ const ResponsiveForgotPassword: React.FC<ResponsiveForgotPasswordProps> = ({
   onOpenChange,
   email,
   onEmailChange,
-  onSubmit
+  onSubmit,
 }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -250,7 +250,7 @@ export default function AuthenticationPage() {
           toast({
             title: "Invalid OTP",
             description: "Please enter the correct OTP.",
-            variant: "destructive"
+            variant: "destructive",
           });
         }
       } else {
@@ -268,7 +268,7 @@ export default function AuthenticationPage() {
       toast({
         title: "Password Reset Requested",
         description:
-          "If an account exists for this email, you will receive reset instructions."
+          "If an account exists for this email, you will receive reset instructions.",
       });
       setIsForgotPasswordOpen(false);
     },
@@ -286,11 +286,11 @@ export default function AuthenticationPage() {
         style={{
           backgroundImage: `url("${backgroundImage}")`,
           backgroundSize: "cover",
-          backgroundPosition: "center"
+          backgroundPosition: "center",
         }}
       />
 
-      <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/30 dark:bg-muted/60 rounded-lg shadow-lg">
+      <div className="relative z-10 lg:w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/30 dark:bg-muted/60 rounded-lg shadow-lg">
         <div className="flex justify-center mb-6">
           <Link href="/">
             <div style={{ width: 150, height: 50, position: "relative" }}>

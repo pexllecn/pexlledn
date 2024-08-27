@@ -132,7 +132,7 @@ export default function DarkModeCompatibleProductListing() {
             </div>
           </header>
 
-          <main className="container mx-auto px-4 py-8 pb-24 lg:pb-8">
+          <main className="lg:container mx-auto py-8 pb-24 lg:pb-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-8">
                 <Card className="overflow-hidden border-none">
@@ -296,7 +296,7 @@ export default function DarkModeCompatibleProductListing() {
 
               <div className="space-y-6">
                 <Card className="top-24 bg-muted border-none">
-                  <CardContent className="p-6">
+                  <CardContent className="">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-3xl font-normal text-gray-900 dark:text-white">
                         $1,299.99
@@ -409,7 +409,7 @@ export default function DarkModeCompatibleProductListing() {
             </div>
 
             <Card className="mt-8 border-none">
-              <CardContent className="p-6">
+              <CardContent className="p-2">
                 <h2 className="text-2xl font-normal mb-4 text-gray-800 dark:text-gray-200">
                   Similar Listings
                 </h2>

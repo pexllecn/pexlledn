@@ -127,13 +127,13 @@ export default function Component() {
   return (
     <div className="w-full max-w-3xl mx-auto p-4 md:p-8">
       <h1 className="text-3xl font-normal mb-6">App Store</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {data.map((item) => (
           <motion.div
             key={item.id}
             layoutId={`card-${item.id}`}
             onClick={() => setSelectedId(item.id)}
-            className="cursor-pointer rounded-lg shadow-md overflow-hidden relative aspect-[3/4]"
+            className="cursor-pointer rounded-lg shadow-md overflow-hidden relative aspect-[1/1]"
             transition={transitionProps}
           >
             <motion.img

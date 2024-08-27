@@ -14,14 +14,14 @@ export function BottomNav() {
       className={cn(
         "fixed bottom-0 left-0 right-0 border-t border-border py-1 px-4",
         "flex justify-between items-center lg:hidden",
-        "bg-background/80 backdrop-blur-sm",
-        "dark:bg-background/80 dark:backdrop-blur-sm",
+        "bg-background/70 backdrop-blur-lg",
+        "dark:bg-background/70 dark:backdrop-blur-lg",
         "dark:shadow-secondary",
         "z-50" // Add a high z-index to ensure it stays on top
       )}
       style={{
-        WebkitBackdropFilter: "blur(8px)",
-        backdropFilter: "blur(8px)"
+        WebkitBackdropFilter: "blur(16px)",
+        backdropFilter: "blur(16px)",
       }}
     >
       <NavItem
@@ -56,7 +56,7 @@ const NavItem = ({
   href,
   icon,
   label,
-  isActive
+  isActive,
 }: {
   href: string;
   icon: React.ReactElement;
@@ -74,7 +74,7 @@ const NavItem = ({
         className: cn(
           "transition-all duration-200",
           isActive ? "fill-current stroke-[1.5]" : "stroke-[1.5] fill-none"
-        )
+        ),
       })}
     </div>
   </Link>

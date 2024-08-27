@@ -93,7 +93,10 @@ export default function AccountPage() {
             <div className="sm:hidden">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-between bg-muted"
+                  >
                     {tabOptions.find((tab) => tab.value === activeTab)?.label}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>

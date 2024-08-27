@@ -25,7 +25,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
   return (
     <ContentLayout title={`Profile: ${user.name}`}>
-      <div className="container py-8 flex flex-col lg:flex-row gap-6">
+      <div className="lg:container py-8 flex flex-col lg:flex-row gap-6">
         <div className="w-full lg:w-1/3 xl:w-1/4">
           <Card className="bg-muted border-none shadow-none h-full">
             <CardContent className="p-4 flex flex-col h-full">
@@ -37,7 +37,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
         <div className="flex-1">
           <div className="bg-background h-full">
-            <div className="p-4">
+            <div className="p-2">
               <FeaturedListings listings={user.featuredListings} />
               <ItemFeed items={user.itemFeed} />
             </div>

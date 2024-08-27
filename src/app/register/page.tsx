@@ -43,7 +43,7 @@ export default function register() {
     // Implement sign-up logic here
     toast({
       title: "Account Created",
-      description: "Your account has been successfully created."
+      description: "Your account has been successfully created.",
     });
     router.push("/dashboard");
   };
@@ -59,11 +59,11 @@ export default function register() {
         style={{
           backgroundImage: `url("${backgroundImage}")`,
           backgroundSize: "cover",
-          backgroundPosition: "center"
+          backgroundPosition: "center",
         }}
       />
 
-      <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/80 dark:bg-muted/60 rounded-lg shadow-lg">
+      <div className="relative z-10 lg:w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/30 dark:bg-muted/60 rounded-lg shadow-lg">
         <div className="flex justify-center mb-6">
           <Link href="/">
             <div style={{ width: 150, height: 50, position: "relative" }}>
@@ -81,8 +81,13 @@ export default function register() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" required className="bg-background"
-/>
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                required
+                className="bg-background"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -91,8 +96,7 @@ export default function register() {
                 type="email"
                 placeholder="m@example.com"
                 required
-                                  className="bg-background"
-
+                className="bg-background"
               />
             </div>
             <div className="space-y-2">
@@ -102,8 +106,7 @@ export default function register() {
                 type="password"
                 placeholder="Create a password"
                 required
-                                  className="bg-background"
-
+                className="bg-background"
               />
             </div>
             <div className="space-y-2">
@@ -113,8 +116,7 @@ export default function register() {
                 type="password"
                 placeholder="Confirm your password"
                 required
-                                  className="bg-background"
-
+                className="bg-background"
               />
             </div>
             <div

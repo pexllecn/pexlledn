@@ -11,7 +11,7 @@ import usersData from "@/data/users.json";
 
 const variants = {
   hidden: { filter: "blur(10px)", opacity: 0 },
-  visible: { filter: "blur(0px)", opacity: 1 }
+  visible: { filter: "blur(0px)", opacity: 1 },
 };
 
 export default function UsersPage() {
@@ -28,7 +28,7 @@ export default function UsersPage() {
     setCurrentPage,
     rowsPerPage,
     setRowsPerPage,
-    toggleUserSelection
+    toggleUserSelection,
   } = useUserManagement(usersData);
 
   return (
@@ -38,7 +38,7 @@ export default function UsersPage() {
         animate="visible"
         transition={{ duration: 0.4 }}
         variants={variants}
-        className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="w-full max-w-7xl mx-auto"
       >
         <UserManagementHeader
           view={view}

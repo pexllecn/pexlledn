@@ -136,9 +136,9 @@ export default function Component() {
         animate="visible"
         transition={{ duration: 0.4 }}
         variants={variants}
-        className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="w-full max-w-7xl mx-auto"
       >
-        <div className="container mx-auto px-4 py-4 sm:py-6">
+        <div className="lg:container mx-auto px-1 py-4 sm:py-6">
           {FeaturedAdCard}
 
           <div className="mb-4 sm:mb-6">
