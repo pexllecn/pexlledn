@@ -273,9 +273,7 @@ export default function EnhancedChatApp() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-            <SheetHeader className="p-4">
-              <SheetTitle>Chats</SheetTitle>
-            </SheetHeader>
+            <SheetHeader className="p-4"></SheetHeader>
             <ChatList
               chats={chats}
               onSelectChat={setSelectedChat}
@@ -514,7 +512,7 @@ function ChatList({
   selectedChat: Chat | null;
 }) {
   return (
-    <div className="p-2 pr-4">
+    <div className="p-2 lg:pr-4">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
           Chats
@@ -523,9 +521,7 @@ function ChatList({
           variant="ghost"
           size="icon"
           className="text-muted-foreground hover:text-foreground md:hidden"
-        >
-          <X className="h-6 w-6" />
-        </Button>
+        ></Button>
       </div>
       <div className="relative mb-4">
         <Search className="absolute w-4 h-4 left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
@@ -541,7 +537,7 @@ function ChatList({
             <div
               key={chat.id}
               className={cn(
-                "flex items-center space-x-4 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
+                "flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
                 selectedChat && selectedChat.id === chat.id
                   ? "bg-accent"
                   : "hover:bg-accent/50"
@@ -567,7 +563,7 @@ function ChatList({
                   )}
                 />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1">
                 <p className="text-sm font-medium truncate">{chat.name}</p>
                 <p className="text-xs text-muted-foreground truncate">
                   {chat.lastMessage}
