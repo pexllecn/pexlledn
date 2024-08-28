@@ -213,7 +213,7 @@ export default function EnhancedChatApp() {
       transition={{ duration: 0.5 }}
       variants={variants1}
     >
-      <div className="p-2">
+      <div className="p-2 lg:px-6">
         <div className="flex h-screen bg-background">
           {/* Chat List */}
           <div
@@ -467,9 +467,7 @@ function ChatList({
   return (
     <div className="p-2 lg:pr-4">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl md:text-3xl font-normal text-foreground">
-          Messages
-        </h2>
+        <h2 className="text-3xl font-normal text-foreground">Messages</h2>
       </div>
       <div className="relative mb-4">
         <Search className="absolute w-4 h-4 left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
