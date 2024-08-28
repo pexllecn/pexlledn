@@ -213,7 +213,7 @@ export default function EnhancedChatApp() {
       transition={{ duration: 0.5 }}
       variants={variants1}
     >
-      <div className="p-6">
+      <div className="p-2">
         <div className="flex h-screen bg-background">
           {/* Chat List */}
           <div
