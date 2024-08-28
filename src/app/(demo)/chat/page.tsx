@@ -207,255 +207,251 @@ export default function EnhancedChatApp() {
   };
 
   return (
-    <ContentLayout title="Dashboard">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.75 }}
-        variants={variants1}
-      >
-        <div className="">
-          <div className="flex h-screen bg-background">
-            {/* Chat List */}
-            <div
-              className={`w-full md:w-80 ${
-                selectedChat && isMobile ? "hidden" : "block"
-              }`}
-            >
-              <ChatList
-                chats={chats}
-                onSelectChat={setSelectedChat}
-                selectedChat={selectedChat}
-              />
-            </div>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.5 }}
+      variants={variants1}
+    >
+      <div className="p-6">
+        <div className="flex h-screen bg-background">
+          {/* Chat List */}
+          <div
+            className={`w-full md:w-80 ${
+              selectedChat && isMobile ? "hidden" : "block"
+            }`}
+          >
+            <ChatList
+              chats={chats}
+              onSelectChat={setSelectedChat}
+              selectedChat={selectedChat}
+            />
+          </div>
 
-            {/* Main Chat Area */}
-            <div
-              className={`bg-muted rounded-t-3xl flex-1 flex flex-col relative ${
-                !selectedChat && isMobile ? "hidden" : "block"
-              }`}
-            >
-              {selectedChat ? (
-                <>
-                  {/* Chat Header */}
-                  <div className="p-4 flex items-center justify-between">
-                    {isMobile && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setSelectedChat(null)}
+          {/* Main Chat Area */}
+          <div
+            className={`bg-muted rounded-t-3xl flex-1 flex flex-col relative ${
+              !selectedChat && isMobile ? "hidden" : "block"
+            }`}
+          >
+            {selectedChat ? (
+              <>
+                {/* Chat Header */}
+                <div className="p-4 flex items-center justify-between">
+                  {isMobile && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSelectedChat(null)}
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                  )}
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
+                      <Avatar>
+                        <AvatarImage
+                          src={selectedChat.avatar}
+                          alt={selectedChat.name}
+                        />
+                        <AvatarFallback className="bg-background/80">
+                          {selectedChat.name
+                            ? selectedChat.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                            : ""}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span
+                        className={cn(
+                          "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
+                          selectedChat.online ? "bg-green-500" : "bg-gray-400"
+                        )}
+                      />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-normal">
+                        {selectedChat.name}
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedChat.online ? "Active now" : "Offline"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={toggleDarkMode}
+                          className="cursor-pointer"
+                        >
+                          {isDarkMode ? (
+                            <Sun className="mr-2 h-4 w-4" />
+                          ) : (
+                            <Moon className="mr-2 h-4 w-4" />
+                          )}
+                          <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <User className="mr-2 h-4 w-4" />
+                          <span>View Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Star className="mr-2 h-4 w-4" />
+                          <span>Add to Favorites</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Archive className="mr-2 h-4 w-4" />
+                          <span>Archive Chat</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          <span>Delete Chat</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Toggle User Info Button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={toggleUserInfo}
+                      className="relative z-10"
+                    >
+                      <Info className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Messages */}
+                <div></div>
+                <ScrollArea className="flex-1 p-4">
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex ${
+                        msg.isSent ? "justify-end" : "justify-start"
+                      } mb-4`}
+                    >
+                      <div
+                        className={`flex ${
+                          msg.isSent ? "flex-row-reverse" : "flex-row"
+                        } items-end`}
                       >
-                        <ChevronLeft className="h-5 w-5" />
-                      </Button>
-                    )}
-                    <div className="flex items-center space-x-4">
-                      <div className="relative">
-                        <Avatar>
-                          <AvatarImage
-                            src={selectedChat.avatar}
-                            alt={selectedChat.name}
-                          />
-                          <AvatarFallback className="bg-background/80">
-                            {selectedChat.name
-                              ? selectedChat.name
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={msg.avatar} alt={msg.sender} />
+                          <AvatarFallback>
+                            {msg.sender
+                              ? msg.sender
                                   .split(" ")
                                   .map((n) => n[0])
                                   .join("")
                               : ""}
                           </AvatarFallback>
                         </Avatar>
-                        <span
-                          className={cn(
-                            "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
-                            selectedChat.online ? "bg-green-500" : "bg-gray-400"
-                          )}
-                        />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-normal">
-                          {selectedChat.name}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          {selectedChat.online ? "Active now" : "Offline"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-5 w-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={toggleDarkMode}
-                            className="cursor-pointer"
-                          >
-                            {isDarkMode ? (
-                              <Sun className="mr-2 h-4 w-4" />
-                            ) : (
-                              <Moon className="mr-2 h-4 w-4" />
-                            )}
-                            <span>
-                              {isDarkMode ? "Light Mode" : "Dark Mode"}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <User className="mr-2 h-4 w-4" />
-                            <span>View Profile</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Star className="mr-2 h-4 w-4" />
-                            <span>Add to Favorites</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Archive className="mr-2 h-4 w-4" />
-                            <span>Archive Chat</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            <span>Delete Chat</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-
-                      {/* Toggle User Info Button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={toggleUserInfo}
-                        className="relative z-10"
-                      >
-                        <Info className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Messages */}
-                  <div></div>
-                  <ScrollArea className="flex-1 p-4">
-                    {messages.map((msg) => (
-                      <div
-                        key={msg.id}
-                        className={`flex ${
-                          msg.isSent ? "justify-end" : "justify-start"
-                        } mb-4`}
-                      >
                         <div
-                          className={`flex ${
-                            msg.isSent ? "flex-row-reverse" : "flex-row"
-                          } items-end`}
+                          className={`flex flex-col ${
+                            msg.isSent ? "items-end mr-2" : "items-start ml-2"
+                          } max-w-[70%]`}
                         >
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage src={msg.avatar} alt={msg.sender} />
-                            <AvatarFallback>
-                              {msg.sender
-                                ? msg.sender
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")
-                                : ""}
-                            </AvatarFallback>
-                          </Avatar>
                           <div
-                            className={`flex flex-col ${
-                              msg.isSent ? "items-end mr-2" : "items-start ml-2"
-                            } max-w-[70%]`}
+                            className={cn(
+                              "rounded-lg p-3",
+                              msg.isSent
+                                ? "bg-foreground text-primary-foreground"
+                                : "bg-background text-foreground"
+                            )}
                           >
-                            <div
-                              className={cn(
-                                "rounded-lg p-3",
-                                msg.isSent
-                                  ? "bg-foreground text-primary-foreground"
-                                  : "bg-background text-foreground"
-                              )}
-                            >
-                              <p className="text-sm">{msg.content}</p>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {msg.time}
-                            </p>
+                            <p className="text-sm">{msg.content}</p>
                           </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {msg.time}
+                          </p>
                         </div>
                       </div>
-                    ))}
-                  </ScrollArea>
-
-                  {/* Message Input */}
-                  <div className="p-4 sticky bottom-0 bg-background">
-                    <div className="flex items-center space-x-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <Paperclip className="h-5 w-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem>
-                            <Image className="mr-2 h-4 w-4" />
-                            <span>Send Image</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <FileText className="mr-2 h-4 w-4" />
-                            <span>Send Document</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Calendar className="mr-2 h-4 w-4" />
-                            <span>Schedule Meeting</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                      <Input
-                        type="text"
-                        placeholder="Type a message..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        className="flex-1"
-                      />
-                      <Button variant="ghost" size="icon">
-                        <Smile className="h-5 w-5" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Mic className="h-5 w-5" />
-                      </Button>
-                      <Button onClick={handleSendMessage}>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send
-                      </Button>
                     </div>
-                  </div>
-                </>
-              ) : (
-                <div className="flex-1 flex items-center justify-center">
-                  <p className="text-muted-foreground">
-                    Select a chat to start messaging
-                  </p>
-                </div>
-              )}
-            </div>
+                  ))}
+                </ScrollArea>
 
-            {/* Right Sidebar - User Info */}
-            <AnimatePresence>
-              {!isMobile && selectedChat && isUserInfoVisible && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: "20rem", opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden"
-                >
-                  <div className="w-80 p-6">
-                    <UserInfoPanel user={selectedChat} />
+                {/* Message Input */}
+                <div className="p-4 sticky bottom-0 bg-background">
+                  <div className="flex items-center space-x-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Paperclip className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem>
+                          <Image className="mr-2 h-4 w-4" />
+                          <span>Send Image</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <FileText className="mr-2 h-4 w-4" />
+                          <span>Send Document</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Calendar className="mr-2 h-4 w-4" />
+                          <span>Schedule Meeting</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Input
+                      type="text"
+                      placeholder="Type a message..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      className="flex-1"
+                    />
+                    <Button variant="ghost" size="icon">
+                      <Smile className="h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Mic className="h-5 w-5" />
+                    </Button>
+                    <Button onClick={handleSendMessage}>
+                      <Send className="h-4 w-4 mr-2" />
+                      Send
+                    </Button>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <p className="text-muted-foreground">
+                  Select a chat to start messaging
+                </p>
+              </div>
+            )}
           </div>
+
+          {/* Right Sidebar - User Info */}
+          <AnimatePresence>
+            {!isMobile && selectedChat && isUserInfoVisible && (
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: "20rem", opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="w-80 p-6">
+                  <UserInfoPanel user={selectedChat} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </motion.div>
-    </ContentLayout>
+      </div>
+    </motion.div>
   );
 }
 
