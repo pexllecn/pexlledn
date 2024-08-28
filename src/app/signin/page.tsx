@@ -280,135 +280,137 @@ export default function AuthenticationPage() {
   }
 
   return (
-    <div className="relative h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url("${backgroundImage}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+    <div className="fixed inset-0 overflow-hidden">
+      <div className="relative h-full flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url("${backgroundImage}")`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
 
-      <div className="relative z-10 lg:w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/30 dark:bg-muted/60 rounded-lg shadow-lg">
-        <div className="flex justify-center mb-6">
-          <Link href="/">
-            <div style={{ width: 150, height: 50, position: "relative" }}>
-              <Image
-                src={logoSrc}
-                alt="Logo"
-                layout="fill"
-                objectFit="contain"
-              />
-            </div>
-          </Link>
-        </div>
-
-        <Tabs defaultValue="email" className="w-full">
-          <TabsList className="grid grid-cols-2 mb-4">
-            <TabsTrigger value="email">Login with Email</TabsTrigger>
-            <TabsTrigger value="phone">Login with Phone</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="email">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  className="bg-background"
+        <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/30 dark:bg-muted/60 rounded-lg shadow-lg mx-4">
+          <div className="flex justify-center mb-6">
+            <Link href="/">
+              <div style={{ width: 150, height: 50, position: "relative" }}>
+                <Image
+                  src={logoSrc}
+                  alt="Logo"
+                  layout="fill"
+                  objectFit="contain"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Your password"
-                  className="bg-background"
-                />
+            </Link>
+          </div>
+
+          <Tabs defaultValue="email" className="w-full">
+            <TabsList className="grid grid-cols-2 mb-4">
+              <TabsTrigger value="email">Login with Email</TabsTrigger>
+              <TabsTrigger value="phone">Login with Phone</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="email">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Your password"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <Button onClick={handleLogin} className="w-full">
+                    Log in
+                  </Button>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
+            </TabsContent>
+
+            <TabsContent value="phone">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+1 234 567 890"
+                    className="bg-background"
+                  />
+                </div>
                 <Button onClick={handleLogin} className="w-full">
-                  Log in
+                  Send OTP
                 </Button>
               </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
+          </Tabs>
 
-          <TabsContent value="phone">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1 234 567 890"
-                  className="bg-background"
-                />
-              </div>
-              <Button onClick={handleLogin} className="w-full">
-                Send OTP
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+          <div className="mt-4 text-center">
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => setIsForgotPasswordOpen(true)}
+            >
+              Forgot Password?
+            </Button>
+          </div>
 
-        <div className="mt-4 text-center">
-          <Button
-            variant="link"
-            size="sm"
-            onClick={() => setIsForgotPasswordOpen(true)}
-          >
-            Forgot Password?
-          </Button>
+          <div className="flex justify-center mt-4">
+            <Suspense fallback={<div>Loading...</div>}>
+              <DynamicAuthButtons />
+            </Suspense>
+          </div>
+          <div className="mt-2 text-center">
+            <p className="text-sm">
+              Don't have an account?{" "}
+              <Link href="/register" passHref>
+                <Button variant="link" size="sm">
+                  Create one
+                </Button>
+              </Link>
+            </p>
+          </div>
+          <div className="mt-6 flex justify-center">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            >
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          </div>
         </div>
 
-        <div className="flex justify-center mt-4">
-          <Suspense fallback={<div>Loading...</div>}>
-            <DynamicAuthButtons />
-          </Suspense>
-        </div>
-        <div className="mt-2 text-center">
-          <p className="text-sm">
-            Don't have an account?{" "}
-            <Link href="/register" passHref>
-              <Button variant="link" size="sm">
-                Create one
-              </Button>
-            </Link>
-          </p>
-        </div>
-        <div className="mt-6 flex justify-center">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          >
-            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        </div>
+        <ResponsiveOTP
+          isOpen={isOtpOpen}
+          onOpenChange={setIsOtpOpen}
+          otp={otp}
+          onOtpChange={handleOtpChange}
+          isOtpInvalid={isOtpInvalid}
+        />
+
+        <ResponsiveForgotPassword
+          isOpen={isForgotPasswordOpen}
+          onOpenChange={setIsForgotPasswordOpen}
+          email={forgotPasswordEmail}
+          onEmailChange={setForgotPasswordEmail}
+          onSubmit={handleForgotPassword}
+        />
       </div>
-
-      <ResponsiveOTP
-        isOpen={isOtpOpen}
-        onOpenChange={setIsOtpOpen}
-        otp={otp}
-        onOtpChange={handleOtpChange}
-        isOtpInvalid={isOtpInvalid}
-      />
-
-      <ResponsiveForgotPassword
-        isOpen={isForgotPasswordOpen}
-        onOpenChange={setIsForgotPasswordOpen}
-        email={forgotPasswordEmail}
-        onEmailChange={setForgotPasswordEmail}
-        onSubmit={handleForgotPassword}
-      />
     </div>
   );
 }

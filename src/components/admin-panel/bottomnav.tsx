@@ -3,7 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Heart, User, Plus } from "lucide-react";
+import {
+  Home,
+  Search,
+  Heart,
+  User,
+  Plus,
+  MessageCircleMore,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -37,10 +44,10 @@ export function BottomNav() {
         isActive={pathname === "/search"}
       />
       <NavItem
-        href="/favorites"
-        icon={<Heart size={24} />}
-        label="Favorites"
-        isActive={pathname === "/favorites"}
+        href="/chat"
+        icon={<MessageCircleMore size={24} />}
+        label="Messages"
+        isActive={pathname === "/chat"}
       />
       <NavItem
         href="/account"

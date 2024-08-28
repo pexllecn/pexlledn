@@ -5,13 +5,15 @@ import {
   Bookmark,
   SquarePen,
   LayoutGrid,
-  DollarSign
+  DollarSign,
+  MessageCircleMore,
 } from "lucide-react";
 
 type Submenu = {
   href: string;
   label: string;
   active: boolean;
+  notificationCount?: number; // Add this line
 };
 
 type Menu = {
@@ -20,6 +22,8 @@ type Menu = {
   active: boolean;
   icon: any;
   submenus: Submenu[];
+  notificationCount?: number; // Add this line
+
 };
 
 type Group = {
@@ -37,9 +41,17 @@ export function getMenuList(pathname: string): Group[] {
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+        {
+          href: "/chat",
+          label: "Messages",
+          active: pathname.includes("/chat"),
+          icon: MessageCircleMore,
+          submenus: [],
+          notificationCount: 3, // Add this line to show 3 new messages
+        },
+      ],
     },
     {
       groupLabel: "Contents",
@@ -53,37 +65,37 @@ export function getMenuList(pathname: string): Group[] {
             {
               href: "/posts",
               label: "All Posts",
-              active: pathname === "/posts"
+              active: pathname === "/posts",
             },
             {
               href: "/posts/new",
               label: "New Post",
-              active: pathname === "/posts/new"
-            }
-          ]
+              active: pathname === "/posts/new",
+            },
+          ],
         },
         {
           href: "/categories",
           label: "Categories",
           active: pathname.includes("/categories"),
           icon: Bookmark,
-          submenus: []
+          submenus: [],
         },
         {
           href: "/tags",
           label: "Tags",
           active: pathname.includes("/tags"),
           icon: Tag,
-          submenus: []
+          submenus: [],
         },
         {
           href: "/pricing",
           label: "Pricing",
           active: pathname.includes("/pricing"),
           icon: DollarSign,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Settings",
@@ -93,16 +105,16 @@ export function getMenuList(pathname: string): Group[] {
           label: "Users",
           active: pathname.includes("/users"),
           icon: Users,
-          submenus: []
+          submenus: [],
         },
         {
           href: "/account",
           label: "Account",
           active: pathname.includes("/account"),
           icon: Settings,
-          submenus: []
-        }
-      ]
-    }
+          submenus: [],
+        },
+      ],
+    },
   ];
 }

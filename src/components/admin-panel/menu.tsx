@@ -60,7 +60,17 @@ export function Menu({ isOpen }: MenuProps) {
                 <p className="pb-2"></p>
               )}
               {menus.map(
-                ({ href, label, icon: Icon, active, submenus }, index) =>
+                (
+                  {
+                    href,
+                    label,
+                    icon: Icon,
+                    active,
+                    submenus,
+                    notificationCount,
+                  },
+                  index
+                ) =>
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
                       <TooltipProvider disableHoverableContent>
@@ -74,7 +84,10 @@ export function Menu({ isOpen }: MenuProps) {
                               )}
                               asChild
                             >
-                              <Link href={href}>
+                              <Link
+                                href={href}
+                                className="flex items-center w-full"
+                              >
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-2")}
                                 >
@@ -90,12 +103,24 @@ export function Menu({ isOpen }: MenuProps) {
                                 >
                                   {label}
                                 </p>
+                                {isOpen !== false &&
+                                  notificationCount &&
+                                  notificationCount > 0 && (
+                                    <span className="ml-auto bg-foreground text-background text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                                      {notificationCount}
+                                    </span>
+                                  )}
                               </Link>
                             </Button>
                           </TooltipTrigger>
                           {isOpen === false && (
                             <TooltipContent side="right">
                               {label}
+                              {notificationCount && notificationCount > 0 && (
+                                <span className="ml-2 bg-foreground text-background text-xs font-medium px-1.5 rounded-full">
+                                  {notificationCount}
+                                </span>
+                              )}
                             </TooltipContent>
                           )}
                         </Tooltip>
@@ -109,6 +134,7 @@ export function Menu({ isOpen }: MenuProps) {
                         active={active}
                         submenus={submenus}
                         isOpen={isOpen}
+                        notificationCount={notificationCount}
                       />
                     </div>
                   )
