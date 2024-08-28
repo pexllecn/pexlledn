@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -28,19 +29,11 @@ import {
   X,
   Sun,
   Moon,
-  ChevronRight,
   ChevronLeft,
   Info,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -48,13 +41,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 
 interface Chat {
   id: number;
@@ -80,7 +68,7 @@ export default function EnhancedChatApp() {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isUserInfoVisible, setIsUserInfoVisible] = useState(true);
+  const [isUserInfoVisible, setIsUserInfoVisible] = useState(false);
 
   useEffect(() => {
     document.body.className = isDarkMode ? "dark" : "";
@@ -105,7 +93,7 @@ export default function EnhancedChatApp() {
     setIsUserInfoVisible(!isUserInfoVisible);
   };
 
-  const chats = [
+  const chats: Chat[] = [
     {
       id: 1,
       name: "Alice Johnson",
@@ -153,7 +141,7 @@ export default function EnhancedChatApp() {
     },
   ];
 
-  const messages = [
+  const messages: Message[] = [
     {
       id: 1,
       sender: "Alice Johnson",
@@ -196,51 +184,6 @@ export default function EnhancedChatApp() {
       isSent: false,
       avatar: `https://i.pravatar.cc/48?img=1`,
     },
-    {
-      id: 6,
-      sender: "You",
-      content:
-        "That sounds interesting! Do you have more details about the topics they'll be covering?",
-      time: "10:40 AM",
-      isSent: true,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
-    {
-      id: 7,
-      sender: "Alice Johnson",
-      content:
-        "That sounds interesting! Do you have more details about the topics they'll be covering?",
-      time: "10:40 AM",
-      isSent: false,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
-    {
-      id: 8,
-      sender: "You",
-      content:
-        "That sounds interesting! Do you have more details about the topics they'll be covering?",
-      time: "10:40 AM",
-      isSent: true,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
-    {
-      id: 9,
-      sender: "Alice Johnson",
-      content:
-        "That sounds interesting! Do you have more details about the topics they'll be covering?",
-      time: "10:40 AM",
-      isSent: false,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
-    {
-      id: 10,
-      sender: "Alice Johnson",
-      content:
-        "That sounds interesting! Do you have more details about the topics they'll be covering?",
-      time: "10:40 AM",
-      isSent: false,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
   ];
 
   const handleSendMessage = () => {
@@ -258,247 +201,261 @@ export default function EnhancedChatApp() {
     }
   };
 
+  const variants1 = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
   return (
-    <div className="py-2">
-      <div className="p-5 flex h-screen bg-background">
-        {/* Left Sidebar - Chat List */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden absolute top-4 left-4 z-10"
+    <ContentLayout title="Dashboard">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.75 }}
+        variants={variants1}
+      >
+        <div className="">
+          <div className="flex h-screen bg-background">
+            {/* Chat List */}
+            <div
+              className={`w-full md:w-80 ${
+                selectedChat && isMobile ? "hidden" : "block"
+              }`}
             >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-            <SheetHeader className="p-4"></SheetHeader>
-            <ChatList
-              chats={chats}
-              onSelectChat={setSelectedChat}
-              selectedChat={selectedChat}
-            />
-          </SheetContent>
-        </Sheet>
+              <ChatList
+                chats={chats}
+                onSelectChat={setSelectedChat}
+                selectedChat={selectedChat}
+              />
+            </div>
 
-        <div className="hidden md:block w-80 ">
-          <ChatList
-            chats={chats}
-            onSelectChat={setSelectedChat}
-            selectedChat={selectedChat}
-          />
-        </div>
-
-        {/* Main Chat Area */}
-        <div className="bg-muted rounded-3xl flex-1 flex flex-col relative">
-          {selectedChat ? (
-            <>
-              {/* Chat Header */}
-              <div className="p-4 flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
-                    <Avatar>
-                      <AvatarImage
-                        src={selectedChat.avatar}
-                        alt={selectedChat.name}
-                      />
-                      <AvatarFallback className="bg-background/80">
-                        {selectedChat.name
-                          ? selectedChat.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                          : ""}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span
-                      className={cn(
-                        "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
-                        selectedChat.online ? "bg-green-500" : "bg-gray-400"
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold">
-                      {selectedChat.name}
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedChat.online ? "Active now" : "Offline"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-5 w-5" />
+            {/* Main Chat Area */}
+            <div
+              className={`bg-muted rounded-t-3xl flex-1 flex flex-col relative ${
+                !selectedChat && isMobile ? "hidden" : "block"
+              }`}
+            >
+              {selectedChat ? (
+                <>
+                  {/* Chat Header */}
+                  <div className="p-4 flex items-center justify-between">
+                    {isMobile && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setSelectedChat(null)}
+                      >
+                        <ChevronLeft className="h-5 w-5" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={toggleDarkMode}
-                        className="cursor-pointer"
-                      >
-                        {isDarkMode ? (
-                          <Sun className="mr-2 h-4 w-4" />
-                        ) : (
-                          <Moon className="mr-2 h-4 w-4" />
-                        )}
-                        <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <User className="mr-2 h-4 w-4" />
-                        <span>View Profile</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Star className="mr-2 h-4 w-4" />
-                        <span>Add to Favorites</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Archive className="mr-2 h-4 w-4" />
-                        <span>Archive Chat</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Delete Chat</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  {/* Toggle User Info Button */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={toggleUserInfo}
-                    className="relative z-10"
-                  >
-                    <Info className="h-5 w-5" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Messages */}
-              <ScrollArea className="flex-1 p-4">
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${
-                      msg.isSent ? "justify-end" : "justify-start"
-                    } mb-4`}
-                  >
-                    <div
-                      className={`flex ${
-                        msg.isSent ? "flex-row-reverse" : "flex-row"
-                      } items-end`}
-                    >
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={msg.avatar} alt={msg.sender} />
-                        <AvatarFallback>
-                          {msg.sender
-                            ? msg.sender
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                            : ""}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div
-                        className={`flex flex-col ${
-                          msg.isSent ? "items-end mr-2" : "items-start ml-2"
-                        } max-w-[70%]`}
-                      >
-                        <div
+                    )}
+                    <div className="flex items-center space-x-4">
+                      <div className="relative">
+                        <Avatar>
+                          <AvatarImage
+                            src={selectedChat.avatar}
+                            alt={selectedChat.name}
+                          />
+                          <AvatarFallback className="bg-background/80">
+                            {selectedChat.name
+                              ? selectedChat.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")
+                              : ""}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span
                           className={cn(
-                            "rounded-lg p-3",
-                            msg.isSent
-                              ? "bg-foreground text-primary-foreground"
-                              : "bg-background text-foreground"
+                            "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
+                            selectedChat.online ? "bg-green-500" : "bg-gray-400"
                           )}
-                        >
-                          <p className="text-sm">{msg.content}</p>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {msg.time}
+                        />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-normal">
+                          {selectedChat.name}
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                          {selectedChat.online ? "Active now" : "Offline"}
                         </p>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </ScrollArea>
+                    <div className="flex space-x-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={toggleDarkMode}
+                            className="cursor-pointer"
+                          >
+                            {isDarkMode ? (
+                              <Sun className="mr-2 h-4 w-4" />
+                            ) : (
+                              <Moon className="mr-2 h-4 w-4" />
+                            )}
+                            <span>
+                              {isDarkMode ? "Light Mode" : "Dark Mode"}
+                            </span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <User className="mr-2 h-4 w-4" />
+                            <span>View Profile</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Star className="mr-2 h-4 w-4" />
+                            <span>Add to Favorites</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Archive className="mr-2 h-4 w-4" />
+                            <span>Archive Chat</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            <span>Delete Chat</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
 
-              {/* Message Input */}
-              <div className="p-4 sticky bottom-0 bg-background">
-                <div className="flex items-center space-x-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Paperclip className="h-5 w-5" />
+                      {/* Toggle User Info Button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggleUserInfo}
+                        className="relative z-10"
+                      >
+                        <Info className="h-5 w-5" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>
-                        <Image className="mr-2 h-4 w-4" />
-                        <span>Send Image</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <FileText className="mr-2 h-4 w-4" />
-                        <span>Send Document</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Calendar className="mr-2 h-4 w-4" />
-                        <span>Schedule Meeting</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Input
-                    type="text"
-                    placeholder="Type a message..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    className="flex-1"
-                  />
-                  <Button variant="ghost" size="icon">
-                    <Smile className="h-5 w-5" />
-                  </Button>
-                  <Button variant="ghost" size="icon">
-                    <Mic className="h-5 w-5" />
-                  </Button>
-                  <Button onClick={handleSendMessage}>
-                    <Send className="h-4 w-4 mr-2" />
-                    Send
-                  </Button>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center">
-              <p className="text-muted-foreground">
-                Select a chat to start messaging
-              </p>
-            </div>
-          )}
-        </div>
+                    </div>
+                  </div>
 
-        {/* Right Sidebar - User Info */}
-        <AnimatePresence>
-          {!isMobile && selectedChat && isUserInfoVisible && (
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "20rem", opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden"
-            >
-              <div className="w-80 p-6">
-                <UserInfoPanel user={selectedChat} />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+                  {/* Messages */}
+                  <div></div>
+                  <ScrollArea className="flex-1 p-4">
+                    {messages.map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`flex ${
+                          msg.isSent ? "justify-end" : "justify-start"
+                        } mb-4`}
+                      >
+                        <div
+                          className={`flex ${
+                            msg.isSent ? "flex-row-reverse" : "flex-row"
+                          } items-end`}
+                        >
+                          <Avatar className="w-8 h-8">
+                            <AvatarImage src={msg.avatar} alt={msg.sender} />
+                            <AvatarFallback>
+                              {msg.sender
+                                ? msg.sender
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")
+                                : ""}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div
+                            className={`flex flex-col ${
+                              msg.isSent ? "items-end mr-2" : "items-start ml-2"
+                            } max-w-[70%]`}
+                          >
+                            <div
+                              className={cn(
+                                "rounded-lg p-3",
+                                msg.isSent
+                                  ? "bg-foreground text-primary-foreground"
+                                  : "bg-background text-foreground"
+                              )}
+                            >
+                              <p className="text-sm">{msg.content}</p>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {msg.time}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </ScrollArea>
+
+                  {/* Message Input */}
+                  <div className="p-4 sticky bottom-0 bg-background">
+                    <div className="flex items-center space-x-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Paperclip className="h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>
+                            <Image className="mr-2 h-4 w-4" />
+                            <span>Send Image</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <FileText className="mr-2 h-4 w-4" />
+                            <span>Send Document</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Calendar className="mr-2 h-4 w-4" />
+                            <span>Schedule Meeting</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <Input
+                        type="text"
+                        placeholder="Type a message..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        className="flex-1"
+                      />
+                      <Button variant="ghost" size="icon">
+                        <Smile className="h-5 w-5" />
+                      </Button>
+                      <Button variant="ghost" size="icon">
+                        <Mic className="h-5 w-5" />
+                      </Button>
+                      <Button onClick={handleSendMessage}>
+                        <Send className="h-4 w-4 mr-2" />
+                        Send
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="flex-1 flex items-center justify-center">
+                  <p className="text-muted-foreground">
+                    Select a chat to start messaging
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Right Sidebar - User Info */}
+            <AnimatePresence>
+              {!isMobile && selectedChat && isUserInfoVisible && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: "20rem", opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="w-80 p-6">
+                    <UserInfoPanel user={selectedChat} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.div>
+    </ContentLayout>
   );
 }
 
@@ -514,20 +471,15 @@ function ChatList({
   return (
     <div className="p-2 lg:pr-4">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
-          Chats
+        <h2 className="text-2xl md:text-3xl font-normal text-foreground">
+          Messages
         </h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground md:hidden"
-        ></Button>
       </div>
       <div className="relative mb-4">
         <Search className="absolute w-4 h-4 left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
         <Input
           type="text"
-          placeholder="Search chats..."
+          placeholder="Search messages..."
           className="pl-10 border-none bg-muted shadow-none"
         />
       </div>
@@ -564,7 +516,7 @@ function ChatList({
                 />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium truncate">{chat.name}</p>
+                <p className="text-sm font-normal truncate">{chat.name}</p>
                 <p className="text-xs text-muted-foreground truncate">
                   {chat.lastMessage}
                 </p>
@@ -618,24 +570,22 @@ function UserInfoPanel({ user }: { user: User }) {
               )}
             />
           </div>
-          <h2 className="text-xl font-bold">{user.name}</h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h2 className="text-xl font-normal">{user.name}</h2>
+          <p className="text-sm text-muted-foreground">
             {user.online ? "Active now" : "Offline"}
           </p>
         </div>
         <Separator className="my-4" />
         <div className="space-y-6">
           <div>
-            <h4 className="font-semibold text-base text-foreground mb-2">
-              Bio
-            </h4>
+            <h4 className="font-normal text-base text-foreground mb-2">Bio</h4>
             <p className="text-sm text-muted-foreground">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-base text-foreground mb-2">
+            <h4 className="font-normal text-base text-foreground mb-2">
               Email
             </h4>
             <p className="text-sm text-muted-foreground">
@@ -643,37 +593,22 @@ function UserInfoPanel({ user }: { user: User }) {
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-base text-foreground mb-2">
+            <h4 className="font-normal text-base text-foreground mb-2">
               Phone
             </h4>
             <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
           </div>
           <div>
-            <h4 className="font-semibold text-base text-foreground mb-2">
+            <h4 className="font-normal text-base text-foreground mb-2">
               Location
             </h4>
             <p className="text-sm text-muted-foreground">San Francisco, CA</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-base text-foreground mb-2">
-              Shared Files
-            </h4>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li className="flex items-center">
-                <File className="h-4 w-4 mr-2" />
-                document.pdf
-              </li>
-              <li className="flex items-center">
-                <ImageIcon className="h-4 w-4 mr-2" />
-                image.jpg
-              </li>
-            </ul>
           </div>
         </div>
       </TabsContent>
       <TabsContent value="files">
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+          <h3 className="text-sm font-normal text-muted-foreground mb-2">
             Shared Files
           </h3>
           <ul className="space-y-2">
