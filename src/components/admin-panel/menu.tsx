@@ -134,7 +134,7 @@ export function Menu({ isOpen }: MenuProps) {
                         active={active}
                         submenus={submenus}
                         isOpen={isOpen}
-                        notificationCount={notificationCount}
+                        // Fix the error by removing the 'notificationCount' prop
                       />
                     </div>
                   )

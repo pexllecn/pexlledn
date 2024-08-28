@@ -56,9 +56,28 @@ import {
 } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface Chat {
+  id: number;
+  name: string;
+  lastMessage: string;
+  time: string;
+  unread: number;
+  online: boolean;
+  avatar: string;
+}
+
+interface Message {
+  id: number;
+  sender: string;
+  content: string;
+  time: string;
+  isSent: boolean;
+  avatar: string;
+}
+
 export default function EnhancedChatApp() {
   const [message, setMessage] = useState("");
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isUserInfoVisible, setIsUserInfoVisible] = useState(true);
@@ -232,7 +251,7 @@ export default function EnhancedChatApp() {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -287,9 +306,11 @@ export default function EnhancedChatApp() {
                     />
                     <AvatarFallback className="bg-background/80">
                       {selectedChat.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                        ? selectedChat.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                        : ""}
                     </AvatarFallback>
                   </Avatar>
                   <span
@@ -374,9 +395,11 @@ export default function EnhancedChatApp() {
                       <AvatarImage src={msg.avatar} alt={msg.sender} />
                       <AvatarFallback>
                         {msg.sender
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
+                          ? msg.sender
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                          : ""}
                       </AvatarFallback>
                     </Avatar>
                     <div
@@ -477,7 +500,15 @@ export default function EnhancedChatApp() {
   );
 }
 
-function ChatList({ chats, onSelectChat, selectedChat }) {
+function ChatList({
+  chats,
+  onSelectChat,
+  selectedChat,
+}: {
+  chats: Chat[];
+  onSelectChat: (chat: Chat) => void;
+  selectedChat: Chat | null;
+}) {
   return (
     <div className="p-2 pr-4">
       <div className="flex items-center justify-between mb-6">
@@ -501,56 +532,65 @@ function ChatList({ chats, onSelectChat, selectedChat }) {
         />
       </div>
       <ScrollArea className="h-[calc(100vh-8rem)]">
-        {chats.map((chat) => (
-          <div
-            key={chat.id}
-            className={cn(
-              "flex items-center space-x-4 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
-              selectedChat && selectedChat.id === chat.id
-                ? "bg-accent"
-                : "hover:bg-accent/50"
-            )}
-            onClick={() => onSelectChat(chat)}
-          >
-            <div className="relative">
-              <Avatar>
-                <AvatarImage src={chat.avatar} alt={chat.name} />
-                <AvatarFallback>
-                  {chat.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
-              <span
-                className={cn(
-                  "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
-                  chat.online ? "bg-green-500" : "bg-gray-400"
-                )}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{chat.name}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {chat.lastMessage}
-              </p>
-            </div>
-            <div className="flex flex-col items-end">
-              <p className="text-xs text-muted-foreground">{chat.time}</p>
-              {chat.unread > 0 && (
-                <div className="flex items-center justify-center bg-foreground text-primary-foreground rounded-full w-5 h-5 text-xs mt-1">
-                  {chat.unread}
-                </div>
+        {chats &&
+          chats.map((chat) => (
+            <div
+              key={chat.id}
+              className={cn(
+                "flex items-center space-x-4 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
+                selectedChat && selectedChat.id === chat.id
+                  ? "bg-accent"
+                  : "hover:bg-accent/50"
               )}
+              onClick={() => onSelectChat(chat)}
+            >
+              <div className="relative">
+                <Avatar>
+                  <AvatarImage src={chat.avatar} alt={chat.name} />
+                  <AvatarFallback>
+                    {chat.name
+                      ? chat.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                      : ""}
+                  </AvatarFallback>
+                </Avatar>
+                <span
+                  className={cn(
+                    "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
+                    chat.online ? "bg-green-500" : "bg-gray-400"
+                  )}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{chat.name}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {chat.lastMessage}
+                </p>
+              </div>
+              <div className="flex flex-col items-end">
+                <p className="text-xs text-muted-foreground">{chat.time}</p>
+                {chat.unread > 0 && (
+                  <div className="flex items-center justify-center bg-foreground text-primary-foreground rounded-full w-5 h-5 text-xs mt-1">
+                    {chat.unread}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </ScrollArea>
     </div>
   );
 }
 
-function UserInfoPanel({ user }) {
+interface User {
+  name: string;
+  avatar: string;
+  online: boolean;
+}
+
+function UserInfoPanel({ user }: { user: User }) {
   return (
     <Tabs defaultValue="info" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
@@ -564,9 +604,11 @@ function UserInfoPanel({ user }) {
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback>
                 {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+                  ? user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                  : ""}
               </AvatarFallback>
             </Avatar>
             <span
