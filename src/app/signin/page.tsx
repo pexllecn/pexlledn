@@ -67,10 +67,9 @@ const ResponsiveOTP: React.FC<ResponsiveOTPProps> = ({
     <form onSubmit={handleSubmit}>
       <div className="flex justify-center py-4">
         <InputOTP
-          maxLength={6}
           value={otp}
           onChange={onOtpChange}
-          autoFocus
+          maxLength={6}
           render={({ slots }) => (
             <>
               <InputOTPGroup>
