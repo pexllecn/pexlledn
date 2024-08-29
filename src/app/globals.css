@@ -121,3 +121,9 @@ body {
   border-radius: 0;
   z-index: 1000;
 }
+
+input,
+textarea,
+select {
+  font-size: 16px;
+}
