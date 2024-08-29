@@ -36,7 +36,7 @@ export const UserManagementHeader: React.FC<UserManagementHeaderProps> =
               <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
-                className="pl-8 w-full sm:w-[300px] bg-background"
+                className="pl-8 w-full sm:w-[300px] border-none bg-background"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

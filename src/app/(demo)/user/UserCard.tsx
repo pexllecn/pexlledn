@@ -29,7 +29,7 @@ interface UserCardProps {
 export const UserCard: React.FC<UserCardProps> = React.memo(
   ({ user, onSelect, isSelected }) => (
     <Card
-      className={`hover:border-ring shadow-none bg-muted ${
+      className={`hover:border-ring shadow-none border-muted bg-muted ${
         isSelected ? "border-ring" : ""
       }`}
     >

@@ -140,7 +140,7 @@ export default function AccountPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
                     <Avatar className="h-24 w-24">
                       <AvatarImage
                         src="/placeholder-avatar.jpg"
@@ -148,8 +148,8 @@ export default function AccountPage() {
                       />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col space-y-2">
-                      <Button variant="outline" size="sm">
+                    <div className="flex ml-4 flex-col space-y-2">
+                      <Button variant="ghost" size="sm">
                         <Upload className="h-4 w-4 mr-2" />
                         Upload new picture
                       </Button>
