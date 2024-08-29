@@ -121,18 +121,3 @@ body {
   border-radius: 0;
   z-index: 1000;
 }
-
-input,
-textarea,
-select {
-  font-size: 16px;
-}
-
-/* Add this new rule to disable zooming */
-@media screen and (max-width: 767px) {
-  html,
-  body {
-    touch-action: pan-x pan-y;
-    -webkit-text-size-adjust: none;
-  }
-}

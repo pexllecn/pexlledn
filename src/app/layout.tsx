@@ -33,8 +33,6 @@ export const metadata: Metadata = {
     description:
       "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
   },
-  viewport:
-    "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
 };
 
 export default function RootLayout({
