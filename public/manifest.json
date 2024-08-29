@@ -1,5 +1,5 @@
 {
-  "name": "Pexlle Chat",
+  "name": "Pexlle",
   "short_name": "Pexlle",
   "description": "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
   "start_url": "/",
