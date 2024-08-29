@@ -71,6 +71,25 @@
   body {
     @apply bg-background text-foreground text-sm;
   }
+
+  /* Prevent zooming on input fields */
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="time"],
+  input[type="week"],
+  textarea,
+  select {
+    font-size: 16px; /* This prevents zoom on iOS */
+    max-height: 100vh; /* Prevent content from expanding beyond viewport */
+  }
 }
 
 html,
@@ -84,6 +103,7 @@ body {
 
 #root {
   @apply h-full overflow-auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .text-gradient_indigo-purple {
@@ -122,21 +142,14 @@ body {
   z-index: 1000;
 }
 
-@layer base {
-  input[type="text"],
-  input[type="email"],
-  input[type="url"],
-  input[type="password"],
-  input[type="number"],
-  input[type="date"],
-  input[type="datetime-local"],
-  input[type="month"],
-  input[type="search"],
-  input[type="tel"],
-  input[type="time"],
-  input[type="week"],
-  textarea,
-  select {
-    font-size: 16px; /* This prevents zoom on iOS */
-  }
+/* Prevent content shifting when drawer opens */
+.drawer-open {
+  overflow: hidden;
+}
+
+/* Ensure drawer content is scrollable */
+.drawer-content {
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }

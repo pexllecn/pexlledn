@@ -66,31 +66,39 @@ const ResponsiveOTP: React.FC<ResponsiveOTPProps> = ({
   const Content = (
     <form onSubmit={handleSubmit}>
       <div className="flex justify-center py-4">
-        <InputOTP maxLength={6} value={otp} onChange={onOtpChange} autoFocus>
-          <InputOTPGroup>
-            {[0, 1, 2].map((index) => (
-              <InputOTPSlot
-                key={index}
-                index={index}
-                className={`h-12 w-12 text-center ${
-                  isOtpInvalid ? "border-red-500" : ""
-                }`}
-              />
-            ))}
-          </InputOTPGroup>
-          <InputOTPSeparator />
-          <InputOTPGroup>
-            {[3, 4, 5].map((index) => (
-              <InputOTPSlot
-                key={index}
-                index={index}
-                className={`h-12 w-12 text-center ${
-                  isOtpInvalid ? "border-red-500" : ""
-                }`}
-              />
-            ))}
-          </InputOTPGroup>
-        </InputOTP>
+        <InputOTP
+          maxLength={6}
+          value={otp}
+          onChange={onOtpChange}
+          autoFocus
+          render={({ slots }) => (
+            <>
+              <InputOTPGroup>
+                {slots.slice(0, 3).map((slot, index) => (
+                  <InputOTPSlot
+                    key={index}
+                    {...slot}
+                    className={`h-12 w-12 text-center ${
+                      isOtpInvalid ? "border-red-500" : ""
+                    }`}
+                  />
+                ))}
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                {slots.slice(3).map((slot, index) => (
+                  <InputOTPSlot
+                    key={index + 3}
+                    {...slot}
+                    className={`h-12 w-12 text-center ${
+                      isOtpInvalid ? "border-red-500" : ""
+                    }`}
+                  />
+                ))}
+              </InputOTPGroup>
+            </>
+          )}
+        />
       </div>
     </form>
   );
@@ -160,6 +168,7 @@ const ResponsiveForgotPassword: React.FC<ResponsiveForgotPasswordProps> = ({
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             required
+            className="text-base" // Increase font size to prevent zoom
           />
         </div>
       </div>
