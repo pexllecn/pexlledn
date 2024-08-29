@@ -146,7 +146,7 @@ export default function PricingPage() {
             onValueChange={handleBillingPeriodChange}
             className="w-full mb-8 flex justify-center"
           >
-            <TabsList className="grid w-fit grid-cols-2">
+            <TabsList>
               <TabsTrigger value="monthly">Monthly</TabsTrigger>
               <TabsTrigger value="annual">Annual</TabsTrigger>
             </TabsList>
