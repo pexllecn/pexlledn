@@ -63,13 +63,13 @@
 }
 
 @layer base {
-  :root {
-    --font-weight: 300; /* Light weight */
+  * {
+    @apply border-border;
+    font-weight: var(--font-weight);
   }
 
   body {
     @apply bg-background text-foreground text-sm;
-    font-weight: var(--font-weight);
   }
 
   /* Prevent zooming on input fields */

@@ -25,7 +25,7 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
-      <body className={`${GeistSans.variable} font-sans font-light text-sm`}>
+      <body className={`${GeistSans.className} font-light text-sm`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BreadcrumbProvider>
             <div id="root" className="h-full overflow-auto">
