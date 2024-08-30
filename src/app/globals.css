@@ -31,7 +31,7 @@
     --radius: 0.75rem;
 
     /* Default font family and weight */
-    --font-weight: 350; /* Light weight */
+    --font-weight: 300; /* Light weight */
   }
 
   .dark {
@@ -63,13 +63,13 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-    font-weight: var(--font-weight);
+  :root {
+    --font-weight: 300; /* Light weight */
   }
 
   body {
     @apply bg-background text-foreground text-sm;
+    font-weight: var(--font-weight);
   }
 
   /* Prevent zooming on input fields */
