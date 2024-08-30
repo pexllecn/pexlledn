@@ -67,16 +67,7 @@ export default function EnhancedChatApp() {
   const [message, setMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isUserInfoVisible, setIsUserInfoVisible] = useState(false);
-
-  useEffect(() => {
-    document.body.className = isDarkMode ? "dark" : "";
-  }, [isDarkMode]);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -287,17 +278,6 @@ export default function EnhancedChatApp() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={toggleDarkMode}
-                          className="cursor-pointer"
-                        >
-                          {isDarkMode ? (
-                            <Sun className="mr-2 h-4 w-4" />
-                          ) : (
-                            <Moon className="mr-2 h-4 w-4" />
-                          )}
-                          <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
-                        </DropdownMenuItem>
                         <DropdownMenuItem>
                           <User className="mr-2 h-4 w-4" />
                           <span>View Profile</span>
