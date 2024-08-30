@@ -5,15 +5,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
-import { metadata as siteMetadata } from "./metadata";
+import { metadata, viewport } from "./metadata";
 
-export const metadata: Metadata = {
-  ...siteMetadata,
-  manifest: "/manifest.json",
-  themeColor: "#000000",
-  viewport:
-    "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
-};
+export { metadata, viewport };
 
 export default function RootLayout({
   children,
