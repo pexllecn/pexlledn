@@ -84,9 +84,9 @@ const users: User[] = [
 
 const unsplashImages = [
   "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8",
   "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8",
   "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
@@ -118,7 +118,7 @@ export default function Component() {
           title: "Create project timeline",
           description: "Develop a comprehensive timeline for the project",
           dueDate: new Date(2023, 6, 15),
-          image: unsplashImages[1],
+          image: null,
           assignees: [users[1], users[2]],
           tags: ["planning", "timeline"],
           status: "in-progress",
@@ -135,9 +135,9 @@ export default function Component() {
           title: "Set up development environment",
           description: "Install and configure all necessary tools",
           dueDate: null,
-          image: unsplashImages[2],
+          image: unsplashImages[1],
           assignees: [users[2]],
-          tags: ["setup"],
+          tags: ["setup", "DevOps"],
           status: "done",
           progress: 100,
         },
@@ -165,7 +165,7 @@ export default function Component() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const onDragEnd = (result: DropResult) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, type } = result;
 
     if (!destination) return;
 
@@ -175,49 +175,56 @@ export default function Component() {
     )
       return;
 
-    const sourceBoard = boards.find((board) => board.id === source.droppableId);
-    const destBoard = boards.find(
-      (board) => board.id === destination.droppableId
-    );
+    if (type === "BOARD") {
+      const newBoards = Array.from(boards);
+      const [reorderedBoard] = newBoards.splice(source.index, 1);
+      newBoards.splice(destination.index, 0, reorderedBoard);
+      setBoards(newBoards);
+    } else if (type === "TASK") {
+      const sourceBoard = boards.find(
+        (board) => board.id === source.droppableId
+      );
+      const destBoard = boards.find(
+        (board) => board.id === destination.droppableId
+      );
 
-    if (!sourceBoard || !destBoard) return;
+      if (!sourceBoard || !destBoard) return;
 
-    const newBoards = boards.map((board) => {
-      if (board.id === sourceBoard.id) {
-        return {
-          ...board,
-          tasks: board.tasks.filter((task) => task.id !== draggableId),
-        };
-      }
-      if (board.id === destBoard.id) {
-        const [movedTask] = sourceBoard.tasks.filter(
-          (task) => task.id === draggableId
-        );
-        const updatedTask = {
-          ...movedTask,
-          status: destBoard.title
-            .toLowerCase()
-            .replace(" ", "-") as Task["status"],
-          progress:
-            destBoard.title === "Done"
-              ? 100
-              : destBoard.title === "In Progress"
-              ? 50
-              : 0,
-        };
-        return {
-          ...board,
-          tasks: [
-            ...board.tasks.slice(0, destination.index),
-            updatedTask,
-            ...board.tasks.slice(destination.index),
-          ],
-        };
-      }
-      return board;
-    });
+      const newBoards = boards.map((board) => {
+        if (board.id === sourceBoard.id) {
+          const newTasks = Array.from(board.tasks);
+          const [movedTask] = newTasks.splice(source.index, 1);
+          if (board.id === destBoard.id) {
+            newTasks.splice(destination.index, 0, movedTask);
+          }
+          return { ...board, tasks: newTasks };
+        }
+        if (board.id === destBoard.id && sourceBoard.id !== destBoard.id) {
+          const newTasks = Array.from(board.tasks);
+          const [movedTask] = sourceBoard.tasks.slice(
+            source.index,
+            source.index + 1
+          );
+          const updatedTask = {
+            ...movedTask,
+            status: destBoard.title
+              .toLowerCase()
+              .replace(" ", "-") as Task["status"],
+            progress:
+              destBoard.title === "Done"
+                ? 100
+                : destBoard.title === "In Progress"
+                ? 50
+                : 0,
+          };
+          newTasks.splice(destination.index, 0, updatedTask);
+          return { ...board, tasks: newTasks };
+        }
+        return board;
+      });
 
-    setBoards(newBoards);
+      setBoards(newBoards);
+    }
   };
 
   const addBoard = () => {
@@ -393,160 +400,196 @@ export default function Component() {
               </Dialog>
             </div>
             <DragDropContext onDragEnd={onDragEnd}>
-              <div className="flex gap-6 overflow-x-auto pb-6">
-                {boards.map((board) => (
+              <Droppable
+                droppableId="boards"
+                type="BOARD"
+                direction="horizontal"
+              >
+                {(provided) => (
                   <div
-                    key={board.id}
-                    className="bg-muted rounded-lg shadow-sm p-4 min-w-[300px] max-w-[300px]"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="flex gap-6 overflow-x-auto pb-6"
                   >
-                    <div className="flex justify-between items-center mb-4">
-                      {editingBoard === board.id ? (
-                        <Input
-                          value={board.title}
-                          onChange={(e) =>
-                            updateBoardTitle(board.id, e.target.value)
-                          }
-                          onBlur={() => setEditingBoard(null)}
-                          autoFocus
-                          className="font-semibold text-lg"
-                        />
-                      ) : (
-                        <h2 className="font-semibold text-lg text-card-foreground">
-                          {board.title}
-                        </h2>
-                      )}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => setEditingBoard(board.id)}
+                    {boards.map((board, boardIndex) => (
+                      <Draggable
+                        key={board.id}
+                        draggableId={board.id}
+                        index={boardIndex}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className="bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px]"
                           >
-                            Edit Title
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => deleteBoard(board.id)}
-                          >
-                            Delete Board
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                    <Droppable droppableId={board.id}>
-                      {(provided) => (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          className="min-h-[200px]"
-                        >
-                          {board.tasks.map((task, index) => (
-                            <Draggable
-                              key={task.id}
-                              draggableId={task.id}
-                              index={index}
+                            <div
+                              {...provided.dragHandleProps}
+                              className="flex justify-between items-center mb-4"
                             >
-                              {(provided, snapshot) => (
-                                <Card
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  style={{
-                                    ...provided.draggableProps.style,
-                                    opacity: snapshot.isDragging ? 0.5 : 1,
-                                  }}
-                                  className="mb-3 bg-background hover:bg-accent transition-colors cursor-pointer overflow-hidden"
-                                  onClick={() => {
-                                    setSelectedTask(task);
-                                    setIsTaskDetailDialogOpen(true);
-                                  }}
-                                >
-                                  <CardContent className="p-3">
-                                    <h3 className="font-semibold text-sm text-card-foreground mb-2">
-                                      {task.title}
-                                    </h3>
-                                    {task.image && (
-                                      <img
-                                        src={task.image}
-                                        alt="Task"
-                                        className="w-full h-32 object-cover rounded-md mb-2"
-                                      />
-                                    )}
-                                    <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                                      {task.description}
-                                    </p>
-                                    <div className="flex flex-wrap gap-1 mb-2">
-                                      {task.tags.map((tag, index) => (
-                                        <Badge key={index} variant="secondary">
-                                          {tag}
-                                        </Badge>
-                                      ))}
-                                    </div>
-                                    <Progress
-                                      value={task.progress}
-                                      className="h-1 mb-2"
-                                    />
-                                    <div className="flex justify-between items-center">
-                                      <div className="flex -space-x-2">
-                                        {task.assignees.map((user, index) => (
-                                          <Avatar
-                                            key={index}
-                                            className="border-2 border-background w-8 h-8"
-                                          >
-                                            <AvatarImage
-                                              src={user.avatar}
-                                              alt={user.name}
-                                            />
-                                            <AvatarFallback>
-                                              {user.name.charAt(0)}
-                                            </AvatarFallback>
-                                          </Avatar>
-                                        ))}
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        {getStatusIcon(task.status)}
-                                        {task.dueDate && (
-                                          <span
-                                            className={`text-xs ${
-                                              getDueDateStatus(task.dueDate) ===
-                                              "overdue"
-                                                ? "text-red-500"
-                                                : getDueDateStatus(
-                                                    task.dueDate
-                                                  ) === "due-today"
-                                                ? "text-yellow-500"
-                                                : "text-muted-foreground"
-                                            }`}
-                                          >
-                                            {format(task.dueDate, "MMM d")}
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </CardContent>
-                                </Card>
+                              {editingBoard === board.id ? (
+                                <Input
+                                  value={board.title}
+                                  onChange={(e) =>
+                                    updateBoardTitle(board.id, e.target.value)
+                                  }
+                                  onBlur={() => setEditingBoard(null)}
+                                  autoFocus
+                                  className="font-semibold text-lg"
+                                />
+                              ) : (
+                                <h2 className="font-semibold text-lg text-card-foreground">
+                                  {board.title}
+                                </h2>
                               )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                    <Button
-                      className="w-full mt-3"
-                      variant="outline"
-                      onClick={() => {
-                        setNewTaskBoardId(board.id);
-                        setIsNewTaskDialogOpen(true);
-                      }}
-                    >
-                      <PlusIcon className="h-4 w-4 mr-2" /> Add Task
-                    </Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() => setEditingBoard(board.id)}
+                                  >
+                                    Edit Title
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => deleteBoard(board.id)}
+                                  >
+                                    Delete Board
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                            <Droppable droppableId={board.id} type="TASK">
+                              {(provided) => (
+                                <div
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                  className="min-h-[200px]"
+                                >
+                                  {board.tasks.map((task, index) => (
+                                    <Draggable
+                                      key={task.id}
+                                      draggableId={task.id}
+                                      index={index}
+                                    >
+                                      {(provided, snapshot) => (
+                                        <Card
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          style={{
+                                            ...provided.draggableProps.style,
+                                            opacity: snapshot.isDragging
+                                              ? 0.5
+                                              : 1,
+                                          }}
+                                          className="mb-3 bg-background hover:bg-accent transition-colors cursor-pointer overflow-hidden"
+                                          onClick={() => {
+                                            setSelectedTask(task);
+                                            setIsTaskDetailDialogOpen(true);
+                                          }}
+                                        >
+                                          <CardContent className="p-3">
+                                            <h3 className="font-semibold text-sm text-card-foreground mb-2">
+                                              {task.title}
+                                            </h3>
+                                            {task.image && (
+                                              <img
+                                                src={task.image}
+                                                alt="Task"
+                                                className="w-full h-32 object-cover rounded-md mb-2"
+                                              />
+                                            )}
+                                            <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                                              {task.description}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1 mb-2">
+                                              {task.tags.map((tag, index) => (
+                                                <Badge
+                                                  key={index}
+                                                  variant="secondary"
+                                                >
+                                                  {tag}
+                                                </Badge>
+                                              ))}
+                                            </div>
+                                            <Progress
+                                              value={task.progress}
+                                              className="h-1 mb-2"
+                                            />
+                                            <div className="flex justify-between items-center">
+                                              <div className="flex -space-x-2">
+                                                {task.assignees.map(
+                                                  (user, index) => (
+                                                    <Avatar
+                                                      key={index}
+                                                      className="border-2 border-background w-8 h-8"
+                                                    >
+                                                      <AvatarImage
+                                                        src={user.avatar}
+                                                        alt={user.name}
+                                                      />
+                                                      <AvatarFallback>
+                                                        {user.name.charAt(0)}
+                                                      </AvatarFallback>
+                                                    </Avatar>
+                                                  )
+                                                )}
+                                              </div>
+                                              <div className="flex items-center gap-2">
+                                                {getStatusIcon(task.status)}
+                                                {task.dueDate && (
+                                                  <span
+                                                    className={`text-xs ${
+                                                      getDueDateStatus(
+                                                        task.dueDate
+                                                      ) === "overdue"
+                                                        ? "text-red-500"
+                                                        : getDueDateStatus(
+                                                            task.dueDate
+                                                          ) === "due-today"
+                                                        ? "text-yellow-500"
+                                                        : "text-muted-foreground"
+                                                    }`}
+                                                  >
+                                                    {format(
+                                                      task.dueDate,
+                                                      "MMM d"
+                                                    )}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </CardContent>
+                                        </Card>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided.placeholder}
+                                </div>
+                              )}
+                            </Droppable>
+                            <Button
+                              className="w-full mt-3"
+                              variant="outline"
+                              onClick={() => {
+                                setNewTaskBoardId(board.id);
+                                setIsNewTaskDialogOpen(true);
+                              }}
+                            >
+                              <PlusIcon className="h-4 w-4 mr-2" /> Add Task
+                            </Button>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
-                ))}
-              </div>
+                )}
+              </Droppable>
             </DragDropContext>
           </div>
           <Dialog
