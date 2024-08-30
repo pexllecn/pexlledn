@@ -87,8 +87,20 @@
   input[type="week"],
   textarea,
   select {
-    font-size: 16px; /* This prevents zoom on iOS */
     max-height: 100vh; /* Prevent content from expanding beyond viewport */
+  }
+}
+
+@layer base {
+  html,
+  body {
+    touch-action: manipulation;
+  }
+
+  input,
+  textarea,
+  select {
+    touch-action: manipulation;
   }
 }
 
