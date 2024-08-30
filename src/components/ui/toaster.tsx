@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import {
   Toast,
   ToastClose,
@@ -12,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 export function Toaster() {
   const { toasts } = useToast();
+  const { theme } = useTheme();
 
   return (
     <ToastProvider>

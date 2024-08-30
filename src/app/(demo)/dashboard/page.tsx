@@ -292,6 +292,13 @@ export default function DashboardPage() {
                       label: "Undo",
                       onClick: () => console.log("Undo"),
                     },
+                    classNames: {
+                      toast: "bg-background border-none",
+                      title: "font-normal text-foreground",
+                      description: "font-light text-muted-foreground",
+                      actionButton: "bg-primary text-primary-foreground",
+                      cancelButton: "bg-muted text-muted-foreground",
+                    },
                   })
                 }
               >
