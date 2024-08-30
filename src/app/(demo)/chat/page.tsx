@@ -201,7 +201,7 @@ export default function EnhancedChatApp() {
     <motion.div
       initial="hidden"
       animate="visible"
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.4 }}
       variants={variants1}
     >
       <div className="p-2 lg:px-6">

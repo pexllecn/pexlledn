@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
 import { metadata, viewport } from "./metadata";
+import { ZoomPreventer } from "@/components/ZoomPreventer";
 
 export { metadata, viewport };
 
@@ -25,6 +26,7 @@ export default function RootLayout({
             <div id="root" className="h-full overflow-auto">
               {children}
             </div>
+            <ZoomPreventer />
             <Toaster />
           </BreadcrumbProvider>
         </ThemeProvider>
