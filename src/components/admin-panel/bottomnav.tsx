@@ -10,6 +10,7 @@ import {
   User,
   Plus,
   MessageCircleMore,
+  Kanban,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,12 @@ export function BottomNav() {
         isActive={pathname === "/dashboard"}
       />
       <NavItem
+        href="/kanban"
+        icon={<Kanban size={24} />}
+        label="Kanban"
+        isActive={pathname === "/kanban"}
+      />
+      <NavItem
         href="/search"
         icon={<Search size={24} />}
         label="Search"
@@ -49,6 +56,7 @@ export function BottomNav() {
         label="Messages"
         isActive={pathname === "/chat"}
       />
+
       <NavItem
         href="/account"
         icon={<User size={24} />}
@@ -80,7 +88,7 @@ const NavItem = ({
       {React.cloneElement(icon, {
         className: cn(
           "transition-all duration-200",
-          isActive ? "fill-current stroke-[1.5]" : "stroke-[1.5] fill-none"
+          isActive ? "stroke-[2.5]" : "stroke-[2.0] stroke-muted-foreground"
         ),
       })}
     </div>

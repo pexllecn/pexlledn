@@ -25,9 +25,9 @@ interface UserManagementHeaderProps {
 
 export const UserManagementHeader: React.FC<UserManagementHeaderProps> =
   React.memo(({ view, setView, searchTerm, setSearchTerm }) => (
-    <Card className="bg-muted shadow-none border-none mb-8">
+    <Card className="p-0 bg-background shadow-none border-none mb-8">
       <CardHeader>
-        <CardTitle className="font-normal">User Management</CardTitle>
+        <CardTitle className="font-normal text-3xl">User Management</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-y-0 sm:space-x-4">
@@ -36,7 +36,7 @@ export const UserManagementHeader: React.FC<UserManagementHeaderProps> =
               <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
-                className="pl-8 w-full sm:w-[300px] border-none bg-background"
+                className="pl-8 w-full sm:w-[300px] border-none bg-muted shadow-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

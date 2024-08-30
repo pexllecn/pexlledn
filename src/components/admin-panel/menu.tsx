@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { CollapseMenuButton } from "@/components/admin-panel/collapse-menu-button";
 import {
   Tooltip,
@@ -15,6 +16,14 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 
+interface CollapseMenuButtonProps {
+  icon: React.ElementType;
+  label: string;
+  active: boolean;
+  submenus: Array<{ href: string; label: string }>;
+  isOpen: boolean | undefined;
+  notificationCount?: number;
+}
 interface MenuProps {
   isOpen: boolean | undefined;
 }
@@ -106,9 +115,12 @@ export function Menu({ isOpen }: MenuProps) {
                                 {isOpen !== false &&
                                   notificationCount &&
                                   notificationCount > 0 && (
-                                    <span className="ml-auto bg-foreground text-background text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                                    <Badge
+                                      variant="decline"
+                                      className="ml-auto px-1.5 min-w-[20px] flex items-center justify-center"
+                                    >
                                       {notificationCount}
-                                    </span>
+                                    </Badge>
                                   )}
                               </Link>
                             </Button>
@@ -117,9 +129,12 @@ export function Menu({ isOpen }: MenuProps) {
                             <TooltipContent side="right">
                               {label}
                               {notificationCount && notificationCount > 0 && (
-                                <span className="ml-2 bg-foreground text-background text-xs font-medium px-1.5 rounded-full">
+                                <Badge
+                                  variant="secondary"
+                                  className="ml-2 px-1.5 min-w-[20px] flex items-center justify-center"
+                                >
                                   {notificationCount}
-                                </span>
+                                </Badge>
                               )}
                             </TooltipContent>
                           )}
@@ -134,7 +149,6 @@ export function Menu({ isOpen }: MenuProps) {
                         active={active}
                         submenus={submenus}
                         isOpen={isOpen}
-                        // Fix the error by removing the 'notificationCount' prop
                       />
                     </div>
                   )

@@ -498,9 +498,12 @@ function ChatList({
               <div className="flex flex-col items-end">
                 <p className="text-xs text-muted-foreground">{chat.time}</p>
                 {chat.unread > 0 && (
-                  <div className="flex items-center justify-center bg-foreground text-primary-foreground rounded-full w-5 h-5 text-xs mt-1">
+                  <Badge
+                    variant="decline"
+                    className="ml-auto px-1.5 min-w-[20px] flex items-center justify-center"
+                  >
                     {chat.unread}
-                  </div>
+                  </Badge>
                 )}
               </div>
             </div>

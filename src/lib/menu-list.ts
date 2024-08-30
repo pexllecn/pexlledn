@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   DollarSign,
   MessageCircleMore,
+  Kanban,
 } from "lucide-react";
 
 type Submenu = {
@@ -23,7 +24,6 @@ type Menu = {
   icon: any;
   submenus: Submenu[];
   notificationCount?: number; // Add this line
-
 };
 
 type Group = {
@@ -50,6 +50,14 @@ export function getMenuList(pathname: string): Group[] {
           icon: MessageCircleMore,
           submenus: [],
           notificationCount: 3, // Add this line to show 3 new messages
+        },
+        {
+          href: "/kanban",
+          label: "Kanban",
+          active: pathname.includes("/kanban"),
+          icon: Kanban,
+          submenus: [],
+          notificationCount: 546, // Add this line to show 3 new messages
         },
       ],
     },
