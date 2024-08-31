@@ -55,8 +55,10 @@ export const UserCard: React.FC<UserCardProps> = React.memo(
               {user.email}
             </p>
             <div className="text-xs flex flex-wrap items-center mt-1 gap-1">
-              <Badge variant="default">{user.role}</Badge>
-              <Badge variant="info">{user.department}</Badge>
+              <Badge variant="outline" className="bg-background">
+                {user.role}
+              </Badge>
+              <Badge variant="outline">{user.department}</Badge>
               <Badge variant={user.status === "Active" ? "success" : "decline"}>
                 {user.status}
               </Badge>

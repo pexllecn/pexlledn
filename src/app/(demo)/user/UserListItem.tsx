@@ -47,8 +47,10 @@ export const UserListItem: React.FC<UserListItemProps> = React.memo(
         <p className="text-sm text-muted-foreground">{user.email}</p>
       </div>
       <div className="flex items-center space-x-2">
-        <Badge variant="default">{user.role}</Badge>
-        <Badge variant="info">{user.department}</Badge>
+        <Badge variant="outline" className="bg-background">
+          {user.role}
+        </Badge>
+        <Badge variant="outline">{user.department}</Badge>
         <Badge variant={user.status === "Active" ? "success" : "decline"}>
           {user.status}
         </Badge>
