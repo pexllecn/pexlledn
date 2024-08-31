@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   DragDropContext,
   Droppable,
@@ -36,8 +36,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +53,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 type User = {
   id: string;
@@ -83,6 +92,50 @@ const unsplashImages = [
   "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8",
   "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
+
+const ResponsiveDialog: React.FC<{
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  description: string;
+  content: React.ReactNode;
+  footer: React.ReactNode;
+}> = ({ isOpen, onOpenChange, title, description, content, footer }) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isDesktop) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </DialogHeader>
+          {content}
+          <DialogFooter>{footer}</DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={isOpen} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>{title}</DrawerTitle>
+          <DrawerDescription>{description}</DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">{content}</div>
+        <DrawerFooter className="pt-2">
+          {footer}
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};
 
 export default function KanbanBoard() {
   const [boards, setBoards] = useState<Board[]>([
@@ -138,6 +191,7 @@ export default function KanbanBoard() {
       ],
     },
   ]);
+
   const [newBoard, setNewBoard] = useState("");
   const [newTask, setNewTask] = useState<
     Omit<Task, "id" | "status" | "progress">
@@ -346,40 +400,12 @@ export default function KanbanBoard() {
           Kanban Board
         </h1>
         <div className="flex justify-between items-center mb-6">
-          <Dialog
-            open={isNewBoardDialogOpen}
-            onOpenChange={setIsNewBoardDialogOpen}
+          <Button
+            variant="default"
+            onClick={() => setIsNewBoardDialogOpen(true)}
           >
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <PlusIcon className="h-4 w-4 mr-2" /> Add New Board
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Board</DialogTitle>
-                <DialogDescription>
-                  Create a new board for your Kanban.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="boardTitle" className="text-right">
-                    Title
-                  </Label>
-                  <Input
-                    id="boardTitle"
-                    value={newBoard}
-                    onChange={(e) => setNewBoard(e.target.value)}
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button onClick={addBoard}>Add Board</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            <PlusIcon className="h-4 w-4 mr-2" /> Add New Board
+          </Button>
         </div>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="boards" type="BOARD" direction="horizontal">
@@ -574,14 +600,36 @@ export default function KanbanBoard() {
           </Droppable>
         </DragDropContext>
       </div>
-      <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
-            <DialogDescription>
-              Create a new task for your Kanban board.
-            </DialogDescription>
-          </DialogHeader>
+
+      <ResponsiveDialog
+        isOpen={isNewBoardDialogOpen}
+        onOpenChange={setIsNewBoardDialogOpen}
+        title="Add New Board"
+        description="Create a new board for your Kanban."
+        content={
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="boardTitle" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="boardTitle"
+                value={newBoard}
+                onChange={(e) => setNewBoard(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+        }
+        footer={<Button onClick={addBoard}>Add Board</Button>}
+      />
+
+      <ResponsiveDialog
+        isOpen={isNewTaskDialogOpen}
+        onOpenChange={setIsNewTaskDialogOpen}
+        title="Add New Task"
+        description="Create a new task for your Kanban board."
+        content={
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="taskTitle" className="text-right">
@@ -682,20 +730,16 @@ export default function KanbanBoard() {
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button onClick={addTask}>Add Task</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={isEditTaskDialogOpen}
+        }
+        footer={<Button onClick={addTask}>Add Task</Button>}
+      />
+
+      <ResponsiveDialog
+        isOpen={isEditTaskDialogOpen}
         onOpenChange={setIsEditTaskDialogOpen}
-      >
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Task</DialogTitle>
-            <DialogDescription>Update the task details.</DialogDescription>
-          </DialogHeader>
+        title="Edit Task"
+        description="Update the task details."
+        content={
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="editTaskTitle" className="text-right">
@@ -845,19 +889,16 @@ export default function KanbanBoard() {
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button onClick={updateTask}>Update Task</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={isTaskDetailDialogOpen}
+        }
+        footer={<Button onClick={updateTask}>Update Task</Button>}
+      />
+
+      <ResponsiveDialog
+        isOpen={isTaskDetailDialogOpen}
         onOpenChange={setIsTaskDetailDialogOpen}
-      >
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{selectedTask?.title}</DialogTitle>
-          </DialogHeader>
+        title={selectedTask?.title || "Task Details"}
+        description=""
+        content={
           <div className="grid gap-4 py-4">
             {selectedTask?.image && (
               <img
@@ -899,19 +940,19 @@ export default function KanbanBoard() {
               </span>
             </div>
           </div>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                setEditingTask(selectedTask);
-                setIsTaskDetailDialogOpen(false);
-                setIsEditTaskDialogOpen(true);
-              }}
-            >
-              Edit Task
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        }
+        footer={
+          <Button
+            onClick={() => {
+              setEditingTask(selectedTask);
+              setIsTaskDetailDialogOpen(false);
+              setIsEditTaskDialogOpen(true);
+            }}
+          >
+            Edit Task
+          </Button>
+        }
+      />
     </div>
   );
 }
