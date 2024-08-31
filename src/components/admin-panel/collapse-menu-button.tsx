@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Dot, LucideIcon } from "lucide-react";
+import { ChevronRight, Dot, LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -87,11 +87,11 @@ export function CollapseMenuButton({
                   : "-translate-x-96 opacity-0"
               )}
             >
-              <ChevronDown
+              <ChevronRight
                 size={16}
                 className={cn(
                   "transition-transform duration-200",
-                  isCollapsed ? "rotate-180" : "rotate-0"
+                  isCollapsed ? "rotate-90" : "rotate-0"
                 )}
               />
             </div>

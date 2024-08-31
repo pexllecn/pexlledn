@@ -7,7 +7,7 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,13 +16,10 @@ import {
   PlusIcon,
   MoreHorizontal,
   Calendar,
-  Image as ImageIcon,
-  Users,
-  Tag,
-  X,
-  CheckCircle2,
   Clock,
   AlertCircle,
+  CheckCircle2,
+  GripHorizontal,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -49,8 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 type User = {
   id: string;
@@ -345,87 +341,88 @@ export default function Component() {
     return null;
   };
 
-  const variants1 = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
-  };
-
   return (
-    <ContentLayout title="Account">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.4 }}
-        variants={variants1}
-      >
-        <div className="p-6 bg-background min-h-screen">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-normal mb-8 text-foreground">
-              Kanban Board
-            </h1>
-            <div className="flex justify-between items-center mb-6">
-              <Dialog
-                open={isNewBoardDialogOpen}
-                onOpenChange={setIsNewBoardDialogOpen}
+    <div className="p-6 bg-background min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-normal mb-8 text-foreground">
+          Kanban Board
+        </h1>
+        <div className="flex justify-between items-center mb-6">
+          {" "}
+          <Dialog
+            open={isNewBoardDialogOpen}
+            onOpenChange={setIsNewBoardDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <PlusIcon className="h-4 w-4 mr-2" /> Add New Board
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Board</DialogTitle>
+                <DialogDescription>
+                  Create a new board for your Kanban.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="boardTitle" className="text-right">
+                    Title
+                  </Label>
+                  <Input
+                    id="boardTitle"
+                    value={newBoard}
+                    onChange={(e) => setNewBoard(e.target.value)}
+                    className="col-span-3"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={addBoard}>Add Board</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="boards" type="BOARD" direction="horizontal">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="flex gap-6 overflow-x-auto pb-6"
               >
-                <DialogTrigger asChild>
-                  <Button variant="default">
-                    <PlusIcon className="h-4 w-4 mr-2" /> Add New Board
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Board</DialogTitle>
-                    <DialogDescription>
-                      Create a new board for your Kanban.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="boardTitle" className="text-right">
-                        Title
-                      </Label>
-                      <Input
-                        id="boardTitle"
-                        value={newBoard}
-                        onChange={(e) => setNewBoard(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button onClick={addBoard}>Add Board</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable
-                droppableId="boards"
-                type="BOARD"
-                direction="horizontal"
-              >
-                {(provided) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="flex gap-6 overflow-x-auto pb-6"
-                  >
-                    {boards.map((board, boardIndex) => (
-                      <Draggable
-                        key={board.id}
-                        draggableId={board.id}
-                        index={boardIndex}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px]"
+                <AnimatePresence>
+                  {boards.map((board, boardIndex) => (
+                    <Draggable
+                      key={board.id}
+                      draggableId={board.id}
+                      index={boardIndex}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{
+                            ...provided.draggableProps.style,
+                            transform: snapshot.isDragging
+                              ? `${provided.draggableProps.style?.transform} rotate(3deg)`
+                              : provided.draggableProps.style?.transform,
+                          }}
+                        >
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.2 }}
+                            className={`bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] ${
+                              snapshot.isDragging ? "shadow-lg" : ""
+                            }`}
                           >
                             <div
                               {...provided.dragHandleProps}
-                              className="flex justify-between items-center mb-4"
+                              className="flex justify-between items-center mb-4 cursor-move"
                             >
                               {editingBoard === board.id ? (
                                 <Input
@@ -438,7 +435,8 @@ export default function Component() {
                                   className="font-semibold text-lg"
                                 />
                               ) : (
-                                <h2 className="font-semibold text-lg text-card-foreground">
+                                <h2 className="font-semibold text-lg text-card-foreground flex items-center">
+                                  <GripHorizontal className="h-5 w-5 mr-2 text-muted-foreground" />
                                   {board.title}
                                 </h2>
                               )}
@@ -463,111 +461,137 @@ export default function Component() {
                               </DropdownMenu>
                             </div>
                             <Droppable droppableId={board.id} type="TASK">
-                              {(provided) => (
+                              {(provided, snapshot) => (
                                 <div
                                   {...provided.droppableProps}
                                   ref={provided.innerRef}
-                                  className="min-h-[200px]"
+                                  className={`min-h-[200px] transition-colors duration-200 ${
+                                    snapshot.isDraggingOver ? "bg-accent" : ""
+                                  }`}
                                 >
-                                  {board.tasks.map((task, index) => (
-                                    <Draggable
-                                      key={task.id}
-                                      draggableId={task.id}
-                                      index={index}
-                                    >
-                                      {(provided, snapshot) => (
-                                        <Card
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          style={{
-                                            ...provided.draggableProps.style,
-                                            opacity: snapshot.isDragging
-                                              ? 0.5
-                                              : 1,
-                                          }}
-                                          className="mb-3 bg-background hover:bg-accent transition-colors cursor-pointer overflow-hidden"
-                                          onClick={() => {
-                                            setSelectedTask(task);
-                                            setIsTaskDetailDialogOpen(true);
-                                          }}
-                                        >
-                                          <CardContent className="p-3">
-                                            <h3 className="font-semibold text-sm text-card-foreground mb-2">
-                                              {task.title}
-                                            </h3>
-                                            {task.image && (
-                                              <img
-                                                src={task.image}
-                                                alt="Task"
-                                                className="w-full h-32 object-cover rounded-md mb-2"
-                                              />
-                                            )}
-                                            <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                                              {task.description}
-                                            </p>
-                                            <div className="flex flex-wrap gap-1 mb-2">
-                                              {task.tags.map((tag, index) => (
-                                                <Badge
-                                                  key={index}
-                                                  variant="secondary"
-                                                >
-                                                  {tag}
-                                                </Badge>
-                                              ))}
-                                            </div>
-                                            <Progress
-                                              value={task.progress}
-                                              className="h-1 mb-2"
-                                            />
-                                            <div className="flex justify-between items-center">
-                                              <div className="flex -space-x-2">
-                                                {task.assignees.map(
-                                                  (user, index) => (
-                                                    <Avatar
-                                                      key={index}
-                                                      className="border-2 border-background w-8 h-8"
-                                                    >
-                                                      <AvatarImage
-                                                        src={user.avatar}
-                                                        alt={user.name}
-                                                      />
-                                                      <AvatarFallback>
-                                                        {user.name.charAt(0)}
-                                                      </AvatarFallback>
-                                                    </Avatar>
-                                                  )
-                                                )}
-                                              </div>
-                                              <div className="flex items-center gap-2">
-                                                {getStatusIcon(task.status)}
-                                                {task.dueDate && (
-                                                  <span
-                                                    className={`text-xs ${
-                                                      getDueDateStatus(
-                                                        task.dueDate
-                                                      ) === "overdue"
-                                                        ? "text-red-500"
-                                                        : getDueDateStatus(
-                                                            task.dueDate
-                                                          ) === "due-today"
-                                                        ? "text-yellow-500"
-                                                        : "text-muted-foreground"
-                                                    }`}
-                                                  >
-                                                    {format(
-                                                      task.dueDate,
-                                                      "MMM d"
+                                  <AnimatePresence>
+                                    {board.tasks.map((task, index) => (
+                                      <Draggable
+                                        key={task.id}
+                                        draggableId={task.id}
+                                        index={index}
+                                      >
+                                        {(provided, snapshot) => (
+                                          <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            style={{
+                                              ...provided.draggableProps.style,
+                                              transform: snapshot.isDragging
+                                                ? `${provided.draggableProps.style?.transform} rotate(3deg)`
+                                                : provided.draggableProps.style
+                                                    ?.transform,
+                                            }}
+                                          >
+                                            <motion.div
+                                              initial={{ opacity: 0, y: -20 }}
+                                              animate={{ opacity: 1, y: 0 }}
+                                              exit={{ opacity: 0, scale: 0.8 }}
+                                              transition={{ duration: 0.2 }}
+                                              className={`mb-3 bg-background hover:bg-accent transition-colors cursor-move overflow-hidden rounded-md ${
+                                                snapshot.isDragging
+                                                  ? "shadow-lg"
+                                                  : ""
+                                              }`}
+                                              onClick={() => {
+                                                setSelectedTask(task);
+                                                setIsTaskDetailDialogOpen(true);
+                                              }}
+                                            >
+                                              <Card>
+                                                <CardContent className="p-3">
+                                                  <h3 className="font-semibold text-sm text-card-foreground mb-2 flex items-center">
+                                                    <GripHorizontal className="h-4 w-4 mr-2 text-muted-foreground" />
+                                                    {task.title}
+                                                  </h3>
+                                                  {task.image && (
+                                                    <img
+                                                      src={task.image}
+                                                      alt="Task"
+                                                      className="w-full h-32 object-cover rounded-md mb-2"
+                                                    />
+                                                  )}
+                                                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                                                    {task.description}
+                                                  </p>
+                                                  <div className="flex flex-wrap gap-1 mb-2">
+                                                    {task.tags.map(
+                                                      (tag, index) => (
+                                                        <Badge
+                                                          key={index}
+                                                          variant="secondary"
+                                                        >
+                                                          {tag}
+                                                        </Badge>
+                                                      )
                                                     )}
-                                                  </span>
-                                                )}
-                                              </div>
-                                            </div>
-                                          </CardContent>
-                                        </Card>
-                                      )}
-                                    </Draggable>
-                                  ))}
+                                                  </div>
+                                                  <Progress
+                                                    value={task.progress}
+                                                    className="h-1 mb-2"
+                                                  />
+                                                  <div className="flex justify-between items-center">
+                                                    <div className="flex -space-x-2">
+                                                      {task.assignees.map(
+                                                        (user, index) => (
+                                                          <Avatar
+                                                            key={index}
+                                                            className="border-2 border-background w-8 h-8"
+                                                          >
+                                                            <AvatarImage
+                                                              src={user.avatar}
+                                                              alt={user.name}
+                                                            />
+                                                            <AvatarFallback>
+                                                              {user.name.charAt(
+                                                                0
+                                                              )}
+                                                            </AvatarFallback>
+                                                          </Avatar>
+                                                        )
+                                                      )}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                      {getStatusIcon(
+                                                        task.status
+                                                      )}
+                                                      {task.dueDate && (
+                                                        <span
+                                                          className={`text-xs ${
+                                                            getDueDateStatus(
+                                                              task.dueDate
+                                                            ) === "overdue"
+                                                              ? "text-red-500"
+                                                              : getDueDateStatus(
+                                                                  task.dueDate
+                                                                ) ===
+                                                                "due-today"
+                                                              ? "text-yellow-500"
+                                                              : "text-muted-foreground"
+                                                          }`}
+                                                        >
+                                                          {format(
+                                                            task.dueDate,
+                                                            "MMM d"
+                                                          )}
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                </CardContent>
+                                              </Card>
+                                            </motion.div>
+                                          </div>
+                                        )}
+                                      </Draggable>
+                                    ))}
+                                  </AnimatePresence>
                                   {provided.placeholder}
                                 </div>
                               )}
@@ -582,367 +606,356 @@ export default function Component() {
                             >
                               <PlusIcon className="h-4 w-4 mr-2" /> Add Task
                             </Button>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </div>
-          <Dialog
-            open={isNewTaskDialogOpen}
-            onOpenChange={setIsNewTaskDialogOpen}
-          >
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add New Task</DialogTitle>
-                <DialogDescription>
-                  Create a new task for your Kanban board.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="taskTitle" className="text-right">
-                    Title
-                  </Label>
-                  <Input
-                    id="taskTitle"
-                    value={newTask.title}
-                    onChange={(e) =>
-                      setNewTask({ ...newTask, title: e.target.value })
+                          </motion.div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                </AnimatePresence>
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+      <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add New Task</DialogTitle>
+            <DialogDescription>
+              Create a new task for your Kanban board.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="taskTitle" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="taskTitle"
+                value={newTask.title}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, title: e.target.value })
+                }
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="taskDescription" className="text-right">
+                Description
+              </Label>
+              <Textarea
+                id="taskDescription"
+                value={newTask.description}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, description: e.target.value })
+                }
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Due Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={`col-span-3 justify-start text-left font-normal ${
+                      !newTask.dueDate && "text-muted-foreground"
+                    }`}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {newTask.dueDate ? (
+                      format(newTask.dueDate, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <CalendarComponent
+                    mode="single"
+                    selected={newTask.dueDate || undefined}
+                    onSelect={(date) =>
+                      setNewTask({ ...newTask, dueDate: date || null })
                     }
-                    className="col-span-3"
+                    initialFocus
                   />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="taskDescription" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="taskDescription"
-                    value={newTask.description}
-                    onChange={(e) =>
-                      setNewTask({ ...newTask, description: e.target.value })
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Assignees</Label>
+              <div className="col-span-3">
+                {users.map((user) => (
+                  <Button
+                    key={user.id}
+                    variant={
+                      newTask.assignees.includes(user) ? "secondary" : "outline"
                     }
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Due Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={`col-span-3 justify-start text-left font-normal ${
-                          !newTask.dueDate && "text-muted-foreground"
-                        }`}
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {newTask.dueDate ? (
-                          format(newTask.dueDate, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={newTask.dueDate || undefined}
-                        onSelect={(date) =>
-                          setNewTask({ ...newTask, dueDate: date || null })
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Assignees</Label>
-                  <div className="col-span-3">
-                    {users.map((user) => (
-                      <Button
-                        key={user.id}
-                        variant={
-                          newTask.assignees.includes(user)
-                            ? "secondary"
-                            : "outline"
-                        }
-                        className="mr-2 mb-2"
-                        onClick={() => {
-                          const updatedAssignees = newTask.assignees.includes(
-                            user
-                          )
-                            ? newTask.assignees.filter((u) => u.id !== user.id)
-                            : [...newTask.assignees, user];
-                          setNewTask({
-                            ...newTask,
-                            assignees: updatedAssignees,
-                          });
-                        }}
-                      >
-                        {user.name}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="taskTags" className="text-right">
-                    Tags
-                  </Label>
-                  <Input
-                    id="taskTags"
-                    value={newTask.tags.join(", ")}
-                    onChange={(e) =>
+                    className="mr-2 mb-2"
+                    onClick={() => {
+                      const updatedAssignees = newTask.assignees.includes(user)
+                        ? newTask.assignees.filter((u) => u.id !== user.id)
+                        : [...newTask.assignees, user];
                       setNewTask({
                         ...newTask,
-                        tags: e.target.value
-                          .split(",")
-                          .map((tag) => tag.trim()),
-                      })
-                    }
-                    className="col-span-3"
-                    placeholder="Enter tags separated by commas"
-                  />
-                </div>
+                        assignees: updatedAssignees,
+                      });
+                    }}
+                  >
+                    {user.name}
+                  </Button>
+                ))}
               </div>
-              <DialogFooter>
-                <Button onClick={addTask}>Add Task</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Dialog
-            open={isEditTaskDialogOpen}
-            onOpenChange={setIsEditTaskDialogOpen}
-          >
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit Task</DialogTitle>
-                <DialogDescription>Update the task details.</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="editTaskTitle" className="text-right">
-                    Title
-                  </Label>
-                  <Input
-                    id="editTaskTitle"
-                    value={editingTask?.title || ""}
-                    onChange={(e) =>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="taskTags" className="text-right">
+                Tags
+              </Label>
+              <Input
+                id="taskTags"
+                value={newTask.tags.join(", ")}
+                onChange={(e) =>
+                  setNewTask({
+                    ...newTask,
+                    tags: e.target.value.split(",").map((tag) => tag.trim()),
+                  })
+                }
+                className="col-span-3"
+                placeholder="Enter tags separated by commas"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={addTask}>Add Task</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={isEditTaskDialogOpen}
+        onOpenChange={setIsEditTaskDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Task</DialogTitle>
+            <DialogDescription>Update the task details.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editTaskTitle" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="editTaskTitle"
+                value={editingTask?.title || ""}
+                onChange={(e) =>
+                  setEditingTask(
+                    editingTask
+                      ? { ...editingTask, title: e.target.value }
+                      : null
+                  )
+                }
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editTaskDescription" className="text-right">
+                Description
+              </Label>
+              <Textarea
+                id="editTaskDescription"
+                value={editingTask?.description || ""}
+                onChange={(e) =>
+                  setEditingTask(
+                    editingTask
+                      ? { ...editingTask, description: e.target.value }
+                      : null
+                  )
+                }
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Due Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={`col-span-3 justify-start text-left font-normal ${
+                      !editingTask?.dueDate && "text-muted-foreground"
+                    }`}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {editingTask?.dueDate ? (
+                      format(editingTask.dueDate, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <CalendarComponent
+                    mode="single"
+                    selected={editingTask?.dueDate || undefined}
+                    onSelect={(date) =>
                       setEditingTask(
                         editingTask
-                          ? { ...editingTask, title: e.target.value }
+                          ? { ...editingTask, dueDate: date || null }
                           : null
                       )
                     }
-                    className="col-span-3"
+                    initialFocus
                   />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="editTaskDescription" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="editTaskDescription"
-                    value={editingTask?.description || ""}
-                    onChange={(e) =>
-                      setEditingTask(
-                        editingTask
-                          ? { ...editingTask, description: e.target.value }
-                          : null
-                      )
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Assignees</Label>
+              <div className="col-span-3">
+                {users.map((user) => (
+                  <Button
+                    key={user.id}
+                    variant={
+                      editingTask?.assignees.includes(user)
+                        ? "secondary"
+                        : "outline"
                     }
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Due Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={`col-span-3 justify-start text-left font-normal ${
-                          !editingTask?.dueDate && "text-muted-foreground"
-                        }`}
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {editingTask?.dueDate ? (
-                          format(editingTask.dueDate, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={editingTask?.dueDate || undefined}
-                        onSelect={(date) =>
-                          setEditingTask(
-                            editingTask
-                              ? { ...editingTask, dueDate: date || null }
-                              : null
-                          )
+                    className="mr-2 mb-2"
+                    onClick={() => {
+                      if (editingTask) {
+                        const updatedAssignees = editingTask.assignees.includes(
+                          user
+                        )
+                          ? editingTask.assignees.filter(
+                              (u) => u.id !== user.id
+                            )
+                          : [...editingTask.assignees, user];
+                        setEditingTask({
+                          ...editingTask,
+                          assignees: updatedAssignees,
+                        });
+                      }
+                    }}
+                  >
+                    {user.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editTaskTags" className="text-right">
+                Tags
+              </Label>
+              <Input
+                id="editTaskTags"
+                value={editingTask?.tags.join(", ") || ""}
+                onChange={(e) =>
+                  setEditingTask(
+                    editingTask
+                      ? {
+                          ...editingTask,
+                          tags: e.target.value
+                            .split(",")
+                            .map((tag) => tag.trim()),
                         }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Assignees</Label>
-                  <div className="col-span-3">
-                    {users.map((user) => (
-                      <Button
-                        key={user.id}
-                        variant={
-                          editingTask?.assignees.includes(user)
-                            ? "secondary"
-                            : "outline"
+                      : null
+                  )
+                }
+                className="col-span-3"
+                placeholder="Enter tags separated by commas"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editTaskProgress" className="text-right">
+                Progress
+              </Label>
+              <Input
+                id="editTaskProgress"
+                type="number"
+                min="0"
+                max="100"
+                value={editingTask?.progress || 0}
+                onChange={(e) =>
+                  setEditingTask(
+                    editingTask
+                      ? {
+                          ...editingTask,
+                          progress: parseInt(e.target.value),
                         }
-                        className="mr-2 mb-2"
-                        onClick={() => {
-                          if (editingTask) {
-                            const updatedAssignees =
-                              editingTask.assignees.includes(user)
-                                ? editingTask.assignees.filter(
-                                    (u) => u.id !== user.id
-                                  )
-                                : [...editingTask.assignees, user];
-                            setEditingTask({
-                              ...editingTask,
-                              assignees: updatedAssignees,
-                            });
-                          }
-                        }}
-                      >
-                        {user.name}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="editTaskTags" className="text-right">
-                    Tags
-                  </Label>
-                  <Input
-                    id="editTaskTags"
-                    value={editingTask?.tags.join(", ") || ""}
-                    onChange={(e) =>
-                      setEditingTask(
-                        editingTask
-                          ? {
-                              ...editingTask,
-                              tags: e.target.value
-                                .split(",")
-                                .map((tag) => tag.trim()),
-                            }
-                          : null
-                      )
-                    }
-                    className="col-span-3"
-                    placeholder="Enter tags separated by commas"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="editTaskProgress" className="text-right">
-                    Progress
-                  </Label>
-                  <Input
-                    id="editTaskProgress"
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={editingTask?.progress || 0}
-                    onChange={(e) =>
-                      setEditingTask(
-                        editingTask
-                          ? {
-                              ...editingTask,
-                              progress: parseInt(e.target.value),
-                            }
-                          : null
-                      )
-                    }
-                    className="col-span-3"
-                  />
-                </div>
+                      : null
+                  )
+                }
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={updateTask}>Update Task</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={isTaskDetailDialogOpen}
+        onOpenChange={setIsTaskDetailDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{selectedTask?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            {selectedTask?.image && (
+              <img
+                src={selectedTask.image}
+                alt="Task"
+                className="w-full h-48 object-cover rounded-lg"
+              />
+            )}
+            <p className="text-sm text-muted-foreground">
+              {selectedTask?.description}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {selectedTask?.tags.map((tag, index) => (
+                <Badge key={index} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            <Progress value={selectedTask?.progress} className="h-2" />
+            <div className="flex justify-between items-center">
+              <div className="flex -space-x-2">
+                {selectedTask?.assignees.map((user, index) => (
+                  <Avatar key={index} className="border-2 border-background">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                ))}
               </div>
-              <DialogFooter>
-                <Button onClick={updateTask}>Update Task</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Dialog
-            open={isTaskDetailDialogOpen}
-            onOpenChange={setIsTaskDetailDialogOpen}
-          >
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>{selectedTask?.title}</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                {selectedTask?.image && (
-                  <img
-                    src={selectedTask.image}
-                    alt="Task"
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                )}
-                <p className="text-sm text-muted-foreground">
-                  {selectedTask?.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {selectedTask?.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <Progress value={selectedTask?.progress} className="h-2" />
-                <div className="flex justify-between items-center">
-                  <div className="flex -space-x-2">
-                    {selectedTask?.assignees.map((user, index) => (
-                      <Avatar
-                        key={index}
-                        className="border-2 border-background"
-                      >
-                        <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </div>
-                  {selectedTask?.dueDate && (
-                    <span className="text-sm text-muted-foreground">
-                      Due: {format(selectedTask.dueDate, "PPP")}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(selectedTask?.status || "todo")}
-                  <span className="text-sm font-medium">
-                    {selectedTask?.status}
-                  </span>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    setEditingTask(selectedTask);
-                    setIsTaskDetailDialogOpen(false);
-                    setIsEditTaskDialogOpen(true);
-                  }}
-                >
-                  Edit Task
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </motion.div>
-    </ContentLayout>
+              {selectedTask?.dueDate && (
+                <span className="text-sm text-muted-foreground">
+                  Due: {format(selectedTask.dueDate, "PPP")}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {getStatusIcon(selectedTask?.status || "todo")}
+              <span className="text-sm font-medium">
+                {selectedTask?.status}
+              </span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setEditingTask(selectedTask);
+                setIsTaskDetailDialogOpen(false);
+                setIsEditTaskDialogOpen(true);
+              }}
+            >
+              Edit Task
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
