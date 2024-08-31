@@ -116,8 +116,8 @@ export function Menu({ isOpen }: MenuProps) {
                                   notificationCount &&
                                   notificationCount > 0 && (
                                     <Badge
-                                      variant="decline"
-                                      className="ml-auto px-1.5 min-w-[20px] flex items-center justify-center"
+                                      variant="outline"
+                                      className="ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50"
                                     >
                                       {notificationCount}
                                     </Badge>

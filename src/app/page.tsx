@@ -44,7 +44,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen relative">
-      <div className="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+      <div className="fixed inset-0 z-[-1] bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] dark:bg-[#000000] dark:bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] dark:bg-[size:20px_20px]"></div>
       <header className="z-[50] sticky top-0 w-full border-b backdrop-blur-sm border-border/40">
         <div className="container h-14 flex items-center">
           <Link href="/dashboard" className="flex items-center gap-2">
