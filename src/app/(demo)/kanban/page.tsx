@@ -401,7 +401,7 @@ export default function KanbanBoard() {
   };
 
   return (
-    <ContentLayout title="Account">
+    <ContentLayout title="Kanban">
       <div className="p-6 bg-background min-h-screen">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-normal mb-8 text-foreground">
