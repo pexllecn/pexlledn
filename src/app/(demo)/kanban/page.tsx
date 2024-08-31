@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import {
   DragDropContext,
@@ -46,7 +45,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
-import { motion, AnimatePresence } from "framer-motion";
 
 type User = {
   id: string;
@@ -86,7 +84,7 @@ const unsplashImages = [
   "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
-export default function Component() {
+export default function KanbanBoard() {
   const [boards, setBoards] = useState<Board[]>([
     {
       id: "board1",
@@ -348,7 +346,6 @@ export default function Component() {
           Kanban Board
         </h1>
         <div className="flex justify-between items-center mb-6">
-          {" "}
           <Dialog
             open={isNewBoardDialogOpen}
             onOpenChange={setIsNewBoardDialogOpen}
@@ -392,226 +389,185 @@ export default function Component() {
                 ref={provided.innerRef}
                 className="flex gap-6 overflow-x-auto pb-6"
               >
-                <AnimatePresence>
-                  {boards.map((board, boardIndex) => (
-                    <Draggable
-                      key={board.id}
-                      draggableId={board.id}
-                      index={boardIndex}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            ...provided.draggableProps.style,
-                            transform: snapshot.isDragging
-                              ? `${provided.draggableProps.style?.transform} rotate(3deg)`
-                              : provided.draggableProps.style?.transform,
+                {boards.map((board, boardIndex) => (
+                  <Draggable
+                    key={board.id}
+                    draggableId={board.id}
+                    index={boardIndex}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] transition-shadow duration-200 ${
+                          snapshot.isDragging ? "shadow-lg" : ""
+                        }`}
+                      >
+                        <div className="flex justify-between items-center mb-4 cursor-move">
+                          {editingBoard === board.id ? (
+                            <Input
+                              value={board.title}
+                              onChange={(e) =>
+                                updateBoardTitle(board.id, e.target.value)
+                              }
+                              onBlur={() => setEditingBoard(null)}
+                              autoFocus
+                              className="font-semibold text-lg"
+                            />
+                          ) : (
+                            <h2 className="font-semibold text-lg text-card-foreground flex items-center">
+                              <GripHorizontal className="h-5 w-5 mr-2 text-muted-foreground" />
+                              {board.title}
+                            </h2>
+                          )}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => setEditingBoard(board.id)}
+                              >
+                                Edit Title
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => deleteBoard(board.id)}
+                              >
+                                Delete Board
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                        <Droppable droppableId={board.id} type="TASK">
+                          {(provided, snapshot) => (
+                            <div
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                              className={`min-h-[200px] transition-colors duration-200 ${
+                                snapshot.isDraggingOver ? "bg-accent" : ""
+                              }`}
+                            >
+                              {board.tasks.map((task, index) => (
+                                <Draggable
+                                  key={task.id}
+                                  draggableId={task.id}
+                                  index={index}
+                                >
+                                  {(provided, snapshot) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className={`mb-3 bg-background hover:bg-accent transition-all duration-200 cursor-move overflow-hidden rounded-md ${
+                                        snapshot.isDragging
+                                          ? "shadow-lg transform scale-105"
+                                          : ""
+                                      }`}
+                                      onClick={() => {
+                                        setSelectedTask(task);
+                                        setIsTaskDetailDialogOpen(true);
+                                      }}
+                                    >
+                                      <Card>
+                                        <CardContent className="p-3">
+                                          <h3 className="font-semibold text-sm text-card-foreground mb-2 flex items-center">
+                                            <GripHorizontal className="h-4 w-4 mr-2 text-muted-foreground" />
+                                            {task.title}
+                                          </h3>
+                                          {task.image && (
+                                            <img
+                                              src={task.image}
+                                              alt="Task"
+                                              className="w-full h-32 object-cover rounded-md mb-2"
+                                            />
+                                          )}
+                                          <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                                            {task.description}
+                                          </p>
+                                          <div className="flex flex-wrap gap-1 mb-2">
+                                            {task.tags.map((tag, index) => (
+                                              <Badge
+                                                key={index}
+                                                variant="secondary"
+                                              >
+                                                {tag}
+                                              </Badge>
+                                            ))}
+                                          </div>
+                                          <Progress
+                                            value={task.progress}
+                                            className="h-1 mb-2"
+                                          />
+                                          <div className="flex justify-between items-center">
+                                            <div className="flex -space-x-2">
+                                              {task.assignees.map(
+                                                (user, index) => (
+                                                  <Avatar
+                                                    key={index}
+                                                    className="border-2 border-background w-8 h-8"
+                                                  >
+                                                    <AvatarImage
+                                                      src={user.avatar}
+                                                      alt={user.name}
+                                                    />
+                                                    <AvatarFallback>
+                                                      {user.name.charAt(0)}
+                                                    </AvatarFallback>
+                                                  </Avatar>
+                                                )
+                                              )}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                              {getStatusIcon(task.status)}
+                                              {task.dueDate && (
+                                                <span
+                                                  className={`text-xs ${
+                                                    getDueDateStatus(
+                                                      task.dueDate
+                                                    ) === "overdue"
+                                                      ? "text-red-500"
+                                                      : getDueDateStatus(
+                                                          task.dueDate
+                                                        ) === "due-today"
+                                                      ? "text-yellow-500"
+                                                      : "text-muted-foreground"
+                                                  }`}
+                                                >
+                                                  {format(
+                                                    task.dueDate,
+                                                    "MMM d"
+                                                  )}
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
+                        <Button
+                          className="w-full mt-3"
+                          variant="outline"
+                          onClick={() => {
+                            setNewTaskBoardId(board.id);
+                            setIsNewTaskDialogOpen(true);
                           }}
                         >
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.2 }}
-                            className={`bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] ${
-                              snapshot.isDragging ? "shadow-lg" : ""
-                            }`}
-                          >
-                            <div
-                              {...provided.dragHandleProps}
-                              className="flex justify-between items-center mb-4 cursor-move"
-                            >
-                              {editingBoard === board.id ? (
-                                <Input
-                                  value={board.title}
-                                  onChange={(e) =>
-                                    updateBoardTitle(board.id, e.target.value)
-                                  }
-                                  onBlur={() => setEditingBoard(null)}
-                                  autoFocus
-                                  className="font-semibold text-lg"
-                                />
-                              ) : (
-                                <h2 className="font-semibold text-lg text-card-foreground flex items-center">
-                                  <GripHorizontal className="h-5 w-5 mr-2 text-muted-foreground" />
-                                  {board.title}
-                                </h2>
-                              )}
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="sm">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem
-                                    onClick={() => setEditingBoard(board.id)}
-                                  >
-                                    Edit Title
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => deleteBoard(board.id)}
-                                  >
-                                    Delete Board
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                            <Droppable droppableId={board.id} type="TASK">
-                              {(provided, snapshot) => (
-                                <div
-                                  {...provided.droppableProps}
-                                  ref={provided.innerRef}
-                                  className={`min-h-[200px] transition-colors duration-200 ${
-                                    snapshot.isDraggingOver ? "bg-accent" : ""
-                                  }`}
-                                >
-                                  <AnimatePresence>
-                                    {board.tasks.map((task, index) => (
-                                      <Draggable
-                                        key={task.id}
-                                        draggableId={task.id}
-                                        index={index}
-                                      >
-                                        {(provided, snapshot) => (
-                                          <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                            style={{
-                                              ...provided.draggableProps.style,
-                                              transform: snapshot.isDragging
-                                                ? `${provided.draggableProps.style?.transform} rotate(3deg)`
-                                                : provided.draggableProps.style
-                                                    ?.transform,
-                                            }}
-                                          >
-                                            <motion.div
-                                              initial={{ opacity: 0, y: -20 }}
-                                              animate={{ opacity: 1, y: 0 }}
-                                              exit={{ opacity: 0, scale: 0.8 }}
-                                              transition={{ duration: 0.2 }}
-                                              className={`mb-3 bg-background hover:bg-accent transition-colors cursor-move overflow-hidden rounded-md ${
-                                                snapshot.isDragging
-                                                  ? "shadow-lg"
-                                                  : ""
-                                              }`}
-                                              onClick={() => {
-                                                setSelectedTask(task);
-                                                setIsTaskDetailDialogOpen(true);
-                                              }}
-                                            >
-                                              <Card>
-                                                <CardContent className="p-3">
-                                                  <h3 className="font-semibold text-sm text-card-foreground mb-2 flex items-center">
-                                                    <GripHorizontal className="h-4 w-4 mr-2 text-muted-foreground" />
-                                                    {task.title}
-                                                  </h3>
-                                                  {task.image && (
-                                                    <img
-                                                      src={task.image}
-                                                      alt="Task"
-                                                      className="w-full h-32 object-cover rounded-md mb-2"
-                                                    />
-                                                  )}
-                                                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                                                    {task.description}
-                                                  </p>
-                                                  <div className="flex flex-wrap gap-1 mb-2">
-                                                    {task.tags.map(
-                                                      (tag, index) => (
-                                                        <Badge
-                                                          key={index}
-                                                          variant="secondary"
-                                                        >
-                                                          {tag}
-                                                        </Badge>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <Progress
-                                                    value={task.progress}
-                                                    className="h-1 mb-2"
-                                                  />
-                                                  <div className="flex justify-between items-center">
-                                                    <div className="flex -space-x-2">
-                                                      {task.assignees.map(
-                                                        (user, index) => (
-                                                          <Avatar
-                                                            key={index}
-                                                            className="border-2 border-background w-8 h-8"
-                                                          >
-                                                            <AvatarImage
-                                                              src={user.avatar}
-                                                              alt={user.name}
-                                                            />
-                                                            <AvatarFallback>
-                                                              {user.name.charAt(
-                                                                0
-                                                              )}
-                                                            </AvatarFallback>
-                                                          </Avatar>
-                                                        )
-                                                      )}
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                      {getStatusIcon(
-                                                        task.status
-                                                      )}
-                                                      {task.dueDate && (
-                                                        <span
-                                                          className={`text-xs ${
-                                                            getDueDateStatus(
-                                                              task.dueDate
-                                                            ) === "overdue"
-                                                              ? "text-red-500"
-                                                              : getDueDateStatus(
-                                                                  task.dueDate
-                                                                ) ===
-                                                                "due-today"
-                                                              ? "text-yellow-500"
-                                                              : "text-muted-foreground"
-                                                          }`}
-                                                        >
-                                                          {format(
-                                                            task.dueDate,
-                                                            "MMM d"
-                                                          )}
-                                                        </span>
-                                                      )}
-                                                    </div>
-                                                  </div>
-                                                </CardContent>
-                                              </Card>
-                                            </motion.div>
-                                          </div>
-                                        )}
-                                      </Draggable>
-                                    ))}
-                                  </AnimatePresence>
-                                  {provided.placeholder}
-                                </div>
-                              )}
-                            </Droppable>
-                            <Button
-                              className="w-full mt-3"
-                              variant="outline"
-                              onClick={() => {
-                                setNewTaskBoardId(board.id);
-                                setIsNewTaskDialogOpen(true);
-                              }}
-                            >
-                              <PlusIcon className="h-4 w-4 mr-2" /> Add Task
-                            </Button>
-                          </motion.div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                </AnimatePresence>
+                          <PlusIcon className="h-4 w-4 mr-2" /> Add Task
+                        </Button>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
                 {provided.placeholder}
               </div>
             )}
