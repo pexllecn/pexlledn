@@ -1,71 +1,79 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ModeToggle } from "@/components/mode-toggle";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+
+const LogoSection = ({ logo }: { logo: string }) => (
+  <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
+    <Link href="/">
+      <div className="logo-container flex justify-center items-center h-full">
+        <Image
+          src={logo}
+          alt="Pexlle Logo"
+          className="logo-image py-2"
+          width={150}
+          height={50}
+        />
+      </div>
+    </Link>
+  </div>
+);
 
 export default function Component() {
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [logo, setLogo] = useState("/pexlleh.png");
+
+  useEffect(() => {
+    setMounted(true);
+    const effectiveTheme = resolvedTheme || theme;
+    setLogo(effectiveTheme === "dark" ? "/pexllelight.png" : "/pexlleh.png");
+  }, [theme, resolvedTheme]);
+
+  if (!mounted) {
+    return null; // or a loading placeholder
+  }
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="fixed inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60 dark:from-blue-600 dark:via-blue-500 dark:to-blue-400 dark:opacity-60"></div>
+      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60 dark:bg-slate-950 dark:bg-[radial-gradient(circle_500px_at_50%_200px,#3e3e3e,transparent)] dark:opacity-100"></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
-        <div className="w-full max-w-2xl bg-white/40 backdrop-blur-md rounded-full shadow-sm">
+        <div className="w-full max-w-2xl bg-background/40 text-primary backdrop-blur-lg rounded-full shadow-sm">
           <div className="container mx-auto px-6">
             <div className="flex items-center justify-between h-12">
               <div className="flex items-center">
                 <Link href="#" className="flex-shrink-0">
-                  <Image
-                    src="/pexlleh.png"
-                    alt="Logo"
-                    width={116}
-                    height={32}
-                    className="h-6 w-auto"
-                  />
+                  <LogoSection logo={logo} />
                 </Link>
               </div>
               <nav className=" md:flex space-x-8 items-center align-middle">
-                <Link
-                  href="#"
-                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
-                >
+                <Link href="#" className="text-sm font-normal text-foreground">
                   Pricing
                 </Link>
-                <Link
-                  href="#"
-                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
-                >
+                <Link href="#" className="text-sm font-normal text-foreground">
                   Customers
                 </Link>
-                <Link
-                  href="#"
-                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
-                >
+                <Link href="#" className="text-sm font-normal text-foreground">
                   Blog
                 </Link>
-                <Link
-                  href="#"
-                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
-                >
+                <Link href="#" className="text-sm font-normal text-foreground">
                   Docs
                 </Link>
+                <ModeToggle />
               </nav>
               <div className="flex items-center"></div>
             </div>
           </div>
         </div>
       </header>
-      <main className="flex-grow pt-12 relative z-10">
+      <main className="flex-grow relative z-10">
         <section className="py-10 sm:py-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -90,7 +98,7 @@ export default function Component() {
                 </span>
                 website Beautifully.
               </span>
-              <p className="text-lg text-gray-600 my-8 max-w-2xl mx-auto">
+              <p className="text-lg text-foreground/70 my-8 max-w-2xl mx-auto">
                 My aim is to start a journey where we build beautiful looking
                 websites, Shadcn provided the best components so far, Vercel
                 made it easier than ever to deploy your project. Let the journey
@@ -105,6 +113,38 @@ export default function Component() {
                   <Link href="/signin">Enter the demo</Link>{" "}
                 </Button>
               </div>
+              <div className="w-full flex justify-center relative">
+                <Image
+                  src="/dashboard.png"
+                  width={1080}
+                  height={608}
+                  alt="demo"
+                  priority
+                  className="border-none rounded-lg shadow-sm dark:hidden"
+                />
+                <Image
+                  src="/dashboardd.png"
+                  width={1080}
+                  height={608}
+                  alt="demo-dark"
+                  priority
+                  className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
+                />
+                <Image
+                  src="/mdashboard.png"
+                  width={228}
+                  height={494}
+                  alt="demo-mobile"
+                  className="border-none rounded-lg absolute bottom-0 right-0 hidden lg:block dark:hidden"
+                />
+                <Image
+                  src="/mdashd.png"
+                  width={228}
+                  height={494}
+                  alt="demo-mobile"
+                  className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -113,13 +153,7 @@ export default function Component() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center">
             <div className="flex items-center mb-2">
-              <Image
-                src="/pexlleh.png"
-                alt="Logo"
-                width={116}
-                height={32}
-                className="h-5 w-auto"
-              />
+              <LogoSection logo={logo} />
             </div>
             <p className="text-gray-500 text-sm">
               © 2024 Pexlle Inc. All rights reserved.

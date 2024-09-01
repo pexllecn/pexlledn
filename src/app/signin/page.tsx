@@ -331,22 +331,20 @@ export default function AuthenticationPage() {
                 placeholder="Your password"
                 className="bg-background"
               />
+              <Button
+                variant="link"
+                size="sm"
+                onClick={() => setIsForgotPasswordOpen(true)}
+                className="px-1 h-5 text-xs"
+              >
+                Forgot Password?
+              </Button>
             </div>
             <div className="flex justify-between items-center">
               <Button onClick={handleLogin} className="w-full">
                 Log in
               </Button>
             </div>
-          </div>
-
-          <div className="mt-4 text-center">
-            <Button
-              variant="link"
-              size="sm"
-              onClick={() => setIsForgotPasswordOpen(true)}
-            >
-              Forgot Password?
-            </Button>
           </div>
 
           <div className="flex justify-center mt-4">
