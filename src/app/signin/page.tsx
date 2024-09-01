@@ -313,57 +313,31 @@ export default function AuthenticationPage() {
             </Link>
           </div>
 
-          <Tabs defaultValue="email" className="w-full">
-            <TabsList className="grid grid-cols-2 mb-4">
-              <TabsTrigger value="email">Login with Email</TabsTrigger>
-              <TabsTrigger value="phone">Login with Phone</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="email">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    className="bg-background"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Your password"
-                    className="bg-background"
-                  />
-                </div>
-                <div className="flex justify-between items-center">
-                  <Button onClick={handleLogin} className="w-full">
-                    Log in
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="phone">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+1 234 567 890"
-                    className="bg-background"
-                  />
-                </div>
-                <Button onClick={handleLogin} className="w-full">
-                  Send OTP
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                className="bg-background"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Your password"
+                className="bg-background"
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <Button onClick={handleLogin} className="w-full">
+                Log in
+              </Button>
+            </div>
+          </div>
 
           <div className="mt-4 text-center">
             <Button

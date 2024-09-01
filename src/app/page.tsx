@@ -1,160 +1,141 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
-import { ChevronRight } from "lucide-react";
-import { useTheme } from "next-themes";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ChevronRight } from "lucide-react";
 
-const LogoSection = ({ logo }: { logo: string }) => (
-  <div className="logo-container space-y-4 flex justify-center items-center py-4 md:block">
-    <Link href="/">
-      <div className="logo-container flex justify-center items-center h-full">
-        <Image
-          src={logo}
-          alt="Pexlle Logo"
-          className="logo-image py-2"
-          width={150}
-          height={50}
-        />
-      </div>
-    </Link>
-  </div>
-);
-
-export default function HomePage() {
-  const { theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [logo, setLogo] = useState("/pexlleh.png");
-
-  useEffect(() => {
-    setMounted(true);
-    const effectiveTheme = resolvedTheme || theme;
-    setLogo(effectiveTheme === "dark" ? "/pexllelight.png" : "/pexlleh.png");
-  }, [theme, resolvedTheme]);
-
-  if (!mounted) {
-    return null; // or a loading placeholder
-  }
-
+export default function Component() {
   return (
-    <div className="flex flex-col min-h-screen relative">
-      <div className="fixed inset-0 z-[-1] bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] dark:bg-[#000000] dark:bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] dark:bg-[size:20px_20px]"></div>
-      <header className="z-[50] sticky top-0 w-full border-b backdrop-blur-sm border-border/40">
-        <div className="container h-14 flex items-center">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <LogoSection logo={logo} />
-          </Link>
-          <nav className="ml-auto flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="w-8 h-8" asChild>
-              <Link href="https://github.com/pexllecn?tab=repositories">
-                <GitHubLogoIcon className="h-[1.2rem] w-[1.2rem]" />
-              </Link>
-            </Button>
-            <ModeToggle />
-          </nav>
-        </div>
-      </header>
-      <main className="min-h-[calc(100vh-57px-97px)] flex-1">
-        <div className="container relative pb-10">
-          <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-8 md:pb-8 lg:py-8 lg:pb-6">
-            <div className="z-10 flex items-center justify-center">
-              <AnimatedGradientText>
-                🎉 <hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300" />{" "}
-                <span
-                  className={cn(
-                    `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
-                  )}
+    <div className="relative min-h-screen overflow-hidden">
+      <div className="fixed inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60"></div>
+      <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
+        <div className="w-full max-w-2xl bg-white/40 backdrop-blur-md rounded-full shadow-sm">
+          <div className="container mx-auto px-6">
+            <div className="flex items-center justify-between h-12">
+              <div className="flex items-center">
+                <Link href="#" className="flex-shrink-0">
+                  <Image
+                    src="/pexlleh.png"
+                    alt="Logo"
+                    width={116}
+                    height={32}
+                    className="h-6 w-auto"
+                  />
+                </Link>
+              </div>
+              <nav className=" md:flex space-x-8 items-center align-middle">
+                <Link
+                  href="#"
+                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
                 >
-                  Introducing Pexlle
-                </span>
-                <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-              </AnimatedGradientText>
+                  Pricing
+                </Link>
+                <Link
+                  href="#"
+                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
+                >
+                  Customers
+                </Link>
+                <Link
+                  href="#"
+                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
+                >
+                  Blog
+                </Link>
+                <Link
+                  href="#"
+                  className="text-sm font-normal text-gray-700 hover:text-gray-900"
+                >
+                  Docs
+                </Link>
+              </nav>
+              <div className="flex items-center"></div>
             </div>
-            <span className="text-center text-5xl font-normal leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
-              <span className="text-gradient_indigo-purple font-normal">
-                Build your {""}
-              </span>
-              website Beautifully.
-            </span>
-            <span className="max-w-[750px] text-lg text-center text-muted-foreground">
-              My aim is to start a journey where we build beautiful looking
-              websites, Shadcn provided the best components so far, Vercel made
-              it easier than ever to deploy your project. Let the journey
-              start!.
-            </span>
-            <div className="flex w-full items-center justify-center space-x-4 py-8 ">
-              <Button
-                variant="expandIcon"
-                Icon={ArrowRightIcon}
-                iconPlacement="right"
-              >
-                <Link href="/signin">Enter the demo</Link>{" "}
-              </Button>
-            </div>
-          </section>
-          <div className="w-full flex justify-center relative">
-            <Image
-              src="/demo-light-min.png"
-              width={1080}
-              height={608}
-              alt="demo"
-              priority
-              className="border rounded-xl shadow-sm dark:hidden"
-            />
-            <Image
-              src="/demo-dark-min.png"
-              width={1080}
-              height={608}
-              alt="demo-dark"
-              priority
-              className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
-            />
-            <Image
-              src="/demo-mobile-light-min.png"
-              width={228}
-              height={494}
-              alt="demo-mobile"
-              className="border rounded-xl absolute bottom-0 right-0 hidden lg:block dark:hidden"
-            />
-            <Image
-              src="/demo-mobile-dark-min.png"
-              width={228}
-              height={494}
-              alt="demo-mobile"
-              className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
-            />
           </div>
         </div>
+      </header>
+      <main className="flex-grow pt-12 relative z-10">
+        <section className="py-10 sm:py-32">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <div className="flex justify-center mb-8 relative">
+                <div className="z-10 flex items-center justify-center">
+                  <AnimatedGradientText>
+                    🎉 <hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300" />{" "}
+                    <span
+                      className={cn(
+                        `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                      )}
+                    >
+                      Introducing Pexlle
+                    </span>
+                    <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+                  </AnimatedGradientText>
+                </div>
+              </div>
+              <span className="text-center text-5xl font-medium leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
+                <span className="text-gradient_indigo-purple font-normal mb-4">
+                  Build your {""}
+                </span>
+                website Beautifully.
+              </span>
+              <p className="text-lg text-gray-600 my-8 max-w-2xl mx-auto">
+                My aim is to start a journey where we build beautiful looking
+                websites, Shadcn provided the best components so far, Vercel
+                made it easier than ever to deploy your project. Let the journey
+                start!.{" "}
+              </p>
+              <div className="flex w-full items-center justify-center space-x-4 py-8 ">
+                <Button
+                  variant="expandIcon"
+                  Icon={ArrowRightIcon}
+                  iconPlacement="right"
+                >
+                  <Link href="/signin">Enter the demo</Link>{" "}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="py-6 md:py-0 border-t border-border/40">
-        <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
-          <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
-            Built on top of{" "}
-            <Link
-              href="https://ui.shadcn.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-normal underline underline-offset-4"
-            >
-              shadcn/ui
-            </Link>
-            . The source code is available on{" "}
-            <Link
-              href="https://github.com/pexllecn?tab=repositories"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-normal underline underline-offset-4"
-            >
-              GitHub
-            </Link>
-            .
-          </p>
+      <footer className="relative z-10 w-full py-8 bg-opacity-70 backdrop-blur-md mt-32">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center mb-2">
+              <Image
+                src="/pexlleh.png"
+                alt="Logo"
+                width={116}
+                height={32}
+                className="h-5 w-auto"
+              />
+            </div>
+            <p className="text-gray-500 text-sm">
+              © 2024 Pexlle Inc. All rights reserved.
+            </p>
+            <nav className="text-xs flex space-x-4 mt-2">
+              <Link href="#" className="text-gray-500 hover:text-gray-900">
+                Terms
+              </Link>
+              <Link href="#" className="text-gray-500 hover:text-gray-900">
+                Privacy
+              </Link>
+              <Link href="#" className="text-gray-500 hover:text-gray-900">
+                Contact
+              </Link>
+            </nav>
+          </div>
         </div>
       </footer>
     </div>
