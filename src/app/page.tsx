@@ -58,16 +58,10 @@ export default function Component() {
                   Pricing
                 </Link>
                 <Link href="#" className="text-sm font-normal text-foreground">
-                  Customers
-                </Link>
-                <Link href="#" className="text-sm font-normal text-foreground">
-                  Blog
-                </Link>
-                <Link href="#" className="text-sm font-normal text-foreground">
                   Docs
                 </Link>
-                <ModeToggle />
               </nav>
+              <ModeToggle />
               <div className="flex items-center"></div>
             </div>
           </div>
