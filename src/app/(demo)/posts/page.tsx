@@ -295,7 +295,7 @@ export default function DarkModeCompatibleProductListing() {
               </div>
 
               <div className="space-y-6">
-                <Card className="top-24 bg-muted border-none">
+                <Card className=" p-4 bg-muted border-none">
                   <CardContent className="">
                     <div className="pt-6 flex justify-between items-center mb-4">
                       <h2 className="text-3xl font-normal text-gray-900 dark:text-white">
