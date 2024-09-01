@@ -18,7 +18,7 @@ export default function Component() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="fixed inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60"></div>
+      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60 dark:from-blue-600 dark:via-blue-500 dark:to-blue-400 dark:opacity-60"></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
         <div className="w-full max-w-2xl bg-white/40 backdrop-blur-md rounded-full shadow-sm">
           <div className="container mx-auto px-6">
