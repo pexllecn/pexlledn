@@ -143,24 +143,6 @@ export default function SearchPage() {
         variants={variants1}
       >
         <div className="max-w-3xl mx-auto pb-6">
-          <form onSubmit={handleSearch} className="mb-8">
-            <div className="flex items-center">
-              <div className="relative flex-grow">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="pl-10 pr-4 py-2"
-                />
-              </div>
-              <Button type="submit" className="ml-2">
-                Search
-              </Button>
-            </div>
-          </form>
-
           {isLoading && (
             <div className="text-center">
               <p>Loading...</p>
@@ -175,7 +157,7 @@ export default function SearchPage() {
 
           {results && (
             <>
-              <h1 className="text-3xl font-normal mb-6 text-center">
+              <h1 className="text-3xl font-normal my-6 text-center">
                 Search Results for &#34;{query}&#34;
               </h1>
               {results.results.length > 0 ? (
