@@ -45,7 +45,7 @@ export default function Component() {
       <div className="fixed inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)] [background-size:16px_16px]"></div>
       <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60 dark:bg-slate-950 dark:bg-[radial-gradient(circle_500px_at_50%_200px,#3e3e3e,transparent)] dark:opacity-100"></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
-        <div className="w-full max-w-2xl bg-background/40 text-primary backdrop-blur-lg rounded-full shadow-sm">
+        <div className="w-full max-w-2xl bg-background/40 text-primary backdrop-blur-lg rounded-full shadow-md">
           <div className="container mx-auto px-6">
             <div className="flex items-center justify-between h-12">
               <div className="flex items-center">
@@ -53,7 +53,7 @@ export default function Component() {
                   <LogoSection logo={logo} />
                 </Link>
               </div>
-              <nav className=" md:flex space-x-8 items-center align-middle">
+              <nav className="flex space-x-8 items-center">
                 <Link href="#" className="text-sm font-normal text-foreground">
                   Pricing
                 </Link>
@@ -62,7 +62,6 @@ export default function Component() {
                 </Link>
               </nav>
               <ModeToggle />
-              <div className="flex items-center"></div>
             </div>
           </div>
         </div>
