@@ -70,7 +70,7 @@ export default function Component() {
         <section className="py-10 sm:py-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <div className="flex justify-center mb-8 relative">
+              <div className="flex justify-center mb-8 relative pt-12">
                 <div className="z-10 flex items-center justify-center">
                   <AnimatedGradientText>
                     🎉 <hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300" />{" "}
