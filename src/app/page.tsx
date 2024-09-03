@@ -42,8 +42,23 @@ export default function Component() {
   }
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <div className="fixed inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 opacity-60 dark:bg-slate-950 dark:bg-[radial-gradient(circle_500px_at_50%_200px,#3e3e3e,transparent)] dark:opacity-100"></div>
+      <div
+        className={`fixed inset-0 -z-10 h-full w-full transition-all duration-300 
+          ${
+            resolvedTheme === "dark"
+              ? "bg-slate-950 bg-[radial-gradient(#212121_1px,transparent_1px)]"
+              : "bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)]"
+          } 
+          [background-size:16px_16px]`}
+      ></div>
+      <div
+        className={`fixed inset-0 -z-10 h-full w-full transition-all duration-300 
+          ${
+            resolvedTheme === "dark"
+              ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
+              : "bg-gradient-to-br from-white via-blue-300 to-blue-500 opacity-60"
+          }`}
+      ></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
         <div className="w-full max-w-2xl bg-background/40 text-primary backdrop-blur-lg rounded-full shadow-md">
           <div className="container mx-auto px-6">
@@ -67,7 +82,7 @@ export default function Component() {
         </div>
       </header>
       <main className="flex-grow relative z-10">
-        <section className="py-10 sm:py-32">
+        <section className="py-10 ">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <div className="flex justify-center mb-8 relative pt-12">

@@ -290,17 +290,26 @@ export default function AuthenticationPage() {
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      <div className="relative h-full flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="relative h-full flex items-center justify-center">
         <div
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `url("${backgroundImage}")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+          className={`fixed inset-0 -z-10 h-full w-full transition-all duration-300 
+          ${
+            resolvedTheme === "dark"
+              ? "bg-slate-950 bg-[radial-gradient(#212121_1px,transparent_1px)]"
+              : "bg-white bg-[radial-gradient(#c3c5c9_1px,transparent_1px)]"
+          } 
+          [background-size:16px_16px]`}
+        ></div>
+        <div
+          className={`fixed inset-0 -z-10 h-full w-full transition-all duration-300 
+          ${
+            resolvedTheme === "dark"
+              ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
+              : "bg-gradient-to-br from-white via-blue-300 to-blue-500 opacity-60"
+          }`}
+        ></div>
 
-        <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 backdrop-blur-md bg-white/30 dark:bg-muted/60 rounded-lg shadow-lg mx-4">
+        <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 mx-4">
           <div className="flex justify-center mb-6">
             <Link href="/">
               <div style={{ width: 150, height: 50, position: "relative" }}>

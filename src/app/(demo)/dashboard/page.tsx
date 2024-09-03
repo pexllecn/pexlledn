@@ -335,7 +335,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-normal">$45,231.89</div>
+                    <div className="text-3xl font-normal">$45,231.89</div>
                     <p className="text-xs text-muted-foreground">
                       +20.1% from last month
                     </p>
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-normal text-[#ff646c]">
+                    <div className="text-3xl font-normal text-[#ff646c]">
                       -350
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -388,7 +388,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-normal text-[#11c678]">
+                    <div className="text-3xl font-normal text-[#11c678]">
                       +12,234
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -415,7 +415,7 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-normal">+573</div>
+                    <div className="text-3xl font-normal">+573</div>
                     <p className="text-xs text-muted-foreground">
                       +21 since last hour
                     </p>
