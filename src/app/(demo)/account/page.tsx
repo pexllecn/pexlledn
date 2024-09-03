@@ -240,7 +240,11 @@ export default function AccountPage() {
                         key={category}
                         className="flex items-center space-x-2"
                       >
-                        <Switch id={category.replace(" ", "-")} />
+                        <Switch
+                          id={category.replace(" ", "-")}
+                          disabled
+                          checked
+                        />
                         <Label htmlFor={category.replace(" ", "-")}>
                           {category}
                         </Label>
