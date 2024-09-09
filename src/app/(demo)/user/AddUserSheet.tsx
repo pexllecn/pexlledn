@@ -93,6 +93,8 @@ export default function AddUserSheet({
       department: values.department,
       status: values.status,
       avatarUrl: "/placeholder.svg?height=40&width=40",
+      joinDate: "",
+      lastActive: "",
     };
     onAddUser(newUser);
     form.reset();
