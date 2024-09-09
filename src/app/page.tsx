@@ -117,8 +117,9 @@ export default function Component() {
                   variant="expandIcon"
                   Icon={ArrowRightIcon}
                   iconPlacement="right"
+                  asChild
                 >
-                  <Link href="/signin">Enter the demo</Link>{" "}
+                  <Link href="/signin">Enter the demo</Link>
                 </Button>
               </div>
               <div className="w-full flex justify-center relative">

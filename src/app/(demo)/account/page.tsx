@@ -224,7 +224,7 @@ export default function AccountPage() {
                             Receive {type.toLowerCase()} notifications
                           </p>
                         </div>
-                        <Switch checked />
+                        <Switch />
                       </div>
                     ))}
                   </div>
@@ -376,7 +376,7 @@ export default function AccountPage() {
                           Add an extra layer of security
                         </p>
                       </div>
-                      <Switch checked />
+                      <Switch />
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="outline" className="text-sm">

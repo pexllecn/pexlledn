@@ -19,6 +19,8 @@ import {
   AlertCircle,
   CheckCircle2,
   GripHorizontal,
+  TrashIcon,
+  FilePenLine,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -199,7 +201,6 @@ export default function KanbanBoard() {
     },
   ]);
 
-  const [newBoard, setNewBoard] = useState("");
   const [newTask, setNewTask] = useState<
     Omit<Task, "id" | "status" | "progress">
   >({
@@ -212,12 +213,12 @@ export default function KanbanBoard() {
   });
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [editingBoard, setEditingBoard] = useState<string | null>(null);
-  const [isNewBoardDialogOpen, setIsNewBoardDialogOpen] = useState(false);
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
   const [isEditTaskDialogOpen, setIsEditTaskDialogOpen] = useState(false);
   const [isTaskDetailDialogOpen, setIsTaskDetailDialogOpen] = useState(false);
   const [newTaskBoardId, setNewTaskBoardId] = useState<string | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [newBoardTitle, setNewBoardTitle] = useState("");
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, type } = result;
@@ -283,13 +284,12 @@ export default function KanbanBoard() {
   };
 
   const addBoard = () => {
-    if (newBoard.trim() !== "") {
+    if (newBoardTitle.trim() !== "") {
       setBoards([
         ...boards,
-        { id: Date.now().toString(), title: newBoard, tasks: [] },
+        { id: Date.now().toString(), title: newBoardTitle, tasks: [] },
       ]);
-      setNewBoard("");
-      setIsNewBoardDialogOpen(false);
+      setNewBoardTitle("");
     }
   };
 
@@ -403,18 +403,10 @@ export default function KanbanBoard() {
   return (
     <ContentLayout title="Kanban">
       <div className="p-6 bg-background min-h-screen">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-9xl mx-auto">
           <h1 className="text-3xl font-normal mb-8 text-foreground">
             Kanban Board
           </h1>
-          <div className="flex justify-between items-center mb-6">
-            <Button
-              variant="default"
-              onClick={() => setIsNewBoardDialogOpen(true)}
-            >
-              <PlusIcon className="h-4 w-4 mr-2" /> Add New Board
-            </Button>
-          </div>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="boards" type="BOARD" direction="horizontal">
               {(provided) => (
@@ -465,12 +457,15 @@ export default function KanbanBoard() {
                                 <DropdownMenuItem
                                   onClick={() => setEditingBoard(board.id)}
                                 >
-                                  Edit Title
+                                  <FilePenLine className="mr-2 h-4 w-4" /> Edit
+                                  Title
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
+                                  className="text-destructive"
                                   onClick={() => deleteBoard(board.id)}
                                 >
-                                  Delete Board
+                                  <TrashIcon className="mr-2 h-4 w-4" /> Delete
+                                  Board
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -603,34 +598,22 @@ export default function KanbanBoard() {
                     </Draggable>
                   ))}
                   {provided.placeholder}
+                  <div className="bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] flex flex-col items-center justify-center">
+                    <Input
+                      placeholder="New Board Title"
+                      value={newBoardTitle}
+                      onChange={(e) => setNewBoardTitle(e.target.value)}
+                      className="mb-2"
+                    />
+                    <Button onClick={addBoard} disabled={!newBoardTitle.trim()}>
+                      <PlusIcon className="h-4 w-4 mr-2" /> Add Board
+                    </Button>
+                  </div>
                 </div>
               )}
             </Droppable>
           </DragDropContext>
         </div>
-
-        <ResponsiveDialog
-          isOpen={isNewBoardDialogOpen}
-          onOpenChange={setIsNewBoardDialogOpen}
-          title="Add New Board"
-          description="Create a new board for your Kanban."
-          content={
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="boardTitle" className="text-right">
-                  Title
-                </Label>
-                <Input
-                  id="boardTitle"
-                  value={newBoard}
-                  onChange={(e) => setNewBoard(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-            </div>
-          }
-          footer={<Button onClick={addBoard}>Add Board</Button>}
-        />
 
         <ResponsiveDialog
           isOpen={isNewTaskDialogOpen}

@@ -23,6 +23,7 @@ import {
   DollarSignIcon,
   SearchIcon,
 } from "lucide-react";
+import MobileBackButton from "@/components/MobileBackButton";
 
 export default function Component() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -138,50 +139,60 @@ export default function Component() {
         variants={variants}
         className="w-full max-w-7xl mx-auto"
       >
-        <div className="lg:container mx-auto px-1 py-4 sm:py-6">
-          {FeaturedAdCard}
-
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-4 sm:mb-6 gap-4">
-            {CategoryButtons}
-            <div className="flex items-center gap-2">
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[140px] sm:w-[180px] border-none bg-muted shadow-none text-xs sm:text-sm">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date">Date (Newest first)</SelectItem>
-                  <SelectItem value="price">Price (Highest first)</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button
-                variant={isGridView ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setIsGridView(true)}
-                className="border-gray-300 dark:border-gray-700"
-              >
-                <LayoutGridIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-              </Button>
-              <Button
-                variant={!isGridView ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setIsGridView(false)}
-                className="border-gray-300 dark:border-gray-700"
-              >
-                <ListIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-              </Button>
+        <div className="container mx-auto px-4 pt-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <MobileBackButton className="mr-2" />
+              <h1 className="text-3xl font-normal text-gray-900 dark:text-white">
+                Categories
+              </h1>
             </div>
           </div>
+          <div className="lg:container mx-auto px-1 py-4 sm:py-6">
+            {FeaturedAdCard}
 
-          <div
-            className={`grid gap-4 sm:gap-6 ${
-              isGridView
-                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                : "grid-cols-1"
-            }`}
-          >
-            {filteredAds.map((ad) => (
-              <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
-            ))}
+            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between mb-4 sm:mb-6 gap-4">
+              {CategoryButtons}
+              <div className="flex items-center gap-2">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[140px] sm:w-[180px] border-none bg-muted shadow-none text-xs sm:text-sm">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date">Date (Newest first)</SelectItem>
+                    <SelectItem value="price">Price (Highest first)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant={isGridView ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setIsGridView(true)}
+                  className="border-gray-300 dark:border-gray-700"
+                >
+                  <LayoutGridIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+                <Button
+                  variant={!isGridView ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setIsGridView(false)}
+                  className="border-gray-300 dark:border-gray-700"
+                >
+                  <ListIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+              </div>
+            </div>
+
+            <div
+              className={`grid gap-4 sm:gap-6 ${
+                isGridView
+                  ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "grid-cols-1"
+              }`}
+            >
+              {filteredAds.map((ad) => (
+                <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>
