@@ -88,7 +88,7 @@ const NavItem = ({
       {React.cloneElement(icon, {
         className: cn(
           "transition-all duration-200",
-          isActive ? "stroke-[2.5]" : "stroke-[2.0] stroke-muted-foreground"
+          isActive ? "stroke-[2.0]" : "stroke-[1.0] stroke-muted-foreground"
         ),
       })}
     </div>

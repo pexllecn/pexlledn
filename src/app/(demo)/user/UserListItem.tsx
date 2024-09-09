@@ -23,10 +23,12 @@ interface UserListItemProps {
   user: User;
   onSelect: (id: number) => void;
   isSelected: boolean;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
 }
 
 export const UserListItem: React.FC<UserListItemProps> = React.memo(
-  ({ user, onSelect, isSelected }) => (
+  ({ user, onSelect, isSelected, onEdit, onDelete }) => (
     <div
       className={`flex items-center space-x-4 p-4 hover:bg-muted/50 rounded-lg transition-colors ${
         isSelected ? "bg-muted" : ""
@@ -62,13 +64,13 @@ export const UserListItem: React.FC<UserListItemProps> = React.memo(
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onEdit(user)}>
             <UserPlusIcon className="mr-2 h-4 w-4" /> Edit
           </DropdownMenuItem>
           <DropdownMenuItem>
             <MailIcon className="mr-2 h-4 w-4" /> Email
           </DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive">
+          <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive">
             <TrashIcon className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

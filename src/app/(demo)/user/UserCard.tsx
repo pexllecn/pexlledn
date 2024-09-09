@@ -24,10 +24,12 @@ interface UserCardProps {
   user: User;
   onSelect: (id: number) => void;
   isSelected: boolean;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
 }
 
 export const UserCard: React.FC<UserCardProps> = React.memo(
-  ({ user, onSelect, isSelected }) => (
+  ({ user, onSelect, isSelected, onEdit, onDelete }) => (
     <Card
       className={`hover:border-ring shadow-none border-muted bg-muted ${
         isSelected ? "border-ring" : ""
@@ -71,13 +73,13 @@ export const UserCard: React.FC<UserCardProps> = React.memo(
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onEdit(user)}>
                 <UserPlusIcon className="mr-2 h-4 w-4" /> Edit
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <MailIcon className="mr-2 h-4 w-4" /> Email
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive">
                 <TrashIcon className="mr-2 h-4 w-4" /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
