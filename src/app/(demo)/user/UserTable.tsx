@@ -261,7 +261,7 @@ export function UserTable({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                <FilterIcon className="mr-2 h-4 w-4" /> Filter
+                <FilterIcon className="mr-2 h-3 w-3" /> Filter
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -421,7 +421,7 @@ export function UserTable({
         </div>
         <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
+            <p className="text-xs">Rows per page</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
@@ -442,7 +442,7 @@ export function UserTable({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-full sm:w-auto items-center justify-center text-sm font-medium">
+          <div className="flex w-full sm:w-auto items-center justify-center text-xs">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>
