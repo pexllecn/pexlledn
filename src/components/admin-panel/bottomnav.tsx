@@ -45,10 +45,10 @@ export function BottomNav() {
         isActive={pathname === "/kanban"}
       />
       <NavItem
-        href="/search"
-        icon={<Search size={24} />}
-        label="Search"
-        isActive={pathname === "/search"}
+        href="/users"
+        icon={<Plus size={24} />}
+        label="Users"
+        isActive={pathname === "/users"}
       />
       <NavItem
         href="/chat"

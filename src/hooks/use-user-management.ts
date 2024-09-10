@@ -57,7 +57,7 @@ export const useUserManagement = (initialUsers: User[]) => {
 
   const addUser = useCallback((newUser: User) => {
     setUsers((prevUsers) => [...prevUsers, { ...newUser, id: Date.now() }]);
-    setCurrentPage(1); // Reset to first page after adding a new user
+    setCurrentPage(1);
   }, []);
 
   const editUser = useCallback(
@@ -76,14 +76,11 @@ export const useUserManagement = (initialUsers: User[]) => {
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       setSelectedUsers((prev) => prev.filter((id) => id !== userId));
 
-      // Adjust current page if necessary
       const updatedUsers = users.filter((user) => user.id !== userId);
-      const maxPage = Math.ceil(updatedUsers.length / rowsPerPage);
-      if (currentPage > maxPage) {
-        setCurrentPage(maxPage);
-      }
+      const maxPage = Math.max(1, Math.ceil(updatedUsers.length / rowsPerPage));
+      setCurrentPage((prevPage) => Math.min(prevPage, maxPage));
     },
-    [users, currentPage, rowsPerPage]
+    [users, rowsPerPage]
   );
 
   const bulkDeleteUsers = useCallback(() => {
@@ -92,15 +89,12 @@ export const useUserManagement = (initialUsers: User[]) => {
     );
     setSelectedUsers([]);
 
-    // Adjust current page if necessary
     const updatedUsers = users.filter(
       (user) => !selectedUsers.includes(user.id)
     );
-    const maxPage = Math.ceil(updatedUsers.length / rowsPerPage);
-    if (currentPage > maxPage) {
-      setCurrentPage(maxPage);
-    }
-  }, [users, selectedUsers, currentPage, rowsPerPage]);
+    const maxPage = Math.max(1, Math.ceil(updatedUsers.length / rowsPerPage));
+    setCurrentPage((prevPage) => Math.min(prevPage, maxPage));
+  }, [users, selectedUsers, rowsPerPage]);
 
   const selectAllUsers = useCallback(() => {
     if (selectedUsers.length === filteredAndSortedUsers.length) {

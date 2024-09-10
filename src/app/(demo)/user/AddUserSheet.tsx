@@ -1,19 +1,9 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -21,250 +11,174 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetFooter,
-  SheetClose,
-} from "@/components/ui/sheet";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerFooter,
-  DrawerClose,
-} from "@/components/ui/drawer";
+import { Switch } from "@/components/ui/switch";
 import { User } from "@/types/user";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email.",
-  }),
-  role: z.string().min(1, {
-    message: "Please select a role.",
-  }),
-  department: z.string().min(1, {
-    message: "Please select a department.",
-  }),
-  status: z.string().min(1, {
-    message: "Please select a status.",
-  }),
-});
-
-interface AddUserSheetProps {
+interface AddUserProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddUser: (userData: User) => void;
+  onAddUser: (user: User) => void;
 }
 
-export default function AddUserSheet({
+export default function AddUser({
   isOpen,
   onOpenChange,
   onAddUser,
-}: AddUserSheetProps) {
+}: AddUserProps) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
+  const [department, setDepartment] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      role: "",
-      department: "",
-      status: "",
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const newUser: User = {
       id: Date.now(),
-      name: values.name,
-      email: values.email,
-      role: values.role,
-      department: values.department,
-      status: values.status,
-      avatarUrl: "/placeholder.svg?height=40&width=40",
+      name,
+      email,
+      role,
+      department,
+      status: isActive ? "Active" : "Inactive",
+      avatarUrl: `/placeholder.svg?height=40&width=40`,
       joinDate: "",
       lastActive: "",
     };
     onAddUser(newUser);
-    form.reset();
     onOpenChange(false);
-  }
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setName("");
+    setEmail("");
+    setRole("");
+    setDepartment("");
+    setIsActive(true);
+  };
 
   const content = (
-    <div className="px-4 py-6 space-y-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+    <form onSubmit={handleSubmit} className="space-y-6 px-4 py-6">
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="john@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="User">User</SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="role">Role</Label>
+          <Select value={role} onValueChange={setRole} required>
+            <SelectTrigger id="role">
+              <SelectValue placeholder="Select role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Admin">Admin</SelectItem>
+              <SelectItem value="User">User</SelectItem>
+              <SelectItem value="Editor">Editor</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="department">Department</Label>
+          <Select value={department} onValueChange={setDepartment} required>
+            <SelectTrigger id="department">
+              <SelectValue placeholder="Select department" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="IT">IT</SelectItem>
+              <SelectItem value="HR">HR</SelectItem>
+              <SelectItem value="Sales">Sales</SelectItem>
+              <SelectItem value="Marketing">Marketing</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="active"
+            checked={isActive}
+            onCheckedChange={setIsActive}
           />
-          <FormField
-            control={form.control}
-            name="department"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Department</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a department" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="IT">IT</SelectItem>
-                    <SelectItem value="HR">HR</SelectItem>
-                    <SelectItem value="Sales">Sales</SelectItem>
-                    <SelectItem value="Marketing">Marketing</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
-    </div>
+          <Label htmlFor="active">Active</Label>
+        </div>
+      </div>
+      {isDesktop ? (
+        <DialogFooter>
+          <Button type="submit">Add User</Button>
+        </DialogFooter>
+      ) : (
+        <div className="space-y-4 pt-4">
+          <Button type="submit" className="w-full">
+            Add User
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline" className="w-full">
+              Cancel
+            </Button>
+          </DrawerClose>
+        </div>
+      )}
+    </form>
   );
 
   if (isDesktop) {
     return (
-      <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent className="sm:max-w-[425px]">
-          <SheetHeader className="px-4 pt-6">
-            <SheetTitle>Add New User</SheetTitle>
-            <SheetDescription>
-              Fill in the details to add a new user to the system.
-            </SheetDescription>
-          </SheetHeader>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+            <DialogDescription>
+              Add a new user to the system. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
           {content}
-          <SheetFooter className="px-4 pb-6">
-            <SheetClose asChild>
-              <Button type="button" variant="outline" className="w-full">
-                Cancel
-              </Button>
-            </SheetClose>
-            <Button
-              type="submit"
-              className="w-full"
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Add User
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     );
   }
 
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="px-4 pt-6">
+        <DrawerHeader className="px-4 py-6 border-b">
           <DrawerTitle>Add New User</DrawerTitle>
           <DrawerDescription>
-            Fill in the details to add a new user to the system.
+            Add a new user to the system. Click save when you're done.
           </DrawerDescription>
         </DrawerHeader>
         {content}
-        <DrawerFooter className="px-4 pb-6">
-          <DrawerClose asChild>
-            <Button type="button" variant="outline" className="w-full">
-              Cancel
-            </Button>
-          </DrawerClose>
-          <Button
-            type="submit"
-            className="w-full"
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Add User
-          </Button>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
