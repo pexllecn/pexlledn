@@ -256,7 +256,7 @@ export function UserTable({
             placeholder="Search by name or email..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="max-w-sm"
+            className="max-w-sm border-none bg-muted shadow-none"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
