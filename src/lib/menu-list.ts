@@ -8,13 +8,14 @@ import {
   DollarSign,
   MessageCircleMore,
   Kanban,
+  MessageSquareQuote,
 } from "lucide-react";
 
 type Submenu = {
   href: string;
   label: string;
   active: boolean;
-  notificationCount?: number; // Add this line
+  notificationCount?: string | number; // Allow both string and number
 };
 
 type Menu = {
@@ -23,7 +24,7 @@ type Menu = {
   active: boolean;
   icon: any;
   submenus: Submenu[];
-  notificationCount?: number; // Add this line
+  notificationCount?: string | number; // Allow both string and number
 };
 
 type Group = {
@@ -44,12 +45,20 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
+          href: "/timeline",
+          label: "Timeline",
+          active: pathname.includes("/timeline"),
+          icon: MessageSquareQuote,
+          submenus: [],
+          notificationCount: "new",
+        },
+        {
           href: "/chat",
           label: "Messages",
           active: pathname.includes("/chat"),
           icon: MessageCircleMore,
           submenus: [],
-          notificationCount: 3, // Add this line to show 3 new messages
+          notificationCount: 3,
         },
         {
           href: "/kanban",
@@ -57,7 +66,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/kanban"),
           icon: Kanban,
           submenus: [],
-          notificationCount: 546, // Add this line to show 3 new messages
+          notificationCount: 546,
         },
       ],
     },
@@ -90,9 +99,9 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
+          href: "/filters",
+          label: "Filters",
+          active: pathname.includes("/filters"),
           icon: Tag,
           submenus: [],
         },

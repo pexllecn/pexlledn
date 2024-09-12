@@ -33,9 +33,9 @@ export interface Ad {
     height: number;
   } | null;
   inStock: number;
-  paymentOptions: ("cash" | "card" | "paypal" | "crypto")[];
-  returnPolicy: "no-returns" | "14-days" | "30-days" | "60-days";
-  adType: "standard" | "featured" | "urgent";
+  paymentOptions: string[];
+  returnPolicy: string;
+  adType: string;
   verifiedSeller: boolean;
 }
 
@@ -80,14 +80,78 @@ export const sampleData = {
       "Accessories",
     ],
     "Home & Garden": ["Furniture", "Decor", "Kitchen", "Gardening", "Bedding"],
-    // ... add subcategories for other main categories
+    "Sports & Outdoors": [
+      "Fitness",
+      "Camping",
+      "Cycling",
+      "Team Sports",
+      "Water Sports",
+    ],
+    "Toys & Games": [
+      "Board Games",
+      "Puzzles",
+      "Action Figures",
+      "Dolls",
+      "Educational Toys",
+    ],
+    Vehicles: ["Cars", "Motorcycles", "Boats", "RVs", "Parts & Accessories"],
+    "Books & Media": ["Books", "Magazines", "Movies", "Music", "Video Games"],
+    "Health & Beauty": [
+      "Skincare",
+      "Makeup",
+      "Hair Care",
+      "Fragrances",
+      "Vitamins & Supplements",
+    ],
+    "Pet Supplies": [
+      "Dog Supplies",
+      "Cat Supplies",
+      "Fish Supplies",
+      "Bird Supplies",
+      "Small Animal Supplies",
+    ],
+    "Jewelry & Watches": [
+      "Necklaces",
+      "Rings",
+      "Earrings",
+      "Bracelets",
+      "Watches",
+    ],
+    "Musical Instruments": [
+      "Guitars",
+      "Pianos & Keyboards",
+      "Drums",
+      "DJ Equipment",
+      "Brass & Woodwinds",
+    ],
+    "Art & Collectibles": [
+      "Paintings",
+      "Sculptures",
+      "Prints",
+      "Antiques",
+      "Collectible Figurines",
+    ],
+    "Business & Industrial": [
+      "Office Supplies",
+      "Industrial Equipment",
+      "Restaurant Supplies",
+      "Retail",
+      "Construction",
+    ],
+    "Food & Beverages": [
+      "Gourmet Foods",
+      "Beverages",
+      "Snacks",
+      "Organic & Natural",
+      "Specialty Diets",
+    ],
   },
-  conditions: ["new", "like-new", "good", "fair", "poor"],
-  sellerTypes: ["individual", "business"],
-  shippingOptions: ["free", "paid", "pickup"],
-  paymentOptions: ["cash", "card", "paypal", "crypto"],
-  returnPolicies: ["no-returns", "14-days", "30-days", "60-days"],
-  adTypes: ["standard", "featured", "urgent"],
+  conditions: ["New", "Like New", "Good", "Fair", "Poor"],
+  sellerTypes: ["Individual", "Business"],
+  shippingOptions: ["Free", "Paid", "Pickup"],
+  paymentOptions: ["Cash", "Card", "PayPal", "Crypto"],
+  returnPolicies: ["No Returns", "14 Days", "30 Days", "60 Days"],
+  adTypes: ["Standard", "Featured", "Urgent"],
   ads: [
     {
       id: 1,
@@ -856,5 +920,5 @@ export const sampleData = {
 };
 
 export function getAdById(id: number): Ad | undefined {
-  return sampleData.ads.find((ad) => ad.id === id) as Ad | undefined;
+  return sampleData.ads.find((ad) => ad.id === id);
 }

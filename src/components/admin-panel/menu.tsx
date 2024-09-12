@@ -20,10 +20,15 @@ interface CollapseMenuButtonProps {
   icon: React.ElementType;
   label: string;
   active: boolean;
-  submenus: Array<{ href: string; label: string }>;
+  submenus: Array<{
+    href: string;
+    label: string;
+    notificationCount?: string | number;
+  }>;
   isOpen: boolean | undefined;
-  notificationCount?: number;
+  notificationCount?: string | number;
 }
+
 interface MenuProps {
   isOpen: boolean | undefined;
 }
@@ -112,26 +117,32 @@ export function Menu({ isOpen }: MenuProps) {
                                 >
                                   {label}
                                 </p>
-                                {isOpen !== false &&
-                                  notificationCount &&
-                                  notificationCount > 0 && (
-                                    <Badge
-                                      variant="outline"
-                                      className="ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50"
-                                    >
-                                      {notificationCount}
-                                    </Badge>
-                                  )}
+                                {isOpen !== false && notificationCount && (
+                                  <Badge
+                                    variant="outline"
+                                    className={cn(
+                                      "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50",
+                                      typeof notificationCount === "string" &&
+                                        "text-xs"
+                                    )}
+                                  >
+                                    {notificationCount}
+                                  </Badge>
+                                )}
                               </Link>
                             </Button>
                           </TooltipTrigger>
                           {isOpen === false && (
                             <TooltipContent side="right">
                               {label}
-                              {notificationCount && notificationCount > 0 && (
+                              {notificationCount && (
                                 <Badge
                                   variant="secondary"
-                                  className="ml-2 px-1.5 min-w-[20px] flex items-center justify-center"
+                                  className={cn(
+                                    "ml-2 px-1.5 min-w-[20px] flex items-center justify-center",
+                                    typeof notificationCount === "string" &&
+                                      "text-xs"
+                                  )}
                                 >
                                   {notificationCount}
                                 </Badge>
@@ -149,6 +160,7 @@ export function Menu({ isOpen }: MenuProps) {
                         active={active}
                         submenus={submenus}
                         isOpen={isOpen}
+                        notificationCount={notificationCount}
                       />
                     </div>
                   )

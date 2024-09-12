@@ -155,7 +155,7 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
   }
 );
 
-export default function Component() {
+export default function Filters() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeSubcategory, setActiveSubcategory] = useState("All");
   const [isGridView, setIsGridView] = useState(true);
@@ -336,11 +336,13 @@ export default function Component() {
       value={openAccordionItems}
       onValueChange={setOpenAccordionItems}
     >
-      <AccordionItem value="category">
-        <AccordionTrigger>Category</AccordionTrigger>
-        <AccordionContent>
+      <AccordionItem value="category" className="border-b">
+        <AccordionTrigger className="hover:no-underline">
+          Category
+        </AccordionTrigger>
+        <AccordionContent className="pt-2">
           <Select value={activeCategory} onValueChange={setActiveCategory}>
-            <SelectTrigger>
+            <SelectTrigger className="w-full bg-background">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -354,13 +356,15 @@ export default function Component() {
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="subcategory">
-        <AccordionTrigger>Subcategory</AccordionTrigger>
-        <AccordionContent>
+        <AccordionTrigger className="hover:no-underline">
+          Subcategory
+        </AccordionTrigger>
+        <AccordionContent className="pt-2">
           <Select
             value={activeSubcategory}
             onValueChange={setActiveSubcategory}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full bg-background">
               <SelectValue placeholder="Select subcategory" />
             </SelectTrigger>
             <SelectContent>
@@ -380,15 +384,17 @@ export default function Component() {
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="price">
-        <AccordionTrigger>Price Range</AccordionTrigger>
-        <AccordionContent>
+        <AccordionTrigger className="hover:no-underline">
+          Price Range
+        </AccordionTrigger>
+        <AccordionContent className="pt-2">
           <Slider
             min={0}
             max={10000}
             step={100}
             value={priceRange}
             onValueChange={setPriceRange}
-            className="mb-2"
+            className="mb-4"
           />
           <div className="flex justify-between text-sm">
             <span>${priceRange[0]}</span>
@@ -397,70 +403,90 @@ export default function Component() {
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="condition">
-        <AccordionTrigger>Condition</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Condition
+        </AccordionTrigger>
         <AccordionContent>
-          {sampleData.conditions.map((cond) => (
-            <div key={cond} className="flex items-center space-x-2">
-              <Checkbox
-                id={`condition-${cond}`}
-                checked={condition.includes(cond)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setCondition([...condition, cond]);
-                  } else {
-                    setCondition(condition.filter((c) => c !== cond));
-                  }
-                }}
-              />
-              <Label htmlFor={`condition-${cond}`}>{cond}</Label>
-            </div>
-          ))}
+          <div>
+            {sampleData.conditions.map((cond) => (
+              <div key={cond} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`condition-${cond}`}
+                  checked={condition.includes(cond)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setCondition([...condition, cond]);
+                    } else {
+                      setCondition(condition.filter((c) => c !== cond));
+                    }
+                  }}
+                />
+                <Label htmlFor={`condition-${cond}`} className="text-sm">
+                  {cond}
+                </Label>
+              </div>
+            ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="seller-type">
-        <AccordionTrigger>Seller Type</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Seller Type
+        </AccordionTrigger>
         <AccordionContent>
-          {sampleData.sellerTypes.map((type) => (
-            <div key={type} className="flex items-center space-x-2">
-              <Checkbox
-                id={`seller-type-${type}`}
-                checked={sellerType.includes(type)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setSellerType([...sellerType, type]);
-                  } else {
-                    setSellerType(sellerType.filter((t) => t !== type));
-                  }
-                }}
-              />
-              <Label htmlFor={`seller-type-${type}`}>{type}</Label>
-            </div>
-          ))}
+          <div>
+            {sampleData.sellerTypes.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`seller-type-${type}`}
+                  checked={sellerType.includes(type)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setSellerType([...sellerType, type]);
+                    } else {
+                      setSellerType(sellerType.filter((t) => t !== type));
+                    }
+                  }}
+                />
+                <Label htmlFor={`seller-type-${type}`} className="text-sm">
+                  {type}
+                </Label>
+              </div>
+            ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="shipping">
-        <AccordionTrigger>Shipping</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Shipping
+        </AccordionTrigger>
         <AccordionContent>
-          {sampleData.shippingOptions.map((option) => (
-            <div key={option} className="flex items-center space-x-2">
-              <Checkbox
-                id={`shipping-${option}`}
-                checked={shipping.includes(option)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setShipping([...shipping, option]);
-                  } else {
-                    setShipping(shipping.filter((s) => s !== option));
-                  }
-                }}
-              />
-              <Label htmlFor={`shipping-${option}`}>{option}</Label>
-            </div>
-          ))}
+          <div>
+            {sampleData.shippingOptions.map((option) => (
+              <div key={option} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`shipping-${option}`}
+                  checked={shipping.includes(option)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setShipping([...shipping, option]);
+                    } else {
+                      setShipping(shipping.filter((s) => s !== option));
+                    }
+                  }}
+                />
+                <Label htmlFor={`shipping-${option}`} className="text-sm">
+                  {option}
+                </Label>
+              </div>
+            ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="warranty">
-        <AccordionTrigger>Warranty</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Warranty
+        </AccordionTrigger>
         <AccordionContent>
           <RadioGroup
             value={warranty === null ? "all" : warranty.toString()}
@@ -470,22 +496,30 @@ export default function Component() {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="warranty-all" />
-              <Label htmlFor="warranty-all">All</Label>
+              <Label htmlFor="warranty-all" className="text-sm">
+                All
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="true" id="warranty-yes" />
-              <Label htmlFor="warranty-yes">Yes</Label>
+              <Label htmlFor="warranty-yes" className="text-sm">
+                Yes
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="false" id="warranty-no" />
-              <Label htmlFor="warranty-no">No</Label>
+              <Label htmlFor="warranty-no" className="text-sm">
+                No
+              </Label>
             </div>
           </RadioGroup>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="rating">
-        <AccordionTrigger>Minimum Rating</AccordionTrigger>
-        <AccordionContent>
+        <AccordionTrigger className="hover:no-underline">
+          Minimum Rating
+        </AccordionTrigger>
+        <AccordionContent className="pt-2">
           <div className="flex items-center space-x-2">
             {[0, 1, 2, 3, 4, 5].map((star) => (
               <Button
@@ -501,7 +535,9 @@ export default function Component() {
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="negotiable">
-        <AccordionTrigger>Negotiable</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Negotiable
+        </AccordionTrigger>
         <AccordionContent>
           <RadioGroup
             value={negotiable === null ? "all" : negotiable.toString()}
@@ -511,86 +547,112 @@ export default function Component() {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="negotiable-all" />
-              <Label htmlFor="negotiable-all">All</Label>
+              <Label htmlFor="negotiable-all" className="text-sm">
+                All
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="true" id="negotiable-yes" />
-              <Label htmlFor="negotiable-yes">Yes</Label>
+              <Label htmlFor="negotiable-yes" className="text-sm">
+                Yes
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="false" id="negotiable-no" />
-              <Label htmlFor="negotiable-no">No</Label>
+              <Label htmlFor="negotiable-no" className="text-sm">
+                No
+              </Label>
             </div>
           </RadioGroup>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="payment-options">
-        <AccordionTrigger>Payment Options</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Payment Options
+        </AccordionTrigger>
         <AccordionContent>
-          {sampleData.paymentOptions.map((option) => (
-            <div key={option} className="flex items-center space-x-2">
-              <Checkbox
-                id={`payment-${option}`}
-                checked={paymentOptions.includes(option)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setPaymentOptions([...paymentOptions, option]);
-                  } else {
-                    setPaymentOptions(
-                      paymentOptions.filter((o) => o !== option)
-                    );
-                  }
-                }}
-              />
-              <Label htmlFor={`payment-${option}`}>{option}</Label>
-            </div>
-          ))}
+          <div>
+            {sampleData.paymentOptions.map((option) => (
+              <div key={option} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`payment-${option}`}
+                  checked={paymentOptions.includes(option)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setPaymentOptions([...paymentOptions, option]);
+                    } else {
+                      setPaymentOptions(
+                        paymentOptions.filter((o) => o !== option)
+                      );
+                    }
+                  }}
+                />
+                <Label htmlFor={`payment-${option}`} className="text-sm">
+                  {option}
+                </Label>
+              </div>
+            ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="return-policy">
-        <AccordionTrigger>Return Policy</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Return Policy
+        </AccordionTrigger>
         <AccordionContent>
-          {sampleData.returnPolicies.map((policy) => (
-            <div key={policy} className="flex items-center space-x-2">
-              <Checkbox
-                id={`return-${policy}`}
-                checked={returnPolicy.includes(policy)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setReturnPolicy([...returnPolicy, policy]);
-                  } else {
-                    setReturnPolicy(returnPolicy.filter((p) => p !== policy));
-                  }
-                }}
-              />
-              <Label htmlFor={`return-${policy}`}>{policy}</Label>
-            </div>
-          ))}
+          <div>
+            {sampleData.returnPolicies.map((policy) => (
+              <div key={policy} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`return-${policy}`}
+                  checked={returnPolicy.includes(policy)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setReturnPolicy([...returnPolicy, policy]);
+                    } else {
+                      setReturnPolicy(returnPolicy.filter((p) => p !== policy));
+                    }
+                  }}
+                />
+                <Label htmlFor={`return-${policy}`} className="text-sm">
+                  {policy}
+                </Label>
+              </div>
+            ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="ad-type">
-        <AccordionTrigger>Ad Type</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Ad Type
+        </AccordionTrigger>
         <AccordionContent>
-          {sampleData.adTypes.map((type) => (
-            <div key={type} className="flex items-center space-x-2">
-              <Checkbox
-                id={`ad-type-${type}`}
-                checked={adType.includes(type)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setAdType([...adType, type]);
-                  } else {
-                    setAdType(adType.filter((t) => t !== type));
-                  }
-                }}
-              />
-              <Label htmlFor={`ad-type-${type}`}>{type}</Label>
-            </div>
-          ))}
+          <div>
+            {sampleData.adTypes.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`ad-type-${type}`}
+                  checked={adType.includes(type)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setAdType([...adType, type]);
+                    } else {
+                      setAdType(adType.filter((t) => t !== type));
+                    }
+                  }}
+                />
+                <Label htmlFor={`ad-type-${type}`} className="text-sm">
+                  {type}
+                </Label>
+              </div>
+            ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="verified-seller">
-        <AccordionTrigger>Verified Seller</AccordionTrigger>
+        <AccordionTrigger className="hover:no-underline">
+          Verified Seller
+        </AccordionTrigger>
         <AccordionContent>
           <RadioGroup
             value={verifiedSeller === null ? "all" : verifiedSeller.toString()}
@@ -600,15 +662,21 @@ export default function Component() {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="verified-all" />
-              <Label htmlFor="verified-all">All</Label>
+              <Label htmlFor="verified-all" className="text-sm">
+                All
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="true" id="verified-yes" />
-              <Label htmlFor="verified-yes">Yes</Label>
+              <Label htmlFor="verified-yes" className="text-sm">
+                Yes
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="false" id="verified-no" />
-              <Label htmlFor="verified-no">No</Label>
+              <Label htmlFor="verified-no" className="text-sm">
+                No
+              </Label>
             </div>
           </RadioGroup>
         </AccordionContent>
@@ -621,7 +689,7 @@ export default function Component() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-1/4 space-y-6">
+          <div className="hidden lg:block w-1/5 space-y-6">
             <Card className="rounded-md bg-muted border-none">
               <CardContent className="p-4">
                 <div className="flex justify-between items-center mb-4">
@@ -673,10 +741,10 @@ export default function Component() {
                 placeholder="Search ads..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow bg-muted shadow-none"
+                className="flex-grow bg-muted shadow-none border-none"
               />
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px] bg-muted shadow-none border-none">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
