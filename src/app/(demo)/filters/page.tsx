@@ -510,7 +510,7 @@ export default function Filters() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Desktop Sidebar */}
             <div className="hidden lg:block w-1/5 space-y-6">
-              <Card className="rounded-md bg-muted border-none">
+              <Card className="rounded-md border-none">
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-semibold">Filters</h2>
