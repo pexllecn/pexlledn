@@ -289,7 +289,14 @@ export default function Filters() {
 
   const totalPages = Math.ceil(filteredAds.length / adsPerPage);
 
-  const FilterBox = ({
+  interface FilterBoxProps {
+    title: string;
+    options: string[];
+    selectedOptions: string[];
+    setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  }
+
+  const FilterBox: React.FC<FilterBoxProps> = ({
     title,
     options,
     selectedOptions,
@@ -298,7 +305,7 @@ export default function Filters() {
     <div className="mb-6">
       <h3 className="text-sm font-semibold mb-2">{title}</h3>
       <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
+        {options.map((option: string) => (
           <Button
             key={option}
             variant={selectedOptions.includes(option) ? "default" : "secondary"}
