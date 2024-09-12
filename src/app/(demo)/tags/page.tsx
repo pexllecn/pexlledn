@@ -77,14 +77,16 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
               }
             />
             <Badge className="absolute top-2 left-2 z-10">{ad.category}</Badge>
-            <div className="absolute top-2 right-2 z-10">
-              <Badge
-                variant="secondary"
-                className="bg-background/70 text-sm backdrop-blur-sm"
-              >
-                {ad.price !== null ? `$${ad.price}` : "Price on request"}
-              </Badge>
-            </div>
+            {isGridView && (
+              <div className="absolute top-2 right-2 z-10">
+                <Badge
+                  variant="secondary"
+                  className="bg-background/70 text-sm backdrop-blur-sm"
+                >
+                  {ad.price !== null ? `$${ad.price}` : "Price on request"}
+                </Badge>
+              </div>
+            )}
           </div>
           <CardContent
             className={cn(
