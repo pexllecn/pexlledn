@@ -4,6 +4,7 @@ import { ChevronRight, Dot, LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
 import {
   Collapsible,
@@ -29,6 +30,7 @@ type Submenu = {
   href: string;
   label: string;
   active: boolean;
+  notificationCount?: string | number;
 };
 
 interface CollapseMenuButtonProps {
@@ -37,6 +39,7 @@ interface CollapseMenuButtonProps {
   active: boolean;
   submenus: Submenu[];
   isOpen: boolean | undefined;
+  notificationCount?: string | number;
 }
 
 export function CollapseMenuButton({
@@ -45,9 +48,25 @@ export function CollapseMenuButton({
   active,
   submenus,
   isOpen,
+  notificationCount,
 }: CollapseMenuButtonProps) {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
+
+  const renderNotificationBadge = (count?: string | number) => {
+    if (!count) return null;
+    return (
+      <Badge
+        variant="outline"
+        className={cn(
+          "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50",
+          typeof count === "string" && "text-xs"
+        )}
+      >
+        {count}
+      </Badge>
+    );
+  };
 
   return isOpen ? (
     <Collapsible
@@ -79,18 +98,12 @@ export function CollapseMenuButton({
                 {label}
               </p>
             </div>
-            <div
-              className={cn(
-                "whitespace-nowrap",
-                isOpen
-                  ? "translate-x-0 opacity-100"
-                  : "-translate-x-96 opacity-0"
-              )}
-            >
+            <div className="flex items-center">
+              {renderNotificationBadge(notificationCount)}
               <ChevronRight
                 size={16}
                 className={cn(
-                  "transition-transform duration-200",
+                  "transition-transform duration-200 ml-2",
                   isCollapsed ? "rotate-90" : "rotate-0"
                 )}
               />
@@ -99,7 +112,7 @@ export function CollapseMenuButton({
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-        {submenus.map(({ href, label, active }, index) => (
+        {submenus.map(({ href, label, active, notificationCount }, index) => (
           <Button
             key={index}
             variant={active ? "outline" : "ghost"}
@@ -109,7 +122,7 @@ export function CollapseMenuButton({
             )}
             asChild
           >
-            <Link href={href}>
+            <Link href={href} className="flex items-center">
               <span className="mr-4 ml-2">
                 <Dot size={18} />
               </span>
@@ -123,6 +136,7 @@ export function CollapseMenuButton({
               >
                 {label}
               </p>
+              {renderNotificationBadge(notificationCount)}
             </Link>
           </Button>
         ))}
@@ -156,24 +170,33 @@ export function CollapseMenuButton({
                       {label}
                     </p>
                   </div>
+                  {renderNotificationBadge(notificationCount)}
                 </div>
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent side="right" align="start" alignOffset={2}>
-            {label}
+            <div className="flex items-center">
+              {label}
+              {renderNotificationBadge(notificationCount)}
+            </div>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
       <DropdownMenuContent side="right" sideOffset={25} align="start">
-        <DropdownMenuLabel className="max-w-[190px] truncate">
+        <DropdownMenuLabel className="max-w-[190px] truncate flex items-center justify-between">
           {label}
+          {renderNotificationBadge(notificationCount)}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {submenus.map(({ href, label }, index) => (
+        {submenus.map(({ href, label, notificationCount }, index) => (
           <DropdownMenuItem key={index} asChild>
-            <Link className="cursor-pointer" href={href}>
+            <Link
+              className="cursor-pointer flex items-center justify-between"
+              href={href}
+            >
               <p className="max-w-[180px] truncate">{label}</p>
+              {renderNotificationBadge(notificationCount)}
             </Link>
           </DropdownMenuItem>
         ))}
