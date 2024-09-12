@@ -50,7 +50,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/timeline"),
           icon: MessageSquareQuote,
           submenus: [],
-          notificationCount: "new",
+          notificationCount: "New",
         },
         {
           href: "/chat",
