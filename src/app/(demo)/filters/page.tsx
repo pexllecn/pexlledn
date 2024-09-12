@@ -15,15 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import {
   Sheet,
   SheetContent,
@@ -174,7 +166,6 @@ export default function Filters() {
   const [verifiedSeller, setVerifiedSeller] = useState<boolean | null>(null);
   const [filteredAds, setFilteredAds] = useState<Ad[]>(sampleData.ads as Ad[]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const adsPerPage = 12;
 
@@ -199,44 +190,7 @@ export default function Filters() {
     setReturnPolicy([]);
     setAdType([]);
     setVerifiedSeller(null);
-    setOpenAccordionItems([]);
   };
-
-  const updateOpenAccordionItems = useCallback(() => {
-    const openItems: string[] = [];
-    if (activeCategory !== "All") openItems.push("category");
-    if (activeSubcategory !== "All") openItems.push("subcategory");
-    if (priceRange[0] !== 0 || priceRange[1] !== 10000) openItems.push("price");
-    if (condition.length > 0) openItems.push("condition");
-    if (sellerType.length > 0) openItems.push("seller-type");
-    if (shipping.length > 0) openItems.push("shipping");
-    if (warranty !== null) openItems.push("warranty");
-    if (minRating > 0) openItems.push("rating");
-    if (negotiable !== null) openItems.push("negotiable");
-    if (paymentOptions.length > 0) openItems.push("payment-options");
-    if (returnPolicy.length > 0) openItems.push("return-policy");
-    if (adType.length > 0) openItems.push("ad-type");
-    if (verifiedSeller !== null) openItems.push("verified-seller");
-    setOpenAccordionItems(openItems);
-  }, [
-    activeCategory,
-    activeSubcategory,
-    priceRange,
-    condition,
-    sellerType,
-    shipping,
-    warranty,
-    minRating,
-    negotiable,
-    paymentOptions,
-    returnPolicy,
-    adType,
-    verifiedSeller,
-  ]);
-
-  useEffect(() => {
-    updateOpenAccordionItems();
-  }, [updateOpenAccordionItems]);
 
   const filterAds = useCallback(() => {
     const filtered = sampleData.ads.filter((ad) => {
@@ -335,358 +289,206 @@ export default function Filters() {
 
   const totalPages = Math.ceil(filteredAds.length / adsPerPage);
 
+  const FilterBox = ({
+    title,
+    options,
+    selectedOptions,
+    setSelectedOptions,
+  }) => (
+    <div className="mb-6">
+      <h3 className="text-sm font-semibold mb-2">{title}</h3>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <Button
+            key={option}
+            variant={selectedOptions.includes(option) ? "default" : "secondary"}
+            size="sm"
+            onClick={() => {
+              if (selectedOptions.includes(option)) {
+                setSelectedOptions(
+                  selectedOptions.filter((item) => item !== option)
+                );
+              } else {
+                setSelectedOptions([...selectedOptions, option]);
+              }
+            }}
+            className="px-3 py-1 text-xs"
+          >
+            {option}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+
   const FilterContent = () => (
-    <Accordion
-      type="multiple"
-      value={openAccordionItems}
-      onValueChange={setOpenAccordionItems}
-    >
-      <AccordionItem value="category" className="border-b">
-        <AccordionTrigger className="hover:no-underline">
-          Category
-        </AccordionTrigger>
-        <AccordionContent className="pt-2">
-          <Select value={activeCategory} onValueChange={setActiveCategory}>
-            <SelectTrigger className="w-full bg-background">
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              {sampleData.categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
+    <div className="space-y-6">
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">Category</h3>
+        <Select value={activeCategory} onValueChange={setActiveCategory}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select category" />
+          </SelectTrigger>
+          <SelectContent>
+            {sampleData.categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">Subcategory</h3>
+        <Select value={activeSubcategory} onValueChange={setActiveSubcategory}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select subcategory" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All</SelectItem>
+            {activeCategory !== "All" &&
+              (
+                sampleData.subcategories[
+                  activeCategory as keyof typeof sampleData.subcategories
+                ] || []
+              ).map((subcategory: string) => (
+                <SelectItem key={subcategory} value={subcategory}>
+                  {subcategory}
                 </SelectItem>
               ))}
-            </SelectContent>
-          </Select>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="subcategory">
-        <AccordionTrigger className="hover:no-underline">
-          Subcategory
-        </AccordionTrigger>
-        <AccordionContent className="pt-2">
-          <Select
-            value={activeSubcategory}
-            onValueChange={setActiveSubcategory}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">Price Range</h3>
+        <Slider
+          min={0}
+          max={10000}
+          step={100}
+          value={priceRange}
+          onValueChange={setPriceRange}
+          className="mb-2"
+        />
+        <div className="flex justify-between text-xs">
+          <span>${priceRange[0]}</span>
+          <span>${priceRange[1]}</span>
+        </div>
+      </div>
+      <FilterBox
+        title="Condition"
+        options={sampleData.conditions}
+        selectedOptions={condition}
+        setSelectedOptions={setCondition}
+      />
+      <FilterBox
+        title="Seller Type"
+        options={sampleData.sellerTypes}
+        selectedOptions={sellerType}
+        setSelectedOptions={setSellerType}
+      />
+      <FilterBox
+        title="Shipping"
+        options={sampleData.shippingOptions}
+        selectedOptions={shipping}
+        setSelectedOptions={setShipping}
+      />
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">Warranty</h3>
+        <div className="flex gap-2">
+          <Button
+            variant={warranty === null ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setWarranty(null)}
           >
-            <SelectTrigger className="w-full bg-background">
-              <SelectValue placeholder="Select subcategory" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All</SelectItem>
-              {activeCategory !== "All" &&
-                (
-                  sampleData.subcategories[
-                    activeCategory as keyof typeof sampleData.subcategories
-                  ] || []
-                ).map((subcategory: string) => (
-                  <SelectItem key={subcategory} value={subcategory}>
-                    {subcategory}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="price">
-        <AccordionTrigger className="hover:no-underline">
-          Price Range
-        </AccordionTrigger>
-        <AccordionContent className="pt-2">
-          <Slider
-            min={0}
-            max={10000}
-            step={100}
-            value={priceRange}
-            onValueChange={setPriceRange}
-            className="mb-4"
-          />
-          <div className="flex justify-between text-sm">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="condition">
-        <AccordionTrigger className="hover:no-underline">
-          Condition
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {sampleData.conditions.map((cond) => (
-              <div key={cond} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`condition-${cond}`}
-                  checked={condition.includes(cond)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setCondition([...condition, cond]);
-                    } else {
-                      setCondition(condition.filter((c) => c !== cond));
-                    }
-                  }}
-                />
-                <Label htmlFor={`condition-${cond}`} className="text-sm">
-                  {cond}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="seller-type">
-        <AccordionTrigger className="hover:no-underline">
-          Seller Type
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {sampleData.sellerTypes.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`seller-type-${type}`}
-                  checked={sellerType.includes(type)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setSellerType([...sellerType, type]);
-                    } else {
-                      setSellerType(sellerType.filter((t) => t !== type));
-                    }
-                  }}
-                />
-                <Label htmlFor={`seller-type-${type}`} className="text-sm">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="shipping">
-        <AccordionTrigger className="hover:no-underline">
-          Shipping
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {sampleData.shippingOptions.map((option) => (
-              <div key={option} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`shipping-${option}`}
-                  checked={shipping.includes(option)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setShipping([...shipping, option]);
-                    } else {
-                      setShipping(shipping.filter((s) => s !== option));
-                    }
-                  }}
-                />
-                <Label htmlFor={`shipping-${option}`} className="text-sm">
-                  {option}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="warranty">
-        <AccordionTrigger className="hover:no-underline">
-          Warranty
-        </AccordionTrigger>
-        <AccordionContent>
-          <RadioGroup
-            value={warranty === null ? "all" : warranty.toString()}
-            onValueChange={(value) =>
-              setWarranty(value === "all" ? null : value === "true")
-            }
+            All
+          </Button>
+          <Button
+            variant={warranty === true ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setWarranty(true)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="warranty-all" />
-              <Label htmlFor="warranty-all" className="text-sm">
-                All
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="true" id="warranty-yes" />
-              <Label htmlFor="warranty-yes" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="false" id="warranty-no" />
-              <Label htmlFor="warranty-no" className="text-sm">
-                No
-              </Label>
-            </div>
-          </RadioGroup>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="rating">
-        <AccordionTrigger className="hover:no-underline">
-          Minimum Rating
-        </AccordionTrigger>
-        <AccordionContent className="pt-2">
-          <div className="flex items-center space-x-2">
-            {[0, 1, 2, 3, 4, 5].map((star) => (
-              <Button
-                key={star}
-                variant={minRating >= star ? "default" : "outline"}
-                size="sm"
-                onClick={() => setMinRating(star)}
-              >
-                <StarIcon className="h-4 w-4" />
-              </Button>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="negotiable">
-        <AccordionTrigger className="hover:no-underline">
-          Negotiable
-        </AccordionTrigger>
-        <AccordionContent>
-          <RadioGroup
-            value={negotiable === null ? "all" : negotiable.toString()}
-            onValueChange={(value) =>
-              setNegotiable(value === "all" ? null : value === "true")
-            }
+            Yes
+          </Button>
+          <Button
+            variant={warranty === false ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setWarranty(false)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="negotiable-all" />
-              <Label htmlFor="negotiable-all" className="text-sm">
-                All
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="true" id="negotiable-yes" />
-              <Label htmlFor="negotiable-yes" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="false" id="negotiable-no" />
-              <Label htmlFor="negotiable-no" className="text-sm">
-                No
-              </Label>
-            </div>
-          </RadioGroup>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="payment-options">
-        <AccordionTrigger className="hover:no-underline">
-          Payment Options
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {sampleData.paymentOptions.map((option) => (
-              <div key={option} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`payment-${option}`}
-                  checked={paymentOptions.includes(option)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setPaymentOptions([...paymentOptions, option]);
-                    } else {
-                      setPaymentOptions(
-                        paymentOptions.filter((o) => o !== option)
-                      );
-                    }
-                  }}
-                />
-                <Label htmlFor={`payment-${option}`} className="text-sm">
-                  {option}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="return-policy">
-        <AccordionTrigger className="hover:no-underline">
-          Return Policy
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {sampleData.returnPolicies.map((policy) => (
-              <div key={policy} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`return-${policy}`}
-                  checked={returnPolicy.includes(policy)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setReturnPolicy([...returnPolicy, policy]);
-                    } else {
-                      setReturnPolicy(returnPolicy.filter((p) => p !== policy));
-                    }
-                  }}
-                />
-                <Label htmlFor={`return-${policy}`} className="text-sm">
-                  {policy}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="ad-type">
-        <AccordionTrigger className="hover:no-underline">
-          Ad Type
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {sampleData.adTypes.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`ad-type-${type}`}
-                  checked={adType.includes(type)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setAdType([...adType, type]);
-                    } else {
-                      setAdType(adType.filter((t) => t !== type));
-                    }
-                  }}
-                />
-                <Label htmlFor={`ad-type-${type}`} className="text-sm">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="verified-seller">
-        <AccordionTrigger className="hover:no-underline">
-          Verified Seller
-        </AccordionTrigger>
-        <AccordionContent>
-          <RadioGroup
-            value={verifiedSeller === null ? "all" : verifiedSeller.toString()}
-            onValueChange={(value) =>
-              setVerifiedSeller(value === "all" ? null : value === "true")
-            }
+            No
+          </Button>
+        </div>
+      </div>
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">Negotiable</h3>
+        <div className="flex gap-2">
+          <Button
+            variant={negotiable === null ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setNegotiable(null)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="verified-all" />
-              <Label htmlFor="verified-all" className="text-sm">
-                All
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="true" id="verified-yes" />
-              <Label htmlFor="verified-yes" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="false" id="verified-no" />
-              <Label htmlFor="verified-no" className="text-sm">
-                No
-              </Label>
-            </div>
-          </RadioGroup>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+            All
+          </Button>
+          <Button
+            variant={negotiable === true ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setNegotiable(true)}
+          >
+            Yes
+          </Button>
+          <Button
+            variant={negotiable === false ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setNegotiable(false)}
+          >
+            No
+          </Button>
+        </div>
+      </div>
+      <FilterBox
+        title="Payment Options"
+        options={sampleData.paymentOptions}
+        selectedOptions={paymentOptions}
+        setSelectedOptions={setPaymentOptions}
+      />
+      <FilterBox
+        title="Return Policy"
+        options={sampleData.returnPolicies}
+        selectedOptions={returnPolicy}
+        setSelectedOptions={setReturnPolicy}
+      />
+      <FilterBox
+        title="Ad Type"
+        options={sampleData.adTypes}
+        selectedOptions={adType}
+        setSelectedOptions={setAdType}
+      />
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">Verified Seller</h3>
+        <div className="flex gap-2">
+          <Button
+            variant={verifiedSeller === null ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setVerifiedSeller(null)}
+          >
+            All
+          </Button>
+          <Button
+            variant={verifiedSeller === true ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setVerifiedSeller(true)}
+          >
+            Yes
+          </Button>
+          <Button
+            variant={verifiedSeller === false ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setVerifiedSeller(false)}
+          >
+            No
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 
   return (
@@ -768,14 +570,14 @@ export default function Filters() {
                 </Select>
                 <div className="flex gap-2">
                   <Button
-                    variant={isGridView ? "default" : "outline"}
+                    variant={isGridView ? "default" : "secondary"}
                     size="icon"
                     onClick={() => setIsGridView(true)}
                   >
                     <LayoutGridIcon className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant={!isGridView ? "default" : "outline"}
+                    variant={!isGridView ? "default" : "secondary"}
                     size="icon"
                     onClick={() => setIsGridView(false)}
                   >
