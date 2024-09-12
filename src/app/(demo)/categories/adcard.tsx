@@ -1,136 +1,115 @@
-"use client";
 import React from "react";
 import Image from "next/image";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { MapPinIcon, ClockIcon, UserIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Ad } from "@/lib/sample-data";
 
 interface AdCardProps {
-  ad: {
-    id: number;
-    title: string;
-    price: number | null;
-    category: string;
-    image: string;
-    location: string;
-    date: string;
-    seller: string;
-    description: string;
-  };
+  ad: Ad;
   isGridView: boolean;
 }
 
-const AdCard: React.FC<AdCardProps> = React.memo(({ ad, isGridView }) => {
-  return (
-    <Card
-      className={`overflow-hidden rounded-lg ${
-        isGridView
-          ? "h-[300px] sm:h-[350px]"
-          : "h-auto sm:h-[200px] flex flex-col sm:flex-row"
-      }`}
-    >
-      {isGridView ? (
-        <div className="relative w-full h-full">
-          <Image
-            src={ad.image}
-            alt={ad.title}
-            layout="fill"
-            objectFit="cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-          <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
-            <div className="flex justify-between items-start">
-              <Badge className="text-xs">{ad.category}</Badge>
-              {ad.price && (
-                <Badge variant="secondary" className=" text-sm font-normal">
-                  ${ad.price}
-                </Badge>
-              )}
-            </div>
-            <div className="mt-auto">
-              <h2 className="text-lg sm:text-xl font-normal text-white mb-1 sm:mb-2 line-clamp-2">
-                {ad.title}
-              </h2>
-              <p className="text-white/90 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
-                {ad.description}
-              </p>
-              <div className="flex flex-wrap gap-2 sm:gap-3 text-xs text-white/80 mb-2 sm:mb-4">
-                <div className="flex items-center gap-1">
-                  <MapPinIcon className="w-3 h-3" />
-                  <span>{ad.location}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <ClockIcon className="w-3 h-3" />
-                  <span>{new Date(ad.date).toLocaleDateString()}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <UserIcon className="w-3 h-3" />
-                  <span>{ad.seller}</span>
-                </div>
-              </div>
-              <Button className="w-full bg-white text-black hover:bg-white/90 text-xs sm:text-sm">
-                View Details
-              </Button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="relative w-full sm:w-1/3 h-40 sm:h-full">
+export const AdCard: React.FC<AdCardProps> = React.memo(
+  ({ ad, isGridView }) => {
+    return (
+      <Card
+        className={cn(
+          "overflow-hidden group relative",
+          isGridView
+            ? "aspect-[4/5]"
+            : "hover:shadow-md transition-shadow duration-300"
+        )}
+      >
+        <div className={cn("relative", isGridView ? "h-full" : "flex")}>
+          <div
+            className={cn(
+              isGridView ? "absolute inset-0" : "w-1/4 relative h-48"
+            )}
+          >
             <Image
               src={ad.image}
               alt={ad.title}
               layout="fill"
               objectFit="cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
+              className={
+                isGridView
+                  ? "transition-all duration-300 group-hover:scale-105"
+                  : ""
+              }
             />
-            <Badge className="absolute top-2 left-2 text-xs">
-              {ad.category}
-            </Badge>
-            {ad.price && (
-              <Badge
-                variant="secondary"
-                className="bg-background/40 text-sm absolute top-2 right-2"
-              >
-                ${ad.price}
+            {!isGridView && (
+              <Badge className="absolute top-2 left-2 z-10">
+                {ad.category}
               </Badge>
             )}
           </div>
-          <div className="flex flex-col flex-grow">
-            <CardContent className="p-3 sm:p-4 flex-grow">
-              <h2 className="text-base sm:text-lg font-normal text-foreground mb-1 sm:mb-2 line-clamp-1">
+          <CardContent
+            className={cn(
+              isGridView
+                ? "absolute inset-0 flex flex-col justify-end p-4 text-white bg-black bg-opacity-30 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                : "w-3/4 p-4 flex flex-col justify-between"
+            )}
+          >
+            {isGridView && (
+              <Badge className="self-start mb-2">{ad.category}</Badge>
+            )}
+            <div>
+              <h3 className={cn(" ", isGridView ? "text-lg mb-1" : "text-lg")}>
                 {ad.title}
-              </h2>
-              <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
+              </h3>
+              <p
+                className={cn(
+                  "text-sm mb-2 line-clamp-2",
+                  !isGridView && "text-muted-foreground"
+                )}
+              >
                 {ad.description}
               </p>
-              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
-                <div className="flex items-center gap-1">
-                  <MapPinIcon className="w-3 h-3" />
-                  <span>{ad.location}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <ClockIcon className="w-3 h-3" />
-                  <span>{new Date(ad.date).toLocaleDateString()}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <UserIcon className="w-3 h-3" />
-                  <span>{ad.seller}</span>
-                </div>
+            </div>
+            <div
+              className={cn(
+                "flex justify-between items-center",
+                isGridView ? "mt-2" : ""
+              )}
+            >
+              <div className="flex items-center gap-2 text-sm">
+                <MapPinIcon className="w-4 h-4" />
+                <span>{ad.location}</span>
               </div>
-            </CardContent>
-            <CardFooter className="p-3 sm:p-4 bg-muted/50 mt-auto">
-              <Button className="w-full text-xs sm:text-sm" variant="secondary">
+              <div className={cn("  text-lg", !isGridView && "text-primary")}>
+                {ad.price !== null ? `$${ad.price}` : "Price on request"}
+              </div>
+            </div>
+            <div
+              className={cn(
+                "flex justify-between items-center mt-2 text-xs",
+                !isGridView && "text-muted-foreground"
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <ClockIcon className="w-3 h-3" />
+                <span>{new Date(ad.date).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <UserIcon className="w-3 h-3" />
+                <span>{ad.seller}</span>
+              </div>
+            </div>
+            {isGridView ? (
+              <Button className="mt-4 w-full" variant="secondary">
                 View Details
               </Button>
-            </CardFooter>
-          </div>
-        </>
-      )}
-    </Card>
-  );
-});
-
-export default AdCard;
+            ) : (
+              <Button variant="outline" size="sm" className="self-end mt-2">
+                View Details
+              </Button>
+            )}
+          </CardContent>
+        </div>
+      </Card>
+    );
+  }
+);

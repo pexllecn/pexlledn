@@ -1,869 +1,740 @@
 "use client";
+
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Label,
-  LabelList,
-  Line,
-  LineChart,
-  PolarAngleAxis,
-  RadialBar,
-  RadialBarChart,
-  Rectangle,
-  ReferenceLine,
-  XAxis,
-  YAxis,
-} from "recharts";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Separator } from "@/components/ui/separator";
+  LayoutGridIcon,
+  ListIcon,
+  MapPinIcon,
+  ClockIcon,
+  UserIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  StarIcon,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import PlaceholderContent from "@/components/demo/placeholder-content";
-export default function Charts() {
-  return (
-    <ContentLayout title="Users">
-      <PlaceholderContent />
-      <div className="chart-wrapper mx-auto flex max-w-6xl flex-col flex-wrap items-start justify-center gap-6 p-6 sm:flex-row sm:p-8">
-        <div className="grid w-full gap-6 sm:grid-cols-2 lg:max-w-[22rem] lg:grid-cols-1 xl:max-w-[25rem]">
-          <Card className="lg:max-w-md" x-chunk="charts-01-chunk-0">
-            <CardHeader className="space-y-0 pb-2">
-              <CardDescription>Today</CardDescription>
-              <CardTitle className="text-4xl tabular-nums">
-                12,584{" "}
-                <span className="text-sm tracking-normal text-muted-foreground">
-                  steps
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer
-                config={{
-                  steps: {
-                    label: "Steps",
-                    color: "hsl(var(--chart-1))",
-                  },
-                }}
-              >
-                <BarChart
-                  accessibilityLayer
-                  margin={{
-                    left: -4,
-                    right: -4,
-                  }}
-                  data={[
-                    {
-                      date: "2024-01-01",
-                      steps: 2000,
-                    },
-                    {
-                      date: "2024-01-02",
-                      steps: 2100,
-                    },
-                    {
-                      date: "2024-01-03",
-                      steps: 2200,
-                    },
-                    {
-                      date: "2024-01-04",
-                      steps: 1300,
-                    },
-                    {
-                      date: "2024-01-05",
-                      steps: 1400,
-                    },
-                    {
-                      date: "2024-01-06",
-                      steps: 2500,
-                    },
-                    {
-                      date: "2024-01-07",
-                      steps: 1600,
-                    },
-                  ]}
-                >
-                  <Bar
-                    dataKey="steps"
-                    fill="var(--color-steps)"
-                    radius={5}
-                    fillOpacity={0.6}
-                    activeBar={<Rectangle fillOpacity={0.8} />}
-                  />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={4}
-                    tickFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        weekday: "short",
-                      });
-                    }}
-                  />
-                  <ChartTooltip
-                    defaultIndex={2}
-                    content={
-                      <ChartTooltipContent
-                        hideIndicator
-                        labelFormatter={(value) => {
-                          return new Date(value).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          });
-                        }}
-                      />
-                    }
-                    cursor={false}
-                  />
-                  <ReferenceLine
-                    y={1200}
-                    stroke="hsl(var(--muted-foreground))"
-                    strokeDasharray="3 3"
-                    strokeWidth={1}
-                  >
-                    <Label
-                      position="insideBottomLeft"
-                      value="Average Steps"
-                      offset={10}
-                      fill="hsl(var(--foreground))"
-                    />
-                    <Label
-                      position="insideTopLeft"
-                      value="12,343"
-                      className="text-lg"
-                      fill="hsl(var(--foreground))"
-                      offset={10}
-                      startOffset={100}
-                    />
-                  </ReferenceLine>
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-            <CardFooter className="flex-col items-start gap-1">
-              <CardDescription>
-                Over the past 7 days, you have walked{" "}
-                <span className="font-normal text-foreground">53,305</span>{" "}
-                steps.
-              </CardDescription>
-              <CardDescription>
-                You need{" "}
-                <span className="font-normal text-foreground">12,584</span> more
-                steps to reach your goal.
-              </CardDescription>
-            </CardFooter>
-          </Card>
-          <Card
-            className="flex flex-col lg:max-w-md"
-            x-chunk="charts-01-chunk-1"
+
+import { sampleData, Ad } from "@/lib/sample-data";
+
+const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
+  ({ ad, isGridView }) => {
+    return (
+      <Card
+        className={cn(
+          "overflow-hidden group relative",
+          isGridView
+            ? "aspect-[4/5]"
+            : "hover:shadow-md transition-shadow duration-300"
+        )}
+      >
+        <div className={cn("relative", isGridView ? "h-full" : "flex")}>
+          <div
+            className={cn(
+              isGridView ? "absolute inset-0" : "w-1/4 relative h-48"
+            )}
           >
-            <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2 [&>div]:flex-1">
-              <div>
-                <CardDescription>Resting HR</CardDescription>
-                <CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
-                  62
-                  <span className="text-sm font-normal tracking-normal text-muted-foreground">
-                    bpm
-                  </span>
-                </CardTitle>
-              </div>
-              <div>
-                <CardDescription>Variability</CardDescription>
-                <CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
-                  35
-                  <span className="text-sm font-normal tracking-normal text-muted-foreground">
-                    ms
-                  </span>
-                </CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-1 items-center">
-              <ChartContainer
-                config={{
-                  resting: {
-                    label: "Resting",
-                    color: "hsl(var(--chart-1))",
-                  },
-                }}
-                className="w-full"
+            <Image
+              src={ad.image}
+              alt={ad.title}
+              layout="fill"
+              objectFit="cover"
+              className={
+                isGridView
+                  ? "transition-all duration-300 group-hover:scale-105"
+                  : ""
+              }
+            />
+            {!isGridView && (
+              <Badge className="absolute top-2 left-2 z-10">
+                {ad.category}
+              </Badge>
+            )}
+          </div>
+          <CardContent
+            className={cn(
+              isGridView
+                ? "absolute inset-0 flex flex-col justify-end p-4 text-white bg-black bg-opacity-30 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                : "w-3/4 p-4 flex flex-col justify-between"
+            )}
+          >
+            {isGridView && (
+              <Badge className="self-start mb-2">{ad.category}</Badge>
+            )}
+            <div>
+              <h3 className={cn("", isGridView ? "text-lg mb-1" : "text-lg")}>
+                {ad.title}
+              </h3>
+              <p
+                className={cn(
+                  "text-sm mb-2 line-clamp-2",
+                  !isGridView && "text-muted-foreground"
+                )}
               >
-                <LineChart
-                  accessibilityLayer
-                  margin={{
-                    left: 14,
-                    right: 14,
-                    top: 10,
-                  }}
-                  data={[
-                    {
-                      date: "2024-01-01",
-                      resting: 62,
-                    },
-                    {
-                      date: "2024-01-02",
-                      resting: 72,
-                    },
-                    {
-                      date: "2024-01-03",
-                      resting: 35,
-                    },
-                    {
-                      date: "2024-01-04",
-                      resting: 62,
-                    },
-                    {
-                      date: "2024-01-05",
-                      resting: 52,
-                    },
-                    {
-                      date: "2024-01-06",
-                      resting: 62,
-                    },
-                    {
-                      date: "2024-01-07",
-                      resting: 70,
-                    },
-                  ]}
-                >
-                  <CartesianGrid
-                    strokeDasharray="4 4"
-                    vertical={false}
-                    stroke="hsl(var(--muted-foreground))"
-                    strokeOpacity={0.5}
-                  />
-                  <YAxis hide domain={["dataMin - 10", "dataMax + 10"]} />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        weekday: "short",
-                      });
-                    }}
-                  />
-                  <Line
-                    dataKey="resting"
-                    type="natural"
-                    fill="var(--color-resting)"
-                    stroke="var(--color-resting)"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{
-                      fill: "var(--color-resting)",
-                      stroke: "var(--color-resting)",
-                      r: 4,
-                    }}
-                  />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent
-                        indicator="line"
-                        labelFormatter={(value) => {
-                          return new Date(value).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          });
-                        }}
-                      />
-                    }
-                    cursor={false}
-                  />
-                </LineChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+                {ad.description}
+              </p>
+            </div>
+            <div
+              className={cn(
+                "flex justify-between items-center",
+                isGridView ? "mt-2" : ""
+              )}
+            >
+              <div className="flex items-center gap-2 text-sm">
+                <MapPinIcon className="w-4 h-4" />
+                <span>{ad.location}</span>
+              </div>
+              <div className={cn("text-lg", !isGridView && "text-primary")}>
+                {ad.price !== null ? `$${ad.price}` : "Price on request"}
+              </div>
+            </div>
+            <div
+              className={cn(
+                "flex justify-between items-center mt-2 text-xs",
+                !isGridView && "text-muted-foreground"
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <ClockIcon className="w-3 h-3" />
+                <span>{new Date(ad.date).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <UserIcon className="w-3 h-3" />
+                <span>{ad.seller}</span>
+              </div>
+            </div>
+            {isGridView ? (
+              <Button className="mt-4 w-full" variant="secondary">
+                View Details
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" className="self-end mt-2">
+                View Details
+              </Button>
+            )}
+          </CardContent>
         </div>
-        <div className="grid w-full flex-1 gap-6 lg:max-w-[20rem]">
-          <Card className="max-w-xs" x-chunk="charts-01-chunk-2">
-            <CardHeader>
-              <CardTitle>Progress</CardTitle>
-              <CardDescription>
-                Youre average more steps a day this year than last year.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="grid auto-rows-min gap-2">
-                <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
-                  12,453
-                  <span className="text-sm font-normal text-muted-foreground">
-                    steps/day
-                  </span>
+      </Card>
+    );
+  }
+);
+
+export default function Component() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeSubcategory, setActiveSubcategory] = useState("All");
+  const [isGridView, setIsGridView] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [condition, setCondition] = useState<string[]>([]);
+  const [sellerType, setSellerType] = useState<string[]>([]);
+  const [shipping, setShipping] = useState<string[]>([]);
+  const [warranty, setWarranty] = useState<boolean | null>(null);
+  const [minRating, setMinRating] = useState(0);
+  const [negotiable, setNegotiable] = useState<boolean | null>(null);
+  const [paymentOptions, setPaymentOptions] = useState<string[]>([]);
+  const [returnPolicy, setReturnPolicy] = useState<string[]>([]);
+  const [adType, setAdType] = useState<string[]>([]);
+  const [verifiedSeller, setVerifiedSeller] = useState<boolean | null>(null);
+  const [filteredAds, setFilteredAds] = useState<Ad[]>(sampleData.ads as Ad[]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([]);
+  const adsPerPage = 12;
+
+  const resetFilters = () => {
+    setActiveCategory("All");
+    setActiveSubcategory("All");
+    setSearchTerm("");
+    setSortBy("date");
+    setPriceRange([0, 10000]);
+    setCondition([]);
+    setSellerType([]);
+    setShipping([]);
+    setWarranty(null);
+    setMinRating(0);
+    setNegotiable(null);
+    setPaymentOptions([]);
+    setReturnPolicy([]);
+    setAdType([]);
+    setVerifiedSeller(null);
+    setOpenAccordionItems([]);
+  };
+
+  const updateOpenAccordionItems = useCallback(() => {
+    const openItems: string[] = [];
+    if (activeCategory !== "All") openItems.push("category");
+    if (activeSubcategory !== "All") openItems.push("subcategory");
+    if (priceRange[0] !== 0 || priceRange[1] !== 10000) openItems.push("price");
+    if (condition.length > 0) openItems.push("condition");
+    if (sellerType.length > 0) openItems.push("seller-type");
+    if (shipping.length > 0) openItems.push("shipping");
+    if (warranty !== null) openItems.push("warranty");
+    if (minRating > 0) openItems.push("rating");
+    if (negotiable !== null) openItems.push("negotiable");
+    if (paymentOptions.length > 0) openItems.push("payment-options");
+    if (returnPolicy.length > 0) openItems.push("return-policy");
+    if (adType.length > 0) openItems.push("ad-type");
+    if (verifiedSeller !== null) openItems.push("verified-seller");
+    setOpenAccordionItems(openItems);
+  }, [
+    activeCategory,
+    activeSubcategory,
+    priceRange,
+    condition,
+    sellerType,
+    shipping,
+    warranty,
+    minRating,
+    negotiable,
+    paymentOptions,
+    returnPolicy,
+    adType,
+    verifiedSeller,
+  ]);
+
+  useEffect(() => {
+    updateOpenAccordionItems();
+  }, [updateOpenAccordionItems]);
+
+  const filterAds = useCallback(() => {
+    const filtered = sampleData.ads.filter((ad) => {
+      const categoryMatch =
+        activeCategory === "All" || ad.category === activeCategory;
+      const subcategoryMatch =
+        activeSubcategory === "All" || ad.subcategory === activeSubcategory;
+      const searchMatch =
+        ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ad.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ad.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      const priceMatch =
+        ad.price !== null &&
+        ad.price >= priceRange[0] &&
+        ad.price <= priceRange[1];
+      const conditionMatch =
+        condition.length === 0 || condition.includes(ad.condition as string);
+      const sellerTypeMatch =
+        sellerType.length === 0 || sellerType.includes(ad.sellerType);
+      const shippingMatch =
+        shipping.length === 0 || shipping.includes(ad.shipping);
+      const warrantyMatch = warranty === null || ad.warranty === warranty;
+      const ratingMatch = ad.rating >= minRating;
+      const negotiableMatch =
+        negotiable === null || ad.negotiable === negotiable;
+      const paymentOptionsMatch =
+        paymentOptions.length === 0 ||
+        paymentOptions.some((option) => ad.paymentOptions.includes(option));
+      const returnPolicyMatch =
+        returnPolicy.length === 0 || returnPolicy.includes(ad.returnPolicy);
+      const adTypeMatch = adType.length === 0 || adType.includes(ad.adType);
+      const verifiedSellerMatch =
+        verifiedSeller === null || ad.verifiedSeller === verifiedSeller;
+
+      return (
+        categoryMatch &&
+        subcategoryMatch &&
+        searchMatch &&
+        priceMatch &&
+        conditionMatch &&
+        sellerTypeMatch &&
+        shippingMatch &&
+        warrantyMatch &&
+        ratingMatch &&
+        negotiableMatch &&
+        paymentOptionsMatch &&
+        returnPolicyMatch &&
+        adTypeMatch &&
+        verifiedSellerMatch
+      );
+    });
+
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "date":
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        case "price":
+          return (b.price || 0) - (a.price || 0);
+        case "rating":
+          return b.rating - a.rating;
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredAds(filtered as Ad[]);
+    setCurrentPage(1);
+  }, [
+    activeCategory,
+    activeSubcategory,
+    searchTerm,
+    sortBy,
+    priceRange,
+    condition,
+    sellerType,
+    shipping,
+    warranty,
+    minRating,
+    negotiable,
+    paymentOptions,
+    returnPolicy,
+    adType,
+    verifiedSeller,
+  ]);
+
+  useEffect(() => {
+    filterAds();
+  }, [filterAds]);
+
+  const paginatedAds = useMemo(() => {
+    const startIndex = (currentPage - 1) * adsPerPage;
+    return filteredAds.slice(startIndex, startIndex + adsPerPage);
+  }, [filteredAds, currentPage]);
+
+  const totalPages = Math.ceil(filteredAds.length / adsPerPage);
+
+  return (
+    <ContentLayout title="Search Marketplace">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left Sidebar */}
+          <div className="w-full lg:w-1/4 space-y-6">
+            <Card className="rounded-md bg-muted border-none">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Filters</h2>
+                  <Button variant="outline" size="sm" onClick={resetFilters}>
+                    Clear Filters
+                  </Button>
                 </div>
-                <ChartContainer
-                  config={{
-                    steps: {
-                      label: "Steps",
-                      color: "hsl(var(--chart-1))",
-                    },
-                  }}
-                  className="aspect-auto h-[32px] w-full"
+                <Accordion
+                  type="multiple"
+                  value={openAccordionItems}
+                  onValueChange={setOpenAccordionItems}
                 >
-                  <BarChart
-                    accessibilityLayer
-                    layout="vertical"
-                    margin={{
-                      left: 0,
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                    }}
-                    data={[
-                      {
-                        date: "2024",
-                        steps: 12435,
-                      },
-                    ]}
-                  >
-                    <Bar
-                      dataKey="steps"
-                      fill="var(--color-steps)"
-                      radius={4}
-                      barSize={32}
-                    >
-                      <LabelList
-                        position="insideLeft"
-                        dataKey="date"
-                        offset={8}
-                        fontSize={12}
-                        fill="white"
+                  <AccordionItem value="category">
+                    <AccordionTrigger>Category</AccordionTrigger>
+                    <AccordionContent>
+                      <Select
+                        value={activeCategory}
+                        onValueChange={setActiveCategory}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {sampleData.categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="subcategory">
+                    <AccordionTrigger>Subcategory</AccordionTrigger>
+                    <AccordionContent>
+                      <Select
+                        value={activeSubcategory}
+                        onValueChange={setActiveSubcategory}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select subcategory" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="All">All</SelectItem>
+                          {activeCategory !== "All" &&
+                            (
+                              sampleData.subcategories[
+                                activeCategory as keyof typeof sampleData.subcategories
+                              ] || []
+                            ).map((subcategory: string) => (
+                              <SelectItem key={subcategory} value={subcategory}>
+                                {subcategory}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="price">
+                    <AccordionTrigger>Price Range</AccordionTrigger>
+                    <AccordionContent>
+                      <Slider
+                        min={0}
+                        max={10000}
+                        step={100}
+                        value={priceRange}
+                        onValueChange={setPriceRange}
+                        className="mb-2"
                       />
-                    </Bar>
-                    <YAxis dataKey="date" type="category" tickCount={1} hide />
-                    <XAxis dataKey="steps" type="number" hide />
-                  </BarChart>
-                </ChartContainer>
-              </div>
-              <div className="grid auto-rows-min gap-2">
-                <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
-                  10,103
-                  <span className="text-sm font-normal text-muted-foreground">
-                    steps/day
-                  </span>
-                </div>
-                <ChartContainer
-                  config={{
-                    steps: {
-                      label: "Steps",
-                      color: "hsl(var(--muted))",
-                    },
-                  }}
-                  className="aspect-auto h-[32px] w-full"
-                >
-                  <BarChart
-                    accessibilityLayer
-                    layout="vertical"
-                    margin={{
-                      left: 0,
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                    }}
-                    data={[
-                      {
-                        date: "2023",
-                        steps: 10103,
-                      },
-                    ]}
-                  >
-                    <Bar
-                      dataKey="steps"
-                      fill="var(--color-steps)"
-                      radius={4}
-                      barSize={32}
-                    >
-                      <LabelList
-                        position="insideLeft"
-                        dataKey="date"
-                        offset={8}
-                        fontSize={12}
-                        fill="hsl(var(--muted-foreground))"
-                      />
-                    </Bar>
-                    <YAxis dataKey="date" type="category" tickCount={1} hide />
-                    <XAxis dataKey="steps" type="number" hide />
-                  </BarChart>
-                </ChartContainer>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="max-w-xs" x-chunk="charts-01-chunk-3">
-            <CardHeader className="p-4 pb-0">
-              <CardTitle>Walking Distance</CardTitle>
-              <CardDescription>
-                Over the last 7 days, your distance walked and run was 12.5
-                miles per day.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-0">
-              <div className="flex items-baseline gap-1 text-3xl font-normal tabular-nums leading-none">
-                12.5
-                <span className="text-sm font-normal text-muted-foreground">
-                  miles/day
-                </span>
-              </div>
-              <ChartContainer
-                config={{
-                  steps: {
-                    label: "Steps",
-                    color: "hsl(var(--chart-1))",
-                  },
-                }}
-                className="ml-auto w-[72px]"
-              >
-                <BarChart
-                  accessibilityLayer
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                  }}
-                  data={[
-                    {
-                      date: "2024-01-01",
-                      steps: 2000,
-                    },
-                    {
-                      date: "2024-01-02",
-                      steps: 2100,
-                    },
-                    {
-                      date: "2024-01-03",
-                      steps: 2200,
-                    },
-                    {
-                      date: "2024-01-04",
-                      steps: 1300,
-                    },
-                    {
-                      date: "2024-01-05",
-                      steps: 1400,
-                    },
-                    {
-                      date: "2024-01-06",
-                      steps: 2500,
-                    },
-                    {
-                      date: "2024-01-07",
-                      steps: 1600,
-                    },
-                  ]}
-                >
-                  <Bar
-                    dataKey="steps"
-                    fill="var(--color-steps)"
-                    radius={2}
-                    fillOpacity={0.2}
-                    activeIndex={6}
-                    activeBar={<Rectangle fillOpacity={0.8} />}
-                  />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={4}
-                    hide
-                  />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-          <Card className="max-w-xs" x-chunk="charts-01-chunk-4">
-            <CardContent className="flex gap-4 p-4 pb-2">
-              <ChartContainer
-                config={{
-                  move: {
-                    label: "Move",
-                    color: "hsl(var(--chart-1))",
-                  },
-                  stand: {
-                    label: "Stand",
-                    color: "hsl(var(--chart-2))",
-                  },
-                  exercise: {
-                    label: "Exercise",
-                    color: "hsl(var(--chart-3))",
-                  },
-                }}
-                className="h-[140px] w-full"
-              >
-                <BarChart
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 10,
-                  }}
-                  data={[
-                    {
-                      activity: "stand",
-                      value: (8 / 12) * 100,
-                      label: "8/12 hr",
-                      fill: "var(--color-stand)",
-                    },
-                    {
-                      activity: "exercise",
-                      value: (46 / 60) * 100,
-                      label: "46/60 min",
-                      fill: "var(--color-exercise)",
-                    },
-                    {
-                      activity: "move",
-                      value: (245 / 360) * 100,
-                      label: "245/360 kcal",
-                      fill: "var(--color-move)",
-                    },
-                  ]}
-                  layout="vertical"
-                  barSize={32}
-                  barGap={2}
-                >
-                  <XAxis type="number" dataKey="value" hide />
-                  <YAxis
-                    dataKey="activity"
-                    type="category"
-                    tickLine={false}
-                    tickMargin={4}
-                    axisLine={false}
-                    className="capitalize"
-                  />
-                  <Bar dataKey="value" radius={5}>
-                    <LabelList
-                      position="insideLeft"
-                      dataKey="label"
-                      fill="white"
-                      offset={8}
-                      fontSize={12}
-                    />
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-            <CardFooter className="flex flex-row border-t p-4">
-              <div className="flex w-full items-center gap-2">
-                <div className="grid flex-1 auto-rows-min gap-0.5">
-                  <div className="text-xs text-muted-foreground">Move</div>
-                  <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
-                    562
-                    <span className="text-sm font-normal text-muted-foreground">
-                      kcal
-                    </span>
-                  </div>
-                </div>
-                <Separator orientation="vertical" className="mx-2 h-10 w-px" />
-                <div className="grid flex-1 auto-rows-min gap-0.5">
-                  <div className="text-xs text-muted-foreground">Exercise</div>
-                  <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
-                    73
-                    <span className="text-sm font-normal text-muted-foreground">
-                      min
-                    </span>
-                  </div>
-                </div>
-                <Separator orientation="vertical" className="mx-2 h-10 w-px" />
-                <div className="grid flex-1 auto-rows-min gap-0.5">
-                  <div className="text-xs text-muted-foreground">Stand</div>
-                  <div className="flex items-baseline gap-1 text-2xl font-normal tabular-nums leading-none">
-                    14
-                    <span className="text-sm font-normal text-muted-foreground">
-                      hr
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </CardFooter>
-          </Card>
-        </div>
-        <div className="grid w-full flex-1 gap-6">
-          <Card className="max-w-xs" x-chunk="charts-01-chunk-5">
-            <CardContent className="flex gap-4 p-4">
-              <div className="grid items-center gap-2">
-                <div className="grid flex-1 auto-rows-min gap-0.5">
-                  <div className="text-sm text-muted-foreground">Move</div>
-                  <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
-                    562/600
-                    <span className="text-sm font-normal text-muted-foreground">
-                      kcal
-                    </span>
-                  </div>
-                </div>
-                <div className="grid flex-1 auto-rows-min gap-0.5">
-                  <div className="text-sm text-muted-foreground">Exercise</div>
-                  <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
-                    73/120
-                    <span className="text-sm font-normal text-muted-foreground">
-                      min
-                    </span>
-                  </div>
-                </div>
-                <div className="grid flex-1 auto-rows-min gap-0.5">
-                  <div className="text-sm text-muted-foreground">Stand</div>
-                  <div className="flex items-baseline gap-1 text-xl font-normal tabular-nums leading-none">
-                    8/12
-                    <span className="text-sm font-normal text-muted-foreground">
-                      hr
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <ChartContainer
-                config={{
-                  move: {
-                    label: "Move",
-                    color: "hsl(var(--chart-1))",
-                  },
-                  exercise: {
-                    label: "Exercise",
-                    color: "hsl(var(--chart-2))",
-                  },
-                  stand: {
-                    label: "Stand",
-                    color: "hsl(var(--chart-3))",
-                  },
-                }}
-                className="mx-auto aspect-square w-full max-w-[80%]"
-              >
-                <RadialBarChart
-                  margin={{
-                    left: -10,
-                    right: -10,
-                    top: -10,
-                    bottom: -10,
-                  }}
-                  data={[
-                    {
-                      activity: "stand",
-                      value: (8 / 12) * 100,
-                      fill: "var(--color-stand)",
-                    },
-                    {
-                      activity: "exercise",
-                      value: (46 / 60) * 100,
-                      fill: "var(--color-exercise)",
-                    },
-                    {
-                      activity: "move",
-                      value: (245 / 360) * 100,
-                      fill: "var(--color-move)",
-                    },
-                  ]}
-                  innerRadius="20%"
-                  barSize={24}
-                  startAngle={90}
-                  endAngle={450}
-                >
-                  <PolarAngleAxis
-                    type="number"
-                    domain={[0, 100]}
-                    dataKey="value"
-                    tick={false}
-                  />
-                  <RadialBar dataKey="value" background cornerRadius={5} />
-                </RadialBarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-          <Card className="max-w-xs" x-chunk="charts-01-chunk-6">
-            <CardHeader className="p-4 pb-0">
-              <CardTitle>Active Energy</CardTitle>
-              <CardDescription>
-                Youre burning an average of 754 calories per day. Good job!
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-2">
-              <div className="flex items-baseline gap-2 text-3xl font-normal tabular-nums leading-none">
-                1,254
-                <span className="text-sm font-normal text-muted-foreground">
-                  kcal/day
-                </span>
-              </div>
-              <ChartContainer
-                config={{
-                  calories: {
-                    label: "Calories",
-                    color: "hsl(var(--chart-1))",
-                  },
-                }}
-                className="ml-auto w-[64px]"
-              >
-                <BarChart
-                  accessibilityLayer
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                  }}
-                  data={[
-                    {
-                      date: "2024-01-01",
-                      calories: 354,
-                    },
-                    {
-                      date: "2024-01-02",
-                      calories: 514,
-                    },
-                    {
-                      date: "2024-01-03",
-                      calories: 345,
-                    },
-                    {
-                      date: "2024-01-04",
-                      calories: 734,
-                    },
-                    {
-                      date: "2024-01-05",
-                      calories: 645,
-                    },
-                    {
-                      date: "2024-01-06",
-                      calories: 456,
-                    },
-                    {
-                      date: "2024-01-07",
-                      calories: 345,
-                    },
-                  ]}
-                >
-                  <Bar
-                    dataKey="calories"
-                    fill="var(--color-calories)"
-                    radius={2}
-                    fillOpacity={0.2}
-                    activeIndex={6}
-                    activeBar={<Rectangle fillOpacity={0.8} />}
-                  />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={4}
-                    hide
-                  />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-          <Card className="max-w-xs" x-chunk="charts-01-chunk-7">
-            <CardHeader className="space-y-0 pb-0">
-              <CardDescription>Time in Bed</CardDescription>
-              <CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
-                8
-                <span className="font-sans text-sm font-normal tracking-normal text-muted-foreground">
-                  hr
-                </span>
-                35
-                <span className="font-sans text-sm font-normal tracking-normal text-muted-foreground">
-                  min
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <ChartContainer
-                config={{
-                  time: {
-                    label: "Time",
-                    color: "hsl(var(--chart-2))",
-                  },
-                }}
-              >
-                <AreaChart
-                  accessibilityLayer
-                  data={[
-                    {
-                      date: "2024-01-01",
-                      time: 8.5,
-                    },
-                    {
-                      date: "2024-01-02",
-                      time: 7.2,
-                    },
-                    {
-                      date: "2024-01-03",
-                      time: 8.1,
-                    },
-                    {
-                      date: "2024-01-04",
-                      time: 6.2,
-                    },
-                    {
-                      date: "2024-01-05",
-                      time: 5.2,
-                    },
-                    {
-                      date: "2024-01-06",
-                      time: 8.1,
-                    },
-                    {
-                      date: "2024-01-07",
-                      time: 7.0,
-                    },
-                  ]}
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                  }}
-                >
-                  <XAxis dataKey="date" hide />
-                  <YAxis domain={["dataMin - 5", "dataMax + 2"]} hide />
-                  <defs>
-                    <linearGradient id="fillTime" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="5%"
-                        stopColor="var(--color-time)"
-                        stopOpacity={0.8}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor="var(--color-time)"
-                        stopOpacity={0.1}
-                      />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    dataKey="time"
-                    type="natural"
-                    fill="url(#fillTime)"
-                    fillOpacity={0.4}
-                    stroke="var(--color-time)"
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
-                    formatter={(value) => (
-                      <div className="flex min-w-[120px] items-center text-xs text-muted-foreground">
-                        Time in bed
-                        <div className="ml-auto flex items-baseline gap-0.5 font-mono font-normal tabular-nums text-foreground">
-                          {value}
-                          <span className="font-normal text-muted-foreground">
-                            hr
-                          </span>
-                        </div>
+                      <div className="flex justify-between text-sm">
+                        <span>${priceRange[0]}</span>
+                        <span>${priceRange[1]}</span>
                       </div>
-                    )}
-                  />
-                </AreaChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="condition">
+                    <AccordionTrigger>Condition</AccordionTrigger>
+                    <AccordionContent>
+                      {sampleData.conditions.map((cond) => (
+                        <div key={cond} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`condition-${cond}`}
+                            checked={condition.includes(cond)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setCondition([...condition, cond]);
+                              } else {
+                                setCondition(
+                                  condition.filter((c) => c !== cond)
+                                );
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`condition-${cond}`}>{cond}</Label>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="seller-type">
+                    <AccordionTrigger>Seller Type</AccordionTrigger>
+                    <AccordionContent>
+                      {sampleData.sellerTypes.map((type) => (
+                        <div key={type} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`seller-type-${type}`}
+                            checked={sellerType.includes(type)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSellerType([...sellerType, type]);
+                              } else {
+                                setSellerType(
+                                  sellerType.filter((t) => t !== type)
+                                );
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`seller-type-${type}`}>{type}</Label>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="shipping">
+                    <AccordionTrigger>Shipping</AccordionTrigger>
+                    <AccordionContent>
+                      {sampleData.shippingOptions.map((option) => (
+                        <div
+                          key={option}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={`shipping-${option}`}
+                            checked={shipping.includes(option)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setShipping([...shipping, option]);
+                              } else {
+                                setShipping(
+                                  shipping.filter((s) => s !== option)
+                                );
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`shipping-${option}`}>{option}</Label>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="warranty">
+                    <AccordionTrigger>Warranty</AccordionTrigger>
+                    <AccordionContent>
+                      <RadioGroup
+                        value={warranty === null ? "all" : warranty.toString()}
+                        onValueChange={(value) =>
+                          setWarranty(value === "all" ? null : value === "true")
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="all" id="warranty-all" />
+                          <Label htmlFor="warranty-all">All</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="true" id="warranty-yes" />
+                          <Label htmlFor="warranty-yes">Yes</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="false" id="warranty-no" />
+                          <Label htmlFor="warranty-no">No</Label>
+                        </div>
+                      </RadioGroup>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="rating">
+                    <AccordionTrigger>Minimum Rating</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex items-center space-x-2">
+                        {[0, 1, 2, 3, 4, 5].map((star) => (
+                          <Button
+                            key={star}
+                            variant={minRating >= star ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setMinRating(star)}
+                          >
+                            <StarIcon className="h-4 w-4" />
+                          </Button>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="negotiable">
+                    <AccordionTrigger>Negotiable</AccordionTrigger>
+                    <AccordionContent>
+                      <RadioGroup
+                        value={
+                          negotiable === null ? "all" : negotiable.toString()
+                        }
+                        onValueChange={(value) =>
+                          setNegotiable(
+                            value === "all" ? null : value === "true"
+                          )
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="all" id="negotiable-all" />
+                          <Label htmlFor="negotiable-all">All</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="true" id="negotiable-yes" />
+                          <Label htmlFor="negotiable-yes">Yes</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="false" id="negotiable-no" />
+                          <Label htmlFor="negotiable-no">No</Label>
+                        </div>
+                      </RadioGroup>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="payment-options">
+                    <AccordionTrigger>Payment Options</AccordionTrigger>
+                    <AccordionContent>
+                      {sampleData.paymentOptions.map((option) => (
+                        <div
+                          key={option}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={`payment-${option}`}
+                            checked={paymentOptions.includes(option)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setPaymentOptions([...paymentOptions, option]);
+                              } else {
+                                setPaymentOptions(
+                                  paymentOptions.filter((o) => o !== option)
+                                );
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`payment-${option}`}>{option}</Label>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="return-policy">
+                    <AccordionTrigger>Return Policy</AccordionTrigger>
+                    <AccordionContent>
+                      {sampleData.returnPolicies.map((policy) => (
+                        <div
+                          key={policy}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={`return-${policy}`}
+                            checked={returnPolicy.includes(policy)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setReturnPolicy([...returnPolicy, policy]);
+                              } else {
+                                setReturnPolicy(
+                                  returnPolicy.filter((p) => p !== policy)
+                                );
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`return-${policy}`}>{policy}</Label>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="ad-type">
+                    <AccordionTrigger>Ad Type</AccordionTrigger>
+                    <AccordionContent>
+                      {sampleData.adTypes.map((type) => (
+                        <div key={type} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`ad-type-${type}`}
+                            checked={adType.includes(type)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setAdType([...adType, type]);
+                              } else {
+                                setAdType(adType.filter((t) => t !== type));
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`ad-type-${type}`}>{type}</Label>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="verified-seller">
+                    <AccordionTrigger>Verified Seller</AccordionTrigger>
+                    <AccordionContent>
+                      <RadioGroup
+                        value={
+                          verifiedSeller === null
+                            ? "all"
+                            : verifiedSeller.toString()
+                        }
+                        onValueChange={(value) =>
+                          setVerifiedSeller(
+                            value === "all" ? null : value === "true"
+                          )
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="all" id="verified-all" />
+                          <Label htmlFor="verified-all">All</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="true" id="verified-yes" />
+                          <Label htmlFor="verified-yes">Yes</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="false" id="verified-no" />
+                          <Label htmlFor="verified-no">No</Label>
+                        </div>
+                      </RadioGroup>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Content */}
+          <div className="w-full lg:w-3/4">
+            <div className="mb-6 flex flex-col sm:flex-row gap-4">
+              <Input
+                placeholder="Search ads..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-grow bg-muted shadow-none"
+              />
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Date (Newest first)</SelectItem>
+                  <SelectItem value="price">Price (Highest first)</SelectItem>
+                  <SelectItem value="rating">Rating (Highest first)</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2">
+                <Button
+                  variant={isGridView ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setIsGridView(true)}
+                >
+                  <LayoutGridIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={!isGridView ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setIsGridView(false)}
+                >
+                  <ListIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {paginatedAds.length > 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className={cn(
+                  "grid gap-4",
+                  isGridView
+                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                    : "grid-cols-1"
+                )}
+              >
+                {paginatedAds.map((ad) => (
+                  <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
+                ))}
+              </motion.div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg text-gray-500">
+                  No ads found matching your criteria.
+                </p>
+              </div>
+            )}
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center mt-8 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeftIcon className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRightIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </ContentLayout>
