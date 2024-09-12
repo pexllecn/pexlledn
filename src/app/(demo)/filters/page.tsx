@@ -178,6 +178,11 @@ export default function Filters() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const adsPerPage = 12;
 
+  const variants1 = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
   const resetFilters = () => {
     setActiveCategory("All");
     setActiveSubcategory("All");
@@ -686,156 +691,165 @@ export default function Filters() {
 
   return (
     <ContentLayout title="Search Marketplace">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-1/5 space-y-6">
-            <Card className="rounded-md bg-muted border-none">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold">Filters</h2>
-                  <Button variant="outline" size="sm" onClick={resetFilters}>
-                    Clear Filters
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.4 }}
+        variants={variants1}
+      >
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Desktop Sidebar */}
+            <div className="hidden lg:block w-1/5 space-y-6">
+              <Card className="rounded-md bg-muted border-none">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold">Filters</h2>
+                    <Button variant="outline" size="sm" onClick={resetFilters}>
+                      Clear Filters
+                    </Button>
+                  </div>
+                  <FilterContent />
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Mobile Filter Button and Sheet */}
+            <div className="lg:hidden w-full mb-4">
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <FilterIcon className="mr-2 h-4 w-4" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                  <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                    <SheetDescription>
+                      Apply filters to refine your search
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-4 space-y-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={resetFilters}
+                      className="w-full"
+                    >
+                      Clear Filters
+                    </Button>
+                    <FilterContent />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            {/* Right Content */}
+            <div className="w-full lg:w-3/4">
+              <div className="mb-6 flex flex-col sm:flex-row gap-4">
+                <Input
+                  placeholder="Search ads..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-grow bg-muted shadow-none border-none"
+                />
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full sm:w-[180px] bg-muted shadow-none border-none">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date">Date (Newest first)</SelectItem>
+                    <SelectItem value="price">Price (Highest first)</SelectItem>
+                    <SelectItem value="rating">
+                      Rating (Highest first)
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex gap-2">
+                  <Button
+                    variant={isGridView ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setIsGridView(true)}
+                  >
+                    <LayoutGridIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={!isGridView ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setIsGridView(false)}
+                  >
+                    <ListIcon className="h-4 w-4" />
                   </Button>
                 </div>
-                <FilterContent />
-              </CardContent>
-            </Card>
-          </div>
+              </div>
 
-          {/* Mobile Filter Button and Sheet */}
-          <div className="lg:hidden w-full mb-4">
-            <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="w-full">
-                  <FilterIcon className="mr-2 h-4 w-4" />
-                  Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                  <SheetDescription>
-                    Apply filters to refine your search
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="mt-4 space-y-4">
+              <AnimatePresence>
+                {paginatedAds.length > 0 ? (
+                  <motion.div
+                    key="results"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className={cn(
+                      "grid gap-4",
+                      isGridView
+                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                        : "grid-cols-1"
+                    )}
+                  >
+                    {paginatedAds.map((ad) => (
+                      <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="no-results"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center py-8"
+                  >
+                    <p className="text-lg text-gray-500">
+                      No ads found matching your criteria.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center mt-8 gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={resetFilters}
-                    className="w-full"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    disabled={currentPage === 1}
                   >
-                    Clear Filters
+                    <ChevronLeftIcon className="h-4 w-4" />
                   </Button>
-                  <FilterContent />
+                  <span className="text-sm">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    <ChevronRightIcon className="h-4 w-4" />
+                  </Button>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          {/* Right Content */}
-          <div className="w-full lg:w-3/4">
-            <div className="mb-6 flex flex-col sm:flex-row gap-4">
-              <Input
-                placeholder="Search ads..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow bg-muted shadow-none border-none"
-              />
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full sm:w-[180px] bg-muted shadow-none border-none">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date">Date (Newest first)</SelectItem>
-                  <SelectItem value="price">Price (Highest first)</SelectItem>
-                  <SelectItem value="rating">Rating (Highest first)</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex gap-2">
-                <Button
-                  variant={isGridView ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setIsGridView(true)}
-                >
-                  <LayoutGridIcon className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={!isGridView ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setIsGridView(false)}
-                >
-                  <ListIcon className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            <AnimatePresence>
-              {paginatedAds.length > 0 ? (
-                <motion.div
-                  key="results"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className={cn(
-                    "grid gap-4",
-                    isGridView
-                      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                      : "grid-cols-1"
-                  )}
-                >
-                  {paginatedAds.map((ad) => (
-                    <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="no-results"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-center py-8"
-                >
-                  <p className="text-lg text-gray-500">
-                    No ads found matching your criteria.
-                  </p>
-                </motion.div>
               )}
-            </AnimatePresence>
-
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-8 gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeftIcon className="h-4 w-4" />
-                </Button>
-                <span className="text-sm">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronRightIcon className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </ContentLayout>
   );
 }

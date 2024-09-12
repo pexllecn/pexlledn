@@ -35,6 +35,7 @@ import {
   Send,
 } from "lucide-react";
 import { sampleData, Ad } from "@/lib/sample-data";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 
 const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
   const [liked, setLiked] = useState(false);
@@ -209,40 +210,54 @@ export default function SocialTimeline() {
     );
   }, [category, searchTerm]);
 
+  const variants1 = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        Social Marketplace
-      </h1>
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Categories</SelectItem>
-            {sampleData.categories
-              .filter((cat) => cat !== "All")
-              .map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-        <Input
-          placeholder="Search ads..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-grow"
-          aria-label="Search ads"
-        />
-      </div>
-      <div className="space-y-6">
-        {filteredAds.map((ad) => (
-          <TimelinePost key={ad.id} ad={ad} />
-        ))}
-      </div>
-    </div>
+    <ContentLayout title="timeline">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.4 }}
+        variants={variants1}
+      >
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
+          <h1 className="text-3xl font-bold mb-8 text-center">
+            Social Marketplace
+          </h1>
+          <div className="mb-6 flex flex-col sm:flex-row gap-4">
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Categories</SelectItem>
+                {sampleData.categories
+                  .filter((cat) => cat !== "All")
+                  .map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            <Input
+              placeholder="Search ads..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-grow"
+              aria-label="Search ads"
+            />
+          </div>
+          <div className="space-y-6">
+            {filteredAds.map((ad) => (
+              <TimelinePost key={ad.id} ad={ad} />
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </ContentLayout>
   );
 }

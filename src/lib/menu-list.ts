@@ -53,9 +53,9 @@ export function getMenuList(pathname: string): Group[] {
           notificationCount: "New",
         },
         {
-          href: "/chat",
+          href: "/messages",
           label: "Messages",
-          active: pathname.includes("/chat"),
+          active: pathname.includes("/messages"),
           icon: MessageCircleMore,
           submenus: [],
           notificationCount: 3,
