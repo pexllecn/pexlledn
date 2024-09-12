@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -189,35 +190,37 @@ export default function DarkModeCompatibleProductListing() {
                       >
                         <ChevronRight className="w-6 h-6" />
                       </Button>
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                        <div className="flex justify-center px-3 py-2 rounded-full bg-black/50 backdrop-blur-sm">
+                          <div
+                            className="flex space-x-2"
+                            role="tablist"
+                            aria-label="Image selector"
+                          >
+                            {images.map((_, index) => (
+                              <button
+                                key={index}
+                                onClick={() => emblaApi?.scrollTo(index)}
+                                className={`w-2 h-2 rounded-full transition-all ${
+                                  index === selectedImage
+                                    ? "bg-white scale-125"
+                                    : "bg-white/50 hover:bg-white/75"
+                                }`}
+                                role="tab"
+                                aria-selected={index === selectedImage}
+                                aria-label={`Select image ${index + 1}`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
-                <div className="flex justify-center mt-0 bg-transparent">
-                  <div
-                    className="flex space-x-2"
-                    role="tablist"
-                    aria-label="Image selector"
-                  >
-                    {images.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => emblaApi?.scrollTo(index)}
-                        className={`w-2 h-2 rounded-full ${
-                          index === selectedImage
-                            ? "bg-primary"
-                            : "bg-gray-300 dark:bg-gray-600"
-                        }`}
-                        role="tab"
-                        aria-selected={index === selectedImage}
-                        aria-label={`Select image ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
 
                 {/* Product Details */}
                 <Card className="border-none">
-                  <CardContent className="p-6">
+                  <CardContent className="px-6">
                     <h2 className="text-2xl font-normal mb-4">
                       Product Details
                     </h2>
