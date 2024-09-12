@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Select,
   SelectContent,
@@ -25,6 +25,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   LayoutGridIcon,
   ListIcon,
   MapPinIcon,
@@ -33,6 +41,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   StarIcon,
+  FilterIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
@@ -67,22 +76,23 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
                   : ""
               }
             />
-            {!isGridView && (
-              <Badge className="absolute top-2 left-2 z-10">
-                {ad.category}
+            <Badge className="absolute top-2 left-2 z-10">{ad.category}</Badge>
+            <div className="absolute top-2 right-2 z-10">
+              <Badge
+                variant="secondary"
+                className="bg-background/70 text-sm backdrop-blur-sm"
+              >
+                {ad.price !== null ? `$${ad.price}` : "Price on request"}
               </Badge>
-            )}
+            </div>
           </div>
           <CardContent
             className={cn(
               isGridView
-                ? "absolute inset-0 flex flex-col justify-end p-4 text-white bg-black bg-opacity-30 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ? "absolute inset-0 flex flex-col justify-end p-4 text-white bg-black bg-opacity-30 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 : "w-3/4 p-4 flex flex-col justify-between"
             )}
           >
-            {isGridView && (
-              <Badge className="self-start mb-2">{ad.category}</Badge>
-            )}
             <div>
               <h3 className={cn("", isGridView ? "text-lg mb-1" : "text-lg")}>
                 {ad.title}
@@ -106,9 +116,11 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
                 <MapPinIcon className="w-4 h-4" />
                 <span>{ad.location}</span>
               </div>
-              <div className={cn("text-lg", !isGridView && "text-primary")}>
-                {ad.price !== null ? `$${ad.price}` : "Price on request"}
-              </div>
+              {!isGridView && (
+                <div className="text-lg text-primary">
+                  {ad.price !== null ? `$${ad.price}` : "Price on request"}
+                </div>
+              )}
             </div>
             <div
               className={cn(
@@ -161,6 +173,7 @@ export default function Component() {
   const [filteredAds, setFilteredAds] = useState<Ad[]>(sampleData.ads as Ad[]);
   const [currentPage, setCurrentPage] = useState(1);
   const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const adsPerPage = 12;
 
   const resetFilters = () => {
@@ -315,12 +328,298 @@ export default function Component() {
 
   const totalPages = Math.ceil(filteredAds.length / adsPerPage);
 
+  const FilterContent = () => (
+    <Accordion
+      type="multiple"
+      value={openAccordionItems}
+      onValueChange={setOpenAccordionItems}
+    >
+      <AccordionItem value="category">
+        <AccordionTrigger>Category</AccordionTrigger>
+        <AccordionContent>
+          <Select value={activeCategory} onValueChange={setActiveCategory}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              {sampleData.categories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="subcategory">
+        <AccordionTrigger>Subcategory</AccordionTrigger>
+        <AccordionContent>
+          <Select
+            value={activeSubcategory}
+            onValueChange={setActiveSubcategory}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select subcategory" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All</SelectItem>
+              {activeCategory !== "All" &&
+                (
+                  sampleData.subcategories[
+                    activeCategory as keyof typeof sampleData.subcategories
+                  ] || []
+                ).map((subcategory: string) => (
+                  <SelectItem key={subcategory} value={subcategory}>
+                    {subcategory}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="price">
+        <AccordionTrigger>Price Range</AccordionTrigger>
+        <AccordionContent>
+          <Slider
+            min={0}
+            max={10000}
+            step={100}
+            value={priceRange}
+            onValueChange={setPriceRange}
+            className="mb-2"
+          />
+          <div className="flex justify-between text-sm">
+            <span>${priceRange[0]}</span>
+            <span>${priceRange[1]}</span>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="condition">
+        <AccordionTrigger>Condition</AccordionTrigger>
+        <AccordionContent>
+          {sampleData.conditions.map((cond) => (
+            <div key={cond} className="flex items-center space-x-2">
+              <Checkbox
+                id={`condition-${cond}`}
+                checked={condition.includes(cond)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setCondition([...condition, cond]);
+                  } else {
+                    setCondition(condition.filter((c) => c !== cond));
+                  }
+                }}
+              />
+              <Label htmlFor={`condition-${cond}`}>{cond}</Label>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="seller-type">
+        <AccordionTrigger>Seller Type</AccordionTrigger>
+        <AccordionContent>
+          {sampleData.sellerTypes.map((type) => (
+            <div key={type} className="flex items-center space-x-2">
+              <Checkbox
+                id={`seller-type-${type}`}
+                checked={sellerType.includes(type)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setSellerType([...sellerType, type]);
+                  } else {
+                    setSellerType(sellerType.filter((t) => t !== type));
+                  }
+                }}
+              />
+              <Label htmlFor={`seller-type-${type}`}>{type}</Label>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="shipping">
+        <AccordionTrigger>Shipping</AccordionTrigger>
+        <AccordionContent>
+          {sampleData.shippingOptions.map((option) => (
+            <div key={option} className="flex items-center space-x-2">
+              <Checkbox
+                id={`shipping-${option}`}
+                checked={shipping.includes(option)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setShipping([...shipping, option]);
+                  } else {
+                    setShipping(shipping.filter((s) => s !== option));
+                  }
+                }}
+              />
+              <Label htmlFor={`shipping-${option}`}>{option}</Label>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="warranty">
+        <AccordionTrigger>Warranty</AccordionTrigger>
+        <AccordionContent>
+          <RadioGroup
+            value={warranty === null ? "all" : warranty.toString()}
+            onValueChange={(value) =>
+              setWarranty(value === "all" ? null : value === "true")
+            }
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="warranty-all" />
+              <Label htmlFor="warranty-all">All</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="true" id="warranty-yes" />
+              <Label htmlFor="warranty-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="false" id="warranty-no" />
+              <Label htmlFor="warranty-no">No</Label>
+            </div>
+          </RadioGroup>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="rating">
+        <AccordionTrigger>Minimum Rating</AccordionTrigger>
+        <AccordionContent>
+          <div className="flex items-center space-x-2">
+            {[0, 1, 2, 3, 4, 5].map((star) => (
+              <Button
+                key={star}
+                variant={minRating >= star ? "default" : "outline"}
+                size="sm"
+                onClick={() => setMinRating(star)}
+              >
+                <StarIcon className="h-4 w-4" />
+              </Button>
+            ))}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="negotiable">
+        <AccordionTrigger>Negotiable</AccordionTrigger>
+        <AccordionContent>
+          <RadioGroup
+            value={negotiable === null ? "all" : negotiable.toString()}
+            onValueChange={(value) =>
+              setNegotiable(value === "all" ? null : value === "true")
+            }
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="negotiable-all" />
+              <Label htmlFor="negotiable-all">All</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="true" id="negotiable-yes" />
+              <Label htmlFor="negotiable-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="false" id="negotiable-no" />
+              <Label htmlFor="negotiable-no">No</Label>
+            </div>
+          </RadioGroup>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="payment-options">
+        <AccordionTrigger>Payment Options</AccordionTrigger>
+        <AccordionContent>
+          {sampleData.paymentOptions.map((option) => (
+            <div key={option} className="flex items-center space-x-2">
+              <Checkbox
+                id={`payment-${option}`}
+                checked={paymentOptions.includes(option)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setPaymentOptions([...paymentOptions, option]);
+                  } else {
+                    setPaymentOptions(
+                      paymentOptions.filter((o) => o !== option)
+                    );
+                  }
+                }}
+              />
+              <Label htmlFor={`payment-${option}`}>{option}</Label>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="return-policy">
+        <AccordionTrigger>Return Policy</AccordionTrigger>
+        <AccordionContent>
+          {sampleData.returnPolicies.map((policy) => (
+            <div key={policy} className="flex items-center space-x-2">
+              <Checkbox
+                id={`return-${policy}`}
+                checked={returnPolicy.includes(policy)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setReturnPolicy([...returnPolicy, policy]);
+                  } else {
+                    setReturnPolicy(returnPolicy.filter((p) => p !== policy));
+                  }
+                }}
+              />
+              <Label htmlFor={`return-${policy}`}>{policy}</Label>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="ad-type">
+        <AccordionTrigger>Ad Type</AccordionTrigger>
+        <AccordionContent>
+          {sampleData.adTypes.map((type) => (
+            <div key={type} className="flex items-center space-x-2">
+              <Checkbox
+                id={`ad-type-${type}`}
+                checked={adType.includes(type)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setAdType([...adType, type]);
+                  } else {
+                    setAdType(adType.filter((t) => t !== type));
+                  }
+                }}
+              />
+              <Label htmlFor={`ad-type-${type}`}>{type}</Label>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="verified-seller">
+        <AccordionTrigger>Verified Seller</AccordionTrigger>
+        <AccordionContent>
+          <RadioGroup
+            value={verifiedSeller === null ? "all" : verifiedSeller.toString()}
+            onValueChange={(value) =>
+              setVerifiedSeller(value === "all" ? null : value === "true")
+            }
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="verified-all" />
+              <Label htmlFor="verified-all">All</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="true" id="verified-yes" />
+              <Label htmlFor="verified-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="false" id="verified-no" />
+              <Label htmlFor="verified-no">No</Label>
+            </div>
+          </RadioGroup>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+
   return (
     <ContentLayout title="Search Marketplace">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Sidebar */}
-          <div className="w-full lg:w-1/4 space-y-6">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block w-1/4 space-y-6">
             <Card className="rounded-md bg-muted border-none">
               <CardContent className="p-4">
                 <div className="flex justify-between items-center mb-4">
@@ -329,321 +628,40 @@ export default function Component() {
                     Clear Filters
                   </Button>
                 </div>
-                <Accordion
-                  type="multiple"
-                  value={openAccordionItems}
-                  onValueChange={setOpenAccordionItems}
-                >
-                  <AccordionItem value="category">
-                    <AccordionTrigger>Category</AccordionTrigger>
-                    <AccordionContent>
-                      <Select
-                        value={activeCategory}
-                        onValueChange={setActiveCategory}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {sampleData.categories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="subcategory">
-                    <AccordionTrigger>Subcategory</AccordionTrigger>
-                    <AccordionContent>
-                      <Select
-                        value={activeSubcategory}
-                        onValueChange={setActiveSubcategory}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select subcategory" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="All">All</SelectItem>
-                          {activeCategory !== "All" &&
-                            (
-                              sampleData.subcategories[
-                                activeCategory as keyof typeof sampleData.subcategories
-                              ] || []
-                            ).map((subcategory: string) => (
-                              <SelectItem key={subcategory} value={subcategory}>
-                                {subcategory}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="price">
-                    <AccordionTrigger>Price Range</AccordionTrigger>
-                    <AccordionContent>
-                      <Slider
-                        min={0}
-                        max={10000}
-                        step={100}
-                        value={priceRange}
-                        onValueChange={setPriceRange}
-                        className="mb-2"
-                      />
-                      <div className="flex justify-between text-sm">
-                        <span>${priceRange[0]}</span>
-                        <span>${priceRange[1]}</span>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="condition">
-                    <AccordionTrigger>Condition</AccordionTrigger>
-                    <AccordionContent>
-                      {sampleData.conditions.map((cond) => (
-                        <div key={cond} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`condition-${cond}`}
-                            checked={condition.includes(cond)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setCondition([...condition, cond]);
-                              } else {
-                                setCondition(
-                                  condition.filter((c) => c !== cond)
-                                );
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`condition-${cond}`}>{cond}</Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="seller-type">
-                    <AccordionTrigger>Seller Type</AccordionTrigger>
-                    <AccordionContent>
-                      {sampleData.sellerTypes.map((type) => (
-                        <div key={type} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`seller-type-${type}`}
-                            checked={sellerType.includes(type)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setSellerType([...sellerType, type]);
-                              } else {
-                                setSellerType(
-                                  sellerType.filter((t) => t !== type)
-                                );
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`seller-type-${type}`}>{type}</Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="shipping">
-                    <AccordionTrigger>Shipping</AccordionTrigger>
-                    <AccordionContent>
-                      {sampleData.shippingOptions.map((option) => (
-                        <div
-                          key={option}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`shipping-${option}`}
-                            checked={shipping.includes(option)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setShipping([...shipping, option]);
-                              } else {
-                                setShipping(
-                                  shipping.filter((s) => s !== option)
-                                );
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`shipping-${option}`}>{option}</Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="warranty">
-                    <AccordionTrigger>Warranty</AccordionTrigger>
-                    <AccordionContent>
-                      <RadioGroup
-                        value={warranty === null ? "all" : warranty.toString()}
-                        onValueChange={(value) =>
-                          setWarranty(value === "all" ? null : value === "true")
-                        }
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="all" id="warranty-all" />
-                          <Label htmlFor="warranty-all">All</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="warranty-yes" />
-                          <Label htmlFor="warranty-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="warranty-no" />
-                          <Label htmlFor="warranty-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="rating">
-                    <AccordionTrigger>Minimum Rating</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="flex items-center space-x-2">
-                        {[0, 1, 2, 3, 4, 5].map((star) => (
-                          <Button
-                            key={star}
-                            variant={minRating >= star ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setMinRating(star)}
-                          >
-                            <StarIcon className="h-4 w-4" />
-                          </Button>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="negotiable">
-                    <AccordionTrigger>Negotiable</AccordionTrigger>
-                    <AccordionContent>
-                      <RadioGroup
-                        value={
-                          negotiable === null ? "all" : negotiable.toString()
-                        }
-                        onValueChange={(value) =>
-                          setNegotiable(
-                            value === "all" ? null : value === "true"
-                          )
-                        }
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="all" id="negotiable-all" />
-                          <Label htmlFor="negotiable-all">All</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="negotiable-yes" />
-                          <Label htmlFor="negotiable-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="negotiable-no" />
-                          <Label htmlFor="negotiable-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="payment-options">
-                    <AccordionTrigger>Payment Options</AccordionTrigger>
-                    <AccordionContent>
-                      {sampleData.paymentOptions.map((option) => (
-                        <div
-                          key={option}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`payment-${option}`}
-                            checked={paymentOptions.includes(option)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setPaymentOptions([...paymentOptions, option]);
-                              } else {
-                                setPaymentOptions(
-                                  paymentOptions.filter((o) => o !== option)
-                                );
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`payment-${option}`}>{option}</Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="return-policy">
-                    <AccordionTrigger>Return Policy</AccordionTrigger>
-                    <AccordionContent>
-                      {sampleData.returnPolicies.map((policy) => (
-                        <div
-                          key={policy}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`return-${policy}`}
-                            checked={returnPolicy.includes(policy)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setReturnPolicy([...returnPolicy, policy]);
-                              } else {
-                                setReturnPolicy(
-                                  returnPolicy.filter((p) => p !== policy)
-                                );
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`return-${policy}`}>{policy}</Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="ad-type">
-                    <AccordionTrigger>Ad Type</AccordionTrigger>
-                    <AccordionContent>
-                      {sampleData.adTypes.map((type) => (
-                        <div key={type} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`ad-type-${type}`}
-                            checked={adType.includes(type)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setAdType([...adType, type]);
-                              } else {
-                                setAdType(adType.filter((t) => t !== type));
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`ad-type-${type}`}>{type}</Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="verified-seller">
-                    <AccordionTrigger>Verified Seller</AccordionTrigger>
-                    <AccordionContent>
-                      <RadioGroup
-                        value={
-                          verifiedSeller === null
-                            ? "all"
-                            : verifiedSeller.toString()
-                        }
-                        onValueChange={(value) =>
-                          setVerifiedSeller(
-                            value === "all" ? null : value === "true"
-                          )
-                        }
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="all" id="verified-all" />
-                          <Label htmlFor="verified-all">All</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="verified-yes" />
-                          <Label htmlFor="verified-yes">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="verified-no" />
-                          <Label htmlFor="verified-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <FilterContent />
               </CardContent>
             </Card>
+          </div>
+
+          {/* Mobile Filter Button and Sheet */}
+          <div className="lg:hidden w-full mb-4">
+            <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  <FilterIcon className="mr-2 h-4 w-4" />
+                  Filters
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                  <SheetDescription>
+                    Apply filters to refine your search
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-4 space-y-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={resetFilters}
+                    className="w-full"
+                  >
+                    Clear Filters
+                  </Button>
+                  <FilterContent />
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
           {/* Right Content */}
@@ -683,29 +701,40 @@ export default function Component() {
               </div>
             </div>
 
-            {paginatedAds.length > 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className={cn(
-                  "grid gap-4",
-                  isGridView
-                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                    : "grid-cols-1"
-                )}
-              >
-                {paginatedAds.map((ad) => (
-                  <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
-                ))}
-              </motion.div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg text-gray-500">
-                  No ads found matching your criteria.
-                </p>
-              </div>
-            )}
+            <AnimatePresence>
+              {paginatedAds.length > 0 ? (
+                <motion.div
+                  key="results"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className={cn(
+                    "grid gap-4",
+                    isGridView
+                      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                      : "grid-cols-1"
+                  )}
+                >
+                  {paginatedAds.map((ad) => (
+                    <AdCard key={ad.id} ad={ad} isGridView={isGridView} />
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="no-results"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-center py-8"
+                >
+                  <p className="text-lg text-gray-500">
+                    No ads found matching your criteria.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {totalPages > 1 && (
               <div className="flex justify-center items-center mt-8 gap-2">
