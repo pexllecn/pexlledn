@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,20 +27,59 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart,
   MessageCircle,
   MoreHorizontal,
   Repeat2,
   Send,
+  TrendingUp,
+  Zap,
+  DollarSign,
+  Gift,
 } from "lucide-react";
 import { sampleData, Ad } from "@/lib/sample-data";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { useToast } from "@/components/ui/use-toast";
+import { Progress } from "@/components/ui/progress";
 
 const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
   const [liked, setLiked] = useState(false);
   const [reposted, setReposted] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [comment, setComment] = useState("");
+  const { toast } = useToast();
+
+  const handleLike = () => {
+    setLiked(!liked);
+    toast({
+      title: liked ? "Post unliked" : "Post liked",
+      description: liked
+        ? "You've removed your like"
+        : "You've liked this post",
+    });
+  };
+
+  const handleRepost = () => {
+    setReposted(!reposted);
+    toast({
+      title: reposted ? "Post un-reposted" : "Post reposted",
+      description: reposted
+        ? "You've removed your repost"
+        : "You've reposted this content",
+    });
+  };
+
+  const handleComment = () => {
+    if (comment.trim()) {
+      toast({
+        title: "Comment posted",
+        description: "Your comment has been added to the post",
+      });
+      setComment("");
+    }
+  };
 
   return (
     <Card className="mb-6 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -66,6 +105,7 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Report</DropdownMenuItem>
             <DropdownMenuItem>Mute</DropdownMenuItem>
+            <DropdownMenuItem>Share</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
@@ -101,12 +141,24 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
             </span>
           ))}
         </div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-green-500" />
+            <span className="font-semibold">Trending in {ad.category}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-yellow-500" />
+            <span>{ad.views} views</span>
+          </div>
+        </div>
+        <Progress value={75} className="w-full h-2" />
+        <p className="text-sm text-center mt-2">75% of daily goal reached</p>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setLiked(!liked)}
+          onClick={handleLike}
           className={`flex items-center gap-1 ${liked ? "text-red-500" : ""}`}
         >
           <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
@@ -128,7 +180,7 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setReposted(!reposted)}
+          onClick={handleRepost}
           className={`flex items-center gap-1 ${
             reposted ? "text-green-500" : ""
           }`}
@@ -180,9 +232,16 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
                 <Input
                   placeholder="Add a comment..."
                   className="flex-1"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
                   aria-label="Add a comment"
                 />
-                <Button size="icon" variant="ghost" aria-label="Send comment">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={handleComment}
+                  aria-label="Send comment"
+                >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
@@ -194,12 +253,15 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
   );
 };
 
-export default function SocialTimeline() {
+export default function EnhancedSocialMarketplace() {
   const [category, setCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("latest");
+  const [viewMode, setViewMode] = useState("grid");
+  const { toast } = useToast();
 
   const filteredAds = useMemo(() => {
-    return sampleData.ads.filter(
+    let filtered = sampleData.ads.filter(
       (ad) =>
         (category === "All" || ad.category === category) &&
         (ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -208,55 +270,189 @@ export default function SocialTimeline() {
             tag.toLowerCase().includes(searchTerm.toLowerCase())
           ))
     );
-  }, [category, searchTerm]);
 
-  const variants1 = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
+    switch (sortBy) {
+      case "popular":
+        filtered.sort((a, b) => b.likes - a.likes);
+        break;
+      case "trending":
+        filtered.sort((a, b) => b.views - a.views);
+        break;
+      default:
+        // 'latest' is default, no need to sort as we assume the data is already in chronological order
+        break;
+    }
+
+    return filtered;
+  }, [category, searchTerm, sortBy]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      toast({
+        title: "New posts available!",
+        description: "Refresh to see the latest content",
+      });
+    }, 30000);
+
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <ContentLayout title="timeline">
+    <ContentLayout title="Enhanced Social Marketplace">
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
-        variants={variants1}
+        transition={{ duration: 0.5, staggerChildren: 0.1 }}
+        className="container mx-auto px-4 py-8 max-w-4xl"
       >
-        <div className="container mx-auto px-4 py-8 max-w-2xl">
-          <h1 className="text-3xl font-bold mb-8 text-center">
-            Social Marketplace
-          </h1>
-          <div className="mb-6 flex flex-col sm:flex-row gap-4">
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All Categories</SelectItem>
-                {sampleData.categories
-                  .filter((cat) => cat !== "All")
-                  .map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Search ads..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-grow"
-              aria-label="Search ads"
-            />
-          </div>
-          <div className="space-y-6">
-            {filteredAds.map((ad) => (
-              <TimelinePost key={ad.id} ad={ad} />
-            ))}
-          </div>
-        </div>
+        <motion.h1
+          variants={variants}
+          className="text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500"
+        >
+          Social Marketplace
+        </motion.h1>
+        <motion.div
+          variants={variants}
+          className="mb-6 flex flex-col sm:flex-row gap-4"
+        >
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All Categories</SelectItem>
+              {sampleData.categories
+                .filter((cat) => cat !== "All")
+                .map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+          <Input
+            placeholder="Search ads..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-grow"
+            aria-label="Search ads"
+          />
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="latest">Latest</SelectItem>
+              <SelectItem value="popular">Most Popular</SelectItem>
+              <SelectItem value="trending">Trending</SelectItem>
+            </SelectContent>
+          </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">View</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setViewMode("grid")}>
+                Grid
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setViewMode("list")}>
+                List
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </motion.div>
+        <Tabs defaultValue="feed" className="mb-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="feed">Feed</TabsTrigger>
+            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+            <TabsTrigger value="deals">Hot Deals</TabsTrigger>
+          </TabsList>
+          <TabsContent value="feed">
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+                  : "space-y-6"
+              }
+            >
+              {filteredAds.map((ad) => (
+                <motion.div key={ad.id} variants={variants}>
+                  <TimelinePost ad={ad} />
+                </motion.div>
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="marketplace">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredAds.map((ad) => (
+                <motion.div
+                  key={ad.id}
+                  variants={variants}
+                  className="bg-card text-card-foreground rounded-lg shadow-md p-4"
+                >
+                  <Image
+                    src={ad.image}
+                    alt={ad.title}
+                    width={300}
+                    height={200}
+                    className="w-full h-40 object-cover rounded-md mb-4"
+                  />
+                  <h3 className="font-semibold mb-2">{ad.title}</h3>
+                  <p className="text-sm mb-2">
+                    {ad.description.substring(0, 100)}...
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-lg">${ad.price}</span>
+                    <Button size="sm">
+                      <DollarSign className="mr-2 h-4 w-4" /> Buy Now
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="deals">
+            <div className="space-y-4">
+              {filteredAds.slice(0, 5).map((ad) => (
+                <motion.div
+                  key={ad.id}
+                  variants={variants}
+                  className="bg-card text-card-foreground rounded-lg shadow-md p-4 flex items-center"
+                >
+                  <Image
+                    src={ad.image}
+                    alt={ad.title}
+                    width={100}
+                    height={100}
+                    className="w-24 h-24 object-cover rounded-md mr-4"
+                  />
+                  <div className="flex-grow">
+                    <h3 className="font-semibold mb-1">{ad.title}</h3>
+                    <p className="text-sm mb-2">
+                      {ad.description.substring(0, 50)}...
+                    </p>
+                    <div className="flex items-center">
+                      <span className="font-bold text-lg mr-2">
+                        ${ad.price}
+                      </span>
+                      <span className="text-sm line-through text-muted-foreground">
+                        ${(ad.price * 1.2).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                  <Button size="sm" className="ml-4">
+                    <Gift className="mr-2 h-4 w-4" /> Claim Deal
+                  </Button>
+                </motion.div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </motion.div>
     </ContentLayout>
   );
