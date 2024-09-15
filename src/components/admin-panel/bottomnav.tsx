@@ -51,10 +51,10 @@ export function BottomNav() {
         isActive={pathname === "/users"}
       />
       <NavItem
-        href="/chat"
+        href="/messages"
         icon={<MessageCircleMore size={24} />}
         label="Messages"
-        isActive={pathname === "/chat"}
+        isActive={pathname === "/messages"}
       />
 
       <NavItem

@@ -9,7 +9,7 @@ import {
   Sheet,
   SheetHeader,
   SheetContent,
-  SheetTrigger
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import Image from "next/image";
 
@@ -22,7 +22,7 @@ const LogoSection = ({ logo }: { logo: string }) => (
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100%"
+          height: "100%",
         }}
       >
         <Image
@@ -53,7 +53,7 @@ export function SheetMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="bg-muted sm:w-72 h-full flex flex-col"
+        className="bg-muted w-54 sm:w-54 h-full flex flex-col"
         side="left"
       >
         <SheetHeader>
