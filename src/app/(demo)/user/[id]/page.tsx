@@ -103,24 +103,22 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
               {item.badge}
             </Badge>
           )}
-          <div className="absolute inset-x-3 bottom-3 p-4 bg-black/40 backdrop-blur-sm rounded-xl z-20 transition-all duration-300">
+          <div className="absolute inset-x-3 bottom-3 p-4 bg-black/40 backdrop-blur-sm rounded-xl z-20 transition-all duration-300 ">
             <div className="space-y-2">
-              <Badge variant="default" className="">
-                {item.category}
-              </Badge>
-              <h3 className="line-clamp-1 text-white">{item.name}</h3>
+              <Badge variant="default">{item.category}</Badge>
+              <h3 className=" text-white line-clamp-1">{item.name}</h3>
               <div className="flex justify-between items-center">
                 <div className="space-y-1">
-                  <p className="text-white">{item.price}</p>
+                  <p className="font-bold text-white">{item.price}</p>
                   {item.originalPrice && (
-                    <p className="text-sm text-gray-500 line-through">
+                    <p className=" text-gray-400 line-through">
                       {item.originalPrice}
                     </p>
                   )}
                 </div>
                 <div className="flex items-center space-x-1">
                   <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                  <span className="text-white">{item.rating}</span>
+                  <span className="text-white font-medium">{item.rating}</span>
                 </div>
               </div>
             </div>

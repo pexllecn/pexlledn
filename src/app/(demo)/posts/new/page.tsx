@@ -5,13 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -21,7 +14,7 @@ import {
 } from "@/components/ui/pagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Star, Search, Filter } from "lucide-react";
+import { Star, Search, Filter, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -37,40 +30,67 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 
-type App = {
+type Product = {
   id: number;
   name: string;
   description: string;
   price: string;
+  originalPrice?: string;
   category: string;
   rating: number;
-  downloads: string;
+  sales: string;
   imageUrl: string;
 };
 
 const categories = [
   "All",
-  "Games",
-  "Productivity",
-  "Education",
-  "Lifestyle",
-  "Entertainment",
+  "Electronics",
+  "Clothing",
+  "Home",
+  "Beauty",
+  "Sports",
 ];
 
-const mockApps: App[] = Array.from({ length: 50 }, (_, i) => ({
+const mockProducts: Product[] = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
-  name: `App ${i + 1}`,
-  description: `This is a description for App ${
-    i + 1
-  }. It's a great app with many features that users will love. Perfect for daily use and enhancing productivity.`,
-  price: Math.random() > 0.7 ? `$${(Math.random() * 10).toFixed(2)}` : "Free",
+  name: [
+    "Wireless Earbuds",
+    "Smart Watch",
+    "Fitness Tracker",
+    "Bluetooth Speaker",
+    "Portable Charger",
+    "Laptop Stand",
+    "Phone Case",
+    "Wireless Mouse",
+    "Backpack",
+    "Water Bottle",
+  ][i % 10],
+  description: `Create amazing ${
+    [
+      "audio experiences",
+      "fitness routines",
+      "workout plans",
+      "sound environments",
+      "power solutions",
+      "workspaces",
+      "phone protection",
+      "computer setups",
+      "travel gear",
+      "hydration habits",
+    ][i % 10]
+  } in seconds.`,
+  price: `$${(Math.random() * 100 + 9.99).toFixed(2)}`,
+  originalPrice:
+    Math.random() > 0.7
+      ? `$${(Math.random() * 150 + 29.99).toFixed(2)}`
+      : undefined,
   category: categories[Math.floor(Math.random() * (categories.length - 1)) + 1],
-  rating: Number((Math.random() * 4 + 1).toFixed(1)),
-  downloads: `${Math.floor(Math.random() * 1000)}k`,
-  imageUrl: `https://picsum.photos/seed/app${i + 1}/300/200`,
+  rating: Number((Math.random() * 1 + 4).toFixed(1)),
+  sales: `${Math.floor(Math.random() * 10000)}`,
+  imageUrl: `https://picsum.photos/seed/product${i + 1}/800/1000`,
 }));
 
-const AppCard = ({ app }: { app: App }) => {
+const ProductCard = ({ product }: { product: Product }) => {
   return (
     <Dialog
       transition={{
@@ -80,42 +100,47 @@ const AppCard = ({ app }: { app: App }) => {
       }}
     >
       <DialogTrigger>
-        <Card className="relative w-full h-64 overflow-hidden group cursor-pointer">
+        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-2xl">
           <Image
-            src={app.imageUrl}
-            alt={app.name}
+            src={product.imageUrl}
+            alt={product.name}
             layout="fill"
             objectFit="cover"
-            className="transition-transform duration-300 group-hover:scale-110"
+            className="transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <h3 className="text-lg font-semibold mb-1 line-clamp-1">
-              {app.name}
-            </h3>
-            <p className="text-sm mb-2 line-clamp-2 text-gray-200">
-              {app.description}
-            </p>
-            <div className="flex items-center justify-between">
-              <Badge variant="default">{app.category}</Badge>
-              <span className="text-sm font-semibold">{app.price}</span>
-            </div>
-            <div className="flex justify-between items-center mt-2">
-              <div className="flex">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < Math.floor(app.rating)
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-400"
-                    }`}
-                  />
-                ))}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
+          <div className="absolute inset-x-3 bottom-3 p-5 bg-black/40 backdrop-blur-sm rounded-2xl">
+            <div className="space-y-2">
+              <Badge variant="default" className="mb-1">
+                {product.category}
+              </Badge>
+              <h3 className="text-xl font-bold text-white line-clamp-1">
+                {product.name}
+              </h3>
+              <p className="text-smt text-white line-clamp-2">
+                {product.description}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1">
+                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                  <span className="text-sm font-medium text-white">
+                    {product.rating.toFixed(1)}
+                  </span>
+                  <span className="text-xs text-white">
+                    ({product.sales} sold)
+                  </span>
+                </div>
+                <div>
+                  <span className="text-lg  font-bold text-white">
+                    {product.price}
+                  </span>
+                  {product.originalPrice && (
+                    <span className="ml-2 text-sm line-through text-white">
+                      {product.originalPrice}
+                    </span>
+                  )}
+                </div>
               </div>
-              <span className="text-sm text-gray-300">
-                {app.downloads} downloads
-              </span>
             </div>
           </div>
         </Card>
@@ -123,24 +148,24 @@ const AppCard = ({ app }: { app: App }) => {
       <DialogContainer>
         <DialogContent
           style={{
-            borderRadius: "24px",
+            borderRadius: "16px",
           }}
-          className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
+          className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[600px]"
         >
-          <div className="relative h-64 w-full overflow-hidden">
+          <div className="relative h-80 w-full overflow-hidden">
             <Image
-              src={app.imageUrl}
-              alt={`${app.name} app screenshot`}
+              src={product.imageUrl}
+              alt={`${product.name} product image`}
               layout="fill"
               objectFit="cover"
             />
           </div>
           <div className="p-6">
-            <DialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50">
-              {app.name}
+            <DialogTitle className="text-xl font-bold text-zinc-950 dark:text-zinc-50">
+              {product.name}
             </DialogTitle>
-            <DialogSubtitle className="text-zinc-700 dark:text-zinc-400">
-              {app.category}
+            <DialogSubtitle className="text-xl text-zinc-700 dark:text-zinc-400">
+              {product.category}
             </DialogSubtitle>
             <DialogDescription
               disableLayoutAnimation
@@ -150,59 +175,66 @@ const AppCard = ({ app }: { app: App }) => {
                 exit: { opacity: 0, scale: 0.8, y: 100 },
               }}
             >
-              <Tabs defaultValue="description" className="w-full mt-4">
+              <Tabs defaultValue="description" className="w-full mt-6">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="description">Description</TabsTrigger>
                   <TabsTrigger value="reviews">Reviews</TabsTrigger>
                 </TabsList>
                 <TabsContent value="description">
-                  <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
-                    <p className="text-zinc-500 dark:text-zinc-500">
-                      {app.description}
+                  <ScrollArea className="h-[150px] w-full rounded-md border p-4 mt-2">
+                    <p className="text-zinc-600 dark:text-zinc-400">
+                      {product.description}
                     </p>
                   </ScrollArea>
                 </TabsContent>
                 <TabsContent value="reviews">
-                  <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
-                    <p className="text-zinc-500 dark:text-zinc-500">
+                  <ScrollArea className="h-[150px] w-full rounded-md border p-4 mt-2">
+                    <p className="text-zinc-600 dark:text-zinc-400">
                       User reviews will be displayed here.
                     </p>
                   </ScrollArea>
                 </TabsContent>
               </Tabs>
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex justify-between items-center mt-6">
                 <div className="flex items-center space-x-2">
                   <div className="flex">
                     {Array.from({ length: 5 }, (_, i) => (
                       <Star
                         key={i}
-                        className={`w-4 h-4 ${
-                          i < Math.floor(app.rating)
+                        className={`w-5 h-5 ${
+                          i < Math.floor(product.rating)
                             ? "text-yellow-400 fill-yellow-400"
                             : "text-zinc-300"
                         }`}
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    {app.rating.toFixed(1)}
+                  <span className=" font-medium text-zinc-700 dark:text-zinc-300">
+                    {product.rating.toFixed(1)}
                   </span>
                 </div>
-                <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {app.downloads} downloads
+                <span className=" text-zinc-500 dark:text-zinc-400">
+                  {product.sales} sold
                 </span>
               </div>
-              <div className="flex justify-between items-center mt-4">
-                <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                  {app.price}
-                </span>
-                <Button className="bg-primary hover:bg-primary/90">
-                  {app.price === "Free" ? "Get" : "Buy"}
+              <div className="flex justify-between items-center mt-6">
+                <div>
+                  <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {product.price}
+                  </span>
+                  {product.originalPrice && (
+                    <span className="ml-2  line-through text-zinc-500">
+                      {product.originalPrice}
+                    </span>
+                  )}
+                </div>
+                <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-md">
+                  <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </div>
             </DialogDescription>
           </div>
-          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-full p-1 hover:bg-zinc-900/70 transition-colors" />
+          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-md p-1 hover:bg-zinc-900/70 transition-colors" />
         </DialogContent>
       </DialogContainer>
     </Dialog>
@@ -211,25 +243,26 @@ const AppCard = ({ app }: { app: App }) => {
 
 export default function AppStore() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [apps, setApps] = useState<App[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const appsPerPage = 10;
-  const totalPages = Math.ceil(mockApps.length / appsPerPage);
+  const productsPerPage = 8;
+  const totalPages = Math.ceil(mockProducts.length / productsPerPage);
 
   useEffect(() => {
-    const startIndex = (currentPage - 1) * appsPerPage;
-    const endIndex = startIndex + appsPerPage;
-    const filteredApps = mockApps
-      .filter((app) =>
-        app.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const startIndex = (currentPage - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+    const filteredProducts = mockProducts
+      .filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .filter(
-        (app) => selectedCategory === "All" || app.category === selectedCategory
+        (product) =>
+          selectedCategory === "All" || product.category === selectedCategory
       );
-    const paginatedApps = filteredApps.slice(startIndex, endIndex);
-    setApps(paginatedApps);
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+    setProducts(paginatedProducts);
   }, [currentPage, searchTerm, selectedCategory]);
 
   const variants1 = {
@@ -238,23 +271,25 @@ export default function AppStore() {
   };
 
   return (
-    <ContentLayout title="Posts">
+    <ContentLayout title="E-commerce Store">
       <motion.div
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.4 }}
         variants={variants1}
       >
-        <div className="container mx-auto p-4 space-y-6">
-          <h1 className="text-4xl font-bold text-center mb-8">App Store</h1>
+        <div className="container mx-auto p-4 space-y-8">
+          <h1 className="text-4xl font-bold text-center mb-8">
+            E-commerce Store
+          </h1>
 
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <div className="relative flex-grow">
               <Input
-                placeholder="Search apps..."
+                placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 rounded-md focus:border-ring bg-muted border-none shadow-none"
               />
               <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -263,7 +298,7 @@ export default function AppStore() {
             </div>
             <Button
               variant="outline"
-              className="sm:w-auto"
+              className="sm:w-auto rounded-md"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
             >
               <Filter className="mr-2" size={20} />
@@ -280,8 +315,8 @@ export default function AppStore() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="bg-secondary p-4 rounded-lg shadow-md">
-                  <h2 className="text-lg font-semibold mb-2">Categories</h2>
+                <div className="bg-secondary p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold mb-4">Categories</h2>
                   <div className="flex flex-wrap gap-2">
                     {categories.map((category) => (
                       <Button
@@ -290,6 +325,7 @@ export default function AppStore() {
                           selectedCategory === category ? "default" : "outline"
                         }
                         size="sm"
+                        className="rounded-md"
                         onClick={() => setSelectedCategory(category)}
                       >
                         {category}
@@ -302,21 +338,21 @@ export default function AppStore() {
           </AnimatePresence>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
             <AnimatePresence mode="wait">
-              {apps.map((app) => (
+              {products.map((product) => (
                 <motion.div
-                  key={app.id}
+                  key={product.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <AppCard app={app} />
+                  <ProductCard product={product} />
                 </motion.div>
               ))}
             </AnimatePresence>
