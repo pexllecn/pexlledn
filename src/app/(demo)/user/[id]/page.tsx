@@ -23,7 +23,7 @@ import {
   DialogDescription,
   DialogContainer,
 } from "@/components/core/dialog";
-import { Star } from "lucide-react";
+import { Star, ShoppingCart, Percent, Award, TrendingUp } from "lucide-react";
 
 interface UserProfilePageProps {
   params: { id: string };
@@ -39,25 +39,44 @@ type ListingItem = {
   name: string;
   description: string;
   price: string;
+  originalPrice?: string;
   category: string;
   rating: number;
-  downloads: string;
+  sales: string;
   imageUrl: string;
+  badge?: string;
 };
 
 const mockListings: ListingItem[] = Array.from({ length: 10 }, (_, i) => ({
   id: i + 1,
-  name: `Listing ${i + 1}`,
-  description: `This is a description for Listing ${
-    i + 1
-  }. It's a great item with many features that users will love. Perfect for daily use and enhancing productivity.`,
-  price: Math.random() > 0.7 ? `$${(Math.random() * 100).toFixed(2)}` : "Free",
-  category: ["Electronics", "Clothing", "Home", "Sports", "Books"][
+  name: [
+    "Wireless Earbuds Pro",
+    "SmartFit Watch X1",
+    "ErgoBoost Laptop Stand",
+    "ShieldPro Phone Case",
+    "PowerBank 20000mAh",
+    "SoundWave Bluetooth Speaker",
+    "FitTrack Pro",
+    "TravelEase Backpack",
+    "SunShield Polarized Glasses",
+    "HydroFlow Smart Bottle",
+  ][i],
+  description: `Experience the next level of [Product] with our cutting-edge design and advanced features. Perfect for enhancing your daily life and staying ahead in today's fast-paced world.`,
+  price: `$${(Math.random() * 100 + 20).toFixed(2)}`,
+  originalPrice:
+    Math.random() > 0.7
+      ? `$${(Math.random() * 150 + 50).toFixed(2)}`
+      : undefined,
+  category: ["Tech", "Wearables", "Accessories", "Lifestyle", "Audio"][
     Math.floor(Math.random() * 5)
   ],
-  rating: Number((Math.random() * 4 + 1).toFixed(1)),
-  downloads: `${Math.floor(Math.random() * 1000)}k`,
-  imageUrl: `https://picsum.photos/seed/listing${i + 1}/300/200`,
+  rating: Number((Math.random() * 1 + 4).toFixed(1)),
+  sales: `${Math.floor(Math.random() * 10000)}`,
+  imageUrl: `https://picsum.photos/seed/product${i + 1}/400/400`,
+  badge:
+    Math.random() > 0.7
+      ? ["New", "Best Seller", "Limited Edition"][Math.floor(Math.random() * 3)]
+      : undefined,
 }));
 
 const ListingCard = ({ item }: { item: ListingItem }) => {
@@ -70,27 +89,40 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
       }}
     >
       <DialogTrigger>
-        <Card className="relative w-full h-64 overflow-hidden group cursor-pointer">
+        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 z-10" />
           <Image
             src={item.imageUrl}
             alt={item.name}
             layout="fill"
             objectFit="cover"
-            className="transition-transform duration-300 group-hover:scale-110"
+            className="transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <h3 className="text-lg font-semibold mb-1 line-clamp-1">
-              {item.name}
-            </h3>
-            <p className="text-sm mb-2 line-clamp-2 text-gray-200">
-              {item.description}
-            </p>
-            <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="bg-white/20 text-white">
+          {item.badge && (
+            <Badge className="absolute top-4 left-4 z-20 bg-primary text-primary-foreground px-2 py-1">
+              {item.badge}
+            </Badge>
+          )}
+          <div className="absolute inset-x-3 bottom-3 p-4 bg-black/40 backdrop-blur-sm rounded-xl z-20 transition-all duration-300">
+            <div className="space-y-2">
+              <Badge variant="default" className="">
                 {item.category}
               </Badge>
-              <span className="text-sm font-semibold">{item.price}</span>
+              <h3 className="line-clamp-1 text-white">{item.name}</h3>
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <p className="text-white">{item.price}</p>
+                  {item.originalPrice && (
+                    <p className="text-sm text-gray-500 line-through">
+                      {item.originalPrice}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                  <span className="text-white">{item.rating}</span>
+                </div>
+              </div>
             </div>
           </div>
         </Card>
@@ -105,10 +137,15 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
           <div className="relative h-64 w-full overflow-hidden">
             <Image
               src={item.imageUrl}
-              alt={`${item.name} screenshot`}
+              alt={`${item.name} product image`}
               layout="fill"
               objectFit="cover"
             />
+            {item.badge && (
+              <Badge className="absolute top-4 left-4 z-20 bg-primary text-primary-foreground px-2 py-1">
+                {item.badge}
+              </Badge>
+            )}
           </div>
           <div className="p-6">
             <DialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50">
@@ -125,7 +162,7 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
                 exit: { opacity: 0, scale: 0.8, y: 100 },
               }}
             >
-              <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
+              <ScrollArea className="h-[100px] w-full rounded-md border p-4 mt-2">
                 <p className="text-zinc-500 dark:text-zinc-500">
                   {item.description}
                 </p>
@@ -149,15 +186,22 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
                   </span>
                 </div>
                 <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {item.downloads} downloads
+                  {item.sales} sold
                 </span>
               </div>
               <div className="flex justify-between items-center mt-4">
-                <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                  {item.price}
-                </span>
+                <div>
+                  <span className="text-2xl font-bold text-primary">
+                    {item.price}
+                  </span>
+                  {item.originalPrice && (
+                    <span className="text-sm text-zinc-500 line-through ml-2">
+                      {item.originalPrice}
+                    </span>
+                  )}
+                </div>
                 <Button className="bg-primary hover:bg-primary/90">
-                  {item.price === "Free" ? "Get" : "Buy"}
+                  <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </div>
             </DialogDescription>
@@ -171,8 +215,13 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
 
 const FeaturedListings = ({ items }: { items: ListingItem[] }) => (
   <div className="mb-8">
-    <h2 className="text-2xl font-bold mb-4">Featured Listings</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="text-2xl font-bold">Featured Products</h2>
+      <Badge variant="outline" className="text-primary border-primary">
+        <TrendingUp className="w-4 h-4 mr-1" /> Trending
+      </Badge>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {items.map((item) => (
         <ListingCard key={item.id} item={item} />
       ))}
@@ -182,8 +231,13 @@ const FeaturedListings = ({ items }: { items: ListingItem[] }) => (
 
 const ItemFeed = ({ items }: { items: ListingItem[] }) => (
   <div>
-    <h2 className="text-2xl font-bold mb-4">Item Feed</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="text-2xl font-bold">More Products</h2>
+      <Badge variant="outline" className="text-primary border-primary">
+        <Percent className="w-4 h-4 mr-1" /> Special Offers
+      </Badge>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {items.map((item) => (
         <ListingCard key={item.id} item={item} />
       ))}
@@ -201,8 +255,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     notFound();
   }
 
-  const featuredListings = mockListings.slice(0, 5);
-  const itemFeed = mockListings.slice(5);
+  const featuredListings = mockListings.slice(0, 4);
+  const itemFeed = mockListings.slice(4);
 
   return (
     <ContentLayout title={`Profile: ${user.name}`}>

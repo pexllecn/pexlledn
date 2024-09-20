@@ -97,9 +97,7 @@ const AppCard = ({ app }: { app: App }) => {
               {app.description}
             </p>
             <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="bg-white/20 text-white">
-                {app.category}
-              </Badge>
+              <Badge variant="default">{app.category}</Badge>
               <span className="text-sm font-semibold">{app.price}</span>
             </div>
             <div className="flex justify-between items-center mt-2">
