@@ -79,15 +79,13 @@ const AppCard = ({ app }: { app: App }) => {
 
   return (
     <Dialog
-      open={isOpen}
-      onOpenChange={setIsOpen}
       transition={{
         type: "spring",
         bounce: 0.05,
         duration: 0.25,
       }}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Card
           ref={cardRef}
           className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
@@ -299,7 +297,7 @@ export default function AppStore() {
           <PaginationItem>
             <PaginationPrevious
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
+              className={currentPage === 1 ? "disabled" : ""}
             />
           </PaginationItem>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -317,7 +315,7 @@ export default function AppStore() {
               onClick={() =>
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
-              disabled={currentPage === totalPages}
+              className={currentPage === totalPages ? "disabled" : ""}
             />
           </PaginationItem>
         </PaginationContent>
