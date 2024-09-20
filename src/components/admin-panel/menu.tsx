@@ -121,7 +121,7 @@ export function Menu({ isOpen }: MenuProps) {
                                   <Badge
                                     variant="outline"
                                     className={cn(
-                                      "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50",
+                                      "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background",
                                       typeof notificationCount === "string" &&
                                         "text-xs"
                                     )}
@@ -168,7 +168,7 @@ export function Menu({ isOpen }: MenuProps) {
             </li>
           ))}
           <li className="w-full grow flex items-end">
-            <TooltipProvider disableHoverableContent>
+            {/* <TooltipProvider disableHoverableContent>
               <Tooltip delayDuration={50}>
                 <TooltipTrigger asChild>
                   <Button
@@ -193,7 +193,7 @@ export function Menu({ isOpen }: MenuProps) {
                   <TooltipContent side="right">Sign out</TooltipContent>
                 )}
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
           </li>
         </ul>
       </nav>

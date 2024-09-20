@@ -1,5 +1,6 @@
 import {
   Tag,
+  User,
   Users,
   Settings,
   Bookmark,
@@ -66,7 +67,14 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/kanban"),
           icon: Kanban,
           submenus: [],
-          notificationCount: 546,
+        },
+        {
+          href: "/user/1",
+          label: "User Profile",
+          active: pathname.includes("/user/1"),
+          icon: User,
+          submenus: [],
+          notificationCount: "New",
         },
       ],
     },

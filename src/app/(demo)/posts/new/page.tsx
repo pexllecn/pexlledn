@@ -1,279 +1,327 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Star, Download } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { Star } from "lucide-react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogSubtitle,
+  DialogClose,
+  DialogDescription,
+  DialogContainer,
+} from "@/components/core/dialog";
 
-const data = [
-  {
-    id: "1",
-    category: "Productivity",
-    title: "Task Manager",
-    image:
-      "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80",
-    rating: 4.5,
-    reviews: 1234,
-    description:
-      "Boost your productivity with our intuitive Task Manager app. Organize your tasks, set priorities, and track your progress effortlessly.",
-    features: [
-      "Smart task categorization",
-      "Customizable reminders",
-      "Progress tracking",
-      "Collaboration tools",
-    ],
-  },
-  {
-    id: "2",
-    category: "Photo & Video",
-    title: "Photo Editor",
-    image:
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80",
-    rating: 4.7,
-    reviews: 5678,
-    description:
-      "Transform your photos with our powerful Photo Editor. Apply filters, adjust colors, and create stunning visual effects with ease.",
-    features: [
-      "Advanced filters",
-      "Layer support",
-      "AI-powered enhancements",
-      "Social media integration",
-    ],
-  },
-  {
-    id: "3",
-    category: "Food & Drink",
-    title: "Recipe Finder",
-    image:
-      "https://images.unsplash.com/photo-1495195134817-aeb325a55b65?w=500&q=80",
-    rating: 4.3,
-    reviews: 3456,
-    description:
-      "Discover delicious recipes tailored to your preferences. From quick meals to gourmet dishes, find the perfect recipe for any occasion.",
-    features: [
-      "Personalized recommendations",
-      "Dietary filters",
-      "Step-by-step instructions",
-      "Meal planning",
-    ],
-  },
-  {
-    id: "4",
-    category: "Education",
-    title: "Language Learner",
-    image:
-      "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=500&q=80",
-    rating: 4.8,
-    reviews: 7890,
-    description:
-      "Master new languages with our interactive Language Learner app. Engage in fun exercises and track your progress as you expand your linguistic skills.",
-    features: [
-      "Speech recognition",
-      "Adaptive learning",
-      "Offline mode",
-      "Cultural insights",
-    ],
-  },
-  {
-    id: "5",
-    category: "Lifestyle",
-    title: "Meditation Guide",
-    image:
-      "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=500&q=80",
-    rating: 4.6,
-    reviews: 2345,
-    description:
-      "Find inner peace and reduce stress with our Meditation Guide. Explore guided meditations, breathing exercises, and mindfulness techniques.",
-    features: [
-      "Guided sessions",
-      "Sleep stories",
-      "Ambient sounds",
-      "Progress tracking",
-    ],
-  },
-  {
-    id: "6",
-    category: "Entertainment",
-    title: "Music Streamer",
-    image:
-      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80",
-    rating: 4.9,
-    reviews: 9012,
-    description:
-      "Enjoy unlimited music streaming with our feature-rich Music Streamer app. Discover new artists, create playlists, and listen to high-quality audio.",
-    features: [
-      "Personalized playlists",
-      "Offline listening",
-      "Lyrics display",
-      "Social sharing",
-    ],
-  },
-];
-
-const transitionProps = {
-  type: "spring",
-  stiffness: 300,
-  damping: 30,
+type App = {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  category: string;
+  rating: number;
+  downloads: string;
+  imageUrl: string;
 };
 
-export default function Component() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+const categories = [
+  "Games",
+  "Productivity",
+  "Education",
+  "Lifestyle",
+  "Entertainment",
+];
 
-  const handleClose = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedId(null);
-  }, []);
+const mockApps: App[] = Array.from({ length: 50 }, (_, i) => ({
+  id: i + 1,
+  name: `App ${i + 1}`,
+  description: `This is a description for App ${
+    i + 1
+  }. It's a great app with many features that users will love. Perfect for daily use and enhancing productivity.`,
+  price: Math.random() > 0.7 ? `$${(Math.random() * 10).toFixed(2)}` : "Free",
+  category: categories[Math.floor(Math.random() * categories.length)],
+  rating: Number((Math.random() * 4 + 1).toFixed(1)),
+  downloads: `${Math.floor(Math.random() * 1000)}k`,
+  imageUrl: `https://picsum.photos/seed/app${i + 1}/300/200`,
+}));
+
+const AppCard = ({ app }: { app: App }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-normal mb-6">App Store</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {data.map((item) => (
-          <motion.div
-            key={item.id}
-            layoutId={`card-${item.id}`}
-            onClick={() => setSelectedId(item.id)}
-            className="cursor-pointer rounded-lg shadow-md overflow-hidden relative aspect-[1/1]"
-            transition={transitionProps}
-          >
-            <motion.img
-              layoutId={`image-${item.id}`}
-              src={item.image}
-              alt={`${item.title} app icon`}
-              className="w-full h-full object-cover"
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      transition={{
+        type: "spring",
+        bounce: 0.05,
+        duration: 0.25,
+      }}
+    >
+      <DialogTrigger asChild>
+        <Card
+          ref={cardRef}
+          className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+        >
+          <CardHeader className="p-0">
+            <Image
+              src={app.imageUrl}
+              alt={app.name}
+              width={300}
+              height={200}
+              className="w-full h-48 object-cover"
             />
-            <motion.div
-              layoutId={`gradient-${item.id}`}
-              className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
-            />
-            <motion.div
-              className="absolute bottom-0 left-0 right-0 p-4 text-white"
-              initial={false}
-              transition={transitionProps}
+          </CardHeader>
+          <CardContent className="p-4">
+            <CardTitle className="text-lg mb-2 line-clamp-1">
+              {app.name}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+              {app.description}
+            </p>
+            <div className="flex items-center justify-between">
+              <Badge variant="secondary">{app.category}</Badge>
+              <span className="text-sm font-semibold">{app.price}</span>
+            </div>
+          </CardContent>
+          <CardFooter className="p-4 pt-0 flex justify-between items-center">
+            <div className="flex">
+              {Array.from({ length: 5 }, (_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < Math.floor(app.rating)
+                      ? "text-yellow-400 fill-yellow-400"
+                      : "text-muted-foreground"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {app.downloads} downloads
+            </span>
+          </CardFooter>
+        </Card>
+      </DialogTrigger>
+      <DialogContainer>
+        <DialogContent
+          style={{
+            borderRadius: "24px",
+          }}
+          className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
+        >
+          <div className="relative h-64 w-full overflow-hidden">
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={app.imageUrl}
+                    alt={`${app.name} app screenshot`}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className="p-6">
+            <DialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50">
+              {app.name}
+            </DialogTitle>
+            <DialogSubtitle className="text-zinc-700 dark:text-zinc-400">
+              {app.category}
+            </DialogSubtitle>
+            <DialogDescription
+              disableLayoutAnimation
+              variants={{
+                initial: { opacity: 0, scale: 0.8, y: 100 },
+                animate: { opacity: 1, scale: 1, y: 0 },
+                exit: { opacity: 0, scale: 0.8, y: 100 },
+              }}
             >
-              <motion.p
-                layoutId={`category-${item.id}`}
-                className="text-sm opacity-75 mb-1"
-                transition={transitionProps}
-              >
-                {item.category}
-              </motion.p>
-              <motion.h2
-                layoutId={`title-${item.id}`}
-                className="text-lg font-normal"
-                transition={transitionProps}
-              >
-                {item.title}
-              </motion.h2>
-            </motion.div>
-          </motion.div>
-        ))}
+              <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
+                <p className="text-zinc-500 dark:text-zinc-500">
+                  {app.description}
+                </p>
+              </ScrollArea>
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex items-center space-x-2">
+                  <div className="flex">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < Math.floor(app.rating)
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-zinc-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    {app.rating.toFixed(1)}
+                  </span>
+                </div>
+                <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {app.downloads} downloads
+                </span>
+              </div>
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                  {app.price}
+                </span>
+                <Button>{app.price === "Free" ? "Get" : "Buy"}</Button>
+              </div>
+            </DialogDescription>
+          </div>
+          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-full p-1" />
+        </DialogContent>
+      </DialogContainer>
+    </Dialog>
+  );
+};
+
+export default function AppStore() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [apps, setApps] = useState<App[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const appsPerPage = 10;
+  const totalPages = Math.ceil(mockApps.length / appsPerPage);
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * appsPerPage;
+    const endIndex = startIndex + appsPerPage;
+    const filteredApps = mockApps
+      .filter((app) =>
+        app.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .filter(
+        (app) => selectedCategory === "All" || app.category === selectedCategory
+      );
+    const paginatedApps = filteredApps.slice(startIndex, endIndex);
+    setApps(paginatedApps);
+  }, [currentPage, searchTerm, selectedCategory]);
+
+  return (
+    <div className="container mx-auto p-4 space-y-6">
+      <h1 className="text-4xl font-bold text-center mb-8">App Store</h1>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Input
+          placeholder="Search apps..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow"
+        />
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Categories</SelectItem>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      <AnimatePresence>
-        {selectedId && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-            onClick={handleClose}
-          >
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <AnimatePresence mode="wait">
+          {apps.map((app) => (
             <motion.div
-              layoutId={`card-${selectedId}`}
-              className="bg-background rounded-lg shadow-lg overflow-hidden max-w-md w-full relative"
-              onClick={(e) => e.stopPropagation()}
-              transition={transitionProps}
+              key={app.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
             >
-              {data.map((item) => {
-                if (item.id === selectedId) {
-                  return (
-                    <React.Fragment key={item.id}>
-                      <div className="relative">
-                        <motion.img
-                          layoutId={`image-${item.id}`}
-                          src={item.image}
-                          alt={`${item.title} app screenshot`}
-                          className="w-full aspect-video object-cover"
-                          transition={transitionProps}
-                        />
-                        <motion.div
-                          layoutId={`gradient-${item.id}`}
-                          className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
-                          transition={transitionProps}
-                        />
-                        <motion.div
-                          className="absolute bottom-0 left-0 right-0 p-6 text-white"
-                          transition={transitionProps}
-                        >
-                          <motion.p
-                            layoutId={`category-${item.id}`}
-                            className="text-sm opacity-75 mb-1"
-                            transition={transitionProps}
-                          >
-                            {item.category}
-                          </motion.p>
-                          <motion.h2
-                            layoutId={`title-${item.id}`}
-                            className="text-2xl font-normal"
-                            transition={transitionProps}
-                          >
-                            {item.title}
-                          </motion.h2>
-                        </motion.div>
-                      </div>
-                      <div className="p-6">
-                        <div className="flex items-center mb-4">
-                          <div className="flex items-center mr-2">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-4 h-4 ${
-                                  i < Math.floor(item.rating)
-                                    ? "text-yellow-400 fill-current"
-                                    : "text-gray-300"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-sm text-gray-600">
-                            {item.rating} ({item.reviews.toLocaleString()}{" "}
-                            reviews)
-                          </span>
-                        </div>
-                        <p className="text-gray-600 mb-4">{item.description}</p>
-                        <div className="mb-4">
-                          <h3 className="font-normal mb-2">Key Features:</h3>
-                          <ul className="list-disc list-inside">
-                            {item.features.map((feature, index) => (
-                              <li key={index} className="text-sm text-gray-600">
-                                {feature}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <Button className="w-full">
-                          <Download className="mr-2 h-4 w-4" /> Get
-                        </Button>
-                      </div>
-                    </React.Fragment>
-                  );
-                }
-                return null;
-              })}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="absolute top-2 right-2 text-white hover:text-gray-200 bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full z-10"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <AppCard app={app} />
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            />
+          </PaginationItem>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <PaginationItem key={page}>
+              <PaginationLink
+                onClick={() => setCurrentPage(page)}
+                isActive={currentPage === page}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }
