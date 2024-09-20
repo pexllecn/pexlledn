@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,7 +21,7 @@ import {
 } from "@/components/ui/pagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Star, Search, Filter } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -40,6 +34,7 @@ import {
   DialogDescription,
   DialogContainer,
 } from "@/components/core/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type App = {
   id: number;
@@ -53,6 +48,7 @@ type App = {
 };
 
 const categories = [
+  "All",
   "Games",
   "Productivity",
   "Education",
@@ -67,7 +63,7 @@ const mockApps: App[] = Array.from({ length: 50 }, (_, i) => ({
     i + 1
   }. It's a great app with many features that users will love. Perfect for daily use and enhancing productivity.`,
   price: Math.random() > 0.7 ? `$${(Math.random() * 10).toFixed(2)}` : "Free",
-  category: categories[Math.floor(Math.random() * categories.length)],
+  category: categories[Math.floor(Math.random() * (categories.length - 1)) + 1],
   rating: Number((Math.random() * 4 + 1).toFixed(1)),
   downloads: `${Math.floor(Math.random() * 1000)}k`,
   imageUrl: `https://picsum.photos/seed/app${i + 1}/300/200`,
@@ -83,45 +79,46 @@ const AppCard = ({ app }: { app: App }) => {
       }}
     >
       <DialogTrigger>
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden">
-          <CardHeader className="p-0">
-            <Image
-              src={app.imageUrl}
-              alt={app.name}
-              width={300}
-              height={200}
-              className="w-full h-48 object-cover"
-            />
-          </CardHeader>
-          <CardContent className="p-4">
-            <CardTitle className="text-lg mb-2 line-clamp-1">
+        <Card className="relative w-full h-64 overflow-hidden group cursor-pointer">
+          <Image
+            src={app.imageUrl}
+            alt={app.name}
+            layout="fill"
+            objectFit="cover"
+            className="transition-transform duration-300 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+            <h3 className="text-lg font-semibold mb-1 line-clamp-1">
               {app.name}
-            </CardTitle>
-            <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+            </h3>
+            <p className="text-sm mb-2 line-clamp-2 text-gray-200">
               {app.description}
             </p>
             <div className="flex items-center justify-between">
-              <Badge variant="secondary">{app.category}</Badge>
+              <Badge variant="secondary" className="bg-white/20 text-white">
+                {app.category}
+              </Badge>
               <span className="text-sm font-semibold">{app.price}</span>
             </div>
-          </CardContent>
-          <CardFooter className="p-4 pt-0 flex justify-between items-center">
-            <div className="flex">
-              {Array.from({ length: 5 }, (_, i) => (
-                <Star
-                  key={i}
-                  className={`w-4 h-4 ${
-                    i < Math.floor(app.rating)
-                      ? "text-yellow-400 fill-yellow-400"
-                      : "text-muted-foreground"
-                  }`}
-                />
-              ))}
+            <div className="flex justify-between items-center mt-2">
+              <div className="flex">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < Math.floor(app.rating)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-300">
+                {app.downloads} downloads
+              </span>
             </div>
-            <span className="text-sm text-muted-foreground">
-              {app.downloads} downloads
-            </span>
-          </CardFooter>
+          </div>
         </Card>
       </DialogTrigger>
       <DialogContainer>
@@ -154,11 +151,26 @@ const AppCard = ({ app }: { app: App }) => {
                 exit: { opacity: 0, scale: 0.8, y: 100 },
               }}
             >
-              <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
-                <p className="text-zinc-500 dark:text-zinc-500">
-                  {app.description}
-                </p>
-              </ScrollArea>
+              <Tabs defaultValue="description" className="w-full mt-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="description">Description</TabsTrigger>
+                  <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                </TabsList>
+                <TabsContent value="description">
+                  <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
+                    <p className="text-zinc-500 dark:text-zinc-500">
+                      {app.description}
+                    </p>
+                  </ScrollArea>
+                </TabsContent>
+                <TabsContent value="reviews">
+                  <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
+                    <p className="text-zinc-500 dark:text-zinc-500">
+                      User reviews will be displayed here.
+                    </p>
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
               <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center space-x-2">
                   <div className="flex">
@@ -185,11 +197,13 @@ const AppCard = ({ app }: { app: App }) => {
                 <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                   {app.price}
                 </span>
-                <Button>{app.price === "Free" ? "Get" : "Buy"}</Button>
+                <Button className="bg-primary hover:bg-primary/90">
+                  {app.price === "Free" ? "Get" : "Buy"}
+                </Button>
               </div>
             </DialogDescription>
           </div>
-          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-full p-1" />
+          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-full p-1 hover:bg-zinc-900/70 transition-colors" />
         </DialogContent>
       </DialogContainer>
     </Dialog>
@@ -201,6 +215,7 @@ export default function AppStore() {
   const [apps, setApps] = useState<App[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const appsPerPage = 10;
   const totalPages = Math.ceil(mockApps.length / appsPerPage);
 
@@ -222,30 +237,61 @@ export default function AppStore() {
     <div className="container mx-auto p-4 space-y-6">
       <h1 className="text-4xl font-bold text-center mb-8">App Store</h1>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Input
-          placeholder="Search apps..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-grow"
-        />
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Categories</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <div className="relative flex-grow">
+          <Input
+            placeholder="Search apps..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+        </div>
+        <Button
+          variant="outline"
+          className="sm:w-auto"
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+        >
+          <Filter className="mr-2" size={20} />
+          Filter
+        </Button>
       </div>
 
+      <AnimatePresence>
+        {isFilterOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-secondary p-4 rounded-lg shadow-md">
+              <h2 className="text-lg font-semibold mb-2">Categories</h2>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={
+                      selectedCategory === category ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
