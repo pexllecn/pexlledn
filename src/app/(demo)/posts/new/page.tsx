@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -74,9 +74,6 @@ const mockApps: App[] = Array.from({ length: 50 }, (_, i) => ({
 }));
 
 const AppCard = ({ app }: { app: App }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-
   return (
     <Dialog
       transition={{
@@ -86,10 +83,7 @@ const AppCard = ({ app }: { app: App }) => {
       }}
     >
       <DialogTrigger>
-        <Card
-          ref={cardRef}
-          className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
-        >
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden">
           <CardHeader className="p-0">
             <Image
               src={app.imageUrl}
@@ -138,33 +132,12 @@ const AppCard = ({ app }: { app: App }) => {
           className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
         >
           <div className="relative h-64 w-full overflow-hidden">
-            <AnimatePresence>
-              {isOpen && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                  }}
-                  transition={{
-                    duration: 0.3,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute inset-0"
-                >
-                  <Image
-                    src={app.imageUrl}
-                    alt={`${app.name} app screenshot`}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Image
+              src={app.imageUrl}
+              alt={`${app.name} app screenshot`}
+              layout="fill"
+              objectFit="cover"
+            />
           </div>
           <div className="p-6">
             <DialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50">
@@ -297,7 +270,9 @@ export default function AppStore() {
           <PaginationItem>
             <PaginationPrevious
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className={currentPage === 1 ? "disabled" : ""}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : ""
+              }
             />
           </PaginationItem>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -315,7 +290,11 @@ export default function AppStore() {
               onClick={() =>
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
-              className={currentPage === totalPages ? "disabled" : ""}
+              className={
+                currentPage === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }
             />
           </PaginationItem>
         </PaginationContent>
