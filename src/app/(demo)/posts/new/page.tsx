@@ -148,9 +148,9 @@ const ProductCard = ({ product }: { product: Product }) => {
       <DialogContainer>
         <DialogContent
           style={{
-            borderRadius: "16px",
+            borderRadius: "24px",
           }}
-          className="pointer-events-auto relative flex h-auto flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-1/3"
+          className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
         >
           <div className="relative h-80 w-full overflow-hidden">
             <Image
