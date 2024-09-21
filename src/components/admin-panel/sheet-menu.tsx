@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { MenuIcon, PanelsTopLeft } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
@@ -38,25 +38,27 @@ const LogoSection = ({ logo }: { logo: string }) => (
 );
 
 export function SheetMenu() {
-  const { theme = "light", setTheme } = useTheme(); // Default to 'light' if theme is undefined
+  const { theme = "light", setTheme } = useTheme();
   const [logo, setLogo] = useState("/pexlleh.png");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const effectiveTheme = theme === "system" ? "light" : theme;
     setLogo(effectiveTheme === "light" ? "/pexlleh.png" : "/pexllelight.png");
   }, [theme]);
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger className="lg:hidden" asChild>
         <Button className="rounded-full w-8 h-8" variant="outline" size="icon">
           <MenuIcon size={18} />
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="bg-muted w-54 sm:w-54 h-full flex flex-col"
+        className="bg-muted w-52 sm:w-52 h-full flex flex-col p-3"
         side="left"
       >
-        <SheetHeader>
+        <SheetHeader className="p-4">
           <Button
             className="flex justify-center items-center pb-2 pt-1"
             variant="link"
@@ -67,7 +69,9 @@ export function SheetMenu() {
             </Link>
           </Button>
         </SheetHeader>
-        <Menu isOpen />
+        <div className="flex-grow overflow-y-auto">
+          <Menu isOpen={true} />
+        </div>
       </SheetContent>
     </Sheet>
   );
