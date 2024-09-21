@@ -70,7 +70,7 @@ export default function register() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-br from-white via-blue-300 to-blue-500 opacity-60"
+              : "bg-gradient-to-br from-white via-gray-300 to-gray-600 opacity-60"
           }`}
         ></div>
         <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 mx-4">

@@ -56,7 +56,7 @@ export default function Component() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-br from-white via-blue-300 to-blue-500 opacity-60"
+              : "bg-gradient-to-br from-white via-gray-300 to-gray-600 opacity-60"
           }`}
       ></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
@@ -158,10 +158,10 @@ export default function Component() {
           </div>
         </section>
       </main>
-      <footer className="relative z-10 w-full py-8 bg-opacity-70 backdrop-blur-md mt-32">
+      <footer className="relative z-10 w-full py-8 mt-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center">
-            <div className="flex items-center mb-2">
+            <div className="flex items-center">
               <LogoSection logo={logo} />
             </div>
             <p className="text-gray-500 text-sm">

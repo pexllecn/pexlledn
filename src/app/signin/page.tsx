@@ -305,7 +305,7 @@ export default function AuthenticationPage() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-br from-white via-blue-300 to-blue-500 opacity-60"
+              : "bg-gradient-to-br from-white via-gray-300 to-gray-600 opacity-60"
           }`}
         ></div>
 
