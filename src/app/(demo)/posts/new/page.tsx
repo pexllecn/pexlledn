@@ -117,7 +117,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               <h3 className="text-xl font-bold text-white line-clamp-1">
                 {product.name}
               </h3>
-              <p className="text-smt text-white line-clamp-2">
+              <p className="text-sm text-white line-clamp-2">
                 {product.description}
               </p>
               <div className="flex items-center justify-between">
@@ -131,7 +131,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                   </span>
                 </div>
                 <div>
-                  <span className="text-lg  font-bold text-white">
+                  <span className="text-lg font-bold text-white">
                     {product.price}
                   </span>
                   {product.originalPrice && (
@@ -209,11 +209,11 @@ const ProductCard = ({ product }: { product: Product }) => {
                       />
                     ))}
                   </div>
-                  <span className=" font-medium text-zinc-700 dark:text-zinc-300">
+                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
                     {product.rating.toFixed(1)}
                   </span>
                 </div>
-                <span className=" text-zinc-500 dark:text-zinc-400">
+                <span className="text-zinc-500 dark:text-zinc-400">
                   {product.sales} sold
                 </span>
               </div>
@@ -223,7 +223,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     {product.price}
                   </span>
                   {product.originalPrice && (
-                    <span className="ml-2  line-through text-zinc-500">
+                    <span className="ml-2 line-through text-zinc-500">
                       {product.originalPrice}
                     </span>
                   )}
@@ -248,11 +248,11 @@ export default function AppStore() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const productsPerPage = 8;
-  const totalPages = Math.ceil(mockProducts.length / productsPerPage);
+  const [totalPages, setTotalPages] = useState(
+    Math.ceil(mockProducts.length / productsPerPage)
+  );
 
   useEffect(() => {
-    const startIndex = (currentPage - 1) * productsPerPage;
-    const endIndex = startIndex + productsPerPage;
     const filteredProducts = mockProducts
       .filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -261,6 +261,11 @@ export default function AppStore() {
         (product) =>
           selectedCategory === "All" || product.category === selectedCategory
       );
+
+    setTotalPages(Math.ceil(filteredProducts.length / productsPerPage));
+
+    const startIndex = (currentPage - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
     const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
     setProducts(paginatedProducts);
   }, [currentPage, searchTerm, selectedCategory]);
@@ -277,19 +282,20 @@ export default function AppStore() {
         animate="visible"
         transition={{ duration: 0.4 }}
         variants={variants1}
+        className="min-h-screen"
       >
         <div className="container mx-auto p-4 space-y-8">
-          <h1 className="text-4xl font-bold text-center mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8">
             E-commerce Store
           </h1>
 
           <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <div className="relative flex-grow">
+            <div className="relative flex-grow w-full sm:w-auto">
               <Input
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 rounded-md focus:border-ring bg-muted border-none shadow-none"
+                className="pl-10 rounded-md focus:border-ring bg-muted border-none shadow-none w-full"
               />
               <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -298,7 +304,7 @@ export default function AppStore() {
             </div>
             <Button
               variant="outline"
-              className="sm:w-auto rounded-md"
+              className="w-full sm:w-auto rounded-md"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
             >
               <Filter className="mr-2" size={20} />
@@ -338,7 +344,7 @@ export default function AppStore() {
           </AnimatePresence>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -358,44 +364,46 @@ export default function AppStore() {
             </AnimatePresence>
           </motion.div>
 
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
-                  }
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(page)}
-                      isActive={currentPage === page}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  className={
-                    currentPage === totalPages
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="flex justify-center mt-8">
+            <Pagination>
+              <PaginationContent className="flex-wrap justify-center">
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </motion.div>
     </ContentLayout>
