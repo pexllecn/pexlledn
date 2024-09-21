@@ -100,7 +100,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       }}
     >
       <DialogTrigger>
-        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-2xl">
+        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -150,7 +150,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           style={{
             borderRadius: "16px",
           }}
-          className="pointer-events-auto relative flex h-auto flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 "
+          className="pointer-events-auto relative flex h-auto flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-1/3"
         >
           <div className="relative h-80 w-full overflow-hidden">
             <Image
