@@ -136,7 +136,7 @@ export default function AccountPage() {
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
                   <CardDescription>
-                    Update your personal details and profile picture
+                    Update your personal details and profile photo
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
