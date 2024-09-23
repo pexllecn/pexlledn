@@ -27,7 +27,6 @@ import {
   DialogDescription,
   DialogContainer,
 } from "@/components/core/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 
 type Product = {
@@ -152,7 +151,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           }}
           className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
         >
-          <div className="relative h-80 w-full overflow-hidden">
+          <div className="relative h-64 w-full overflow-hidden">
             <Image
               src={product.imageUrl}
               alt={`${product.name} product image`}
@@ -161,10 +160,10 @@ const ProductCard = ({ product }: { product: Product }) => {
             />
           </div>
           <div className="p-6">
-            <DialogTitle className="text-xl font-bold text-zinc-950 dark:text-zinc-50">
+            <DialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50">
               {product.name}
             </DialogTitle>
-            <DialogSubtitle className="text-xl text-zinc-700 dark:text-zinc-400">
+            <DialogSubtitle className="text-zinc-700 dark:text-zinc-400">
               {product.category}
             </DialogSubtitle>
             <DialogDescription
@@ -175,33 +174,18 @@ const ProductCard = ({ product }: { product: Product }) => {
                 exit: { opacity: 0, scale: 0.8, y: 100 },
               }}
             >
-              <Tabs defaultValue="description" className="w-full mt-6">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="description">Description</TabsTrigger>
-                  <TabsTrigger value="reviews">Reviews</TabsTrigger>
-                </TabsList>
-                <TabsContent value="description">
-                  <ScrollArea className="h-[150px] w-full rounded-md border p-4 mt-2">
-                    <p className="text-zinc-600 dark:text-zinc-400">
-                      {product.description}
-                    </p>
-                  </ScrollArea>
-                </TabsContent>
-                <TabsContent value="reviews">
-                  <ScrollArea className="h-[150px] w-full rounded-md border p-4 mt-2">
-                    <p className="text-zinc-600 dark:text-zinc-400">
-                      User reviews will be displayed here.
-                    </p>
-                  </ScrollArea>
-                </TabsContent>
-              </Tabs>
-              <div className="flex justify-between items-center mt-6">
+              <ScrollArea className="h-[100px] w-full rounded-md border p-4 mt-2">
+                <p className="text-zinc-500 dark:text-zinc-500">
+                  {product.description}
+                </p>
+              </ScrollArea>
+              <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center space-x-2">
                   <div className="flex">
                     {Array.from({ length: 5 }, (_, i) => (
                       <Star
                         key={i}
-                        className={`w-5 h-5 ${
+                        className={`w-4 h-4 ${
                           i < Math.floor(product.rating)
                             ? "text-yellow-400 fill-yellow-400"
                             : "text-zinc-300"
@@ -209,32 +193,32 @@ const ProductCard = ({ product }: { product: Product }) => {
                       />
                     ))}
                   </div>
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     {product.rating.toFixed(1)}
                   </span>
                 </div>
-                <span className="text-zinc-500 dark:text-zinc-400">
+                <span className="text-sm text-zinc-500 dark:text-zinc-400">
                   {product.sales} sold
                 </span>
               </div>
-              <div className="flex justify-between items-center mt-6">
+              <div className="flex justify-between items-center mt-4">
                 <div>
-                  <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-2xl font-bold text-primary">
                     {product.price}
                   </span>
                   {product.originalPrice && (
-                    <span className="ml-2 line-through text-zinc-500">
+                    <span className="text-sm text-zinc-500 line-through ml-2">
                       {product.originalPrice}
                     </span>
                   )}
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-md">
+                <Button className="bg-primary hover:bg-primary/90">
                   <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </div>
             </DialogDescription>
           </div>
-          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-md p-1 hover:bg-zinc-900/70 transition-colors" />
+          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-full p-1 hover:bg-zinc-900/70 transition-colors" />
         </DialogContent>
       </DialogContainer>
     </Dialog>
