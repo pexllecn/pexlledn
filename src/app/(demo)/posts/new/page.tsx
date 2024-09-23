@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,14 +14,7 @@ import {
 } from "@/components/ui/pagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import {
-  Star,
-  Search,
-  Filter,
-  ShoppingCart,
-  Percent,
-  TrendingUp,
-} from "lucide-react";
+import { Star, Search, Filter, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -29,6 +22,7 @@ import {
   DialogTrigger,
   DialogContent,
   DialogTitle,
+  DialogSubtitle,
   DialogClose,
   DialogDescription,
   DialogContainer,
@@ -93,12 +87,18 @@ const mockProducts: Product[] = Array.from({ length: 50 }, (_, i) => ({
   category: categories[Math.floor(Math.random() * (categories.length - 1)) + 1],
   rating: Number((Math.random() * 1 + 4).toFixed(1)),
   sales: `${Math.floor(Math.random() * 10000)}`,
-  imageUrl: `https://picsum.photos/seed/product${i + 1}/400/400`,
+  imageUrl: `https://picsum.photos/seed/product${i + 1}/800/1000`,
 }));
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
-    <Dialog>
+    <Dialog
+      transition={{
+        type: "spring",
+        bounce: 0.05,
+        duration: 0.25,
+      }}
+    >
       <DialogTrigger>
         <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
           <Image
@@ -146,35 +146,52 @@ const ProductCard = ({ product }: { product: Product }) => {
         </Card>
       </DialogTrigger>
       <DialogContainer>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogClose />
-          <div className="relative h-64 w-full overflow-hidden rounded-t-lg">
+        <DialogContent
+          style={{
+            borderRadius: "24px",
+          }}
+          className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
+        >
+          <div className="relative h-80 w-full overflow-hidden">
             <Image
               src={product.imageUrl}
-              alt={product.name}
+              alt={`${product.name} product image`}
               layout="fill"
               objectFit="cover"
             />
           </div>
           <div className="p-6">
-            <DialogTitle>{product.name}</DialogTitle>
-            <Badge variant="outline" className="mt-2">
+            <DialogTitle className="text-xl font-bold text-zinc-950 dark:text-zinc-50">
+              {product.name}
+            </DialogTitle>
+            <DialogSubtitle className="text-xl text-zinc-700 dark:text-zinc-400">
               {product.category}
-            </Badge>
-            <DialogDescription>
+            </DialogSubtitle>
+            <DialogDescription
+              disableLayoutAnimation
+              variants={{
+                initial: { opacity: 0, scale: 0.8, y: 100 },
+                animate: { opacity: 1, scale: 1, y: 0 },
+                exit: { opacity: 0, scale: 0.8, y: 100 },
+              }}
+            >
               <Tabs defaultValue="description" className="w-full mt-6">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="description">Description</TabsTrigger>
                   <TabsTrigger value="reviews">Reviews</TabsTrigger>
                 </TabsList>
                 <TabsContent value="description">
-                  <ScrollArea className="h-[100px] w-full rounded-md border p-4 mt-2">
-                    <p>{product.description}</p>
+                  <ScrollArea className="h-[150px] w-full rounded-md border p-4 mt-2">
+                    <p className="text-zinc-600 dark:text-zinc-400">
+                      {product.description}
+                    </p>
                   </ScrollArea>
                 </TabsContent>
                 <TabsContent value="reviews">
-                  <ScrollArea className="h-[100px] w-full rounded-md border p-4 mt-2">
-                    <p>User reviews will be displayed here.</p>
+                  <ScrollArea className="h-[150px] w-full rounded-md border p-4 mt-2">
+                    <p className="text-zinc-600 dark:text-zinc-400">
+                      User reviews will be displayed here.
+                    </p>
                   </ScrollArea>
                 </TabsContent>
               </Tabs>
@@ -187,32 +204,37 @@ const ProductCard = ({ product }: { product: Product }) => {
                         className={`w-5 h-5 ${
                           i < Math.floor(product.rating)
                             ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300"
+                            : "text-zinc-300"
                         }`}
                       />
                     ))}
                   </div>
-                  <span className="font-medium">
+                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
                     {product.rating.toFixed(1)}
                   </span>
                 </div>
-                <span className="text-gray-500">{product.sales} sold</span>
+                <span className="text-zinc-500 dark:text-zinc-400">
+                  {product.sales} sold
+                </span>
               </div>
               <div className="flex justify-between items-center mt-6">
                 <div>
-                  <span className="text-2xl font-bold">{product.price}</span>
+                  <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {product.price}
+                  </span>
                   {product.originalPrice && (
-                    <span className="ml-2 text-sm line-through text-gray-500">
+                    <span className="ml-2 line-through text-zinc-500">
                       {product.originalPrice}
                     </span>
                   )}
                 </div>
-                <Button>
+                <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-md">
                   <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </div>
             </DialogDescription>
           </div>
+          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-md p-1 hover:bg-zinc-900/70 transition-colors" />
         </DialogContent>
       </DialogContainer>
     </Dialog>
@@ -248,12 +270,18 @@ export default function AppStore() {
     setProducts(paginatedProducts);
   }, [currentPage, searchTerm, selectedCategory]);
 
+  const variants1 = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
   return (
     <ContentLayout title="E-commerce Store">
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial="hidden"
+        animate="visible"
         transition={{ duration: 0.4 }}
+        variants={variants1}
         className="min-h-screen"
       >
         <div className="container mx-auto p-4 space-y-8">
