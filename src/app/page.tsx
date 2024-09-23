@@ -56,7 +56,7 @@ export default function Component() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-br from-white via-gray-300 to-gray-600 opacity-60"
+              : "bg-gradient-to-br from-white via-gray-300 to-gray-500 opacity-60"
           }`}
       ></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
