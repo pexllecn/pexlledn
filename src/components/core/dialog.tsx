@@ -192,8 +192,15 @@ function DialogContent({ children, className, style }: DialogContent) {
     <motion.div
       ref={containerRef}
       layoutId={`dialog-${uniqueId}`}
-      className={cn("overflow-hidden", className)}
-      style={style}
+      className={cn(
+        "overflow-y-auto max-h-[calc(100vh-2rem)] w-[calc(100vw-2rem)] sm:w-auto sm:max-w-[500px]",
+        className
+      )}
+      style={{
+        ...style,
+        maxWidth: "calc(100vw - 2rem)",
+        maxHeight: "calc(100vh - 2rem)",
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby={`dialog-title-${uniqueId}`}
