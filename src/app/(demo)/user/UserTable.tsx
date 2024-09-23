@@ -251,17 +251,19 @@ export function UserTable({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        <div className="flex items-center space-x-2">
-          <Input
-            placeholder="Search by name or email..."
-            value={globalFilter ?? ""}
-            onChange={(event) => setGlobalFilter(event.target.value)}
-            className="max-w-sm border-none bg-muted shadow-none"
-          />
+        <div className="flex items-center space-x-2 w-full max-w-xs">
+          <div className="relative flex-grow">
+            <Input
+              placeholder="Search by name or email..."
+              value={globalFilter ?? ""}
+              onChange={(event) => setGlobalFilter(event.target.value)}
+              className="w-full pr-10 border-none bg-muted shadow-none"
+            />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                <FilterIcon className="mr-2 h-3 w-3" /> Filter
+              <Button variant="outline" className="shrink-0">
+                <FilterIcon className="mr-2 h-4 w-4" /> Filter
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -356,12 +358,12 @@ export function UserTable({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Button onClick={onAddUser}>
+        <Button onClick={onAddUser} className="ml-4">
           <PlusIcon className="mr-2 h-4 w-4" /> Add User
         </Button>
       </div>
       <div className="rounded-md border">
-        <Table className="">
+        <Table>
           <TableHeader className="bg-muted rounded-md">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -371,7 +373,6 @@ export function UserTable({
                       key={header.id}
                       className="first:rounded-tl-md last:rounded-tr-md"
                     >
-                      {" "}
                       {header.isPlaceholder
                         ? null
                         : flexRender(
