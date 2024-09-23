@@ -59,7 +59,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/messages"),
           icon: MessageCircleMore,
           submenus: [],
-          notificationCount: 3,
+          notificationCount: "3",
         },
         {
           href: "/kanban",
@@ -74,7 +74,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/user/1"),
           icon: User,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "Updated",
         },
       ],
     },

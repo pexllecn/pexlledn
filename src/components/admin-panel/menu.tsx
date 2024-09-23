@@ -121,9 +121,9 @@ export function Menu({ isOpen }: MenuProps) {
                                   <Badge
                                     variant="outline"
                                     className={cn(
-                                      "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background",
+                                      "ml-auto px-2 min-w-[20px] flex items-center justify-center bg-background",
                                       typeof notificationCount === "string" &&
-                                        "text-xs"
+                                        "text-xss"
                                     )}
                                   >
                                     {notificationCount}
@@ -139,7 +139,7 @@ export function Menu({ isOpen }: MenuProps) {
                                 <Badge
                                   variant="secondary"
                                   className={cn(
-                                    "ml-2 px-1.5 min-w-[20px] flex items-center justify-center",
+                                    "ml-2 px-2 min-w-[20px] flex items-center justify-center",
                                     typeof notificationCount === "string" &&
                                       "text-xs"
                                   )}

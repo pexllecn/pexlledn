@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       fontSize: {
+        xss: "0.625rem", // 12px
         xs: "0.75rem", // 12px
         sm: "0.8125rem", // 13px
         base: "0.875rem", // 14px

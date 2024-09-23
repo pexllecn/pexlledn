@@ -55,7 +55,7 @@ export function SheetMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="bg-muted w-52 sm:w-52 h-full flex flex-col p-3"
+        className="bg-muted w-64 sm:w-64 h-full flex flex-col p-3"
         side="left"
       >
         <SheetHeader className="p-4">

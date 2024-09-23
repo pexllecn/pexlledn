@@ -60,7 +60,7 @@ export function CollapseMenuButton({
         variant="outline"
         className={cn(
           "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50",
-          typeof count === "string" && "text-xs"
+          typeof count === "string" && "text-xss"
         )}
       >
         {count}

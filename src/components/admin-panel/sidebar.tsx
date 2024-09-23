@@ -62,7 +62,7 @@ export function Sidebar() {
     <aside
       className={cn(
         "fixed top-0 left-0 z-20 h-screen transition-all duration-300 ease-in-out",
-        sidebar.isOpen ? "w-52" : "w-[60px]",
+        sidebar.isOpen ? "w-56" : "w-[64px]",
         "hidden lg:block"
       )}
     >
