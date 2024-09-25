@@ -77,7 +77,7 @@ export default function AccountPage() {
         transition={{ duration: 0.4 }}
         variants={variants1}
       >
-        <div className="container mx-auto p-4 sm:p-6 max-w-4xl">
+        <div className="p-4 sm:p-6 max-w-4xl">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl sm:text-3xl font-normal">
