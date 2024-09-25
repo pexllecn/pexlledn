@@ -9,6 +9,7 @@ import {
   DollarSign,
   MessageCircleMore,
   Kanban,
+  Briefcase,
   MessageSquareQuote,
 } from "lucide-react";
 
@@ -120,6 +121,14 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/pricing"),
           icon: DollarSign,
           submenus: [],
+        },
+        {
+          href: "/work",
+          label: "Work",
+          active: pathname.includes("/work"),
+          icon: Briefcase,
+          submenus: [],
+          notificationCount: "New",
         },
       ],
     },

@@ -62,12 +62,12 @@ export function Sidebar() {
     <aside
       className={cn(
         "fixed top-0 left-0 z-20 h-screen transition-all duration-300 ease-in-out",
-        sidebar.isOpen ? "w-56" : "w-[64px]",
+        sidebar.isOpen ? "w-56" : "w-[54px]",
         "hidden lg:block"
       )}
     >
       <SidebarToggle isOpen={sidebar.isOpen} setIsOpen={sidebar.setIsOpen} />
-      <div className="relative bg-muted h-full flex flex-col overflow-hidden pl-3 pr-1 pt-4">
+      <div className="relative bg-muted h-full flex flex-col overflow-hidden pl-2 pr-1 pt-4">
         <Button
           className={cn(
             "transition-all ease-in-out duration-300 mb-1",

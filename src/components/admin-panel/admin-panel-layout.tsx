@@ -22,7 +22,7 @@ export default function AdminPanelLayout({
         <main
           className={cn(
             "pt-4 mb-4 shadow-sm shadow-black/10 rounded-xl dark:border dark:border-muted-background min-h-[calc(100vh_-_52px)] bg-background transition-[margin-left] ease-in-out duration-300",
-            sidebar?.isOpen === false ? "lg:ml-[64px]" : "lg:ml-56"
+            sidebar?.isOpen === false ? "lg:ml-[52px]" : "lg:ml-56"
           )}
         >
           {children}
@@ -31,7 +31,7 @@ export default function AdminPanelLayout({
       <footer
         className={cn(
           "transition-[margin-left] ease-in-out duration-300",
-          sidebar?.isOpen === false ? "lg:ml-[64px]" : "lg:ml-56"
+          sidebar?.isOpen === false ? "lg:ml-[52px]" : "lg:ml-56"
         )}
       >
         <Footer />
