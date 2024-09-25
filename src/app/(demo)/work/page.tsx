@@ -196,7 +196,7 @@ export default function JobSearchPage() {
               </Badge>
 
               {/* Scrollable job listings */}
-              <div className="space-y-4 h-[calc(100vh-300px)] overflow-y-auto p-2">
+              <div className="space-y-4 h-[calc(100vh-300px)] overflow-y-auto p-1">
                 {jobs.map((job) => (
                   <Card
                     key={job.id}
