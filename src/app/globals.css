@@ -31,7 +31,7 @@
     --radius: 0.75rem;
 
     /* Default font family and weight */
-    --font-weight: 300; /* Light weight */
+    /* Light weight */
   }
 
   .dark {
@@ -87,18 +87,14 @@
   input[type="week"],
   textarea,
   select {
-    max-height: 100vh; /* Prevent content from expanding beyond viewport */
+    max-height: 100vh;
+    /* Prevent content from expanding beyond viewport */
   }
 }
 
-* {
-  @apply border-border;
-  font-family: Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif !important;
-}
 
 @layer base {
+
   html,
   body {
     touch-action: manipulation;
@@ -118,6 +114,8 @@ body {
 
 body {
   @apply bg-background text-foreground;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -133,11 +131,9 @@ body {
 }
 
 .text-gradient_metalic {
-  background: linear-gradient(
-    to bottom,
-    rgb(152 152 152 / 70%) 20%,
-    rgb(0 0 0)
-  );
+  background: linear-gradient(to bottom,
+      rgb(152 152 152 / 70%) 20%,
+      rgb(0 0 0));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -171,4 +167,19 @@ body {
   max-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for blur in Edge and Safari */
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .backdrop-blur-sm {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+}
+
+/* Improve font rendering consistency across operating systems */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }

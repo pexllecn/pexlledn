@@ -239,29 +239,26 @@ export default function JobSearchPage() {
                       </div>
 
                       <div className="flex flex-wrap gap-4 mb-6">
-                        <Badge variant="success">
+                        <Badge variant="outline" className="bg-background">
                           <span className="font-semibold">Salary</span>
                           <span className="ml-2">{selectedJob.salary}</span>
                         </Badge>
-                        <Badge variant="info">
+                        <Badge variant="outline" className="bg-background">
                           <span className="font-semibold">Job Type</span>
                           <span className="ml-2">{selectedJob.type}</span>
                         </Badge>
-                        <Badge variant="teal">
+                        <Badge variant="outline" className="bg-background">
                           <span className="font-semibold">Number of Applicants</span>
                           <span className="ml-2">20 /50</span>
                         </Badge>
-                        <Badge variant="blue">
+                        <Badge variant="outline" className="bg-background">
                           <span className="font-semibold">Skill</span>
                           <span className="ml-2">{selectedJob.level}</span>
                         </Badge>
                       </div>
 
                       <div className="mb-6">
-                        <div className="flex space-x-4 mb-4">
-                          <Button className="flex-1 bg-primary text-primary-foreground">Description</Button>
-                          <Button variant="outline" className="flex-1">Company</Button>
-                        </div>
+                        
                         <h3 className="text-lg font-semibold mb-2">Job Description</h3>
                         <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                           <li>Design and implement user-centered interfaces for web and mobile applications.</li>
