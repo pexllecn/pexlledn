@@ -73,7 +73,48 @@ export default function JobSearchPage() {
       verified: "€150,000+ spent",
       timeAgo: "3d ago"
     },
-    
+    {
+      id: 4,
+      company: "Google",
+      role: "Interaction Designer",
+      location: "Mountain View, CA - Hybrid",
+      salary: "$140k - $180k",
+      type: "Full-Time",
+      level: "Senior",
+      logo: "https://logo.clearbit.com/google.com",
+      color: "bg-yellow-500",
+      requirements: "7+ years of experience in interaction design, expertise in prototyping tools, and a history of shipping successful products.",
+      verified: "$500,000+ spent",
+      timeAgo: "5d ago"
+    },
+    {
+      id: 5,
+      company: "Microsoft",
+      role: "UX/UI Designer",
+      location: "Redmond, WA - Onsite",
+      salary: "$125k - $160k",
+      type: "Full-Time",
+      level: "Mid-Senior",
+      logo: "https://logo.clearbit.com/microsoft.com",
+      color: "bg-blue-600",
+      requirements: "5+ years of UX/UI design experience, proficiency in Adobe Creative Suite and Figma, and experience with design systems.",
+      verified: "$300,000+ spent",
+      timeAgo: "1w ago"
+    },
+    {
+      id: 6,
+      company: "Twitter",
+      role: "Product Designer",
+      location: "San Francisco, CA - Remote",
+      salary: "$130k - $170k",
+      type: "Full-Time",
+      level: "Senior",
+      logo: "https://logo.clearbit.com/twitter.com",
+      color: "bg-blue-400",
+      requirements: "6+ years of product design experience, strong portfolio showcasing end-to-end design process, and experience with social media products.",
+      verified: "$250,000+ spent",
+      timeAgo: "3d ago"
+    },
   ]
 
   const variants1 = {
@@ -108,11 +149,8 @@ export default function JobSearchPage() {
           {/* Main content */}
           <div className="flex-1 flex flex-col lg:flex-row">
             {/* Left Column - Job Listings */}
-            <div className="w-full lg:w-1/3 p-4 lg:p-6 overflow-y-auto">
-              <div className="hidden lg:flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Welcome Back, Let's Find Your Job!🔥</h1>
-              </div>
-
+            <div className="w-full lg:w-1/3 p-4 lg:p-6">
+              
               {/* Search Bar */}
               <div className="flex items-center w-full mb-6 space-x-2">
                 <div className="relative flex-grow">
@@ -138,7 +176,8 @@ export default function JobSearchPage() {
                 <span className="text-sm">29 Jobs Found</span>
               </Badge>
 
-              <div className="space-y-4">
+              {/* Scrollable job listings */}
+              <div className="space-y-4 h-[calc(100vh-300px)] overflow-y-auto pr-2">
                 {jobs.map((job) => (
                   <Card 
                     key={job.id} 
