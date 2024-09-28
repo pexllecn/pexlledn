@@ -1,54 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
-import { useTheme } from "next-themes";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { motion } from "framer-motion";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  User,
-  Bell,
-  Settings,
-  Shield,
-  Moon,
-  Sun,
-  Upload,
-  Trash2,
-  LogOut,
-  Smartphone,
-  Globe,
-  X,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
+import {
   ChevronDown,
+  Globe,
+  LogOut,
+  Moon,
+  Smartphone,
+  Sun,
+  Trash2,
+  Upload,
+  X,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import Head from "next/head";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function AccountPage() {
   const { theme, setTheme } = useTheme();
@@ -69,7 +66,7 @@ export default function AccountPage() {
   return (
     <ContentLayout title="Account">
       <Head>
-        <title>Account Settings</title> {/* Add title for the browser tab */}
+        <title>Account Settings</title>
       </Head>
       <motion.div
         initial="hidden"
@@ -143,7 +140,7 @@ export default function AccountPage() {
                   <div className="flex flex-col sm:flex-row items-center gap-4">
                     <Avatar className="h-24 w-24">
                       <AvatarImage
-                        src="/placeholder-avatar.jpg"
+                        src="/placeholder.svg?height=96&width=96"
                         alt="Profile picture"
                       />
                       <AvatarFallback>JD</AvatarFallback>
@@ -267,26 +264,51 @@ export default function AccountPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-normal">Theme</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Choose your preferred theme
-                      </p>
+                  <div>
+                    <h3 className="font-normal mb-2">Theme</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Choose your preferred theme
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      <div className="flex flex-col items-center">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className={`w-40 h-40 p-0 ${
+                            theme === "light" ? "ring-2 ring-primary" : ""
+                          }`}
+                          onClick={() => setTheme("light")}
+                        >
+                          <Image
+                            src="/lightpic.png"
+                            alt="Light theme"
+                            width={160}
+                            height={160}
+                            className="rounded-lg"
+                          />
+                        </Button>
+                        <Label className="mt-2">Light</Label>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className={`w-40 h-40 p-0 ${
+                            theme === "dark" ? "ring-2 ring-primary" : ""
+                          }`}
+                          onClick={() => setTheme("dark")}
+                        >
+                          <Image
+                            src="/darkpic.png"
+                            alt="Dark theme"
+                            width={160}
+                            height={160}
+                            className="rounded-lg"
+                          />
+                        </Button>
+                        <Label className="mt-2">Dark</Label>
+                      </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      onClick={() =>
-                        setTheme(theme === "dark" ? "light" : "dark")
-                      }
-                    >
-                      {theme === "dark" ? (
-                        <Sun className="h-4 w-4 mr-2" />
-                      ) : (
-                        <Moon className="h-4 w-4 mr-2" />
-                      )}
-                      {theme === "dark" ? "Light" : "Dark"} mode
-                    </Button>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="language">Language</Label>
