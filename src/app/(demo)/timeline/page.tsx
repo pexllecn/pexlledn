@@ -82,7 +82,7 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
   };
 
   return (
-    <Card className="mb-6 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="mb-6 bg-background hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="flex flex-row items-center gap-4">
         <Avatar>
           <AvatarImage
@@ -125,19 +125,9 @@ const TimelinePost: React.FC<{ ad: Ad }> = ({ ad }) => {
           {ad.tags.map((tag, index) => (
             <span
               key={index}
-              className="text-sm text-primary-foreground bg-primary px-2 py-1 rounded-full"
+              className="text-sm bg-secondary px-2 py-1 rounded-full"
             >
               #{tag}
-            </span>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {ad.paymentOptions.map((option, index) => (
-            <span
-              key={index}
-              className="text-sm text-secondary-foreground bg-secondary px-2 py-1 rounded-full"
-            >
-              {option}
             </span>
           ))}
         </div>
@@ -308,7 +298,7 @@ export default function EnhancedSocialMarketplace() {
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5, staggerChildren: 0.1 }}
-        className="container mx-auto px-4 py-8 max-w-4xl"
+        className="mx-auto px-4 py-8 max-w-6xl"
       >
         <motion.h1
           variants={variants}

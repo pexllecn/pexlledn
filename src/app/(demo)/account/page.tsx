@@ -35,20 +35,16 @@ import {
   ChevronDown,
   Globe,
   LogOut,
-  Moon,
   Smartphone,
-  Sun,
   Trash2,
   Upload,
   X,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import Head from "next/head";
-import Image from "next/image";
 import { useState } from "react";
+import ThemeSelector from "./ThemeSelector";
 
 export default function AccountPage() {
-  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("profile");
 
   const variants1 = {
@@ -269,46 +265,7 @@ export default function AccountPage() {
                     <p className="text-sm text-muted-foreground mb-4">
                       Choose your preferred theme
                     </p>
-                    <div className="flex flex-wrap gap-4">
-                      <div className="flex flex-col items-center">
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className={`w-40 h-40 p-0 ${
-                            theme === "light" ? "ring-2 ring-primary" : ""
-                          }`}
-                          onClick={() => setTheme("light")}
-                        >
-                          <Image
-                            src="/lightpic.png"
-                            alt="Light theme"
-                            width={160}
-                            height={160}
-                            className="rounded-lg"
-                          />
-                        </Button>
-                        <Label className="mt-2">Light</Label>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className={`w-40 h-40 p-0 ${
-                            theme === "dark" ? "ring-2 ring-primary" : ""
-                          }`}
-                          onClick={() => setTheme("dark")}
-                        >
-                          <Image
-                            src="/darkpic.png"
-                            alt="Dark theme"
-                            width={160}
-                            height={160}
-                            className="rounded-lg"
-                          />
-                        </Button>
-                        <Label className="mt-2">Dark</Label>
-                      </div>
-                    </div>
+                    <ThemeSelector />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="language">Language</Label>
