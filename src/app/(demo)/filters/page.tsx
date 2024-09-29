@@ -47,7 +47,7 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
         className={cn(
           "overflow-hidden group relative",
           isGridView
-            ? "aspect-[4/5]"
+            ? "aspect-[3/4]"
             : "hover:shadow-md transition-shadow duration-300"
         )}
       >
@@ -88,7 +88,7 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
             )}
           >
             <div>
-              <h3 className={cn("", isGridView ? "text-lg mb-1" : "text-lg")}>
+              <h3 className={cn("", isGridView ? "text-base mb-1" : "text-lg")}>
                 {ad.title}
               </h3>
               <p
@@ -132,7 +132,7 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
               </div>
             </div>
             {isGridView ? (
-              <Button className="mt-4 w-full" variant="secondary">
+              <Button className="mt-4 w-full" variant="secondary" size="sm">
                 View Details
               </Button>
             ) : (
@@ -506,7 +506,7 @@ export default function Filters() {
         transition={{ duration: 0.4 }}
         variants={variants1}
       >
-        <div className="container mx-auto px-4 py-8">
+        <div className="mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Desktop Sidebar */}
             <div className="hidden lg:block w-1/5 space-y-6">
@@ -555,7 +555,7 @@ export default function Filters() {
             </div>
 
             {/* Right Content */}
-            <div className="w-full lg:w-3/4">
+            <div className="w-full lg:w-4/5">
               <div className="mb-6 flex flex-col sm:flex-row gap-4">
                 <Input
                   placeholder="Search ads..."
@@ -604,7 +604,7 @@ export default function Filters() {
                     className={cn(
                       "grid gap-4",
                       isGridView
-                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                         : "grid-cols-1"
                     )}
                   >
