@@ -99,7 +99,7 @@ export function UserTable({
           aria-label="Select row"
         />
       ),
-      enableSorting: false,
+      enableSorting: true,
       enableHiding: false,
     },
     {
