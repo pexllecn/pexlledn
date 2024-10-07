@@ -3,15 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  Search,
-  Heart,
-  User,
-  Plus,
-  MessageCircleMore,
-  Kanban,
-} from "lucide-react";
+import { Home, Kanban, Plus, MessageCircleMore, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -22,11 +14,10 @@ export function BottomNav() {
       className={cn(
         "fixed bottom-0 left-0 right-0 border-t border-border py-2 px-4",
         "flex justify-between items-center lg:hidden",
-        "bg-background/95 backdrop-blur-lg",
-        "dark:bg-background/95 dark:backdrop-blur-lg",
+        "bg-background/70 backdrop-blur-lg",
+        "dark:bg-background/70 dark:backdrop-blur-lg",
         "dark:shadow-secondary",
-        "z-50",
-        "h-16" // Set a fixed height for the bottom nav
+        "z-50"
       )}
       style={{
         WebkitBackdropFilter: "blur(16px)",
@@ -81,7 +72,7 @@ const NavItem = ({
   <Link href={href} className="flex flex-col items-center">
     <div
       className={cn(
-        "p-1 transition-colors duration-200",
+        "p-2 transition-colors duration-200",
         isActive ? "text-primary" : "text-muted-foreground"
       )}
     >
@@ -92,7 +83,6 @@ const NavItem = ({
         ),
       })}
     </div>
-    <span className="text-xs mt-1">{label}</span>
   </Link>
 );
 
