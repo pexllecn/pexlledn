@@ -24,8 +24,7 @@ export default function DashboardLayout({
 }) {
   return (
     <AdminPanelLayout>
-      {children}
-      <Toaster />
+      <div className="h-full overflow-auto">{children}</div> <Toaster />
       <ZoomPreventer />
       <BottomNav />
     </AdminPanelLayout>

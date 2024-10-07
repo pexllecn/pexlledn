@@ -92,35 +92,6 @@
   }
 }
 
-@layer base {
-  html,
-  body {
-    touch-action: manipulation;
-  }
-
-  input,
-  textarea,
-  select {
-    touch-action: manipulation;
-  }
-}
-
-html,
-body {
-  @apply h-full;
-}
-
-body {
-  @apply bg-background text-foreground;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#root {
-  @apply h-full overflow-auto;
-  -webkit-overflow-scrolling: touch;
-}
-
 .text-gradient_indigo-purple {
   background: linear-gradient(90deg, #6366f1 0%, rgb(168 85 247 / 0.8) 100%);
   -webkit-background-clip: text;
