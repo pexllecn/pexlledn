@@ -8,8 +8,10 @@ export default function DemoLayout({
 }) {
   return (
     <AdminPanelLayout>
-      {children}
-      <BottomNav />
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-grow overflow-y-auto pb-16">{children}</div>
+        <BottomNav />
+      </div>
     </AdminPanelLayout>
   );
 }
