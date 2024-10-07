@@ -92,14 +92,7 @@ const NavItem = ({
         ),
       })}
     </div>
-    <span
-      className={cn(
-        "",
-        isActive ? "text-xss font-medium" : "text-muted-foreground"
-      )}
-    >
-      {label}
-    </span>
+    <span className="text-xss">{label}</span>
   </Link>
 );
 
