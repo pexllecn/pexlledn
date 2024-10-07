@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={`${GeistSans.className} font-light text-sm`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BreadcrumbProvider>
-            <div id="root" className="h-full overflow-auto">
+            <div id="root" className="">
               {children}
             </div>
             <ZoomPreventer />
