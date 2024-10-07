@@ -3,7 +3,15 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Kanban, Plus, MessageCircleMore, User } from "lucide-react";
+import {
+  Home,
+  Search,
+  Heart,
+  User,
+  Plus,
+  MessageCircleMore,
+  Kanban,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -17,7 +25,8 @@ export function BottomNav() {
         "bg-background/95 backdrop-blur-lg",
         "dark:bg-background/95 dark:backdrop-blur-lg",
         "dark:shadow-secondary",
-        "z-50"
+        "z-50",
+        "h-16" // Set a fixed height for the bottom nav
       )}
       style={{
         WebkitBackdropFilter: "blur(16px)",
