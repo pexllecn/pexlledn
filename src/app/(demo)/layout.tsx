@@ -8,7 +8,7 @@ export default function DemoLayout({
 }) {
   return (
     <AdminPanelLayout>
-      <div className="pb-0 lg:pb-0">{children}</div>
+      {children}
       <BottomNav />
     </AdminPanelLayout>
   );

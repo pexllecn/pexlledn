@@ -12,8 +12,7 @@ export function BottomNav() {
   return (
     <nav
       className={cn(
-        "fixed bottom-0 left-0 right-0 border-t border-border py-2 px-4",
-        "flex justify-between items-center lg:hidden",
+        "fixed bottom-0 left-0 right-0 border-t border-border py-2 px-4 flex w-full h-safe-offset-6 z-[100] pt-[2px] list-none",
         "bg-background/70 backdrop-blur-lg",
         "dark:bg-background/70 dark:backdrop-blur-lg",
         "dark:shadow-secondary",
