@@ -20,7 +20,7 @@ export function BottomNav() {
   return (
     <nav
       className={cn(
-        "fixed bottom-0 left-0 right-0 border-t border-border py-6 px-4",
+        "fixed bottom-0 left-0 right-0 border-t border-border py-2 px-4",
         "flex justify-between items-center lg:hidden",
         "bg-background/95 backdrop-blur-lg",
         "dark:bg-background/95 dark:backdrop-blur-lg",
@@ -35,31 +35,31 @@ export function BottomNav() {
     >
       <NavItem
         href="/dashboard"
-        icon={<Home size={24} />}
+        icon={Home}
         label="Home"
         isActive={pathname === "/dashboard"}
       />
       <NavItem
         href="/kanban"
-        icon={<Kanban size={24} />}
+        icon={Kanban}
         label="Kanban"
         isActive={pathname === "/kanban"}
       />
       <NavItem
         href="/users"
-        icon={<Plus size={24} />}
+        icon={Plus}
         label="Users"
         isActive={pathname === "/users"}
       />
       <NavItem
         href="/messages"
-        icon={<MessageCircleMore size={24} />}
+        icon={MessageCircleMore}
         label="Messages"
         isActive={pathname === "/messages"}
       />
       <NavItem
         href="/account"
-        icon={<User size={24} />}
+        icon={User}
         label="Account"
         isActive={pathname === "/account"}
       />
@@ -69,12 +69,12 @@ export function BottomNav() {
 
 const NavItem = ({
   href,
-  icon,
+  icon: Icon,
   label,
   isActive,
 }: {
   href: string;
-  icon: React.ReactElement;
+  icon: React.ElementType;
   label: string;
   isActive: boolean;
 }) => (
@@ -85,12 +85,15 @@ const NavItem = ({
         isActive ? "text-primary" : "text-muted-foreground"
       )}
     >
-      {React.cloneElement(icon, {
-        className: cn(
+      <Icon
+        size={24}
+        className={cn(
           "transition-all duration-200",
-          isActive ? "stroke-[2.0]" : "stroke-[1.0] stroke-muted-foreground"
-        ),
-      })}
+          isActive
+            ? "fill-current stroke-primary stroke-[3]"
+            : "stroke-[1.5] stroke-muted-foreground"
+        )}
+      />
     </div>
     <span className="text-xss">{label}</span>
   </Link>
