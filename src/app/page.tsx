@@ -41,7 +41,7 @@ export default function Component() {
     return null; // or a loading placeholder
   }
   return (
-    <div className="">
+    <div className="relative min-h-screen overflow-hidden">
       <div
         className={`fixed inset-0 -z-10 h-full w-full transition-all duration-300 
           ${

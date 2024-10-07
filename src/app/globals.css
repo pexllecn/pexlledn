@@ -92,6 +92,11 @@
   }
 }
 
+html,
+body {
+  @apply h-full;
+}
+
 body {
   @apply bg-background text-foreground;
   -webkit-font-smoothing: antialiased;
