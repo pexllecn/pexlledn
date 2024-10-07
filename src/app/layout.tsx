@@ -20,15 +20,10 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
-      <body
-        className={`${GeistSans.className} font-light text-sm flex flex-col min-h-screen`}
-      >
+      <body className={`${GeistSans.className} font-light text-sm`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BreadcrumbProvider>
-            <div
-              id="root"
-              className="flex-1 overflow-y-auto -webkit-overflow-scrolling-touch"
-            >
+            <div id="root" className="h-full overflow-auto">
               {children}
             </div>
             <ZoomPreventer />

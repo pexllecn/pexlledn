@@ -29,6 +29,9 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.75rem;
+
+    /* Default font family and weight */
+    /* Light weight */
   }
 
   .dark {
@@ -69,6 +72,7 @@
     @apply bg-background text-foreground text-sm;
   }
 
+  /* Prevent zooming on input fields */
   input[type="text"],
   input[type="email"],
   input[type="url"],
@@ -84,6 +88,7 @@
   textarea,
   select {
     max-height: 100vh;
+    /* Prevent content from expanding beyond viewport */
   }
 }
 
@@ -152,16 +157,19 @@ body {
   z-index: 1000;
 }
 
+/* Prevent content shifting when drawer opens */
 .drawer-open {
   overflow: hidden;
 }
 
+/* Ensure drawer content is scrollable */
 .drawer-content {
   max-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
+/* Fix for blur in Edge and Safari */
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
   .backdrop-blur-sm {
     -webkit-backdrop-filter: blur(4px);
@@ -169,30 +177,9 @@ body {
   }
 }
 
+/* Improve font rendering consistency across operating systems */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-}
-
-/* New styles for fixing scrolling issues */
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-#root {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-body {
-  overscroll-behavior-y: none;
 }
