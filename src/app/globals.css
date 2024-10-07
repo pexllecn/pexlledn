@@ -92,6 +92,19 @@
   }
 }
 
+@layer base {
+  html,
+  body {
+    touch-action: manipulation;
+  }
+
+  input,
+  textarea,
+  select {
+    touch-action: manipulation;
+  }
+}
+
 html,
 body {
   @apply h-full;
