@@ -92,33 +92,15 @@
   }
 }
 
-@layer base {
-  html,
-  body {
-    touch-action: manipulation;
-  }
-
-  input,
-  textarea,
-  select {
-    touch-action: manipulation;
-  }
-}
-
 html,
 body {
-  @apply h-screen;
+  @apply h-full;
 }
 
 body {
   @apply bg-background text-foreground;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-#root {
-  @apply h-full overflow-auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .text-gradient_indigo-purple {
