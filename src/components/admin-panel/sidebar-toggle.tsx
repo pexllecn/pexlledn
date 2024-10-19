@@ -1,4 +1,4 @@
-import { PanelRightOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,12 +27,19 @@ export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
               variant="ghost"
               size="icon"
             >
-              <PanelRightOpen
-                className={cn(
-                  "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400",
-                  isOpen === false ? "rotate-180" : "rotate-0"
-                )}
-              />
+              {isOpen ? (
+                <PanelLeftClose
+                  className={cn(
+                    "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
+                  )}
+                />
+              ) : (
+                <PanelLeftOpen
+                  className={cn(
+                    "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
+                  )}
+                />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">Toggle Sidebar</TooltipContent>
