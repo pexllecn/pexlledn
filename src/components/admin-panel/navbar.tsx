@@ -73,7 +73,7 @@ export function Navbar({ title }: NavbarProps) {
         backdropFilter: "blur(16px)",
       }}
     >
-      <div className="mx-4 sm:mx-8 h-16 flex items-center">
+      <div className="mx-4 sm:mx-8 h-14 flex items-center">
         <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="flex items-center space-x-4">
             <SheetMenu />
@@ -81,6 +81,7 @@ export function Navbar({ title }: NavbarProps) {
               isOpen={sidebar.isOpen}
               setIsOpen={sidebar.setIsOpen}
             />
+
             <Separator
               orientation="vertical"
               className="hidden lg:block ml-4 h-4"
