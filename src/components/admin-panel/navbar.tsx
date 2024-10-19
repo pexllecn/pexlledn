@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -19,6 +19,11 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { SidebarToggle } from "./sidebar-toggle";
+import { useTheme } from "next-themes";
+import { useStore } from "@/hooks/use-store";
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 
 interface NavbarProps {
   title: string;
@@ -35,6 +40,25 @@ export function Navbar({ title }: NavbarProps) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [logo, setLogo] = useState("/pexlleh.png");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      const effectiveTheme = resolvedTheme || theme;
+      setLogo(effectiveTheme === "dark" ? "/pexllelight.png" : "/pexlleh.png");
+    }
+  }, [theme, resolvedTheme, mounted]);
+
+  const sidebar = useStore(useSidebarToggle, (state) => state);
+
+  if (!mounted || !sidebar) return null;
 
   return (
     <header
@@ -53,6 +77,14 @@ export function Navbar({ title }: NavbarProps) {
         <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="flex items-center space-x-4">
             <SheetMenu />
+            <SidebarToggle
+              isOpen={sidebar.isOpen}
+              setIsOpen={sidebar.setIsOpen}
+            />
+            <Separator
+              orientation="vertical"
+              className="hidden lg:block ml-4 h-4"
+            />
             <div className="hidden md:block overflow-hidden">
               <Breadcrumb>
                 <BreadcrumbList>

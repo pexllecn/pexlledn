@@ -66,7 +66,6 @@ export function Sidebar() {
         "hidden lg:block"
       )}
     >
-      <SidebarToggle isOpen={sidebar.isOpen} setIsOpen={sidebar.setIsOpen} />
       <div className="relative bg-muted h-full flex flex-col overflow-hidden pl-2 pr-1 pt-4">
         <Button
           className={cn(

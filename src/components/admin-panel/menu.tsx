@@ -87,13 +87,13 @@ export function Menu({ isOpen }: MenuProps) {
                 ) =>
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
-                      <TooltipProvider disableHoverableContent>
+                      <TooltipProvider>
                         <Tooltip delayDuration={50}>
                           <TooltipTrigger asChild>
                             <Button
                               variant={active ? "outline" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-10 mb-1 p-3",
+                                "w-full justify-start h-8 mb-1 p-3 hover:bg-foreground/5",
                                 !active && "text-muted-foreground"
                               )}
                               asChild
