@@ -58,7 +58,7 @@ export function Menu({ isOpen }: MenuProps) {
                   {groupLabel}
                 </p>
               ) : !isOpen && isOpen !== undefined && groupLabel ? (
-                <TooltipProvider>
+                <TooltipProvider disableHoverableContent>
                   <Tooltip delayDuration={100}>
                     <TooltipTrigger className="w-full">
                       <div className="w-full flex justify-center items-center">

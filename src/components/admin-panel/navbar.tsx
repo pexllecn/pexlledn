@@ -33,6 +33,7 @@ export function Navbar({ title }: NavbarProps) {
   const { breadcrumbs } = useBreadcrumbs();
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const sidebar = useSidebarToggle();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,25 +41,6 @@ export function Navbar({ title }: NavbarProps) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-
-  const { theme, resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [logo, setLogo] = useState("/pexlleh.png");
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      const effectiveTheme = resolvedTheme || theme;
-      setLogo(effectiveTheme === "dark" ? "/pexllelight.png" : "/pexlleh.png");
-    }
-  }, [theme, resolvedTheme, mounted]);
-
-  const sidebar = useStore(useSidebarToggle, (state) => state);
-
-  if (!mounted || !sidebar) return null;
 
   return (
     <header
@@ -78,8 +60,8 @@ export function Navbar({ title }: NavbarProps) {
           <div className="flex items-center space-x-4">
             <SheetMenu />
             <SidebarToggle
-              isOpen={sidebar.isOpen}
-              setIsOpen={sidebar.setIsOpen}
+              isOpen={sidebar?.isOpen ?? false}
+              setIsOpen={sidebar?.setIsOpen ?? (() => {})}
             />
 
             <Separator
