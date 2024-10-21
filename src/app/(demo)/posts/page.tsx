@@ -325,7 +325,7 @@ export default function DarkModeCompatibleProductListing() {
                         <Phone className="w-4 h-4 mr-2" />
                         Contact Seller
                       </Button>
-                      <Button variant="outline" className="flex-1">
+                      <Button variant="black" className="flex-1">
                         <Mail className="w-4 h-4 mr-2" />
                         Email Seller
                       </Button>

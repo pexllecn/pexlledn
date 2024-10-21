@@ -150,7 +150,7 @@ export default function AccountPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-destructive"
+                        className="text-destructive dark:text-red-600"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Remove picture
@@ -442,7 +442,7 @@ export default function AccountPage() {
           <div className="mt-8 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
             <Button
               variant="outline"
-              className="text-destructive w-full sm:w-auto"
+              className="text-destructive dark:text-red-600 w-full sm:w-auto"
             >
               <LogOut className="h-4 w-4 mr-2" />
               Sign out of all devices
