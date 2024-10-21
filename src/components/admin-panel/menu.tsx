@@ -41,7 +41,7 @@ export function Menu({ isOpen }: MenuProps) {
   const handleSignOut = async () => {
     // Perform any sign-out logic here (e.g., clearing tokens, etc.)
     // For example, if you're using next-auth:
-    // await signOut();
+    // await signOut()
 
     // Then navigate to the sign-in page
     router.push("/signin");
@@ -57,9 +57,9 @@ export function Menu({ isOpen }: MenuProps) {
                 <p className="text-sm font-normal px-3 pb-2 max-w-[248px] truncate ">
                   {groupLabel}
                 </p>
-              ) : !isOpen && isOpen !== undefined && groupLabel ? (
-                <TooltipProvider disableHoverableContent>
-                  <Tooltip delayDuration={100}>
+              ) : !isOpen && groupLabel ? (
+                <TooltipProvider>
+                  <Tooltip delayDuration={50}>
                     <TooltipTrigger className="w-full">
                       <div className="w-full flex justify-center items-center">
                         <Ellipsis className="h-5 w-5" />
@@ -168,7 +168,7 @@ export function Menu({ isOpen }: MenuProps) {
             </li>
           ))}
           <li className="w-full grow flex items-end">
-            {/* <TooltipProvider disableHoverableContent>
+            <TooltipProvider>
               <Tooltip delayDuration={50}>
                 <TooltipTrigger asChild>
                   <Button
@@ -193,7 +193,7 @@ export function Menu({ isOpen }: MenuProps) {
                   <TooltipContent side="right">Sign out</TooltipContent>
                 )}
               </Tooltip>
-            </TooltipProvider> */}
+            </TooltipProvider>
           </li>
         </ul>
       </nav>
