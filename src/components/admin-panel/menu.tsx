@@ -135,18 +135,6 @@ export function Menu({ isOpen }: MenuProps) {
                           {isOpen === false && (
                             <TooltipContent side="right">
                               {label}
-                              {notificationCount && (
-                                <Badge
-                                  variant="secondary"
-                                  className={cn(
-                                    "ml-2 px-2 min-w-[20px] flex items-center justify-center",
-                                    typeof notificationCount === "string" &&
-                                      "text-xs"
-                                  )}
-                                >
-                                  {notificationCount}
-                                </Badge>
-                              )}
                             </TooltipContent>
                           )}
                         </Tooltip>

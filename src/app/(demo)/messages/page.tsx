@@ -200,11 +200,11 @@ export default function EnhancedChatApp() {
         transition={{ duration: 0.5 }}
         variants={variants}
       >
-        <div className="p-2 lg:px-6">
+        <div className="p-2 lg:px-6 ">
           <div className="flex h-[calc(100vh-4rem)] bg-background">
             {/* Chat List */}
             <div
-              className={`w-full md:w-80 ${
+              className={`w-full md:w-80  ${
                 selectedChat && isMobile ? "hidden" : "block"
               }`}
             >
