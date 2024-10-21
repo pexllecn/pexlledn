@@ -201,7 +201,9 @@ export default function JobSearchPage() {
                   <Card
                     key={job.id}
                     className={`cursor-pointer hover:shadow-md transition-shadow bg-muted border-none ${
-                      selectedJob?.id === job.id ? "ring-1 ring-ring" : ""
+                      selectedJob?.id === job.id
+                        ? "bg-primary/10 border-primary border ring-1 ring-ring"
+                        : ""
                     }`}
                     onClick={() => setSelectedJob(job)}
                   >

@@ -43,6 +43,7 @@ import {
 import Head from "next/head";
 import { useState } from "react";
 import ThemeSelector from "./ThemeSelector";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -108,7 +109,7 @@ export default function AccountPage() {
             </div>
             <div className="hidden sm:block">
               <Tabs
-                value={activeTab}
+                defaultValue="profile"
                 onValueChange={setActiveTab}
                 className="w-full"
               >
@@ -188,6 +189,20 @@ export default function AccountPage() {
                       id="bio"
                       placeholder="Tell us about yourself..."
                     />
+                  </div>
+                  <div className="items-top flex space-x-2">
+                    <Checkbox id="terms1" />
+                    <div className="grid gap-1.5 leading-none">
+                      <label
+                        htmlFor="terms1"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Accept terms and conditions
+                      </label>
+                      <p className="text-sm text-muted-foreground">
+                        You agree to our Terms of Service and Privacy Policy.
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
                 <CardFooter>
