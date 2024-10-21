@@ -85,12 +85,12 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
       <ul className="space-y-3">
         {features.map((feature, index) => (
           <li key={index} className="flex items-center">
-            <CheckIcon className="text-teal-400 mr-2 h-4 w-4 flex-shrink-0" />
+            <CheckIcon className="text-blue-600 mr-2 h-4 w-4 flex-shrink-0" />
             <span className="text-sm text-muted-foreground">
               {feature.text}
             </span>
             {feature.isNew && (
-              <Badge className="ml-2" variant="teal">
+              <Badge className="ml-2" variant="blue">
                 New
               </Badge>
             )}

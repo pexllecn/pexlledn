@@ -365,7 +365,7 @@ export default function JobSearchPage() {
                         </ul>
                       </div>
 
-                      <Button className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold">
+                      <Button variant="default" className="w-full">
                         Apply Now
                       </Button>
                     </CardContent>
