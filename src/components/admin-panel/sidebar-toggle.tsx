@@ -2,6 +2,13 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface SidebarToggleProps {
   isOpen: boolean | undefined;
@@ -10,27 +17,34 @@ interface SidebarToggleProps {
 
 export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
   return (
-    <div className="invisible lg:visible absolute top-[35px] -right-[50px] z-20">
-      <Button
-        onClick={() => setIsOpen?.()}
-        className="rounded-md w-8 h-8 ml-6"
-        variant="ghost"
-        size="icon"
-      >
-        {isOpen ? (
-          <PanelLeftClose
-            className={cn(
-              "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
-            )}
-          />
-        ) : (
-          <PanelLeftOpen
-            className={cn(
-              "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
-            )}
-          />
-        )}
-      </Button>
+    <div className="flex invisible lg:visible absolute left-[-30px] z-20 mr-4 ">
+      <TooltipProvider>
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={() => setIsOpen?.()}
+              className="rounded-md w-8 h-8 ml-6"
+              variant="ghost"
+              size="icon"
+            >
+              {isOpen ? (
+                <PanelLeftClose
+                  className={cn(
+                    "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
+                  )}
+                />
+              ) : (
+                <PanelLeftOpen
+                  className={cn(
+                    "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
+                  )}
+                />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Toggle Sidebar</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }
