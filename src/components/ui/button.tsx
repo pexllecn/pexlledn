@@ -34,9 +34,9 @@ const buttonVariants = cva(
           "relative after:absolute after:bg-primary after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-right after:scale-x-0 hover:after:origin-bottom-left hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300",
       },
       size: {
-        default: "h-9 p-4",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        default: "h-8 p-4",
+        sm: "h-8 rounded-md px-3",
+        lg: "h-9 rounded-md px-8",
         icon: "h-10 w-10",
       },
     },
