@@ -139,7 +139,7 @@ export default function DashboardPage() {
       return (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button size="default">
+            <Button variant="black" size="default">
               <Download className="mr-2 h-4 w-4" />
               Click here!
             </Button>
