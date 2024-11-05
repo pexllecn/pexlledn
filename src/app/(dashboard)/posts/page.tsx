@@ -321,11 +321,11 @@ export default function DarkModeCompatibleProductListing() {
                       </div>
                     </div>
                     <div className="flex space-x-2">
-                      <Button className="flex-1">
+                      <Button variant="primary" className="flex-1">
                         <Phone className="w-4 h-4 mr-2" />
                         Contact Seller
                       </Button>
-                      <Button variant="black" className="flex-1">
+                      <Button className="flex-1">
                         <Mail className="w-4 h-4 mr-2" />
                         Email Seller
                       </Button>
