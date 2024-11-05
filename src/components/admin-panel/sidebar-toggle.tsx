@@ -29,12 +29,14 @@ export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
             >
               {isOpen ? (
                 <PanelLeftClose
+                  strokeWidth={1.25}
                   className={cn(
                     "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
                   )}
                 />
               ) : (
                 <PanelLeftOpen
+                  strokeWidth={1.25}
                   className={cn(
                     "h-4 w-4 transition-transform ease-in-out duration-400 text-gray-500 dark:text-gray-400"
                   )}
