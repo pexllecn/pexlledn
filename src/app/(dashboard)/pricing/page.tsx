@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs-newer";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
