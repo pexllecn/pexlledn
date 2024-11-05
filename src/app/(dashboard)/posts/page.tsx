@@ -476,11 +476,11 @@ export default function DarkModeCompatibleProductListing() {
       </motion.div>
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm dark:bg-background/80 dark:backdrop-blur-sm dark:shadow-secondary lg:hidden z-[60]">
         <div className="flex space-x-2">
-          <Button className="flex-1">
+          <Button variant="primary" className="flex-1">
             <Phone className="w-4 h-4 mr-2" />
             Call
           </Button>
-          <Button variant="outline" className="flex-1">
+          <Button className="flex-1">
             <Mail className="w-4 h-4 mr-2" />
             Message
           </Button>

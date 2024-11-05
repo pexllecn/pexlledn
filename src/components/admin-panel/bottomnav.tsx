@@ -82,7 +82,7 @@ const NavItem = ({
     <div
       className={cn(
         "p-1 transition-colors duration-200",
-        isActive ? "text-primary" : "text-muted-foreground"
+        isActive ? "text-foreground" : "text-muted-foreground"
       )}
     >
       <Icon
@@ -90,7 +90,7 @@ const NavItem = ({
         className={cn(
           "transition-all duration-200",
           isActive
-            ? "fill-current stroke-primary stroke-[3]"
+            ? "fill-current stroke-foreground stroke-[3]"
             : "stroke-[1.5] stroke-muted-foreground"
         )}
       />
