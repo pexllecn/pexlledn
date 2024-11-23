@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import {
   MapPin,
   Calendar,
@@ -26,6 +27,7 @@ import {
   UserIcon,
   ChevronLeft,
   ChevronRight,
+  Send,
 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -43,6 +45,113 @@ const MapComponent = () => (
     ></iframe>
   </div>
 );
+
+interface Comment {
+  id: number;
+  user: string;
+  avatar: string;
+  content: string;
+  date: string;
+}
+
+const CommentComponent: React.FC<{ comment: Comment }> = ({ comment }) => {
+  return (
+    <div className="flex gap-2">
+      <Avatar className="h-8 w-8">
+        <AvatarImage src={comment.avatar} alt={comment.user} />
+        <AvatarFallback>{comment.user[0]}</AvatarFallback>
+      </Avatar>
+      <div className="flex-1">
+        <div className="bg-muted rounded-lg px-4 py-3">
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-medium text-gray-800 dark:text-gray-200">
+              {comment.user}
+            </span>
+            <span className="text-sm text-gray-500">{comment.date}</span>
+          </div>
+          <p className="text-gray-600 dark:text-gray-300">{comment.content}</p>
+        </div>
+        <div className="flex gap-4 ml-4 mt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-auto p-0 text-gray-600 dark:text-gray-400"
+          >
+            Like
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-auto p-0 text-gray-600 dark:text-gray-400"
+          >
+            Reply
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Comments: React.FC = () => {
+  const [comments, setComments] = useState<Comment[]>([
+    {
+      id: 1,
+      user: "Alice Johnson",
+      avatar: "https://i.pravatar.cc/150?img=1",
+      content:
+        "This iMac looks amazing! How's the performance for video editing?",
+      date: "2023-09-10",
+    },
+    {
+      id: 2,
+      user: "Bob Smith",
+      avatar: "https://i.pravatar.cc/150?img=2",
+      content:
+        "I've been using the same model for a year now. It's been great for my graphic design work!",
+      date: "2023-09-11",
+    },
+  ]);
+  const [newComment, setNewComment] = useState("");
+
+  const handleSubmitComment = () => {
+    if (newComment.trim()) {
+      const comment: Comment = {
+        id: comments.length + 1,
+        user: "Current User",
+        avatar: "https://i.pravatar.cc/150?img=3",
+        content: newComment,
+        date: new Date().toISOString().split("T")[0],
+      };
+      setComments([...comments, comment]);
+      setNewComment("");
+    }
+  };
+
+  return (
+    <Card className="mt-8 border-none bg-background">
+      <CardContent className="px-6">
+        <h2 className="text-2xl font-normal mb-4">Comments</h2>
+        <div className="space-y-6">
+          {comments.map((comment) => (
+            <CommentComponent key={comment.id} comment={comment} />
+          ))}
+        </div>
+        <div className="mt-6 flex space-x-2">
+          <Textarea
+            placeholder="Add a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            className="flex-1"
+          />
+          <Button onClick={handleSubmitComment}>
+            <Send className="w-4 h-4 mr-2" />
+            Post
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default function DarkModeCompatibleProductListing() {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -113,7 +222,7 @@ export default function DarkModeCompatibleProductListing() {
               </h1>
               <div className="flex space-x-2">
                 <Button
-                  variant={isFavorite ? "default" : "outline"}
+                  variant={isFavorite ? "outline" : "outline"}
                   size="sm"
                   onClick={handleFavoriteClick}
                   className="rounded-full"
@@ -218,7 +327,6 @@ export default function DarkModeCompatibleProductListing() {
                   </CardContent>
                 </Card>
 
-                {/* Product Details */}
                 <Card className="border-none">
                   <CardContent className="px-6">
                     <h2 className="text-2xl font-normal mb-4">
@@ -266,7 +374,12 @@ export default function DarkModeCompatibleProductListing() {
                         </ul>
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-300">
-                        <h3 className="text-lg font-normal mb-2">Condition</h3>
+                        <h3
+                          className="text-lg font-normal mb-
+2"
+                        >
+                          Condition
+                        </h3>
                         <p className="mb-4">
                           This iMac is in excellent condition, showing minimal
                           signs of use. It has been well-maintained in a
@@ -295,6 +408,8 @@ export default function DarkModeCompatibleProductListing() {
                     </div>
                   </CardContent>
                 </Card>
+
+                <Comments />
               </div>
 
               <div className="space-y-6">
@@ -321,17 +436,16 @@ export default function DarkModeCompatibleProductListing() {
                       </div>
                     </div>
                     <div className="flex space-x-2">
-                      <Button variant="primary" className="flex-1">
+                      <Button className="flex-1">
                         <Phone className="w-4 h-4 mr-2" />
                         Contact Seller
                       </Button>
-                      <Button className="flex-1">
+                      <Button className="flex-1" variant="black">
                         <Mail className="w-4 h-4 mr-2" />
                         Email Seller
                       </Button>
                     </div>
 
-                    {/* Seller Information */}
                     <div className="mt-8">
                       <h3 className="font-normal mb-4 text-gray-800 dark:text-gray-200">
                         Seller Information
@@ -371,7 +485,6 @@ export default function DarkModeCompatibleProductListing() {
                       </Button>
                     </div>
 
-                    {/* Location */}
                     <div className="mt-8">
                       <h3 className="font-normal mb-4 text-gray-800 dark:text-gray-200">
                         Map
@@ -382,7 +495,6 @@ export default function DarkModeCompatibleProductListing() {
                       </p>
                     </div>
 
-                    {/* Safety Tips */}
                     <div className="mt-8">
                       <h3 className="font-normal mb-4 text-gray-800 dark:text-gray-200">
                         Safety Tips
@@ -476,11 +588,11 @@ export default function DarkModeCompatibleProductListing() {
       </motion.div>
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm dark:bg-background/80 dark:backdrop-blur-sm dark:shadow-secondary lg:hidden z-[60]">
         <div className="flex space-x-2">
-          <Button variant="primary" className="flex-1">
+          <Button className="flex-1">
             <Phone className="w-4 h-4 mr-2" />
             Call
           </Button>
-          <Button className="flex-1">
+          <Button variant="black" className="flex-1">
             <Mail className="w-4 h-4 mr-2" />
             Message
           </Button>

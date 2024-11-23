@@ -686,7 +686,7 @@ export default function KanbanBoard() {
                       key={user.id}
                       variant={
                         newTask.assignees.includes(user)
-                          ? "secondary"
+                          ? "outline2"
                           : "outline"
                       }
                       className="mr-2 mb-2"
@@ -812,7 +812,7 @@ export default function KanbanBoard() {
                       key={user.id}
                       variant={
                         editingTask?.assignees.includes(user)
-                          ? "secondary"
+                          ? "outline2"
                           : "outline"
                       }
                       className="mr-2 mb-2"

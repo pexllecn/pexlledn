@@ -305,7 +305,7 @@ export default function AuthenticationPage() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-br from-white via-gray-300 to-gray-500 opacity-60"
+              : "bg-gradient-to-tr from-white via-gray-300 to-yellow-300 opacity-60"
           }`}
         ></div>
 
@@ -345,7 +345,7 @@ export default function AuthenticationPage() {
                 variant="link"
                 size="sm"
                 onClick={() => setIsForgotPasswordOpen(true)}
-                className="px-1 h-5 text-xs"
+                className="px-1 h-5 text-xs text-primary-foreground dark:text-primary"
               >
                 Forgot Password?
               </Button>
@@ -366,7 +366,11 @@ export default function AuthenticationPage() {
             <p className="text-sm">
               Don't have an account?{" "}
               <Link href="/register" passHref>
-                <Button variant="link" size="sm">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-primary-foreground dark:text-primary font-medium"
+                >
                   Create one
                 </Button>
               </Link>

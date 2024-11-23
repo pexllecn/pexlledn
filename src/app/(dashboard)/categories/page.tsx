@@ -341,7 +341,9 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
                   : ""
               }
             />
-            <Badge className="absolute top-2 left-2 z-10">{ad.category}</Badge>
+            <Badge variant="black" className="absolute top-2 left-2 z-10">
+              {ad.category}
+            </Badge>
             {isGridView && (
               <div className="absolute top-2 right-2 z-10">
                 <Badge

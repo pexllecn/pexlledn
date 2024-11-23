@@ -91,9 +91,9 @@ export function Menu({ isOpen }: MenuProps) {
                         <Tooltip delayDuration={50}>
                           <TooltipTrigger asChild>
                             <Button
-                              variant={active ? "outline" : "ghost"}
+                              variant={active ? "outline2" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-8 mb-1 p-3 hover:bg-foreground/5",
+                                "w-full justify-start h-8 mb-1 p-3 hover:bg-primary/10",
                                 !active && "text-muted-foreground"
                               )}
                               asChild

@@ -190,7 +190,7 @@ export default function JobSearchPage() {
               </div>
 
               {/* Search Result Pill */}
-              <Badge variant="default" className="mb-4">
+              <Badge variant="black" className="mb-4">
                 <span className="mr-2 font-medium">Search Result</span>
                 <span className="text-sm">29 Jobs Found</span>
               </Badge>

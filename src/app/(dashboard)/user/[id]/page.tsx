@@ -99,13 +99,13 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
             className="transition-transform duration-300 group-hover:scale-105"
           />
           {item.badge && (
-            <Badge className="absolute top-4 left-4 z-20 bg-primary text-primary-foreground px-2 py-1">
+            <Badge variant="default" className="absolute top-4 left-4 z-20">
               {item.badge}
             </Badge>
           )}
           <div className="absolute inset-x-3 bottom-3 p-4 bg-black/40 backdrop-blur-sm rounded-xl z-20 transition-all duration-300 ">
             <div className="space-y-2">
-              <Badge variant="default">{item.category}</Badge>
+              <Badge variant="secondary">{item.category}</Badge>
               <h3 className=" text-white line-clamp-1">{item.name}</h3>
               <div className="flex justify-between items-center">
                 <div className="space-y-1">
@@ -215,9 +215,6 @@ const FeaturedListings = ({ items }: { items: ListingItem[] }) => (
   <div className="mb-8">
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-2xl font-bold">Featured Products</h2>
-      <Badge variant="outline" className="text-primary border-primary">
-        <TrendingUp className="w-4 h-4 mr-1" /> Trending
-      </Badge>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {items.map((item) => (
@@ -231,7 +228,7 @@ const ItemFeed = ({ items }: { items: ListingItem[] }) => (
   <div>
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-2xl font-bold">More Products</h2>
-      <Badge variant="outline" className="text-primary border-primary">
+      <Badge variant="decline">
         <Percent className="w-4 h-4 mr-1" /> Special Offers
       </Badge>
     </div>

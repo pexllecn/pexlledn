@@ -70,7 +70,7 @@ export default function register() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-br from-white via-gray-300 to-gray-500 opacity-60"
+              : "bg-gradient-to-tr from-white via-gray-300 to-yellow-300 opacity-60"
           }`}
         ></div>
         <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 mx-4">
@@ -145,7 +145,11 @@ export default function register() {
             <p className="text-sm">
               Already have an account?{" "}
               <Link href="/signin" passHref>
-                <Button variant="link" size="sm">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-primary-foreground dark:text-primary font-medium"
+                >
                   Log in
                 </Button>
               </Link>

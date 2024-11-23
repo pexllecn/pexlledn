@@ -9,17 +9,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-black dark:bg-white font-medium text-white dark:text-black hover:bg-primary/90",
-        primary: "bg-primary font-medium text-white hover:bg-primary/90",
+          "bg-primary font-medium text-primary-foreground hover:bg-primary/90",
+        black: "bg-foreground font-medium text-background hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
           "border border-muted-background bg-background hover:bg-accent hover:text-accent-foreground",
+        outline2:
+          "border dark:border-primary/30 border-primary bg-primary/20 dark:bg-primary/10 text-primary-foreground dark:text-primary",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        expandIcon: "group relative text-white bg-primary hover:bg-primary/90",
+        expandIcon:
+          "group relative text-primary-foreground bg-primary hover:bg-primary/90",
         ringHover:
           "bg-primary text-white transition-all duration-300 hover:bg-primary/90 hover:ring-2 hover:ring-primary/90 hover:ring-offset-2",
         shine:

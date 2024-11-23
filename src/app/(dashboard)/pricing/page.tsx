@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { Check } from "lucide-react";
 
 // Custom CheckIcon component
 const CheckIcon = ({ className }: { className?: string }) => (
@@ -85,12 +86,12 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
       <ul className="space-y-3">
         {features.map((feature, index) => (
           <li key={index} className="flex items-center">
-            <CheckIcon className="text-blue-600 mr-2 h-4 w-4 flex-shrink-0" />
+            <Check className="text-primary mr-2 h-4 w-4 flex-shrink-0" />
             <span className="text-sm text-muted-foreground">
               {feature.text}
             </span>
             {feature.isNew && (
-              <Badge className="ml-2" variant="blue">
+              <Badge className="ml-2" variant="primary">
                 New
               </Badge>
             )}
