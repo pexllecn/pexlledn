@@ -1,5 +1,6 @@
-"use client"
+"use client";
 
+import { useTheme } from "next-themes";
 import {
   Toast,
   ToastClose,
@@ -7,11 +8,12 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "@/registry/new-york/ui/toast"
-import { useToast } from "@/registry/new-york/ui/use-toast"
+} from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 export function Toaster() {
-  const { toasts } = useToast()
+  const { toasts } = useToast();
+  const { theme } = useTheme();
 
   return (
     <ToastProvider>
@@ -27,9 +29,9 @@ export function Toaster() {
             {action}
             <ToastClose />
           </Toast>
-        )
+        );
       })}
       <ToastViewport />
     </ToastProvider>
-  )
+  );
 }

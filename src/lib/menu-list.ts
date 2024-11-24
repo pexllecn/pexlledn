@@ -11,6 +11,9 @@ import {
   Kanban,
   Briefcase,
   MessageSquareQuote,
+  CirclePlay,
+  SquareDashedBottomCode,
+  Inbox,
 } from "lucide-react";
 
 type Submenu = {
@@ -37,7 +40,7 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: "",
+      groupLabel: "Main Pages",
       menus: [
         {
           href: "/dashboard",
@@ -47,20 +50,28 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/timeline",
-          label: "Timeline",
-          active: pathname.includes("/timeline"),
-          icon: MessageSquareQuote,
+          href: "/mail",
+          label: "Mail",
+          active: pathname.includes("/mail"),
+          icon: Inbox,
           submenus: [],
           notificationCount: "New",
         },
+        // {
+        //   href: "/timeline",
+        //   label: "Timeline",
+        //   active: pathname.includes("/timeline"),
+        //   icon: MessageSquareQuote,
+        //   submenus: [],
+        //   notificationCount: "",
+        // },
         {
           href: "/messages",
           label: "Messages",
           active: pathname.includes("/messages"),
           icon: MessageCircleMore,
           submenus: [],
-          notificationCount: "3",
+          notificationCount: "32",
         },
         {
           href: "/kanban",
@@ -75,7 +86,23 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/user/1"),
           icon: User,
           submenus: [],
-          notificationCount: "Updated",
+          notificationCount: "",
+        },
+        {
+          href: "/music",
+          label: "Music",
+          active: pathname.includes("/music"),
+          icon: CirclePlay,
+          submenus: [],
+          notificationCount: "New",
+        },
+        {
+          href: "/playground",
+          label: "Playground",
+          active: pathname.includes("/playground"),
+          icon: SquareDashedBottomCode,
+          submenus: [],
+          notificationCount: "New",
         },
       ],
     },
@@ -97,7 +124,7 @@ export function getMenuList(pathname: string): Group[] {
               href: "/posts/new",
               label: "New Post",
               active: pathname === "/posts/new",
-              notificationCount: "Draft",
+              notificationCount: "",
             },
           ],
         },
@@ -128,7 +155,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/work"),
           icon: Briefcase,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
       ],
     },

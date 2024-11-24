@@ -69,11 +69,11 @@ export default function Component() {
                 </Link>
               </div>
               <nav className="flex space-x-8 items-center">
-                <Link href="#" className="text-sm font-normal text-foreground">
-                  Pricing
-                </Link>
-                <Link href="#" className="text-sm font-normal text-foreground">
-                  Docs
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-normal text-foreground"
+                >
+                  Dashboard
                 </Link>
               </nav>
               <ModeToggle />

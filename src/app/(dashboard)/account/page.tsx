@@ -44,6 +44,7 @@ import Head from "next/head";
 import { useState } from "react";
 import ThemeSelector from "./ThemeSelector";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -189,6 +190,22 @@ export default function AccountPage() {
                       id="bio"
                       placeholder="Tell us about yourself..."
                     />
+                  </div>
+                  <div>
+                    <RadioGroup defaultValue="comfortable">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="default" id="r1" />
+                        <Label htmlFor="r1">Default</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="comfortable" id="r2" />
+                        <Label htmlFor="r2">Comfortable</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="compact" id="r3" />
+                        <Label htmlFor="r3">Compact</Label>
+                      </div>
+                    </RadioGroup>
                   </div>
                   <div className="items-top flex space-x-2">
                     <Checkbox id="terms1" />
