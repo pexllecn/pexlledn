@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 
 const Tabs = TabsPrimitive.Root;
 
-// TabsList component in animated-tabs.tsx
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
@@ -18,6 +17,7 @@ const TabsList = React.forwardRef<
     width: 0,
     height: 0,
   });
+  const [isInitialRender, setIsInitialRender] = useState(true);
   const tabsListRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -30,17 +30,24 @@ const TabsList = React.forwardRef<
         if (activeTab) {
           const activeRect = activeTab.getBoundingClientRect();
           const tabsRect = tabsListRef.current.getBoundingClientRect();
-          setIndicatorStyle({
+          setIndicatorStyle((prevStyle) => ({
             left: activeRect.left - tabsRect.left,
             top: activeRect.top - tabsRect.top,
             width: activeRect.width,
             height: activeRect.height,
-          });
+          }));
         }
       }
     };
 
+    // Initial update without transition
     updateIndicator();
+
+    // Set a small timeout to enable transitions after the initial render
+    const timer = setTimeout(() => {
+      setIsInitialRender(false);
+    }, 50);
+
     window.addEventListener("resize", updateIndicator);
     const observer = new MutationObserver(updateIndicator);
     if (tabsListRef.current) {
@@ -53,6 +60,7 @@ const TabsList = React.forwardRef<
     return () => {
       window.removeEventListener("resize", updateIndicator);
       observer.disconnect();
+      clearTimeout(timer);
     };
   }, []);
 
@@ -67,7 +75,10 @@ const TabsList = React.forwardRef<
         {...props}
       />
       <div
-        className="absolute rounded-sm bg-background shadow transition-all duration-300 ease-in-out"
+        className={cn(
+          "absolute rounded-sm bg-background shadow",
+          !isInitialRender && "transition-all duration-300 ease-in-out"
+        )}
         style={indicatorStyle}
       />
     </div>
