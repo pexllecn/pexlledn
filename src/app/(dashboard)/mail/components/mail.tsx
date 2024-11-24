@@ -47,7 +47,7 @@ interface MailProps {
 export function Mail({
   accounts,
   mails,
-  defaultLayout = [20, 32, 48],
+  defaultLayout = [15, 22, 48],
   defaultCollapsed = false,
   navCollapsedSize,
 }: MailProps) {
@@ -63,7 +63,7 @@ export function Mail({
             sizes
           )}`;
         }}
-        className="h-full max-h-[800px] items-stretch"
+        className="max-h-[850px] items-stretch"
       >
         <ResizablePanel
           defaultSize={defaultLayout[0]}
@@ -200,7 +200,7 @@ export function Mail({
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search"
-                    className="pl-8 bg-muted border-none"
+                    className="pl-8 bg-muted border-none shadow-none"
                   />
                 </div>
               </form>
