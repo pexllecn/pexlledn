@@ -63,7 +63,7 @@ export function Mail({
             sizes
           )}`;
         }}
-        className="max-h-[850px] items-stretch"
+        className="max-h-[800px] items-stretch"
       >
         <ResizablePanel
           defaultSize={defaultLayout[0]}
@@ -84,13 +84,14 @@ export function Mail({
             )}`;
           }}
           className={cn(
+            "bg-muted rounded-lg ",
             isCollapsed &&
-              "min-w-[50px] transition-all duration-300 ease-in-out"
+              "min-w-[50px] transition-all duration-300 ease-in-out "
           )}
         >
           <div
             className={cn(
-              "flex h-[52px] items-center justify-center",
+              "flex h-[52px] items-center justify-center ",
               isCollapsed ? "h-[52px]" : "px-2"
             )}
           >

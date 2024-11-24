@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function MusicPage() {
   return (
-    <ContentLayout title="Account">
+    <ContentLayout title="Music">
       <div className="md:hidden">
         <Image
           src="/examples/music-light.png"
@@ -39,12 +39,15 @@ export default function MusicPage() {
           className="hidden dark:block"
         />
       </div>
-      <div className="hidden md:block">
+      <div className="hidden md:block p-2">
         <div className="">
           <div className="bg-background">
             <div className="grid lg:grid-cols-5">
-              <Sidebar playlists={playlists} className="hidden lg:block" />
-              <div className="col-span-3 lg:col-span-4 lg:border-l">
+              <Sidebar
+                playlists={playlists}
+                className="hidden lg:block bg-muted rounded-lg"
+              />
+              <div className="col-span-3 lg:col-span-4 ">
                 <div className="h-full px-4 py-6 lg:px-8">
                   <Tabs defaultValue="music" className="h-full space-y-6">
                     <div className="space-between flex items-center">
