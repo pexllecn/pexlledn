@@ -74,7 +74,7 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
             {isGridView && (
               <div className="absolute top-2 right-2">
                 <Badge
-                  variant="secondary"
+                  variant="outline"
                   className="bg-background/70 text-sm backdrop-blur-sm"
                 >
                   {ad.price !== null ? `$${ad.price}` : "Price on request"}
@@ -134,7 +134,7 @@ const AdCard: React.FC<{ ad: Ad; isGridView: boolean }> = React.memo(
               </div>
             </div>
             {isGridView ? (
-              <Button className="mt-4 w-full" variant="secondary" size="sm">
+              <Button className="mt-4 w-full" variant="outline" size="sm">
                 View Details
               </Button>
             ) : (
@@ -310,7 +310,7 @@ export default function Filters() {
         {options.map((option: string) => (
           <Button
             key={option}
-            variant={selectedOptions.includes(option) ? "default" : "secondary"}
+            variant={selectedOptions.includes(option) ? "outline2" : "outline"}
             size="sm"
             onClick={() => {
               if (selectedOptions.includes(option)) {
@@ -335,7 +335,7 @@ export default function Filters() {
       <div className="mb-6">
         <h3 className="text-sm font-semibold mb-2">Category</h3>
         <Select value={activeCategory} onValueChange={setActiveCategory}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full bg-background shadow-none border-none">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
@@ -350,7 +350,7 @@ export default function Filters() {
       <div className="mb-6">
         <h3 className="text-sm font-semibold mb-2">Subcategory</h3>
         <Select value={activeSubcategory} onValueChange={setActiveSubcategory}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full bg-background shadow-none border-none">
             <SelectValue placeholder="Select subcategory" />
           </SelectTrigger>
           <SelectContent>
@@ -373,7 +373,6 @@ export default function Filters() {
         <Slider
           min={0}
           max={10000}
-          step={100}
           value={priceRange}
           onValueChange={setPriceRange}
           className="mb-2"
@@ -405,21 +404,21 @@ export default function Filters() {
         <h3 className="text-sm font-semibold mb-2">Warranty</h3>
         <div className="flex gap-2">
           <Button
-            variant={warranty === null ? "default" : "secondary"}
+            variant={warranty === null ? "outline2" : "outline"}
             size="sm"
             onClick={() => setWarranty(null)}
           >
             All
           </Button>
           <Button
-            variant={warranty === true ? "default" : "secondary"}
+            variant={warranty === true ? "outline2" : "outline"}
             size="sm"
             onClick={() => setWarranty(true)}
           >
             Yes
           </Button>
           <Button
-            variant={warranty === false ? "default" : "secondary"}
+            variant={warranty === false ? "outline2" : "outline"}
             size="sm"
             onClick={() => setWarranty(false)}
           >
@@ -431,21 +430,21 @@ export default function Filters() {
         <h3 className="text-sm font-semibold mb-2">Negotiable</h3>
         <div className="flex gap-2">
           <Button
-            variant={negotiable === null ? "default" : "secondary"}
+            variant={negotiable === null ? "outline2" : "outline"}
             size="sm"
             onClick={() => setNegotiable(null)}
           >
             All
           </Button>
           <Button
-            variant={negotiable === true ? "default" : "secondary"}
+            variant={negotiable === true ? "outline2" : "outline"}
             size="sm"
             onClick={() => setNegotiable(true)}
           >
             Yes
           </Button>
           <Button
-            variant={negotiable === false ? "default" : "secondary"}
+            variant={negotiable === false ? "outline2" : "outline"}
             size="sm"
             onClick={() => setNegotiable(false)}
           >
@@ -475,21 +474,21 @@ export default function Filters() {
         <h3 className="text-sm font-semibold mb-2">Verified Seller</h3>
         <div className="flex gap-2">
           <Button
-            variant={verifiedSeller === null ? "default" : "secondary"}
+            variant={verifiedSeller === null ? "outline2" : "outline"}
             size="sm"
             onClick={() => setVerifiedSeller(null)}
           >
             All
           </Button>
           <Button
-            variant={verifiedSeller === true ? "default" : "secondary"}
+            variant={verifiedSeller === true ? "outline2" : "outline"}
             size="sm"
             onClick={() => setVerifiedSeller(true)}
           >
             Yes
           </Button>
           <Button
-            variant={verifiedSeller === false ? "default" : "secondary"}
+            variant={verifiedSeller === false ? "outline2" : "outline"}
             size="sm"
             onClick={() => setVerifiedSeller(false)}
           >
@@ -512,7 +511,7 @@ export default function Filters() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Desktop Sidebar */}
             <div className="hidden lg:block w-1/5 space-y-6">
-              <Card className="rounded-md border-none">
+              <Card className="rounded-lg border-none bg-muted">
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-semibold">Filters</h2>
@@ -579,14 +578,14 @@ export default function Filters() {
                 </Select>
                 <div className="flex gap-2">
                   <Button
-                    variant={isGridView ? "default" : "secondary"}
+                    variant={isGridView ? "outline2" : "outline"}
                     size="icon"
                     onClick={() => setIsGridView(true)}
                   >
                     <LayoutGridIcon className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant={!isGridView ? "default" : "secondary"}
+                    variant={!isGridView ? "outline2" : "outline"}
                     size="icon"
                     onClick={() => setIsGridView(false)}
                   >
@@ -646,7 +645,7 @@ export default function Filters() {
                     Page {currentPage} of {totalPages}
                   </span>
                   <Button
-                    variant="outline"
+                    variant="outline2"
                     size="sm"
                     onClick={() =>
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
