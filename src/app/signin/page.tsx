@@ -108,7 +108,7 @@ const ResponsiveOTP: React.FC<ResponsiveOTPProps> = ({
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Enter OTP</DialogTitle>
+            <DialogTitle>Enter OTP (for this demo: 111-111)</DialogTitle>
             <DialogDescription>
               Please enter the 6-digit OTP sent to your device.
             </DialogDescription>
