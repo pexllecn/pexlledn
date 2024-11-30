@@ -34,8 +34,8 @@ export default function CRMPage() {
       >
         <div className="flex flex-col lg:flex-row g-background py-4">
           {/* Left Sidebar */}
-          <div className="w-full lg:w-80 p-6 bg-muted/60 rounded-l-lg">
-            <div className="flex items-center gap-2 mb-8">
+          <div className="w-full lg:w-80 p-4 lg:p-6 bg-muted/60 lg:rounded-l-lg lg:sticky lg:top-0 lg:max-h-screen lg:overflow-auto">
+            <div className="flex items-center gap-2 mb-6 lg:mb-8">
               <Link
                 href="#"
                 className="text-muted-foreground hover:text-foreground flex items-center gap-2"
@@ -45,15 +45,17 @@ export default function CRMPage() {
               </Link>
             </div>
 
-            <div className="text-center mb-8">
-              <Avatar className="w-32 h-32 mx-auto mb-4">
+            <div className="text-center mb-6 lg:mb-8">
+              <Avatar className="w-24 h-24 lg:w-32 lg:h-32 mx-auto mb-4">
                 <AvatarImage
                   src="https://i.pravatar.cc/128?u=jerome"
                   alt="Jerome Bell"
                 />
                 <AvatarFallback>JB</AvatarFallback>
               </Avatar>
-              <h2 className="text-2xl font-semibold mb-1">Jerome Bell</h2>
+              <h2 className="text-xl lg:text-2xl font-semibold mb-1">
+                Jerome Bell
+              </h2>
               <div className="flex items-center justify-center gap-2 text-muted-foreground">
                 <Image
                   src="https://logo.clearbit.com/google.com"
@@ -66,7 +68,7 @@ export default function CRMPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 mb-8">
+            <div className="grid grid-cols-4 gap-2 mb-6 lg:mb-8">
               {[
                 { icon: Plus, label: "Log" },
                 { icon: Mail, label: "Email" },
@@ -77,24 +79,24 @@ export default function CRMPage() {
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="flex flex-col gap-1 h-auto py-3 bg-background hover:bg-muted"
+                  className="flex flex-col gap-1 h-auto py-2 lg:py-3 bg-background hover:bg-muted"
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className="h-4 w-4 lg:h-5 lg:w-5" />
                   <span className="text-xs">{item.label}</span>
                 </Button>
               ))}
             </div>
 
-            <Button className="w-full mb-8" variant="default">
+            <Button className="w-full mb-6 lg:mb-8" variant="default">
               Convert to contact
             </Button>
 
-            <div className="text-sm text-muted-foreground mb-6">
+            <div className="text-sm text-muted-foreground mb-4 lg:mb-6">
               Last activity: 2 Jan 2020 at 09:00 AM
             </div>
 
             <Tabs defaultValue="leads" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsList className="grid w-full grid-cols-2 mb-4 lg:mb-6">
                 <TabsTrigger value="leads">Leads info</TabsTrigger>
                 <TabsTrigger value="address">Address info</TabsTrigger>
               </TabsList>
@@ -133,9 +135,9 @@ export default function CRMPage() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 flex flex-col overflow-hidden p-4">
+          <div className="flex-1 flex flex-col overflow-auto p-4 lg:p-6">
             <Tabs defaultValue="task" className="flex-1 w-auto overflow-hidden">
-              <TabsList className="justify-start">
+              <TabsList className="justify-start overflow-x-auto whitespace-nowrap">
                 {[
                   "Activity",
                   "Notes",
@@ -149,8 +151,11 @@ export default function CRMPage() {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              <TabsContent value="task" className="p-6 overflow-auto h-full">
-                <div className="flex justify-between items-center mb-8">
+              <TabsContent
+                value="task"
+                className="p-4 lg:p-6 overflow-auto h-full"
+              >
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 lg:mb-8">
                   <Button variant="outline" size="sm" className="bg-background">
                     All users
                   </Button>
@@ -159,8 +164,8 @@ export default function CRMPage() {
 
                 <div className="space-y-6">
                   <h3 className="font-semibold text-lg">Upcoming Tasks</h3>
-                  <div className="bg-muted/30 p-6 rounded-lg space-y-6">
-                    <div className="flex justify-between items-start">
+                  <div className="bg-muted/30 p-4 lg:p-6 rounded-lg space-y-6">
+                    <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                       <div className="flex gap-4">
                         <div className="w-5 h-5 rounded-full border-2 border-primary mt-1 flex-shrink-0" />
                         <div>
@@ -190,7 +195,7 @@ export default function CRMPage() {
                         </Button>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-6">
+                    <div className="flex flex-wrap gap-4 lg:gap-6">
                       <div>
                         <div className="text-sm text-muted-foreground mb-1">
                           Reminder
@@ -237,13 +242,144 @@ export default function CRMPage() {
                     </div>
                   </div>
                 </div>
+                <div className="space-y-6 mt-8">
+                  <h3 className="font-semibold text-lg">Completed Tasks</h3>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: "Send follow-up email",
+                        description:
+                          "Sent a follow-up email regarding the product demo.",
+                        date: "Yesterday, 3:00 PM",
+                        priority: "Medium",
+                        assignee: "Jane Cooper",
+                      },
+                      {
+                        title: "Update client profile",
+                        description:
+                          "Updated client information in the CRM system.",
+                        date: "2 days ago, 11:30 AM",
+                        priority: "Low",
+                        assignee: "Robert Fox",
+                      },
+                      {
+                        title: "Schedule product demo",
+                        description:
+                          "Arranged a product demonstration for next week.",
+                        date: "3 days ago, 2:15 PM",
+                        priority: "High",
+                        assignee: "Esther Howard",
+                      },
+                      {
+                        title: "Prepare sales report",
+                        description:
+                          "Compiled monthly sales report for the team meeting.",
+                        date: "4 days ago, 5:00 PM",
+                        priority: "Medium",
+                        assignee: "Cameron Williamson",
+                      },
+                      {
+                        title: "Client onboarding call",
+                        description:
+                          "Conducted introductory call with new client.",
+                        date: "5 days ago, 10:00 AM",
+                        priority: "High",
+                        assignee: "Leslie Alexander",
+                      },
+                    ].map((task, index) => (
+                      <div
+                        key={index}
+                        className="bg-muted/30 p-4 lg:p-6 rounded-lg space-y-4"
+                      >
+                        <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
+                          <div className="flex gap-4">
+                            <div className="w-5 h-5 rounded-full bg-primary mt-1 flex-shrink-0 flex items-center justify-center">
+                              <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-lg mb-2">
+                                {task.title}
+                              </h4>
+                              <p className="text-muted-foreground mb-4">
+                                {task.description}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="bg-background"
+                            >
+                              {task.date}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-4 lg:gap-6">
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">
+                              Task Priority
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className={`${
+                                task.priority === "High"
+                                  ? "text-red-500 bg-red-500/10"
+                                  : task.priority === "Medium"
+                                  ? "text-yellow-500 bg-yellow-500/10"
+                                  : "text-green-500 bg-green-500/10"
+                              }`}
+                            >
+                              {task.priority}
+                            </Button>
+                          </div>
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">
+                              Completed by
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="bg-background"
+                            >
+                              <Avatar className="w-4 h-4 mr-2">
+                                <AvatarImage
+                                  src={`https://i.pravatar.cc/128?u=${task.assignee.replace(
+                                    " ",
+                                    ""
+                                  )}`}
+                                  alt={task.assignee}
+                                />
+                                <AvatarFallback>
+                                  {task.assignee
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              {task.assignee}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
 
           {/* Right Sidebar */}
-          <div className="w-full lg:w-80 p-6 bg-muted/60 rounded-r-lg">
-            <div className="mb-8">
+          <div className="w-full lg:w-80 p-4 lg:p-6 bg-muted/60 lg:rounded-r-lg lg:sticky lg:top-0 lg:max-h-screen lg:overflow-auto">
+            <div className="mb-6 lg:mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <Image
                   src="https://logo.clearbit.com/google.com"

@@ -11,21 +11,23 @@ import {
   Bookmark,
   Share,
   Smile,
-  Image as ImageIcon,
+  ImageIcon,
   Calendar,
   MapPin,
-  Paperclip,
-  Mic,
-  Menu,
+  Home,
+  Users,
+  Bell,
+  Mail,
+  User,
+  Settings,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function SocialFeed() {
   const [postContent, setPostContent] = React.useState("");
@@ -33,6 +35,17 @@ export default function SocialFeed() {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
   };
+
+  const menuItems = [
+    { icon: Home, label: "Home", href: "/" },
+    { icon: Users, label: "Communities", href: "/communities" },
+    { icon: Bell, label: "Notifications", href: "/notifications" },
+    { icon: Mail, label: "Messages", href: "/messages" },
+    { icon: Bookmark, label: "Bookmarks", href: "/bookmarks" },
+    { icon: User, label: "Profile", href: "/profile" },
+    { icon: Settings, label: "Settings", href: "/settings" },
+  ];
+
   return (
     <ContentLayout title="Social">
       <motion.div
@@ -43,10 +56,45 @@ export default function SocialFeed() {
       >
         <div className="min-h-screen bg-background">
           <div className="lg:container mx-auto flex gap-6 py-4">
+            {/* Left Sidebar */}
+            <div className="hidden lg:block w-64 h-[calc(100vh-2rem)] overflow-y-auto sticky top-4">
+              <div className="space-y-6 px-2">
+                {menuItems.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-base font-normal h-11"
+                    >
+                      <item.icon className="mr-4 h-5 w-5" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                ))}
+                <Button className="w-full mt-4" size="lg">
+                  Create Post
+                </Button>
+              </div>
+
+              <div className="mt-6 p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">Your Communities</h3>
+                <div className="space-y-2">
+                  <Button variant="ghost" className="w-full justify-start">
+                    🎨 Design Community
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start">
+                    💻 Tech Enthusiasts
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start">
+                    🌱 Sustainability
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {/* Main Content */}
             <div className="flex-1 max-w-2xl mx-auto">
               {/* Post Creation */}
-              <div className="bg-muted rounded-lg p-4 mt-4">
+              <div className="rounded-lg p-4 mt-4">
                 <div className="flex gap-3">
                   <Avatar>
                     <AvatarImage src="https://i.pravatar.cc/100?img=1" />

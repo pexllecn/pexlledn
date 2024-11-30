@@ -645,7 +645,7 @@ export default function Filters() {
                     Page {currentPage} of {totalPages}
                   </span>
                   <Button
-                    variant="outline2"
+                    variant="outline"
                     size="sm"
                     onClick={() =>
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
