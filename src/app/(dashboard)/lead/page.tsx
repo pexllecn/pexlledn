@@ -164,7 +164,7 @@ export default function CRMPage() {
 
                 <div className="space-y-6">
                   <h3 className="font-semibold text-lg">Upcoming Tasks</h3>
-                  <div className="bg-muted/30 p-4 lg:p-6 rounded-lg space-y-6">
+                  <div className="bg-muted/60 p-4 lg:p-6 rounded-lg space-y-6">
                     <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                       <div className="flex gap-4">
                         <div className="w-5 h-5 rounded-full border-2 border-primary mt-1 flex-shrink-0" />
@@ -289,7 +289,7 @@ export default function CRMPage() {
                     ].map((task, index) => (
                       <div
                         key={index}
-                        className="bg-muted/30 p-4 lg:p-6 rounded-lg space-y-4"
+                        className="bg-muted/70 p-4 lg:p-6 rounded-lg space-y-4"
                       >
                         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
                           <div className="flex gap-4">
@@ -441,7 +441,7 @@ export default function CRMPage() {
                     amount: 85000,
                   },
                 ].map((deal, i) => (
-                  <div key={i} className="bg-muted/50 p-4 rounded-lg">
+                  <div key={i} className="bg-muted/70 p-4 rounded-lg">
                     <div className="text-sm text-muted-foreground mb-1">
                       Closing date: {deal.date}
                     </div>

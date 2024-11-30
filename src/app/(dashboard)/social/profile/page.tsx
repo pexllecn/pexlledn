@@ -238,58 +238,60 @@ export default function SocialProfile() {
           </main>
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-80 p-4 bg-muted/50 space-y-6 rounded-lg">
-            <section>
-              <h2 className="font-semibold mb-4">Trending topics</h2>
-              <div className="space-y-4">
-                {trendingTopics.map((topic, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <Image
-                      src={topic.image}
-                      alt={topic.title}
-                      width={48}
-                      height={48}
-                      className="rounded-md"
-                    />
-                    <div>
-                      <h3 className="font-medium text-sm">{topic.title}</h3>
-                      <p className="text-xs text-muted-foreground">
-                        {topic.time}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-            <section>
-              <h2 className="font-semibold mb-4">You might like</h2>
-              <div className="space-y-4">
-                {[4, 5, 6].map((imgId, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage
-                          src={`https://i.pravatar.cc/150?img=${imgId}`}
-                        />
-                        <AvatarFallback>U</AvatarFallback>
-                      </Avatar>
+          <aside className="w-full lg:w-80 p-2 space-y-6 rounded-lg">
+            <div className="bg-muted/70 rounded-lg p-4">
+              <section className="pb-6">
+                <h2 className="font-semibold mb-4">Trending topics</h2>
+                <div className="space-y-4">
+                  {trendingTopics.map((topic, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <Image
+                        src={topic.image}
+                        alt={topic.title}
+                        width={48}
+                        height={48}
+                        className="rounded-md"
+                      />
                       <div>
-                        <p className="font-medium text-sm">User Name</p>
+                        <h3 className="font-medium text-sm">{topic.title}</h3>
                         <p className="text-xs text-muted-foreground">
-                          @username
+                          {topic.time}
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
-                      Follow
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+              </section>
+              <section className="pb-6">
+                <h2 className="font-semibold mb-4">You might like</h2>
+                <div className="space-y-4">
+                  {[4, 5, 6].map((imgId, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage
+                            src={`https://i.pravatar.cc/150?img=${imgId}`}
+                          />
+                          <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium text-sm">User Name</p>
+                          <p className="text-xs text-muted-foreground">
+                            @username
+                          </p>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Follow
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
           </aside>
         </div>
       </motion.div>

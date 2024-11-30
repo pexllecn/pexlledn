@@ -600,10 +600,10 @@ export default function KanbanBoard() {
                   {provided.placeholder}
                   <div className="bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] flex flex-col items-center justify-center">
                     <Input
-                      placeholder="New Board Title"
+                      placeholder="New board title"
                       value={newBoardTitle}
                       onChange={(e) => setNewBoardTitle(e.target.value)}
-                      className="mb-2"
+                      className="mb-2 bg-background shadow-none"
                     />
                     <Button onClick={addBoard} disabled={!newBoardTitle.trim()}>
                       <PlusIcon className="h-4 w-4 mr-2" /> Add Board
