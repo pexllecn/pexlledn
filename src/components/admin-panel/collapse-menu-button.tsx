@@ -57,13 +57,13 @@ export function CollapseMenuButton({
     if (!count) return null;
     return (
       <Badge
-        variant="outline"
+        variant="default"
         className={cn(
-          "ml-auto px-1.5 min-w-[20px] flex items-center justify-center bg-background/50",
-          typeof count === "string" && "text-xss"
+          "ml-auto px-2 min-w-[20px] flex items-center justify-center",
+          typeof notificationCount === "string" && "text-1xs"
         )}
       >
-        {count}
+        {notificationCount}
       </Badge>
     );
   };

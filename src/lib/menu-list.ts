@@ -14,6 +14,8 @@ import {
   CirclePlay,
   SquareDashedBottomCode,
   Inbox,
+  Banknote,
+  BookOpenText,
 } from "lucide-react";
 
 type Submenu = {
@@ -55,7 +57,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/mail"),
           icon: Inbox,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
         // {
         //   href: "/timeline",
@@ -89,12 +91,27 @@ export function getMenuList(pathname: string): Group[] {
           notificationCount: "",
         },
         {
+          href: "/pricing",
+          label: "Pricing",
+          active: pathname.includes("/pricing"),
+          icon: DollarSign,
+          submenus: [],
+        },
+        {
+          href: "/work",
+          label: "Work",
+          active: pathname.includes("/work"),
+          icon: Briefcase,
+          submenus: [],
+          notificationCount: "",
+        },
+        {
           href: "/music",
           label: "Music",
           active: pathname.includes("/music"),
           icon: CirclePlay,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "/playground",
@@ -102,12 +119,40 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/playground"),
           icon: SquareDashedBottomCode,
           submenus: [],
+          notificationCount: "",
+        },
+        {
+          href: "/lead",
+          label: "Leads",
+          active: pathname.includes("/lead"),
+          icon: Banknote,
+          submenus: [],
+          notificationCount: "",
+        },
+        {
+          href: "",
+          label: "Social",
+          active: pathname.includes("/social"),
+          icon: BookOpenText,
+          submenus: [
+            {
+              href: "/social",
+              label: "Social timeline",
+              active: pathname === "/social",
+            },
+            {
+              href: "/social/profile",
+              label: "Profile",
+              active: pathname === "/social/profile",
+              notificationCount: "",
+            },
+          ],
           notificationCount: "New",
         },
       ],
     },
     {
-      groupLabel: "Contents",
+      groupLabel: "E-commerce",
       menus: [
         {
           href: "",
@@ -141,21 +186,6 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/filters"),
           icon: Tag,
           submenus: [],
-        },
-        {
-          href: "/pricing",
-          label: "Pricing",
-          active: pathname.includes("/pricing"),
-          icon: DollarSign,
-          submenus: [],
-        },
-        {
-          href: "/work",
-          label: "Work",
-          active: pathname.includes("/work"),
-          icon: Briefcase,
-          submenus: [],
-          notificationCount: "",
         },
       ],
     },

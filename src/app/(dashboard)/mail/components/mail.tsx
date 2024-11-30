@@ -84,7 +84,7 @@ export function Mail({
             )}`;
           }}
           className={cn(
-            "bg-muted rounded-lg ",
+            "bg-muted rounded-l-lg",
             isCollapsed &&
               "min-w-[50px] transition-all duration-300 ease-in-out "
           )}

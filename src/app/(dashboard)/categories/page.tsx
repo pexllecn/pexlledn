@@ -536,7 +536,7 @@ export default function HomePage() {
             </Select>
             <div className="flex gap-2">
               <Button
-                variant={isGridView ? "default" : "outline"}
+                variant={isGridView ? "outline2" : "outline"}
                 size="icon"
                 onClick={() => setIsGridView(true)}
               >
