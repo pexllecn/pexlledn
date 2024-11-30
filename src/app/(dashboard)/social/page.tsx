@@ -103,7 +103,7 @@ export default function SocialFeed() {
                   <div className="flex-1">
                     <Textarea
                       placeholder="What's happening?"
-                      className="min-h-[100px] bg-background resize-none"
+                      className="min-h-[100px] bg-background resize-none shadow-none"
                       value={postContent}
                       onChange={(e) => setPostContent(e.target.value)}
                     />
