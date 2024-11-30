@@ -38,6 +38,7 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --bluesp: 216 98.36% 52.16%;
+    --font-weight: 350; /* Light weight */
   }
   .dark {
     --background: 240 7% 12%;
@@ -73,6 +74,7 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --bluesp: 216 98.36% 52.16%;
+    --font-weight: 350; /* Light weight */
   }
 }
 * {
