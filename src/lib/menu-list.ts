@@ -16,6 +16,7 @@ import {
   Inbox,
   Banknote,
   BookOpenText,
+  UserCog,
 } from "lucide-react";
 
 type Submenu = {
@@ -198,6 +199,14 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/users"),
           icon: Users,
           submenus: [],
+        },
+        {
+          href: "/teams",
+          label: "Team Members",
+          active: pathname.includes("/teams"),
+          icon: UserCog,
+          submenus: [],
+          notificationCount: "New",
         },
         {
           href: "/account",

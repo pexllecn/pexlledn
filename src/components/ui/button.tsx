@@ -13,6 +13,7 @@ const buttonVariants = cva(
         black: "bg-foreground font-medium text-background hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        lightred: "bg-destructive/10 text-destructive hover:bg-destructive/90",
         outline:
           "border border-muted-background bg-background hover:bg-accent hover:text-accent-foreground",
         outline2:

@@ -139,7 +139,7 @@ export default function AddUser({
           <Button type="submit">Add User</Button>
         </DialogFooter>
       ) : (
-        <div className="space-y-4 pt-4">
+        <div className="flex space-x-2 pt-2">
           <Button type="submit" className="w-full">
             Add User
           </Button>
