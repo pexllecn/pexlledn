@@ -116,7 +116,11 @@ export default function TeamDialog() {
                     </p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="text-destructive">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive dark:text-red-600"
+                >
                   <X className="h-4 w-4" />
                   <span className="sr-only sm:not-sr-only sm:ml-2">Remove</span>
                 </Button>
@@ -134,7 +138,10 @@ export default function TeamDialog() {
         </Button>
         <div className="text-center text-sm">
           <span className="text-muted-foreground">Do you need any help? </span>
-          <Button variant="link" className="p-0 text-primary-foreground">
+          <Button
+            variant="link"
+            className="p-0 text-primary-foreground dark:text-primary"
+          >
             Contact us
           </Button>
         </div>

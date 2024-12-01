@@ -213,7 +213,7 @@ export default function CRMPage() {
                           Task Priority
                         </div>
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
                           className="text-red-500 bg-red-500/10"
                         >
@@ -328,7 +328,7 @@ export default function CRMPage() {
                               Task Priority
                             </div>
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="sm"
                               className={`${
                                 task.priority === "High"
@@ -449,7 +449,10 @@ export default function CRMPage() {
                     <div className="text-lg font-semibold mb-2">
                       ${deal.amount.toLocaleString()}
                     </div>
-                    <Button variant="link" className="h-auto p-0">
+                    <Button
+                      variant="link"
+                      className="text-primary-foreground dark:text-primary h-auto p-0"
+                    >
                       Contract sent
                     </Button>
                   </div>

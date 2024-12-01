@@ -130,7 +130,7 @@ export default function SocialProfile() {
                   <LinkIcon className="w-4 h-4 ml-4 mr-1" />
                   <Link
                     href="https://pexlledn.vercel.app"
-                    className="text-primary hover:underline"
+                    className="text-primary-foreground dark:text-primary underline"
                   >
                     pexlledn.vercel.app
                   </Link>
