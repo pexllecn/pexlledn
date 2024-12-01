@@ -29,7 +29,7 @@ export default function CRMPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="flex flex-col lg:flex-row g-background py-4">

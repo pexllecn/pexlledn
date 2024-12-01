@@ -258,10 +258,10 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.2 }}
         variants={variants1}
       >
-        <div className="lg:container px-2 py-8 flex flex-col lg:flex-row gap-6">
+        <div className="px-2 py-8 flex flex-col lg:flex-row gap-6">
           <div className="w-full lg:w-1/3 xl:w-1/4">
             <Card className="bg-muted border-none shadow-none h-full">
               <CardContent className="p-10 flex flex-col h-full">

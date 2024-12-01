@@ -121,7 +121,7 @@ export default function PricingPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="lg:container mx-auto px-2 py-6">

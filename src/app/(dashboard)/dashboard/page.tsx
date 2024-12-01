@@ -188,7 +188,7 @@ export default function DashboardPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.75 }}
+        transition={{ duration: 0.5 }}
         variants={variants1}
       >
         <div className="flex-1 space-y-4 p-4 pt-6">
