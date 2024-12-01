@@ -132,13 +132,19 @@ export default function AddUser({
               <Label htmlFor="active">Active</Label>
             </div>
           </div>
-          <SheetFooter>
+          <SheetFooter className="flex-col sm:flex-row gap-4 sm:gap-2">
+            <Button type="submit" className="w-full sm:w-auto">
+              Add User
+            </Button>{" "}
             <SheetClose asChild>
-              <Button type="button" variant="outline">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </Button>
             </SheetClose>
-            <Button type="submit">Add User</Button>
           </SheetFooter>
         </form>
       </SheetContent>
