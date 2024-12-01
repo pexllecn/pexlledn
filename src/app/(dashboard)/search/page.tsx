@@ -139,7 +139,7 @@ export default function SearchPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="max-w-3xl mx-auto pb-6">

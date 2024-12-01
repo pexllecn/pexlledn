@@ -69,7 +69,7 @@ export default function AccountPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="container p-4 sm:p-6 max-w-4xl">

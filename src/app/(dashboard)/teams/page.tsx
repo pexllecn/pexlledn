@@ -117,7 +117,7 @@ export default function TeamMembers() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="space-y-4 p-2 sm:p-4 bg-background">

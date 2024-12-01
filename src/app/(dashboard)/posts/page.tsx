@@ -211,7 +211,7 @@ export default function DarkModeCompatibleProductListing() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="min-h-screen">

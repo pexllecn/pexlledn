@@ -258,7 +258,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="px-2 py-8 flex flex-col lg:flex-row gap-6">

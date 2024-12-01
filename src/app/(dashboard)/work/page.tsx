@@ -159,7 +159,7 @@ export default function JobSearchPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="min-h-screen">

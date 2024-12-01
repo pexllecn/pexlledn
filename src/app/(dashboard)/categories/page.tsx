@@ -512,7 +512,7 @@ export default function HomePage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="container mx-auto px-4 py-8">

@@ -48,7 +48,7 @@ export default function UsersPage() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants}
         className="w-full max-w-7xl mx-auto"
       >

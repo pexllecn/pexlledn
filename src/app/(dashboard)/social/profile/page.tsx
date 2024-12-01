@@ -83,7 +83,7 @@ export default function SocialProfile() {
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         variants={variants1}
       >
         <div className="flex flex-col lg:flex-row w-full min-h-screen bg-background">

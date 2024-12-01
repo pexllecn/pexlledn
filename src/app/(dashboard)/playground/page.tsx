@@ -26,11 +26,6 @@ import { presets } from "./data/presets";
 import { motion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 
-export const metadata: Metadata = {
-  title: "Playground",
-  description: "The OpenAI Playground built using the components.",
-};
-
 export default function PlaygroundPage() {
   const variants1 = {
     hidden: { filter: "blur(10px)", opacity: 0 },
