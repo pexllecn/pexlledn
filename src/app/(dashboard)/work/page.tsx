@@ -202,7 +202,7 @@ export default function JobSearchPage() {
                   showJobDetails ? "hidden lg:block" : ""
                 }`}
               >
-                <div className="p-4 lg:p-6 h-full">
+                <div className="py-2 lg:p-6 h-full">
                   {/* Search */}
                   <div className="flex items-center gap-2 mb-6">
                     <div className="relative flex-1">
@@ -336,7 +336,7 @@ export default function JobSearchPage() {
                   showJobDetails ? "block" : "hidden lg:block"
                 }`}
               >
-                <div className="h-full p-6 overflow-auto">
+                <div className="h-full py-2 overflow-auto">
                   {selectedJob ? (
                     <motion.div
                       initial={{ opacity: 0 }}

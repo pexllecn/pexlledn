@@ -123,7 +123,7 @@ const ResponsiveOTP: React.FC<ResponsiveOTPProps> = ({
     <Drawer open={isOpen} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Enter OTP</DrawerTitle>
+          <DrawerTitle>Enter OTP (for this demo: 111-111)</DrawerTitle>
           <DrawerDescription>
             Please enter the 6-digit OTP sent to your device.
           </DrawerDescription>
