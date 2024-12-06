@@ -199,8 +199,8 @@ export default function CoursePage() {
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start mb-8">
                     <Badge
-                      variant="secondary"
-                      className="text-4xl font-bold px-4 py-2"
+                      variant="primary"
+                      className="text-4xl font-bold px-4 py-2 "
                     >
                       49.99 <span className="text-xl">USD</span>
                     </Badge>
