@@ -70,7 +70,10 @@ export const UserListItem: React.FC<UserListItemProps> = React.memo(
           <DropdownMenuItem>
             <MailIcon className="mr-2 h-4 w-4" /> Email
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive">
+          <DropdownMenuItem
+            onClick={() => onDelete(user)}
+            className="text-destructive"
+          >
             <TrashIcon className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

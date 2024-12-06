@@ -17,6 +17,7 @@ import {
   Banknote,
   BookOpenText,
   UserCog,
+  GraduationCap,
 } from "lucide-react";
 
 type Submenu = {
@@ -129,6 +130,14 @@ export function getMenuList(pathname: string): Group[] {
           icon: Banknote,
           submenus: [],
           notificationCount: "",
+        },
+        {
+          href: "/education",
+          label: "Education",
+          active: pathname.includes("/education"),
+          icon: GraduationCap,
+          submenus: [],
+          notificationCount: "New",
         },
         {
           href: "",

@@ -14,7 +14,7 @@ export default function MailPage() {
 
   return (
     <ContentLayout title="Account">
-      <div className="flex-col md:flex">
+      <div className=" flex-col md:flex">
         <Mail
           accounts={accounts}
           mails={mails}
