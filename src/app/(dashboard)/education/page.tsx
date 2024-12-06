@@ -30,7 +30,7 @@ export default function CoursePage() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
-        <div className="mx-auto px-4 py-8">
+        <div className="py-8">
           <div className="grid lg:grid-cols-[1.75fr,0.75fr] gap-8 border-none">
             {/* Left Column */}
             <div>
@@ -60,130 +60,135 @@ export default function CoursePage() {
               </Card>
 
               {/* Instructor */}
-              <div className="flex items-center space-x-4 mb-8">
-                <Image
-                  src="https://i.pravatar.cc/128"
-                  alt="Instructor avatar"
-                  width={64}
-                  height={64}
-                  className="rounded-full"
-                />
-                <div>
-                  <p className="text-sm text-muted-foreground">A course by</p>
-                  <h2 className="font-semibold">Blend Smith</h2>
+              <div className="px-6">
+                <div className="flex items-center space-x-4 mb-8">
+                  <Image
+                    src="https://i.pravatar.cc/128"
+                    alt="Instructor avatar"
+                    width={64}
+                    height={64}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <p className="text-sm text-muted-foreground">A course by</p>
+                    <h2 className="font-semibold">Blend Smith</h2>
+                  </div>
                 </div>
-              </div>
 
-              {/* Course Description */}
-              <div className="space-y-6">
-                <h1 className="text-3xl font-bold">
-                  Advanced 3D Modelling in Blender
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                  Embark on a creative journey and master the art of crafting
-                  your unique 3D character using Blender. Dive into the
-                  fascinating process of bringing your imaginative ideas to life
-                  as you explore the intricate features of Blender.
-                </p>
-                <p className="text-lg text-muted-foreground">
-                  Unleash your creativity as you learn to meticulously model,
-                  enhance details, and skillfully manipulate light and color.
-                  With each step, you&apos;ll unveil the captivating characters
-                  residing in your mind and unleash them upon the world, all
-                  while enjoying an exhilarating and enjoyable experience.
-                </p>
-              </div>
+                {/* Course Description */}
+                <div className="space-y-6">
+                  <h1 className="text-3xl font-bold">
+                    Advanced 3D Modelling in Blender
+                  </h1>
+                  <p className="text-lg text-muted-foreground">
+                    Embark on a creative journey and master the art of crafting
+                    your unique 3D character using Blender. Dive into the
+                    fascinating process of bringing your imaginative ideas to
+                    life as you explore the intricate features of Blender.
+                  </p>
+                  <p className="text-lg text-muted-foreground">
+                    Unleash your creativity as you learn to meticulously model,
+                    enhance details, and skillfully manipulate light and color.
+                    With each step, you&apos;ll unveil the captivating
+                    characters residing in your mind and unleash them upon the
+                    world, all while enjoying an exhilarating and enjoyable
+                    experience.
+                  </p>
+                </div>
 
-              {/* Course Details */}
-              <div className="mt-8 space-y-4">
-                <div className="flex items-center space-x-2">
-                  <MessageSquare className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Language:</p>
-                    <p className="font-semibold">English</p>
+                {/* Course Details */}
+                <div className="mt-8 space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm text-muted-foreground">Language:</p>
+                      <p className="font-semibold">English</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Subtitles:
+                      </p>
+                      <p className="font-semibold">
+                        English, Spanish, French, Italian, Russian, Polish,
+                        Dutch, German
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Critique session:
+                      </p>
+                      <p className="font-semibold">Individual recordings</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Award className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Certificate:
+                      </p>
+                      <p className="font-semibold">
+                        Upon completion of the course
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <MessageSquare className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Subtitles:</p>
-                    <p className="font-semibold">
-                      English, Spanish, French, Italian, Russian, Polish, Dutch,
-                      German
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MessageSquare className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Critique session:
-                    </p>
-                    <p className="font-semibold">Individual recordings</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Award className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Certificate:
-                    </p>
-                    <p className="font-semibold">
-                      Upon completion of the course
-                    </p>
-                  </div>
-                </div>
-              </div>
 
-              {/* Course Contents */}
-              <div className="mt-8">
-                <h2 className="text-sm font-semibold text-muted-foreground mb-4">
-                  COURSE TABLE OF CONTENTS
-                </h2>
-                <div className="space-y-2">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Introduction</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
-                  <div className="space-y-2 bg-muted/50 rounded-lg p-4">
+                {/* Course Contents */}
+                <div className="mt-8">
+                  <h2 className="text-sm font-semibold text-muted-foreground mb-4">
+                    COURSE TABLE OF CONTENTS
+                  </h2>
+                  <div className="space-y-2">
                     <Button variant="ghost" className="w-full justify-start">
-                      <span>Preparing the character</span>
-                      <ChevronRight className="ml-auto h-4 w-4 rotate-90" />
+                      <span>Introduction</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
-                    <p className="text-sm text-muted-foreground px-4">
-                      You will dive deep into the essential techniques and
-                      workflows required to effectively prepare a character
-                      model for advanced 3D modelling. From optimizing the
-                      topology and refining the geometry to setting up UV
-                      mapping and creating efficient rigging structures, this
-                      part of the course will equip you with the fundamental
-                      skills needed for character preparation.
-                    </p>
+                    <div className="space-y-2 bg-muted/50 rounded-lg p-4">
+                      <Button variant="ghost" className="w-full justify-start">
+                        <span>Preparing the character</span>
+                        <ChevronRight className="ml-auto h-4 w-4 rotate-90" />
+                      </Button>
+                      <p className="text-sm text-muted-foreground px-4">
+                        You will dive deep into the essential techniques and
+                        workflows required to effectively prepare a character
+                        model for advanced 3D modelling. From optimizing the
+                        topology and refining the geometry to setting up UV
+                        mapping and creating efficient rigging structures, this
+                        part of the course will equip you with the fundamental
+                        skills needed for character preparation.
+                      </p>
+                    </div>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <span>Modeling the Head</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <span>Modeling the Body</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <span>Texturing</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <span>Rigging</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <span>Animation</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <span>Rendering</span>
+                      <ChevronRight className="ml-auto h-4 w-4" />
+                    </Button>
                   </div>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Modeling the Head</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Modeling the Body</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Texturing</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Rigging</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Animation</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <span>Rendering</span>
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  </Button>
                 </div>
               </div>
             </div>
