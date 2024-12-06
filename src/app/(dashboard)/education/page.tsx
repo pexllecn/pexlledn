@@ -33,7 +33,7 @@ export default function CoursePage() {
         <div className="py-8">
           <div className="grid lg:grid-cols-[1.75fr,0.75fr] gap-8 border-none">
             {/* Left Column */}
-            <div>
+            <div className="lg:px-4">
               {/* Course Image */}
               <Card className="mb-8 border-none">
                 <CardContent className="p-0 relative">
