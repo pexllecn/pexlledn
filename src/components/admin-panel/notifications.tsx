@@ -88,7 +88,7 @@ export function NotificationsPopover() {
   ]);
 
   return (
-    <Card className="border-none shadow-none rounded-lg px-2">
+    <Card className="border-none shadow-none rounded-lg">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 pt-4">
         <CardTitle className="text-base font-semibold">Notification</CardTitle>
         <Button
@@ -104,81 +104,69 @@ export function NotificationsPopover() {
         </Button>
       </CardHeader>
       <CardContent className="px-2">
-        <Tabs defaultValue="all">
-          <TabsList className="justify-start">
-            <TabsTrigger value="all">
-              All Notification{" "}
-              <span className="ml-1 text-muted-foreground">3</span>
-            </TabsTrigger>
-            <TabsTrigger value="mentions">Mentions</TabsTrigger>
-            <TabsTrigger value="unread">Unread</TabsTrigger>
-          </TabsList>
-          <TabsContent value="all">
-            <ScrollArea className="h-[400px]">
-              {notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className="flex items-start gap-4 border-b p-4 last:border-0"
-                >
-                  <Avatar className="text-primary-foreground">
-                    <AvatarImage
-                      src={`https://i.pravatar.cc/40?u=${notification.user.avatar}`}
-                      alt={notification.user.name}
-                    />
-                    <AvatarFallback>
-                      {getInitials(notification.user.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm leading-none">
-                      <span className="font-semibold">
-                        {notification.user.name}
-                      </span>{" "}
-                      <span className="text-muted-foreground">
-                        {notification.content.action}
-                      </span>{" "}
-                      <span className="font-semibold">
-                        {notification.content.target}
-                      </span>
-                    </p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      {notification.type === "comment"}
-                      {notification.type === "invitation"}
-                      {notification.type === "file"}
-                      <span>{notification.content.timestamp}</span>
-                      <span>•</span>
-                      <span>{notification.content.category}</span>
-                    </div>
-                    {notification.type === "invitation" && (
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-4 text-xs"
-                        >
-                          Decline
-                        </Button>
-                        <Button variant="default" size="sm">
-                          Accept
-                        </Button>
-                      </div>
-                    )}
-                    {notification.type === "file" && notification.file && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-2 h-8 px-2 text-xs"
-                      >
-                        <FileText className="h-3 w-3 mr-1" />
-                        Download
-                      </Button>
-                    )}
-                  </div>
+        <ScrollArea className="">
+          {notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className="flex items-start gap-4 border-b p-4 last:border-0"
+            >
+              <Avatar className="text-primary-foreground">
+                <AvatarImage
+                  src={`https://i.pravatar.cc/40?u=${notification.user.avatar}`}
+                  alt={notification.user.name}
+                />
+                <AvatarFallback>
+                  {getInitials(notification.user.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-1">
+                <p className="text-sm leading-none">
+                  <span className="font-semibold">
+                    {notification.user.name}
+                  </span>{" "}
+                  <span className="text-muted-foreground">
+                    {notification.content.action}
+                  </span>{" "}
+                  <span className="font-semibold">
+                    {notification.content.target}
+                  </span>
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  {notification.type === "comment"}
+                  {notification.type === "invitation"}
+                  {notification.type === "file"}
+                  <span>{notification.content.timestamp}</span>
+                  <span>•</span>
+                  <span>{notification.content.category}</span>
                 </div>
-              ))}
-            </ScrollArea>
-          </TabsContent>
-        </Tabs>
+                {notification.type === "invitation" && (
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-4 text-xs"
+                    >
+                      Decline
+                    </Button>
+                    <Button variant="black" size="sm">
+                      Accept
+                    </Button>
+                  </div>
+                )}
+                {notification.type === "file" && notification.file && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 h-8 px-2 text-xs"
+                  >
+                    <FileText className="h-3 w-3 mr-1" />
+                    Download
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
+        </ScrollArea>
       </CardContent>
     </Card>
   );
