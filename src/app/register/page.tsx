@@ -9,7 +9,6 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Moon, Sun } from "lucide-react";
@@ -42,10 +41,6 @@ export default function register() {
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Implement sign-up logic here
-    toast({
-      title: "Account Created",
-      description: "Your account has been successfully created.",
-    });
     router.push("/dashboard");
   };
 

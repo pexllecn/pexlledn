@@ -35,7 +35,6 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { toast } from "@/components/ui/use-toast";
 import { ModeToggle } from "@/components/mode-toggle";
 
 const DynamicAuthButtons = dynamic(
@@ -256,11 +255,6 @@ export default function AuthenticationPage() {
           router.push("/dashboard");
         } else {
           setIsOtpInvalid(true);
-          toast({
-            title: "Invalid OTP",
-            description: "Please enter the correct OTP.",
-            variant: "destructive",
-          });
         }
       } else {
         setIsOtpInvalid(false);
@@ -274,11 +268,7 @@ export default function AuthenticationPage() {
       e.preventDefault();
       // Implement password reset logic here
       console.log("Password reset requested for:", forgotPasswordEmail);
-      toast({
-        title: "Password Reset Requested",
-        description:
-          "If an account exists for this email, you will receive reset instructions.",
-      });
+
       setIsForgotPasswordOpen(false);
     },
     [forgotPasswordEmail]

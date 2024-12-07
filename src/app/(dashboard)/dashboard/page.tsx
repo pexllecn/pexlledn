@@ -25,10 +25,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
 import { Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/registry/default/ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Overview } from "@/components/overview";
 import { RecentSales } from "@/components/recent-sales";
@@ -196,6 +196,7 @@ export default function DashboardPage() {
             <h2 className="text-3xl font-normal">Hi Khaled, Welcome back 👋</h2>
             <div className="hidden md:flex items-center space-x-2">
               <CalendarDateRangePicker />
+              <Toaster closeButton />
               <Button
                 className="shadow-none"
                 variant="outline"
@@ -207,7 +208,7 @@ export default function DashboardPage() {
                       onClick: () => console.log("Undo"),
                     },
                     classNames: {
-                      toast: "bg-background border-none",
+                      toast: "bg-background border-none rounded-lg",
                       title: "font-normal text-foreground",
                       description: "font-light text-muted-foreground",
                       actionButton: "bg-primary text-primary-foreground",
