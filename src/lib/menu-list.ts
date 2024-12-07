@@ -19,6 +19,7 @@ import {
   BookOpenText,
   UserCog,
   GraduationCap,
+  Store,
 } from "lucide-react";
 
 type Submenu = {
@@ -136,6 +137,42 @@ export function getMenuList(pathname: string): Group[] {
           ],
           notificationCount: "",
         },
+        {
+          href: "",
+          label: "E-commerce",
+          active: pathname.includes("/user/1"),
+          icon: Store,
+          submenus: [
+            {
+              href: "/user/1",
+              label: "User Profile",
+              active: pathname.includes("/user/1"),
+              notificationCount: "",
+            },
+            {
+              href: "/posts",
+              label: "Post Details",
+              active: pathname === "/posts",
+            },
+            {
+              href: "/posts/new",
+              label: "All Posts",
+              active: pathname === "/posts/new",
+              notificationCount: "",
+            },
+            {
+              href: "/categories",
+              label: "Categories",
+              active: pathname.includes("/categories"),
+            },
+            {
+              href: "/filters",
+              label: "Filters",
+              active: pathname.includes("/filters"),
+            },
+          ],
+          notificationCount: "",
+        },
       ],
     },
     {
@@ -164,52 +201,6 @@ export function getMenuList(pathname: string): Group[] {
           icon: SquareDashedBottomCode,
           submenus: [],
           notificationCount: "",
-        },
-      ],
-    },
-    {
-      groupLabel: "E-commerce",
-      menus: [
-        {
-          href: "/user/1",
-          label: "User Profile",
-          active: pathname.includes("/user/1"),
-          icon: User,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "Post Details",
-              active: pathname === "/posts",
-            },
-            {
-              href: "/posts/new",
-              label: "All Posts",
-              active: pathname === "/posts/new",
-              notificationCount: "",
-            },
-          ],
-        },
-        {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
-          icon: Bookmark,
-          submenus: [],
-        },
-        {
-          href: "/filters",
-          label: "Filters",
-          active: pathname.includes("/filters"),
-          icon: Tag,
-          submenus: [],
         },
       ],
     },
