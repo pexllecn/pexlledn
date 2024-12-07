@@ -468,7 +468,7 @@ export default function SocialProfile() {
               <TabsContent value="posts" className="mt-0">
                 <div className="space-y-4">
                   {posts.map((post) => (
-                    <article key={post.id} className=" p-4 border-b ">
+                    <article key={post.id} className=" p-4 border-b">
                       <div className="flex gap-3">
                         <Avatar>
                           <AvatarImage

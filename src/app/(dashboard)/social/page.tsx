@@ -249,7 +249,7 @@ function Post({
   comments: string;
 }) {
   return (
-    <div className="bg-background p-2 border-b">
+    <div className="bg-background p-2 border-t">
       <div className="flex gap-3">
         <Avatar>
           <AvatarImage src={avatar} />
