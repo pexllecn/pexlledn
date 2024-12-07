@@ -4,8 +4,8 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { ProfileHeader } from "@/app/(dashboard)/user/profileheader";
-import { ProfileDetails } from "@/app/(dashboard)/user/profiledetails";
+import { ProfileHeader } from "@/app/(dashboard)/users/components/profileheader";
+import { ProfileDetails } from "@/app/(dashboard)/users/components/profiledetails";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -160,7 +160,7 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
                 exit: { opacity: 0, scale: 0.8, y: 100 },
               }}
             >
-              <ScrollArea className="h-[100px] w-full rounded-md border p-4 mt-2">
+              <ScrollArea className="h-[100px] w-full rounded-lg border p-4 mt-2">
                 <p className="text-zinc-500 dark:text-zinc-500">
                   {item.description}
                 </p>

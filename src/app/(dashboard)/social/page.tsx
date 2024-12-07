@@ -103,7 +103,7 @@ export default function SocialFeed() {
                   <div className="flex-1">
                     <Textarea
                       placeholder="What's happening?"
-                      className="min-h-[100px] bg-background resize-none shadow-none"
+                      className="min-h-[100px] p-4 resize-none shadow-none"
                       value={postContent}
                       onChange={(e) => setPostContent(e.target.value)}
                     />
@@ -249,7 +249,7 @@ function Post({
   comments: string;
 }) {
   return (
-    <div className="bg-background p-4 rounded-lg">
+    <div className="bg-background p-2 border-b">
       <div className="flex gap-3">
         <Avatar>
           <AvatarImage src={avatar} />

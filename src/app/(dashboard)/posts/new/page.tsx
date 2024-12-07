@@ -108,7 +108,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             className="transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-          <div className="absolute inset-x-3 bottom-3 p-5 bg-black/40 backdrop-blur-sm rounded-2xl">
+          <div className="absolute inset-x-3 bottom-3 p-5 bg-black/40 backdrop-blur-sm rounded-lg">
             <div className="space-y-2">
               <Badge variant="default" className="mb-1">
                 {product.category}
@@ -174,7 +174,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                 exit: { opacity: 0, scale: 0.8, y: 100 },
               }}
             >
-              <ScrollArea className="h-[100px] w-full rounded-md border p-4 mt-2">
+              <ScrollArea className="h-[100px] w-full rounded-lg border p-4 mt-2">
                 <p className="text-zinc-500 dark:text-zinc-500">
                   {product.description}
                 </p>
@@ -218,7 +218,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               </div>
             </DialogDescription>
           </div>
-          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-full p-1 hover:bg-zinc-900/70 transition-colors" />
+          <DialogClose className="absolute right-4 top-4 z-10 text-zinc-50 bg-zinc-900/50 rounded-lg p-1 hover:bg-zinc-900/70 transition-colors" />
         </DialogContent>
       </DialogContainer>
     </Dialog>
@@ -279,7 +279,7 @@ export default function AppStore() {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 rounded-md focus:border-ring bg-muted border-none shadow-none w-full"
+                className="pl-10 rounded-lg focus:border-ring bg-muted border-none shadow-none w-full"
               />
               <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -288,7 +288,7 @@ export default function AppStore() {
             </div>
             <Button
               variant="outline"
-              className="w-full sm:w-auto rounded-md"
+              className="w-full sm:w-auto rounded-lg"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
             >
               <Filter className="mr-2" size={20} />
@@ -315,7 +315,7 @@ export default function AppStore() {
                           selectedCategory === category ? "default" : "outline"
                         }
                         size="sm"
-                        className="rounded-md"
+                        className="rounded-lg"
                         onClick={() => setSelectedCategory(category)}
                       >
                         {category}

@@ -441,7 +441,7 @@ export default function CRMPage() {
                     amount: 85000,
                   },
                 ].map((deal, i) => (
-                  <div key={i} className="bg-muted/70 p-4 rounded-lg">
+                  <div key={i} className="bg-background border p-4 rounded-lg">
                     <div className="text-sm text-muted-foreground mb-1">
                       Closing date: {deal.date}
                     </div>

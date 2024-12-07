@@ -60,7 +60,7 @@ export default function Component() {
           }`}
       ></div>
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4">
-        <div className="w-full max-w-2xl bg-background/40 text-primary backdrop-blur-lg rounded-full shadow-md">
+        <div className="w-full max-w-2xl bg-background/40 text-primary backdrop-blur-lg rounded-lg shadow-md">
           <div className="container mx-auto px-6">
             <div className="flex items-center justify-between h-12">
               <div className="flex items-center">

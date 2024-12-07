@@ -189,6 +189,7 @@ export default function AccountPage() {
                     <Textarea
                       id="bio"
                       placeholder="Tell us about yourself..."
+                      className="p-4"
                     />
                   </div>
                   <div>

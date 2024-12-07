@@ -112,7 +112,7 @@ export default function ShipmentsPage() {
           <div className="flex flex-col lg:flex-row h-full">
             {/* Sidebar / Mobile List View */}
             <div
-              className={`w-full lg:w-[400px] bg-muted rounded-3xl p-6 ${
+              className={`w-full lg:w-[400px] bg-muted rounded-lg p-6 ${
                 selectedShipment ? "hidden lg:block" : ""
               }`}
             >
@@ -156,7 +156,7 @@ export default function ShipmentsPage() {
 
             {/* Main Content */}
             <div
-              className={`flex-1 p-2 lg:p-6 rounded-3xl ${
+              className={`flex-1 p-2 lg:p-6 rounded-lg ${
                 !selectedShipment ? "hidden lg:block" : ""
               }`}
             >
@@ -225,12 +225,7 @@ export default function ShipmentsPage() {
                     {/* Contact Cards and Info Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4">
                       <div>
-                        <div className="flex items-center justify-between ">
-                          <h3 className="text-lg font-semibold">Driver</h3>
-                          <Button variant="ghost" size="icon">
-                            <PencilLine className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <div className="flex items-center justify-between "></div>
                         <ContactCard
                           title="Driver"
                           name="Courtney Henry"
@@ -240,12 +235,7 @@ export default function ShipmentsPage() {
                       </div>
 
                       <div>
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Customer</h3>
-                          <Button variant="ghost" size="icon">
-                            <PencilLine className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <div className="flex items-center justify-between"></div>
                         <ContactCard
                           title="Customer"
                           name="Kristin Watson"
@@ -255,35 +245,25 @@ export default function ShipmentsPage() {
                       </div>
 
                       <div>
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Equipment</h3>
-                          <Button variant="ghost" size="icon">
-                            <PencilLine className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <div className="p-4 bg-background rounded-3xl border">
+                        <div className="flex items-center justify-between"></div>
+                        <div className="p-4 bg-muted rounded-lg border-none">
                           <div className="space-y-2">
                             <div className="text-sm text-muted-foreground">
                               Truck Number
                             </div>
-                            <div className="font-bold">KT 71483</div>
+                            <div className="font-bold text-2xl">KT 71483</div>
                           </div>
                         </div>
                       </div>
 
                       <div>
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Pricing</h3>
-                          <Button variant="ghost" size="icon">
-                            <PencilLine className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <div className="p-4 bg-background rounded-lg border">
+                        <div className="flex items-center justify-between"></div>
+                        <div className="p-4 bg-muted rounded-lg border-none">
                           <div className="space-y-2">
                             <div className="text-sm text-muted-foreground">
                               Load Price
                             </div>
-                            <div className="font-bold">$6,533.44</div>
+                            <div className="font-bold text-2xl">$6,533.44</div>
                           </div>
                         </div>
                       </div>

@@ -485,7 +485,7 @@ export default function HomePage() {
             key={category}
             variant={activeCategory === category ? "default" : "secondary"}
             onClick={() => setActiveCategory(category)}
-            className="rounded-full text-xs py-1.5 px-3 h-auto"
+            className="rounded-lg text-xs py-1.5 px-3 h-auto"
           >
             {category}
           </Button>

@@ -42,7 +42,7 @@ export default function CoursePage() {
                     alt="3D character model"
                     width={600}
                     height={200}
-                    className="rounded-3xl w-full"
+                    className="rounded-lg w-full"
                   />
                   <div className="absolute bottom-4 left-4 flex items-center space-x-2">
                     <div className="flex">

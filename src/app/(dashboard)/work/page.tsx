@@ -209,7 +209,7 @@ export default function JobSearchPage() {
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         placeholder="UI Designer"
-                        className="pl-9 bg-muted shadwo-none border-none"
+                        className="pl-9 bg-muted shadow-none border-none"
                       />
                     </div>
                     <Button variant="outline" size="icon" className="shrink-0">

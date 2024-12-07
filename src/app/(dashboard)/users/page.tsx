@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { useUserManagement } from "@/hooks/use-user-management";
 import usersData from "@/data/users.json";
-import AddUserSheet from "@/app/(dashboard)/user/AddUserSheet";
-import EditUserSheet from "@/app/(dashboard)/user/EditUserSheet";
+import AddUserSheet from "@/app/(dashboard)/users/components/AddUserSheet";
+import EditUserSheet from "@/app/(dashboard)/users/components/EditUserSheet";
 import { User } from "@/types/user";
-import { UserTable } from "@/app/(dashboard)/user/UserTable";
+import { UserTable } from "@/app/(dashboard)/users/components/UserTable";
 
 const variants = {
   hidden: { filter: "blur(10px)", opacity: 0 },

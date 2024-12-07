@@ -67,7 +67,7 @@ const CommentComponent: React.FC<{ comment: Comment }> = ({ comment }) => {
             <span className="font-medium text-gray-800 dark:text-gray-200">
               {comment.user}
             </span>
-            <span className="text-sm text-gray-500">{comment.date}</span>
+            <span className="text-xs text-gray-500">{comment.date}</span>
           </div>
           <p className="text-gray-600 dark:text-gray-300">{comment.content}</p>
         </div>
@@ -141,7 +141,7 @@ const Comments: React.FC = () => {
             placeholder="Add a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="flex-1"
+            className="p-4 flex-1"
           />
           <Button onClick={handleSubmitComment}>
             <Send className="w-4 h-4 mr-2" />
