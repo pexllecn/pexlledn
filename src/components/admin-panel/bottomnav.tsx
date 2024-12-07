@@ -22,15 +22,15 @@ export function BottomNav() {
       className={cn(
         "fixed bottom-4 left-4 right-4 p-4",
         "flex justify-between items-center lg:hidden",
-        "bg-background/55 backdrop-blur-lg",
-        "rounded-full",
+        "bg-background/60 ",
+        "rounded-full dark:border",
         "shadow-lg",
         "z-50",
         "h-16"
       )}
       style={{
-        WebkitBackdropFilter: "blur(16px)",
-        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(10px)",
+        backdropFilter: "blur(10px)",
       }}
     >
       <NavItem

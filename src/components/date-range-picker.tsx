@@ -26,9 +26,9 @@ export function CalendarDateRangePicker({
         <PopoverTrigger asChild>
           <Button
             id="date"
-            variant={"outline"}
+            variant={"secondary"}
             className={cn(
-              "w-[260px] justify-start text-left font-light bg-muted border-none shadow-none",
+              "w-[260px] justify-start text-left font-light",
               !date && "text-muted-foreground "
             )}
           >

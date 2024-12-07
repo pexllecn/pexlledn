@@ -23,7 +23,7 @@ export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
           <TooltipTrigger asChild>
             <Button
               onClick={() => setIsOpen?.()}
-              className="rounded-md w-8 h-8 ml-6"
+              className="rounded-lg w-8 h-8 ml-6"
               variant="ghost"
               size="icon"
             >

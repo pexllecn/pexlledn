@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useTheme } from "next-themes";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import { Kbd } from "@/components/ui/kbd";
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
@@ -21,7 +21,7 @@ export function ModeToggle() {
       <Tooltip delayDuration={100}>
         <TooltipTrigger asChild>
           <Button
-            className="rounded-full w-8 h-8"
+            className="rounded-lg w-8 h-8"
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -32,11 +32,19 @@ export function ModeToggle() {
             />
             <Moon
               strokeWidth={1}
-              className="absoluteh text-muted-foreground h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+              className="absolute text-muted-foreground h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
             />
+            <span className="sr-only">Toggle theme</span>
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Switch Theme</TooltipContent>
+        <TooltipContent side="bottom">
+          <div className="flex items-center">
+            Switch Theme
+            <Kbd className="ml-2">
+              <span className="text-xs">⌘</span>/
+            </Kbd>
+          </div>
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

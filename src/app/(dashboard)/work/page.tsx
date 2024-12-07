@@ -144,7 +144,7 @@ export default function JobSearchPage() {
       if (jobs.length > 0) {
         setSelectedJob(jobs[0]);
       }
-    }, 400);
+    }, 700);
 
     return () => clearTimeout(timer);
   }, []);

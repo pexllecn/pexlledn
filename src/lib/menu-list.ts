@@ -10,6 +10,7 @@ import {
   MessageCircleMore,
   Kanban,
   Briefcase,
+  Truck,
   MessageSquareQuote,
   CirclePlay,
   SquareDashedBottomCode,
@@ -85,14 +86,6 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/user/1",
-          label: "User Profile",
-          active: pathname.includes("/user/1"),
-          icon: User,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
           href: "/pricing",
           label: "Pricing",
           active: pathname.includes("/pricing"),
@@ -140,6 +133,14 @@ export function getMenuList(pathname: string): Group[] {
           notificationCount: "New",
         },
         {
+          href: "/logistics",
+          label: "Logistics",
+          active: pathname.includes("/logistics"),
+          icon: Truck,
+          submenus: [],
+          notificationCount: "New",
+        },
+        {
           href: "",
           label: "Social",
           active: pathname.includes("/social"),
@@ -147,7 +148,7 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [
             {
               href: "/social",
-              label: "Social timeline",
+              label: "Social Timeline",
               active: pathname === "/social",
             },
             {
@@ -157,13 +158,21 @@ export function getMenuList(pathname: string): Group[] {
               notificationCount: "",
             },
           ],
-          notificationCount: "New",
+          notificationCount: "",
         },
       ],
     },
     {
       groupLabel: "E-commerce",
       menus: [
+        {
+          href: "/user/1",
+          label: "User Profile",
+          active: pathname.includes("/user/1"),
+          icon: User,
+          submenus: [],
+          notificationCount: "",
+        },
         {
           href: "",
           label: "Posts",
@@ -172,12 +181,12 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [
             {
               href: "/posts",
-              label: "All Posts",
+              label: "Post Details",
               active: pathname === "/posts",
             },
             {
               href: "/posts/new",
-              label: "New Post",
+              label: "All Posts",
               active: pathname === "/posts/new",
               notificationCount: "",
             },
@@ -215,7 +224,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/teams"),
           icon: UserCog,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "/account",
