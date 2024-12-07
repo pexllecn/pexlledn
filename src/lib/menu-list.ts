@@ -173,6 +173,30 @@ export function getMenuList(pathname: string): Group[] {
           ],
           notificationCount: "",
         },
+        {
+          href: "",
+          label: "Settings",
+          active: pathname.includes("/user/1"),
+          icon: Settings,
+          submenus: [
+            {
+              href: "/users",
+              label: "Users",
+              active: pathname.includes("/users"),
+            },
+            {
+              href: "/teams",
+              label: "Team Members",
+              active: pathname.includes("/teams"),
+            },
+            {
+              href: "/account",
+              label: "Account",
+              active: pathname.includes("/account"),
+            },
+          ],
+          notificationCount: "",
+        },
       ],
     },
     {
@@ -201,33 +225,6 @@ export function getMenuList(pathname: string): Group[] {
           icon: SquareDashedBottomCode,
           submenus: [],
           notificationCount: "",
-        },
-      ],
-    },
-    {
-      groupLabel: "Settings",
-      menus: [
-        {
-          href: "/users",
-          label: "Users",
-          active: pathname.includes("/users"),
-          icon: Users,
-          submenus: [],
-        },
-        {
-          href: "/teams",
-          label: "Team Members",
-          active: pathname.includes("/teams"),
-          icon: UserCog,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "/account",
-          label: "Account",
-          active: pathname.includes("/account"),
-          icon: Settings,
-          submenus: [],
         },
       ],
     },
