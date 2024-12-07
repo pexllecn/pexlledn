@@ -17,7 +17,7 @@ const ThemeOption = ({
   <div className="flex flex-col items-center">
     <button
       onClick={onClick}
-      className={`w-40 h-40 rounded-2xl p-3 flex relative overflow-hidden transition-all duration-300 ${
+      className={`w-40 h-40 rounded-lg p-3 flex relative overflow-hidden transition-all duration-300 ${
         isSelected ? "ring-2 ring-ring" : ""
       }`}
       style={{

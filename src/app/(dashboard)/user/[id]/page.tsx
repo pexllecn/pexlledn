@@ -89,7 +89,7 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
       }}
     >
       <DialogTrigger>
-        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
+        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 z-10" />
           <Image
             src={item.imageUrl}
@@ -103,7 +103,7 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
               {item.badge}
             </Badge>
           )}
-          <div className="absolute inset-x-3 bottom-3 p-4 bg-black/40 backdrop-blur-sm rounded-xl z-20 transition-all duration-300 ">
+          <div className="absolute inset-x-3 bottom-3 p-4 bg-black/40 backdrop-blur-sm rounded-lg z-20 transition-all duration-300 ">
             <div className="space-y-2">
               <Badge variant="secondary">{item.category}</Badge>
               <h3 className=" text-white line-clamp-1">{item.name}</h3>

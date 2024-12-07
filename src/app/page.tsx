@@ -137,7 +137,7 @@ export default function Component() {
                   height={608}
                   alt="demo-dark"
                   priority
-                  className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
+                  className="border border-zinc-600 rounded-lg shadow-sm hidden dark:block dark:shadow-gray-500/5"
                 />
                 <Image
                   src="/mdashboard.png"
@@ -151,7 +151,7 @@ export default function Component() {
                   width={228}
                   height={494}
                   alt="demo-mobile"
-                  className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
+                  className="border border-zinc-600 rounded-lg absolute bottom-0 right-0 hidden dark:lg:block"
                 />
               </div>
             </div>

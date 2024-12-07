@@ -278,7 +278,7 @@ export default function ShipmentsPage() {
                             <PencilLine className="h-4 w-4" />
                           </Button>
                         </div>
-                        <div className="p-4 bg-background rounded-3xl border">
+                        <div className="p-4 bg-background rounded-lg border">
                           <div className="space-y-2">
                             <div className="text-sm text-muted-foreground">
                               Load Price
@@ -292,7 +292,7 @@ export default function ShipmentsPage() {
 
                   {/* Right Column */}
                   <div className="space-y-6">
-                    <div className="rounded-xl py-10 px-6">
+                    <div className="rounded-lg py-10 px-6">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg font-semibold">Stops</h3>
                         <div className="flex gap-2">
@@ -307,7 +307,7 @@ export default function ShipmentsPage() {
                       <StopsList stops={stops} />
                     </div>
 
-                    <div className="bg-background rounded-3xl p-6 border">
+                    <div className="bg-background rounded-lg p-6 border">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg font-semibold">Notes</h3>
                         <Button variant="ghost" size="icon">

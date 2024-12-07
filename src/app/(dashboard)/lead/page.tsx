@@ -411,7 +411,7 @@ export default function CRMPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-lg">Deals</h3>
-                  <span className="bg-muted text-muted-foreground rounded px-1.5 text-xs">
+                  <span className="bg-primary text-primary-foreground rounded-lg px-1.5 text-xs">
                     2
                   </span>
                 </div>

@@ -40,7 +40,7 @@ export function ModeToggle() {
         <TooltipContent side="bottom">
           <div className="flex items-center">
             Switch Theme
-            <Kbd className="ml-2">
+            <Kbd className="ml-2 rounded-lg">
               <span className="text-xs">⌘</span>/
             </Kbd>
           </div>

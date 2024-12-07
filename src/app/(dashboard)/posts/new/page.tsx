@@ -99,7 +99,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       }}
     >
       <DialogTrigger>
-        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
+        <Card className="relative w-full h-[400px] overflow-hidden group cursor-pointer rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
           <Image
             src={product.imageUrl}
             alt={product.name}

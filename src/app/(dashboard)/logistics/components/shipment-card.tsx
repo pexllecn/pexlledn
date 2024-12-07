@@ -42,7 +42,7 @@ export function ShipmentCard({
 
   return (
     <Card
-      className={`p-4 mb-4 hover:bg-accent/50 transition-colors ${
+      className={`p-4 mb-4 hover:bg-accent/50 transition-colors rounded-lg ${
         isSelected ? "border-primary bg-primary/10 border-2" : ""
       }`}
     >
