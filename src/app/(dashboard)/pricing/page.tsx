@@ -74,7 +74,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
             ? ""
             : isHighlighted
             ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-            : "text-primary hover:bg-primary/10"
+            : "text-primary-foreground hover:bg-primary/10"
         }`}
         variant={isCurrentPlan || isHighlighted ? "outline" : "outline"}
         disabled={isDisabled}
