@@ -196,7 +196,6 @@ export default function DashboardPage() {
             <h2 className="text-3xl font-normal">Hi Khaled, Welcome back 👋</h2>
             <div className="hidden md:flex items-center space-x-2">
               <CalendarDateRangePicker />
-              <Toaster closeButton />
               <Button
                 className="shadow-none"
                 variant="outline"
