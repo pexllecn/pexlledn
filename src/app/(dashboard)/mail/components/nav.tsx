@@ -71,8 +71,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 <span
                   className={cn(
                     "ml-auto",
-                    link.variant === "default" &&
-                      "text-primary-foreground dark:text-white"
+                    link.variant === "default" && "text-primary"
                   )}
                 >
                   {link.label}

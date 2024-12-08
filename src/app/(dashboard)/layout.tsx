@@ -10,7 +10,6 @@ export default function DemoLayout({
   return (
     <AdminPanelLayout>
       {children}
-      <Toaster />
       <BottomNav />
     </AdminPanelLayout>
   );
