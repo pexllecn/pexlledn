@@ -20,6 +20,7 @@ import {
   UserCog,
   GraduationCap,
   Store,
+  Building,
 } from "lucide-react";
 
 type Submenu = {
@@ -115,6 +116,25 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/logistics"),
           icon: Truck,
           submenus: [],
+          notificationCount: "New",
+        },
+        {
+          href: "",
+          label: "Real Estate",
+          active: pathname.includes("/realestate"),
+          icon: Building,
+          submenus: [
+            {
+              href: "/realestate",
+              label: "Building Management",
+              active: pathname === "/realestate",
+            },
+            {
+              href: "/realestate/redetails",
+              label: "Building Details",
+              active: pathname === "/realestate/redetails",
+            },
+          ],
           notificationCount: "New",
         },
         {
