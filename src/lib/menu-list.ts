@@ -108,7 +108,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/education"),
           icon: GraduationCap,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "/logistics",
@@ -116,7 +116,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/logistics"),
           icon: Truck,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "",
@@ -131,7 +131,7 @@ export function getMenuList(pathname: string): Group[] {
             },
             {
               href: "/realestate/redetails",
-              label: "Building Details",
+              label: "Real Estate Search",
               active: pathname === "/realestate/redetails",
             },
           ],

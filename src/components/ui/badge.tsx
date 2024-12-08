@@ -25,7 +25,7 @@ const badgeVariants = cva(
         teal: "border-transparent bg-teal-500/10 border-teal-500/20 text-teal-500 ",
         blue: "border-transparent bg-blue-500/10 border-blue-500/20 text-blue-500",
         cyan: "border-transparent bg-cyan-500/10 border-cyan-500/20 text-cyan-500 ",
-        black: "border-transparent bg-black text-white ",
+        black: "border-transparent bg-foreground text-background",
       },
     },
     defaultVariants: {

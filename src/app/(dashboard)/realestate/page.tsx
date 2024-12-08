@@ -167,10 +167,10 @@ export default function Dashboard() {
             </div>
 
             <div className="col-span-1 md:col-span-8 space-y-6">
-              <Card className="border-none p-0">
+              <Card className="border-none bg-muted">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Payments</CardTitle>
-                  <Badge variant="secondary">This month</Badge>
+                  <Badge variant="black">This month</Badge>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

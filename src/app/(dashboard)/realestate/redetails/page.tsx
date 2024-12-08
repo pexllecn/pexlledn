@@ -40,7 +40,7 @@ export default function RealEstateSearch() {
       guests: 2,
       baths: 2,
       area: "4x7 m²",
-      price: 13600000,
+      price: 5435032,
     },
     {
       id: 3,
@@ -52,7 +52,7 @@ export default function RealEstateSearch() {
       guests: 2,
       baths: 2,
       area: "4x7 m²",
-      price: 13600000,
+      price: 25430000,
     },
     {
       id: 4,
@@ -64,7 +64,7 @@ export default function RealEstateSearch() {
       guests: 2,
       baths: 2,
       area: "4x7 m²",
-      price: 13600000,
+      price: 456000,
     },
   ];
 
