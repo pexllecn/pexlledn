@@ -62,11 +62,15 @@ export function Navbar({ title }: NavbarProps) {
         e.preventDefault();
         setTheme(theme === "light" ? "dark" : "light");
       }
+      if (e.key === "." && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        sidebar?.setIsOpen();
+      }
     };
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [setTheme, theme]);
+  }, [setTheme, theme, sidebar]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

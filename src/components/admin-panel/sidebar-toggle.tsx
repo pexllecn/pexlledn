@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Kbd } from "@/components/ui/kbd";
 
 interface SidebarToggleProps {
   isOpen: boolean | undefined;
@@ -44,7 +45,14 @@ export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
               )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">Toggle Sidebar</TooltipContent>
+          <TooltipContent side="right">
+            <div className="flex items-center">
+              Toggle Sidebar
+              <Kbd className="ml-2">
+                <span className="text-xs">⌘</span>.
+              </Kbd>
+            </div>
+          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
