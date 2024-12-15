@@ -8,14 +8,13 @@ import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
 import { ZoomPreventer } from "@/components/ZoomPreventer";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: {
-      template: "%s | Pexlle",
-      default: "Pexlle",
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Pexlle",
+    default: "Pexlle",
+  },
+  description: "The official Pexlle platform",
+};
 
 export default function RootLayout({
   children,

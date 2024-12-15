@@ -22,6 +22,8 @@ import {
   Store,
   Building,
   CalendarDays,
+  LogIn,
+  ScanFace,
 } from "lucide-react";
 
 type Submenu = {
@@ -224,6 +226,27 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname.includes("/account"),
             },
           ],
+          notificationCount: "",
+        },
+      ],
+    },
+    {
+      groupLabel: "Authentication",
+      menus: [
+        {
+          href: "/signin",
+          label: "Sign in",
+          active: pathname.includes("/signin"),
+          icon: LogIn,
+          submenus: [],
+          notificationCount: "",
+        },
+        {
+          href: "/register",
+          label: "Register",
+          active: pathname.includes("/register"),
+          icon: ScanFace,
+          submenus: [],
           notificationCount: "",
         },
       ],
