@@ -74,14 +74,14 @@
     --font-weight: 350;
   }
 
-  :root[data-color="zinc"] {
-    --primary: 240 5.9% 10%;
+  :root[data-color="black"] {
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 98%;
   }
 
-  .dark[data-color="zinc"] {
+  .dark[data-color="black"] {
     --primary: 0 0% 98%;
-    --primary-foreground: 240 3.7% 15.9%;
+    --primary-foreground: 0 0% 0%;
   }
 
   :root[data-color="red"] {
@@ -94,13 +94,13 @@
     --primary-foreground: 0 0% 100%;
   }
 
-  :root[data-color="rose"] {
-    --primary: 346.8 77.2% 49.8%;
+  :root[data-color="pink"] {
+    --primary: 330.4 81.2% 60.4%;
     --primary-foreground: 0 0% 98%;
   }
 
-  .dark[data-color="rose"] {
-    --primary: 349.7 89.2% 60.2%;
+  .dark[data-color="pink"] {
+    --primary: 330.4 81.2% 60.4%;
     --primary-foreground: 355.7 100% 97.3%;
   }
 
@@ -149,13 +149,13 @@
     --primary-foreground: 210 40% 98%;
   }
 
-  :root[data-color="black"] {
-    --primary: 0 0% 0%;
+  :root[data-color="teal"] {
+    --primary: 187.9 85.7% 53.3%;
     --primary-foreground: 0 0% 98%;
   }
 
-  .dark[data-color="black"] {
-    --primary: 0 0% 98%;
+  .dark[data-color="teal"] {
+    --primary: 187.9 85.7% 53.3%;
     --primary-foreground: 0 0% 0%;
   }
 

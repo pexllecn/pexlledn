@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/contexts/theme-context";
 
 const colors = [
-  { name: "Zinc", value: "zinc", hex: "#71717a" },
+  { name: "Black", value: "black", hex: "#000000" },
   { name: "Red", value: "red", hex: "#ef4444" },
   { name: "Rose", value: "rose", hex: "#f43f5e" },
   { name: "Orange", value: "orange", hex: "#f97316" },
@@ -25,7 +25,6 @@ const colors = [
   { name: "Blue", value: "blue", hex: "#3b82f6" },
   { name: "Yellow", value: "yellow", hex: "#F9D72F" },
   { name: "Violet", value: "violet", hex: "#8b5cf6" },
-  { name: "Black", value: "black", hex: "#000000" },
 ] as const;
 
 const radiusOptions = [
