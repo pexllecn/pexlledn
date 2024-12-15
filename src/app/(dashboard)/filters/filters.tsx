@@ -507,7 +507,7 @@ export default function Filters() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-auto lg:px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Desktop Sidebar */}
             <div className="hidden lg:block w-1/5 space-y-6">

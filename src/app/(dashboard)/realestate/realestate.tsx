@@ -25,65 +25,77 @@ export default function Dashboard() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
-        <div className="dashboard-container bg-background min-h-screen p-4 sm:p-8">
-          <header className="flex flex-wrap justify-between items-center mb-6">
-            <nav className="flex space-x-6 text-muted-foreground">
+        <div className="dashboard-container bg-background min-h-screen py-3 lg:p-4">
+          <header className="mb-4 sm:mb-6 overflow-x-auto">
+            <nav className="flex space-x-4 sm:space-x-6 text-sm sm:text-base text-muted-foreground min-w-max">
               <a
                 href="#"
-                className="font-semibold text-primary-foreground dark:text-primary"
+                className="font-semibold text-primary-foreground dark:text-primary whitespace-nowrap"
               >
                 Overview
               </a>
-              <a href="#">Work Orders</a>
-              <a href="#">Rent</a>
-              <a href="#">Collection</a>
-              <a href="#">Access</a>
+              <a href="#" className="whitespace-nowrap">
+                Work Orders
+              </a>
+              <a href="#" className="whitespace-nowrap">
+                Rent
+              </a>
+              <a href="#" className="whitespace-nowrap">
+                Collection
+              </a>
+              <a href="#" className="whitespace-nowrap">
+                Access
+              </a>
             </nav>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            <div className="col-span-1 md:col-span-4">
-              <Card className="p-4 bg-muted border-none">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+            <div className="col-span-1 lg:col-span-4">
+              <Card className="p-3 sm:p-4 bg-muted border-none">
                 <CardContent className="p-0">
                   <div className="relative mb-4">
                     <img
                       src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop"
                       alt="Sobha Garden Residential Building"
-                      className="w-full h-64 object-cover rounded-lg"
+                      className="w-full h-48 sm:h-64 object-cover rounded-lg"
                     />
                     <Badge className="absolute top-3 left-3">Residential</Badge>
                   </div>
-                  <div className="space-y-6 px-4">
+                  <div className="space-y-4 sm:space-y-6 px-2 sm:px-4">
                     <div>
-                      <h2 className="text-2xl font-semibold">Sobha Garden</h2>
-                      <div className="flex gap-10 mt-4">
+                      <h2 className="text-xl sm:text-2xl font-semibold">
+                        Sobha Garden
+                      </h2>
+                      <div className="grid grid-cols-2 sm:flex sm:gap-10 mt-4 gap-y-4">
                         <div>
-                          <p className="text-2xl font-semibold tracking-tight">
+                          <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                             1810
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             Residents
                           </p>
                         </div>
                         <div>
-                          <p className="text-2xl font-semibold tracking-tight">
+                          <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                             1032
                           </p>
-                          <p className="text-sm text-muted-foreground">Units</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            Units
+                          </p>
                         </div>
                         <div>
-                          <p className="text-2xl font-semibold tracking-tight">
+                          <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                             134
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             Vacant
                           </p>
                         </div>
                         <div>
-                          <p className="text-2xl font-semibold tracking-tight">
+                          <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                             73
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             Upcoming
                           </p>
                         </div>
@@ -98,14 +110,14 @@ export default function Dashboard() {
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">
+                      <h3 className="text-base sm:text-lg font-semibold mb-4">
                         Work Orders
                       </h3>
                       <WorkOrdersChart />
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">
+                      <h3 className="text-base sm:text-lg font-semibold mb-4">
                         On-site Staff
                       </h3>
                       <div className="space-y-4">
@@ -116,7 +128,7 @@ export default function Dashboard() {
                               Louie Hodges
                             </p>
                           </div>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             +971 5 927 6701
                           </p>
                         </div>
@@ -127,7 +139,7 @@ export default function Dashboard() {
                               Haris Bowman
                             </p>
                           </div>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             +971 5 927 6701
                           </p>
                         </div>
@@ -156,7 +168,7 @@ export default function Dashboard() {
                           ]}
                           className="mt-4"
                         />
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                           34 staff members
                         </p>
                       </div>
@@ -166,52 +178,60 @@ export default function Dashboard() {
               </Card>
             </div>
 
-            <div className="col-span-1 md:col-span-8 space-y-6">
+            <div className="col-span-1 lg:col-span-8 space-y-4 sm:space-y-6">
               <Card className="border-none bg-muted">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Payments</CardTitle>
+                <CardHeader className="flex flex-row items-center justify-between p-4 sm:p-6">
+                  <CardTitle className="text-base sm:text-lg">
+                    Payments
+                  </CardTitle>
                   <Badge variant="black">This month</Badge>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div>
-                      <p className="text-2xl font-semibold tracking-tight">
+                      <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                         $223,600
                       </p>
-                      <p className="text-sm text-muted-foreground">Rent</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        Rent
+                      </p>
                     </div>
                     <div>
-                      <p className="text-2xl font-semibold tracking-tight">
+                      <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                         $24,840
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Additional services
                       </p>
                     </div>
                     <div>
-                      <p className="text-2xl font-semibold tracking-tight">
+                      <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                         $31,840
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Maintenance
                       </p>
                     </div>
                     <div>
-                      <p className="text-2xl font-semibold tracking-tight">
+                      <p className="text-xl sm:text-2xl font-semibold tracking-tight">
                         $16,485
                       </p>
-                      <p className="text-sm text-muted-foreground">Debt</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        Debt
+                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>New Requests</CardTitle>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <Card className="border-none">
+                  <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-base sm:text-lg">
+                      New Requests
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4 sm:p-6">
                     <div className="space-y-4">
                       {[
                         {
@@ -236,7 +256,10 @@ export default function Dashboard() {
                             "I would like to request a thorough cleaning of the common areas",
                         },
                       ].map((request, i) => (
-                        <div key={i} className="flex items-start gap-4">
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 sm:gap-4"
+                        >
                           <Avatar>
                             <AvatarImage
                               src={request.avatar}
@@ -244,14 +267,16 @@ export default function Dashboard() {
                             />
                             <AvatarFallback>{request.name[0]}</AvatarFallback>
                           </Avatar>
-                          <div className="space-y-1">
+                          <div className="space-y-1 min-w-0">
                             <p className="text-sm font-medium leading-none">
                               {request.name}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                               {request.unit}
                             </p>
-                            <p className="text-sm">{request.issue}</p>
+                            <p className="text-xs sm:text-sm break-words">
+                              {request.issue}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -259,11 +284,13 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Delayed Work Orders</CardTitle>
+                <Card className="border-none">
+                  <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-base sm:text-lg">
+                      Delayed Work Orders
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4 sm:p-6">
                     <div className="space-y-4">
                       {[
                         {
@@ -294,9 +321,9 @@ export default function Dashboard() {
                       ].map((order, i) => (
                         <div
                           key={i}
-                          className="flex items-start justify-between gap-4"
+                          className="flex items-start justify-between gap-3 sm:gap-4"
                         >
-                          <div className="flex items-start gap-4">
+                          <div className="flex items-start gap-3 sm:gap-4 min-w-0">
                             <Avatar>
                               <AvatarImage
                                 src={order.avatar}
@@ -308,13 +335,13 @@ export default function Dashboard() {
                               <p className="text-sm font-medium leading-none">
                                 {order.id}
                               </p>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs sm:text-sm text-muted-foreground">
                                 {order.unit} - {order.type}
                               </p>
                             </div>
                           </div>
-                          <div className="text-right space-y-1">
-                            <p className="text-sm text-muted-foreground">
+                          <div className="text-right space-y-1 flex-shrink-0">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                               {order.delay}
                             </p>
                             <Badge
@@ -335,12 +362,14 @@ export default function Dashboard() {
                 </Card>
               </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Upcoming Units</CardTitle>
+              <Card className="border-none">
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-base sm:text-lg">
+                    Upcoming Units
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
                       {
                         unit: "Unit 213B",
@@ -376,22 +405,22 @@ export default function Dashboard() {
                       },
                     ].map((unit, i) => (
                       <div key={i}>
-                        <div className="relative mb-4">
+                        <div className="relative mb-3 sm:mb-4">
                           <img
                             src={unit.image}
                             alt={unit.unit}
-                            className="w-full h-48 object-cover rounded-lg"
+                            className="w-full h-36 sm:h-48 object-cover rounded-lg"
                           />
                           <Badge className="absolute top-3 left-3">
                             Residential
                           </Badge>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-1 sm:space-y-2">
                           <p className="text-sm font-medium">{unit.unit}</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             {unit.price} - {unit.size}
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             Available from {unit.date}
                           </p>
                         </div>

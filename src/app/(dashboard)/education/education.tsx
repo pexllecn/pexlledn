@@ -31,7 +31,7 @@ export default function CoursePage() {
         variants={variants1}
       >
         <div className="py-8">
-          <div className="grid lg:grid-cols-[1.75fr,0.75fr] gap-8 border-none">
+          <div className="grid lg:grid-cols-[1.75fr,0.75fr] gap-4 lg:gap-8 border-none">
             {/* Left Column */}
             <div className="lg:px-4">
               {/* Course Image */}
@@ -42,7 +42,7 @@ export default function CoursePage() {
                     alt="3D character model"
                     width={600}
                     height={200}
-                    className="rounded-lg w-full"
+                    className="rounded-lg w-full h-[200px] md:h-[300px] lg:h-[400px] object-cover"
                   />
                   <div className="absolute bottom-4 left-4 flex items-center space-x-2">
                     <div className="flex">
@@ -60,7 +60,7 @@ export default function CoursePage() {
               </Card>
 
               {/* Instructor */}
-              <div className="px-6">
+              <div className="px-4 lg:px-6">
                 <div className="flex items-center space-x-4 mb-8">
                   <Image
                     src="https://i.pravatar.cc/128"
@@ -77,16 +77,16 @@ export default function CoursePage() {
 
                 {/* Course Description */}
                 <div className="space-y-6">
-                  <h1 className="text-3xl font-bold">
+                  <h1 className="text-2xl lg:text-3xl font-bold">
                     Advanced 3D Modelling in Blender
                   </h1>
-                  <p className="text-lg text-muted-foreground">
+                  <p className="text-base lg:text-lg text-muted-foreground">
                     Embark on a creative journey and master the art of crafting
                     your unique 3D character using Blender. Dive into the
                     fascinating process of bringing your imaginative ideas to
                     life as you explore the intricate features of Blender.
                   </p>
-                  <p className="text-lg text-muted-foreground">
+                  <p className="text-base lg:text-lg text-muted-foreground">
                     Unleash your creativity as you learn to meticulously model,
                     enhance details, and skillfully manipulate light and color.
                     With each step, you&apos;ll unveil the captivating
@@ -97,7 +97,7 @@ export default function CoursePage() {
                 </div>
 
                 {/* Course Details */}
-                <div className="mt-8 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-5 w-5 text-muted-foreground" />
                     <div>
@@ -140,17 +140,23 @@ export default function CoursePage() {
                 </div>
 
                 {/* Course Contents */}
-                <div className="mt-8">
+                <div className="mt-6 lg:mt-8">
                   <h2 className="text-sm font-semibold text-muted-foreground mb-4">
                     COURSE TABLE OF CONTENTS
                   </h2>
                   <div className="space-y-2">
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Introduction</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
                     <div className="space-y-2 bg-muted/50 rounded-lg p-4">
-                      <Button variant="ghost" className="w-full justify-start">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-sm lg:text-base"
+                      >
                         <span>Preparing the character</span>
                         <ChevronRight className="ml-auto h-4 w-4 rotate-90" />
                       </Button>
@@ -164,27 +170,45 @@ export default function CoursePage() {
                         skills needed for character preparation.
                       </p>
                     </div>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Modeling the Head</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Modeling the Body</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Texturing</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Rigging</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Animation</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm lg:text-base"
+                    >
                       <span>Rendering</span>
                       <ChevronRight className="ml-auto h-4 w-4" />
                     </Button>
@@ -195,12 +219,12 @@ export default function CoursePage() {
 
             {/* Right Column */}
             <div>
-              <Card className="border-none sticky top-4">
-                <CardContent className="p-6">
+              <Card className="border-none lg:sticky lg:top-4">
+                <CardContent className="p-4 lg:p-6">
                   <div className="flex justify-between items-start mb-8">
                     <Badge
                       variant="primary"
-                      className="text-4xl font-bold px-4 py-2 "
+                      className="text-2xl lg:text-4xl font-bold px-3 py-1.5 lg:px-4 lg:py-2"
                     >
                       49.99 <span className="text-xl">USD</span>
                     </Badge>
@@ -260,7 +284,7 @@ export default function CoursePage() {
                       </div>
                     </div>
 
-                    <div className="gap-4 flex flex-row">
+                    <div className="gap-2 lg:gap-4 flex flex-row sm:flex-row">
                       <Button className="flex-1" size="lg">
                         Enroll a course
                       </Button>
@@ -269,10 +293,12 @@ export default function CoursePage() {
                       </Button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 lg:space-y-4">
                       <div>
-                        <h3 className="font-semibold mb-2">ASSIGNMENT</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="text-sm lg:text-base font-semibold mb-1 lg:mb-2">
+                          ASSIGNMENT
+                        </h3>
+                        <p className="text-xs lg:text-sm text-muted-foreground">
                           Plan to dedicate a minimum of 1-2 hours per day to
                           watch lecture videos, engage in Q&A sessions, and
                           complete assignments.
@@ -280,8 +306,10 @@ export default function CoursePage() {
                       </div>
 
                       <div>
-                        <h3 className="font-semibold mb-2">PREREQUISITES</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="text-sm lg:text-base font-semibold mb-1 lg:mb-2">
+                          PREREQUISITES
+                        </h3>
+                        <p className="text-xs lg:text-sm text-muted-foreground">
                           Familiarity with Blender&apos;s user interface and
                           navigation, basic manipulation of SOPs (Surface
                           Operators), and understanding of fundamental
@@ -291,8 +319,10 @@ export default function CoursePage() {
                       </div>
 
                       <div>
-                        <h3 className="font-semibold mb-2">MATERIALS</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="text-sm lg:text-base font-semibold mb-1 lg:mb-2">
+                          MATERIALS
+                        </h3>
+                        <p className="text-xs lg:text-sm text-muted-foreground">
                           Blender 2.93 (or higher) | Recommended system
                           requirements: 8-core processor and 32GB of RAM. To
                           participate in this workshop, you can download the

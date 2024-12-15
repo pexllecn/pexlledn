@@ -121,7 +121,7 @@ export default function AccountPage() {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 p-0">
             {activeTab === "profile" && (
               <Card className="shadow-none border-none">
                 <CardHeader>

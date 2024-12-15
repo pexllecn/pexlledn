@@ -517,7 +517,7 @@ export default function HomePage() {
         variants={variants1}
       >
         <PageTitle title="Marketplace" />
-        <div className="container mx-auto px-4 py-8">
+        <div className="lg:container mx-auto lg:px-4 py-8">
           <Banner />
 
           <div className="mb-6 flex flex-col sm:flex-row gap-4">

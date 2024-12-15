@@ -191,7 +191,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.5 }}
         variants={variants1}
       >
-        <div className="flex-1 space-y-4 p-4 pt-6">
+        <div className="flex-1 space-y-4 lg:p-4 py-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-normal">Hi Khaled, Welcome back 👋</h2>
             <div className="hidden md:flex items-center space-x-2">

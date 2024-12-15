@@ -77,7 +77,7 @@ export function ThemeCustomizer() {
             <div className="flex gap-4">
               <Button
                 variant={theme === "light" ? "outline2" : "outline"}
-                className="justify-start gap-2 py-6"
+                className="justify-start gap-2 py-6 font-normal"
                 onClick={() => setTheme("light")}
               >
                 <Sun className="h-4 w-4" />
@@ -85,7 +85,7 @@ export function ThemeCustomizer() {
               </Button>
               <Button
                 variant={theme === "dark" ? "outline2" : "outline"}
-                className="justify-start gap-2 py-6"
+                className="justify-start gap-2 py-6 font-normal"
                 onClick={() => setTheme("dark")}
               >
                 <Moon className="h-4 w-4" />
@@ -100,11 +100,11 @@ export function ThemeCustomizer() {
                 <Button
                   key={c.value}
                   variant={color === c.value ? "outline2" : "outline"}
-                  className="justify-start gap-2 py-6"
+                  className="justify-center gap-2 px-1 py-6"
                   onClick={() => setColor(c.value)}
                 >
                   <span
-                    className="rounded-full h-4 w-4 border border-muted"
+                    className="rounded-lg lg:h-4 lg:w-4 h-2 w-2 border border-muted"
                     style={{ backgroundColor: c.hex }}
                     aria-hidden="true"
                   />
@@ -129,7 +129,7 @@ export function ThemeCustomizer() {
                   />
                   <Label
                     htmlFor={`radius-${option.value}`}
-                    className="flex flex-col items-center justify-between rounded-md border p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary/50 peer-data-[state=checked]:bg-primary/20 [&:has([data-state=checked])]:border-primary/20 "
+                    className="flex text-xs flex-col items-center justify-between rounded-lg border p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary/50 peer-data-[state=checked]:bg-primary/20 [&:has([data-state=checked])]:border-primary/20 "
                   >
                     {option.label}
                   </Label>
