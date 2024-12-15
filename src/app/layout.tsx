@@ -1,4 +1,5 @@
 import React from "react";
+import { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/theme-context";
@@ -6,15 +7,15 @@ import { ThemeCustomizer } from "@/components/theme-customizer";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
 import { ZoomPreventer } from "@/components/ZoomPreventer";
-import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Pexlle",
-    default: "Pexlle",
-  },
-  description: "The best place to find high-quality UI components",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: {
+      template: "%s | Pexlle",
+      default: "Pexlle",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

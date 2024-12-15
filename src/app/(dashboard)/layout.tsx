@@ -7,16 +7,24 @@ export async function generateMetadata({
 }: {
   params: { slug: string[] };
 }): Promise<Metadata> {
-  const pageTitle = params.slug
-    ? params.slug[params.slug.length - 1]
-    : "Pexlle";
+  const defaultTitle = "Admin Dashboard";
+  const pageTitle =
+    params.slug && params.slug.length > 0
+      ? params.slug[params.slug.length - 1].replace(/-/g, " ")
+      : "";
+
+  const fullTitle = pageTitle
+    ? `${
+        pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
+      } | ${defaultTitle}`
+    : defaultTitle;
 
   return {
-    title: pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1),
+    title: fullTitle,
   };
 }
 
-export default function DemoLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;

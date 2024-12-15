@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import PageTitle from "@/components/PageTitle";
 
 const sampleData = {
   banner: {
@@ -515,6 +516,7 @@ export default function HomePage() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
+        <PageTitle title="Marketplace" />
         <div className="container mx-auto px-4 py-8">
           <Banner />
 

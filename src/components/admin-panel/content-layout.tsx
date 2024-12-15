@@ -1,4 +1,7 @@
+"use client";
+
 import { Navbar } from "@/components/admin-panel/navbar";
+import { useEffect, useState } from "react";
 
 interface ContentLayoutProps {
   title: string;
@@ -6,9 +9,17 @@ interface ContentLayoutProps {
 }
 
 export function ContentLayout({ title, children }: ContentLayoutProps) {
+  const [pageTitle, setPageTitle] = useState(title);
+
+  useEffect(() => {
+    const fullTitle = document.title;
+    const mainTitle = fullTitle.split("|")[0].trim();
+    setPageTitle(mainTitle);
+  }, []);
+
   return (
     <div>
-      <Navbar title={title} />
+      <Navbar title={pageTitle} />
       <div className="px-2 sm:px-4">{children}</div>
     </div>
   );
