@@ -138,10 +138,7 @@ export default function TeamDialog() {
         </Button>
         <div className="text-center text-sm">
           <span className="text-muted-foreground">Do you need any help? </span>
-          <Button
-            variant="link"
-            className="p-0 text-primary-foreground dark:text-primary"
-          >
+          <Button variant="link" className="p-0 ">
             Contact us
           </Button>
         </div>

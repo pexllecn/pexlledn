@@ -438,7 +438,7 @@ export default function SocialProfile() {
                   <LinkIcon className="ml-4 mr-1 h-4 w-4" />
                   <Link
                     href={`https://${profileData.website}`}
-                    className="text-primary-foreground dark:text-primary underline"
+                    className="text-blue-600 hover:underline"
                   >
                     {profileData.website}
                   </Link>

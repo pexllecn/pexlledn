@@ -311,7 +311,7 @@ export default function RealEstateSearch() {
                               <span className="text-sm text-muted-foreground">
                                 {property.area}
                               </span>
-                              <span className="text-lg font-semibold text-primary-foreground dark:text-primary">
+                              <span className="text-lg font-semibold ">
                                 ${property.price.toLocaleString()}
                               </span>
                             </div>
