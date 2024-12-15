@@ -86,7 +86,7 @@
 
   :root[data-color="red"] {
     --primary: 0 84.2% 60.2%;
-    --primary-foreground: 0 62.8% 30.6%;
+    --primary-foreground: 0 0% 98%;
   }
 
   .dark[data-color="red"] {
