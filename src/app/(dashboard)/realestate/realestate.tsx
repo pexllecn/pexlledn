@@ -94,7 +94,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-sm font-medium">Leased by 87%</p>
                       </div>
-                      <Progress value={87} className="bg-yellow-100" />
+                      <Progress value={87} className="bg-primary/20" />
                     </div>
 
                     <div>

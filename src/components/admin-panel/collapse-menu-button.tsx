@@ -117,7 +117,7 @@ export function CollapseMenuButton({
             key={index}
             variant={active ? "outline2" : "ghost"}
             className={cn(
-              "w-full justify-start h-8 mb-1 p-3",
+              "w-full justify-start h-8 mb-1 p-3 hover:bg-primary/10",
               !active && "text-muted-foreground"
             )}
             asChild
