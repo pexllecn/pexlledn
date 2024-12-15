@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AccountPage from "./Accountpage";
+import AccountPage from "./AccountPage";
 
 export const metadata: Metadata = {
   title: "Account Settings",
