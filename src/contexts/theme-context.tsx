@@ -4,15 +4,16 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 type Color =
-  | "zinc"
+  | "black"
   | "red"
-  | "rose"
+  | "pink"
   | "orange"
   | "green"
   | "blue"
   | "yellow"
-  | "violet"
-  | "black";
+  | "cyan"
+  | "lime"
+  | "violet";
 type MenuPlacement = "horizontal" | "vertical";
 type MenuBehavior = "pinned" | "unpinned";
 type Layout = "fluid" | "boxed";

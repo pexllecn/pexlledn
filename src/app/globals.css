@@ -149,13 +149,23 @@
     --primary-foreground: 210 40% 98%;
   }
 
-  :root[data-color="teal"] {
+  :root[data-color="cyan"] {
     --primary: 187.9 85.7% 53.3%;
     --primary-foreground: 0 0% 98%;
   }
 
-  .dark[data-color="teal"] {
+  .dark[data-color="cyan"] {
     --primary: 187.9 85.7% 53.3%;
+    --primary-foreground: 0 0% 0%;
+  }
+
+  :root[data-color="lime"] {
+    --primary: 82.7 78% 55.5%;
+    --primary-foreground: 85.9 78.4% 27.3%;
+  }
+
+  .dark[data-color="lime"] {
+    --primary: 82.7 78% 55.5%;
     --primary-foreground: 0 0% 0%;
   }
 

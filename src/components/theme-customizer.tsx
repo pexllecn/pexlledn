@@ -19,12 +19,14 @@ import { useTheme } from "@/contexts/theme-context";
 const colors = [
   { name: "Black", value: "black", hex: "#000000" },
   { name: "Red", value: "red", hex: "#ef4444" },
-  { name: "Rose", value: "rose", hex: "#f43f5e" },
+  { name: "Pink", value: "pink", hex: "#ec4899" },
   { name: "Orange", value: "orange", hex: "#f97316" },
   { name: "Green", value: "green", hex: "#22c55e" },
   { name: "Blue", value: "blue", hex: "#3b82f6" },
   { name: "Yellow", value: "yellow", hex: "#F9D72F" },
   { name: "Violet", value: "violet", hex: "#8b5cf6" },
+  { name: "Cyan", value: "cyan", hex: "#22d3ee" },
+  { name: "Lime", value: "lime", hex: "#a3e635" },
 ] as const;
 
 const radiusOptions = [
