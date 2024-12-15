@@ -278,12 +278,12 @@ body {
 
 ::selection {
   background-color: hsl(var(--primary) / 0.3);
-  color: hsl(var(--primary-foreground) / 1);
+  color: hsl(var(--foreground) / 1);
 }
 
 .dark ::selection {
   background-color: hsl(var(--primary) / 0.7);
-  color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 .layout-container {
@@ -300,5 +300,14 @@ body {
   }
   .animate-spin-slow {
     animation: spin-slow 2s linear infinite;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

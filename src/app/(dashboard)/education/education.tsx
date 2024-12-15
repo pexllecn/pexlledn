@@ -49,10 +49,10 @@ export default function CoursePage() {
                       {[...Array(4)].map((_, i) => (
                         <Star
                           key={i}
-                          className="w-5 h-5 fill-primary text-primary"
+                          className="w-5 h-5 fill-yellow-400 text-yellow-400"
                         />
                       ))}
-                      <Star className="w-5 h-5 fill-primary/50 text-primary" />
+                      <Star className="w-5 h-5 fill-yellow-400/25 text-yellow-400" />
                     </div>
                     <span className="text-white">1,421 reviews</span>
                   </div>
