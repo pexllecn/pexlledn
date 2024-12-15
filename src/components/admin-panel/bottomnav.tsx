@@ -23,8 +23,8 @@ export function BottomNav() {
         "fixed bottom-4 left-4 right-4 p-4",
         "flex justify-between items-center lg:hidden",
         "bg-background/60 ",
-        "rounded-full dark:border",
-        "shadow-lg",
+        "border rounded-lg",
+        "shadow",
         "z-50",
         "h-16"
       )}
@@ -81,7 +81,7 @@ const NavItem = ({
   <Link href={href} className="flex flex-col items-center">
     <div
       className={cn(
-        "p-1 transition-colors duration-200 rounded-full",
+        "p-1 transition-colors duration-200 rounded-lg",
         isActive ? "bg-primary p-3" : "text-muted-foreground"
       )}
     >
