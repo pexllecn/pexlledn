@@ -128,7 +128,7 @@ export function ThemeCustomizer() {
                   />
                   <Label
                     htmlFor={`radius-${option.value}`}
-                    className="flex flex-col items-center justify-between rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary/20 peer-data-[state=checked]:bg-primary/20 [&:has([data-state=checked])]:border-primary/20 "
+                    className="flex flex-col items-center justify-between rounded-md border p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary/50 peer-data-[state=checked]:bg-primary/20 [&:has([data-state=checked])]:border-primary/20 "
                   >
                     {option.label}
                   </Label>
