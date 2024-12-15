@@ -440,7 +440,7 @@ export default function DarkModeCompatibleProductListing() {
                         <Phone className="w-4 h-4 mr-2" />
                         Contact Seller
                       </Button>
-                      <Button className="flex-1" variant="black">
+                      <Button className="flex-1" variant="primary">
                         <Mail className="w-4 h-4 mr-2" />
                         Email Seller
                       </Button>
@@ -592,7 +592,7 @@ export default function DarkModeCompatibleProductListing() {
             <Phone className="w-4 h-4 mr-2" />
             Call
           </Button>
-          <Button variant="black" className="flex-1">
+          <Button variant="primary" className="flex-1">
             <Mail className="w-4 h-4 mr-2" />
             Message
           </Button>

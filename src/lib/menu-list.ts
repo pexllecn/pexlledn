@@ -21,6 +21,7 @@ import {
   GraduationCap,
   Store,
   Building,
+  CalendarDays,
 } from "lucide-react";
 
 type Submenu = {
@@ -72,6 +73,14 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
           notificationCount: "32",
         },
+        // {
+        //   href: "/calendar",
+        //   label: "Calendar",
+        //   active: pathname.includes("/calendar"),
+        //   icon: CalendarDays,
+        //   submenus: [],
+        //   notificationCount: "New",
+        // },
         {
           href: "/kanban",
           label: "Kanban",

@@ -128,7 +128,7 @@ export default function ShipmentsPage() {
                     type="search"
                   />
                 </div>
-                <Button className="w-full" variant="black">
+                <Button className="w-full" variant="primary">
                   <PlusIcon className="mr-2 h-4 w-4" />
                   New Load
                 </Button>

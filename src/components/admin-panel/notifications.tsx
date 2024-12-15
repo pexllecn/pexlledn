@@ -148,7 +148,7 @@ export function NotificationsPopover() {
                     >
                       Decline
                     </Button>
-                    <Button variant="black" size="sm">
+                    <Button variant="primary" size="sm">
                       Accept
                     </Button>
                   </div>

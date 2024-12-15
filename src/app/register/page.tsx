@@ -65,7 +65,7 @@ export default function register() {
           ${
             resolvedTheme === "dark"
               ? "bg-[radial-gradient(circle_800px_at_50%_-100px,#1e293b,transparent)]"
-              : "bg-gradient-to-tr from-white via-gray-300 to-yellow-300 opacity-60"
+              : "bg-gradient-to-tr from-background via-primary/20 to-primary opacity-60" // Updated gradient class
           }`}
         ></div>
         <div className="relative z-10 w-full max-w-md p-6 sm:p-8 md:p-10 mx-4">
@@ -143,7 +143,7 @@ export default function register() {
                 <Button
                   variant="link"
                   size="sm"
-                  className="text-primary-foreground dark:text-primary font-medium"
+                  className="text-primary dark:text-primary font-medium"
                 >
                   Log in
                 </Button>

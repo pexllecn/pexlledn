@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
+import React from "react";
 import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
+import { ThemeProvider } from "@/contexts/theme-context";
+import { ThemeCustomizer } from "@/components/theme-customizer";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
-import { metadata, viewport } from "./metadata";
 import { ZoomPreventer } from "@/components/ZoomPreventer";
-
-export { metadata, viewport };
 
 export default function RootLayout({
   children,
@@ -18,11 +15,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={GeistSans.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider>
           <BreadcrumbProvider>
             {children}
             <ZoomPreventer />
             <Toaster />
+            <ThemeCustomizer />
           </BreadcrumbProvider>
         </ThemeProvider>
       </body>

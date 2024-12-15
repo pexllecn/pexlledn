@@ -1,0 +1,143 @@
+"use client";
+
+import React from "react";
+import { useTheme as useNextTheme } from "next-themes";
+import { Settings, Moon, Sun, PanelLeft, PanelLeftClose } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
+import { useTheme } from "@/contexts/theme-context";
+
+const colors = [
+  { name: "Zinc", value: "zinc", hex: "#71717a" },
+  { name: "Red", value: "red", hex: "#ef4444" },
+  { name: "Rose", value: "rose", hex: "#f43f5e" },
+  { name: "Orange", value: "orange", hex: "#f97316" },
+  { name: "Green", value: "green", hex: "#22c55e" },
+  { name: "Blue", value: "blue", hex: "#3b82f6" },
+  { name: "Yellow", value: "yellow", hex: "#F9D72F" },
+  { name: "Violet", value: "violet", hex: "#8b5cf6" },
+  { name: "Black", value: "black", hex: "#000000" },
+] as const;
+
+const radiusOptions = [
+  { label: "0", value: "0" },
+  { label: "0.5", value: "0.5" },
+  { label: "0.75", value: "0.75" },
+  { label: "1", value: "1" },
+  { label: "1.5", value: "1.5" },
+] as const;
+
+export function ThemeCustomizer() {
+  const {
+    radius,
+    color,
+    menuPlacement,
+    menuBehavior,
+    layout,
+    setRadius,
+    setColor,
+    setMenuPlacement,
+    setMenuBehavior,
+    setLayout,
+    sidebarOpen,
+    setSidebarOpen,
+  } = useTheme();
+  const { theme, setTheme } = useNextTheme();
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="primary"
+          size="icon"
+          className="fixed top-1/2 -translate-y-1/2 right-0 z-50 rounded-l-full rounded-r-none border-r-0 px-2 shadow-md"
+        >
+          <Settings className="h-[1.2rem] w-[1.2rem] animate-spin-slow" />
+          <span className="sr-only">Toggle theme customizer</span>
+        </Button>
+      </SheetTrigger>
+
+      <SheetContent className=" sm:max-w-[400px]">
+        <SheetHeader>
+          <SheetTitle>Theme Settings</SheetTitle>
+        </SheetHeader>
+        <div className="grid gap-4 py-4">
+          <div className="space-y-2">
+            <Label>Mode</Label>
+            <div className="flex gap-4">
+              <Button
+                variant={theme === "light" ? "outline2" : "outline"}
+                className="justify-start gap-2 py-6"
+                onClick={() => setTheme("light")}
+              >
+                <Sun className="h-4 w-4" />
+                Light
+              </Button>
+              <Button
+                variant={theme === "dark" ? "outline2" : "outline"}
+                className="justify-start gap-2 py-6"
+                onClick={() => setTheme("dark")}
+              >
+                <Moon className="h-4 w-4" />
+                Dark
+              </Button>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Color</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {colors.map((c) => (
+                <Button
+                  key={c.value}
+                  variant={color === c.value ? "outline2" : "outline"}
+                  className="justify-start gap-2 py-6"
+                  onClick={() => setColor(c.value)}
+                >
+                  <span
+                    className="rounded-full h-4 w-4 border border-muted"
+                    style={{ backgroundColor: c.hex }}
+                    aria-hidden="true"
+                  />
+                  <span className="capitalize">{c.name}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Radius</Label>
+            <RadioGroup
+              value={radius}
+              onValueChange={setRadius}
+              className="grid grid-cols-5 gap-2"
+            >
+              {radiusOptions.map((option) => (
+                <div key={option.value}>
+                  <RadioGroupItem
+                    value={option.value}
+                    id={`radius-${option.value}`}
+                    className="peer sr-only"
+                  />
+                  <Label
+                    htmlFor={`radius-${option.value}`}
+                    className="flex flex-col items-center justify-between rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary/20 peer-data-[state=checked]:bg-primary/20 [&:has([data-state=checked])]:border-primary/20 "
+                  >
+                    {option.label}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
