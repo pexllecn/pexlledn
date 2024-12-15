@@ -19,8 +19,8 @@ interface SidebarToggleProps {
 export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
   return (
     <div className="flex invisible lg:visible absolute left-[-30px] z-20 mr-4 ">
-      <TooltipProvider>
-        <Tooltip delayDuration={300}>
+      <TooltipProvider delayDuration={50}>
+        <Tooltip>
           <TooltipTrigger asChild>
             <Button
               onClick={() => setIsOpen?.()}

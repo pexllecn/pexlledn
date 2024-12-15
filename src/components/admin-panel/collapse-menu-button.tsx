@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Dot, LucideIcon } from "lucide-react";
+import { ChevronRight, Dot, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -144,13 +144,13 @@ export function CollapseMenuButton({
     </Collapsible>
   ) : (
     <DropdownMenu>
-      <TooltipProvider disableHoverableContent>
-        <Tooltip delayDuration={50}>
+      <TooltipProvider>
+        <Tooltip>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button
                 variant={active ? "outline2" : "ghost"}
-                className="w-full justify-start h-8 mb-1 hover:bg-muted p-3"
+                className="w-full justify-start h-8 mb-1 hover:bg-muted p-3 text-muted-foreground"
               >
                 <div className="w-full items-center flex justify-between">
                   <div className="flex items-center">
@@ -175,7 +175,12 @@ export function CollapseMenuButton({
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
-          <TooltipContent side="right" align="start" alignOffset={2}>
+          <TooltipContent
+            side="right"
+            align="start"
+            alignOffset={2}
+            sideOffset={10}
+          >
             <div className="flex items-center">
               {label}
               {renderNotificationBadge(notificationCount)}

@@ -16,19 +16,6 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 
-interface CollapseMenuButtonProps {
-  icon: React.ElementType;
-  label: string;
-  active: boolean;
-  submenus: Array<{
-    href: string;
-    label: string;
-    notificationCount?: string | number;
-  }>;
-  isOpen: boolean | undefined;
-  notificationCount?: string | number;
-}
-
 interface MenuProps {
   isOpen: boolean | undefined;
 }
@@ -39,11 +26,7 @@ export function Menu({ isOpen }: MenuProps) {
   const menuList = getMenuList(pathname);
 
   const handleSignOut = async () => {
-    // Perform any sign-out logic here (e.g., clearing tokens, etc.)
-    // For example, if you're using next-auth:
-    // await signOut()
-
-    // Then navigate to the sign-in page
+    // Perform any sign-out logic here
     router.push("/signin");
   };
 
@@ -59,13 +42,13 @@ export function Menu({ isOpen }: MenuProps) {
                 </p>
               ) : !isOpen && groupLabel ? (
                 <TooltipProvider>
-                  <Tooltip delayDuration={50}>
-                    <TooltipTrigger className="w-full">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
                       <div className="w-full flex justify-center items-center">
                         <Ellipsis className="h-5 w-5" />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="right">
+                    <TooltipContent side="right" sideOffset={10}>
                       <p>{groupLabel}</p>
                     </TooltipContent>
                   </Tooltip>
@@ -88,7 +71,7 @@ export function Menu({ isOpen }: MenuProps) {
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
                       <TooltipProvider>
-                        <Tooltip delayDuration={50}>
+                        <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
                               variant={active ? "outline2" : "ghost"}
@@ -133,7 +116,7 @@ export function Menu({ isOpen }: MenuProps) {
                             </Button>
                           </TooltipTrigger>
                           {isOpen === false && (
-                            <TooltipContent side="right">
+                            <TooltipContent side="right" sideOffset={10}>
                               {label}
                             </TooltipContent>
                           )}
@@ -157,7 +140,7 @@ export function Menu({ isOpen }: MenuProps) {
           ))}
           <li className="w-full grow flex items-end">
             <TooltipProvider>
-              <Tooltip delayDuration={50}>
+              <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     onClick={handleSignOut}
@@ -178,7 +161,9 @@ export function Menu({ isOpen }: MenuProps) {
                   </Button>
                 </TooltipTrigger>
                 {isOpen === false && (
-                  <TooltipContent side="right">Sign out</TooltipContent>
+                  <TooltipContent side="right" sideOffset={10}>
+                    Sign out
+                  </TooltipContent>
                 )}
               </Tooltip>
             </TooltipProvider>

@@ -80,18 +80,18 @@
   }
 
   .dark[data-color="zinc"] {
-    --primary: 240 5.2% 33.9%;
-    --primary-foreground: 0 0% 93%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 3.7% 15.9%;
   }
 
   :root[data-color="red"] {
     --primary: 0 84.2% 60.2%;
-    --primary-foreground: 0 0% 98%;
+    --primary-foreground: 0 62.8% 30.6%;
   }
 
   .dark[data-color="red"] {
     --primary: 0 72.2% 50.6%;
-    --primary-foreground: 0 85.7% 97.3%;
+    --primary-foreground: 0 0% 100%;
   }
 
   :root[data-color="rose"] {
@@ -121,7 +121,7 @@
 
   .dark[data-color="green"] {
     --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 144 61% 20%;
+    --primary-foreground: 0 0% 98%;
   }
 
   :root[data-color="blue"] {
