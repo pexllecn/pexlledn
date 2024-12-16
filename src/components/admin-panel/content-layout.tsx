@@ -20,7 +20,7 @@ export function ContentLayout({ title, children }: ContentLayoutProps) {
   return (
     <div>
       <Navbar title={pageTitle} />
-      <div className="px-2">{children}</div>
+      <div className="p-2">{children}</div>
     </div>
   );
 }
