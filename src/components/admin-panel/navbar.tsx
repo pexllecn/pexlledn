@@ -83,13 +83,11 @@ export function Navbar({ title }: NavbarProps) {
     <header
       className={cn(
         "sticky top-0 z-10 w-full",
-        "bg-background/70 backdrop-blur-lg",
-        "dark:bg-background/70 dark:backdrop-blur-lg",
-        "dark:shadow-secondary"
+        "bg-background/50 backdrop-blur"
       )}
       style={{
-        WebkitBackdropFilter: "blur(16px)",
-        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(10px)",
+        backdropFilter: "blur(10px)",
       }}
     >
       <div className="mx-4 sm:mx-8 h-14 flex items-center">
