@@ -29,7 +29,6 @@ export default function RootLayout({
             {children}
             <ZoomPreventer />
             <Toaster />
-            <ThemeCustomizer />
           </BreadcrumbProvider>
         </ThemeProvider>
       </body>
