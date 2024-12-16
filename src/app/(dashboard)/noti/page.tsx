@@ -50,7 +50,7 @@ export default function DynamicIslandDemo() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
-        <div className=" top-10 bg-background flex flex-col items-center justify-center p-4">
+        <div className="pt-64 bg-background flex flex-col items-center justify-center p-4">
           <h1 className="text-3xl font-bold mb-8">Dynamic Island Demo</h1>
           <div className="space-x-4  gap-2">
             <Button
