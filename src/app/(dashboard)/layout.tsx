@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
+import { BottomNav } from "@/components/admin-panel/bottomnav";
 
 export const metadata: Metadata = {
   title: {
@@ -14,5 +15,10 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AdminPanelLayout>{children}</AdminPanelLayout>;
+  return (
+    <AdminPanelLayout>
+      {children}
+      <BottomNav />
+    </AdminPanelLayout>
+  );
 }

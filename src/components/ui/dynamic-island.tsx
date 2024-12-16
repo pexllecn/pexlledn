@@ -115,7 +115,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = ({
           <motion.div
             layout
             className={cn(
-              "fixed top-2 bg-foreground text-background rounded-3xl overflow-hidden cursor-pointer z-[9999]",
+              "fixed top-4 bg-foreground text-background rounded-3xl overflow-hidden cursor-pointer z-[1000000]",
               "shadow-lg border border-white/10"
             )}
             initial="hidden"

@@ -40,7 +40,7 @@ export function BottomNav() {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-1/2 -translate-x-1/2 transition-all duration-300 ease-in-out",
+        "z-50 fixed bottom-4 left-1/2 -translate-x-1/2 transition-all duration-300 ease-in-out",
         sidebar?.isOpen ? "lg:ml-28" : "lg:ml-[26px]"
       )}
     >
