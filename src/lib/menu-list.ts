@@ -24,6 +24,7 @@ import {
   CalendarDays,
   LogIn,
   ScanFace,
+  Vibrate,
 } from "lucide-react";
 
 type Submenu = {
@@ -146,7 +147,7 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname === "/realestate/redetails",
             },
           ],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "",
@@ -227,6 +228,14 @@ export function getMenuList(pathname: string): Group[] {
             },
           ],
           notificationCount: "",
+        },
+        {
+          href: "/noti",
+          label: "Dynamic Island",
+          active: pathname.includes("/noti"),
+          icon: Vibrate,
+          submenus: [],
+          notificationCount: "New",
         },
       ],
     },

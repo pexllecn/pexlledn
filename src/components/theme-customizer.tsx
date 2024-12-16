@@ -1,19 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme as useNextTheme } from "next-themes";
-import { Settings, Moon, Sun, PanelLeft, PanelLeftClose } from "lucide-react";
+import { Settings, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/contexts/theme-context";
 
 const colors = [
@@ -37,7 +36,22 @@ const radiusOptions = [
   { label: "1.5", value: "1.5" },
 ] as const;
 
-export function ThemeCustomizer() {
+interface ThemeCustomizerProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
   const {
     radius,
     color,
@@ -55,22 +69,11 @@ export function ThemeCustomizer() {
   const { theme, setTheme } = useNextTheme();
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          variant="primary"
-          size="icon"
-          className="fixed top-1/2 -translate-y-1/2 right-0 z-50 rounded-l-full rounded-r-none border-r-0 px-2 shadow-md"
-        >
-          <Settings className="h-[1.2rem] w-[1.2rem] animate-spin-slow" />
-          <span className="sr-only">Toggle theme customizer</span>
-        </Button>
-      </SheetTrigger>
-
-      <SheetContent className=" sm:max-w-[400px]">
-        <SheetHeader>
-          <SheetTitle>Theme Settings</SheetTitle>
-        </SheetHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className=" sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle>Theme Settings</DialogTitle>
+        </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
             <Label>Mode</Label>
@@ -138,7 +141,7 @@ export function ThemeCustomizer() {
             </RadioGroup>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
