@@ -50,7 +50,7 @@ export function SheetMenu() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger className="lg:hidden" asChild>
-        <Button className="rounded-full w-8 h-8" variant="outline" size="icon">
+        <Button className="rounded-full w-8 h-8" variant="ghost" size="icon">
           <MenuIcon size={18} />
         </Button>
       </SheetTrigger>
