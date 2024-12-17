@@ -51,12 +51,12 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
           <SheetTitle>Theme Settings</SheetTitle>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-          <div className="space-y-4">
+          <div className="space-y-2">
             <Label>Mode</Label>
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <Button
                 variant={theme === "light" ? "outline2" : "outline"}
-                className="flex justify-start gap-2 py-6 font-normal"
+                className="flex-1 justify-start gap-2 py-6 font-normal"
                 onClick={() => setTheme("light")}
               >
                 <Sun className="h-4 w-4" />
@@ -64,7 +64,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
               </Button>
               <Button
                 variant={theme === "dark" ? "outline2" : "outline"}
-                className="flex justify-start gap-2 py-6 font-normal"
+                className="flex-1 justify-start gap-2 py-6 font-normal"
                 onClick={() => setTheme("dark")}
               >
                 <Moon className="h-4 w-4" />
@@ -74,12 +74,12 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
           </div>
           <div className="space-y-2">
             <Label>Color</Label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {colors.map((c) => (
                 <Button
                   key={c.value}
                   variant={color === c.value ? "outline2" : "outline"}
-                  className="flex justify-start gap-2 py-6 font-normal"
+                  className="justify-center gap-2 px-1 py-6"
                   onClick={() => setColor(c.value)}
                 >
                   <span

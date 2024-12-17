@@ -14,7 +14,6 @@ import {
 import { Dock, DockIcon } from "@/components/ui/dock";
 import { cn } from "@/lib/utils";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
-import { ThemeCustomizer } from "../theme-customizer";
 
 export function BottomNav() {
   const pathname = usePathname();
