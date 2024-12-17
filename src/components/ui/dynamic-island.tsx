@@ -142,6 +142,10 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
         height: "50px",
         y: 0,
         opacity: 1,
+        transition: {
+          duration: 0.2,
+          ease: "easeInOut",
+        },
       },
       expanded: {
         maxWidth: "380px",
@@ -156,7 +160,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
         opacity: 0,
         y: -50,
         transition: {
-          duration: 0.3,
+          duration: 0.2,
           ease: "easeInOut",
         },
       },
@@ -189,7 +193,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
             transition={{
               ...springConfig,
               ease: "easeInOut",
-              duration: 0.5,
+              duration: 0.2,
             }}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
