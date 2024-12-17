@@ -166,11 +166,6 @@ export default function JobSearchPage() {
           <div className="flex flex-col h-full">
             {/* Mobile Header */}
             <header className="lg:hidden flex justify-between items-center p-4 bg-background border-b sticky top-0 z-10">
-              <h1 className="text-xl font-bold">
-                {showJobDetails
-                  ? selectedJob?.role || "Job Details"
-                  : "Job Search"}
-              </h1>
               {showJobDetails ? (
                 <Button
                   variant="ghost"
@@ -192,6 +187,11 @@ export default function JobSearchPage() {
                   </SheetContent>
                 </Sheet>
               )}
+              <h1 className="text-xl font-bold">
+                {showJobDetails
+                  ? selectedJob?.role || "Job Details"
+                  : "Job Search"}
+              </h1>
             </header>
 
             {/* Main Content */}
