@@ -85,7 +85,8 @@ export default function RealEstateSearch() {
           {/* Mobile menu toggle */}
           <div className="lg:hidden p-4">
             <Button
-              variant="outline"
+              variant="ghost"
+              className="bg-background"
               size="icon"
               onClick={() => setShowFilters(!showFilters)}
             >

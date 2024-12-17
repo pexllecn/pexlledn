@@ -175,18 +175,7 @@ export default function JobSearchPage() {
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
-              ) : (
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <Menu className="h-4 w-4" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent>
-                    <UserProfile />
-                  </SheetContent>
-                </Sheet>
-              )}
+              ) : null}
               <h1 className="text-xl font-bold">
                 {showJobDetails
                   ? selectedJob?.role || "Job Details"

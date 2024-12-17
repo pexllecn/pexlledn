@@ -458,7 +458,7 @@ export default function SocialProfile() {
               </div>
             </div>
 
-            <Tabs defaultValue="posts" className="w-full px-4">
+            <Tabs defaultValue="posts" className="w-full px-2">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="posts">Posts</TabsTrigger>
                 <TabsTrigger value="replies">Replies</TabsTrigger>
@@ -468,7 +468,7 @@ export default function SocialProfile() {
               <TabsContent value="posts" className="mt-0">
                 <div>
                   {posts.map((post) => (
-                    <article key={post.id} className=" p-4 border-b">
+                    <article key={post.id} className="lg:p-4 py-2 border-b">
                       <div className="flex gap-3">
                         <Avatar>
                           <AvatarImage

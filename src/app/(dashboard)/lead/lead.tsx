@@ -135,26 +135,18 @@ export default function CRMPage() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 flex flex-col overflow-auto p-4 lg:p-6">
+          <div className="flex-1 flex flex-col overflow-auto py-4 lg:p-6">
             <Tabs defaultValue="task" className="flex-1 w-auto overflow-hidden">
               <TabsList className="justify-start overflow-x-auto whitespace-nowrap">
-                {[
-                  "Activity",
-                  "Notes",
-                  "Emails",
-                  "Calls",
-                  "Task",
-                  "Meetings",
-                ].map((tab) => (
-                  <TabsTrigger key={tab} value={tab.toLowerCase()}>
-                    {tab}
-                  </TabsTrigger>
-                ))}
+                {["Activity", "Notes", "Emails", "Task", "Meetings"].map(
+                  (tab) => (
+                    <TabsTrigger key={tab} value={tab.toLowerCase()}>
+                      {tab}
+                    </TabsTrigger>
+                  )
+                )}
               </TabsList>
-              <TabsContent
-                value="task"
-                className="p-4 lg:p-6 overflow-auto h-full"
-              >
+              <TabsContent value="task" className="lg:p-6 overflow-auto h-full">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 lg:mb-8">
                   <Button variant="outline" size="sm" className="bg-background">
                     All users

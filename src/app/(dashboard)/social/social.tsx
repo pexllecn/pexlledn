@@ -272,26 +272,42 @@ function Post({
             </div>
           )}
           <div className="flex flex-wrap gap-4 sm:gap-6 mt-3">
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground p-0"
+            >
               <Heart className="h-4 w-4 mr-2" />
               {likes}
             </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground p-0"
+            >
               <Repeat className="h-4 w-4 mr-2" />
               {replies}
             </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground p-0"
+            >
               <MessageSquare className="h-4 w-4 mr-2" />
               {comments}
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground sm:ml-auto"
+              className="text-muted-foreground lg:ml-auto ml-16 p-0"
             >
-              <Bookmark className="h-4 w-4 mr-2" />
+              <Bookmark className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground p-0"
+            >
               <Share className="h-4 w-4" />
             </Button>
           </div>

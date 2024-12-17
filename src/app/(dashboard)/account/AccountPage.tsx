@@ -130,7 +130,7 @@ export default function AccountPage() {
                     Update your personal details and profile photo
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 lg:p-6 px-0">
                   <div className="flex flex-col sm:flex-row items-center gap-4">
                     <Avatar className="h-24 w-24">
                       <AvatarImage
