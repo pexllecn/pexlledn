@@ -189,7 +189,7 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
               </div>
               <div className="flex justify-between items-center mt-4">
                 <div>
-                  <span className="text-2xl font-bold text-primary">
+                  <span className="text-2xl font-bold text-foreground">
                     {item.price}
                   </span>
                   {item.originalPrice && (
@@ -198,7 +198,7 @@ const ListingCard = ({ item }: { item: ListingItem }) => {
                     </span>
                   )}
                 </div>
-                <Button variant="primary">
+                <Button variant="default">
                   <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </div>

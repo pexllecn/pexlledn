@@ -203,7 +203,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               </div>
               <div className="flex justify-between items-center mt-4">
                 <div>
-                  <span className="text-2xl font-bold text-primary">
+                  <span className="text-2xl font-bold text-foreground">
                     {product.price}
                   </span>
                   {product.originalPrice && (
@@ -212,7 +212,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     </span>
                   )}
                 </div>
-                <Button className="bg-primary hover:bg-primary/90">
+                <Button>
                   <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </div>

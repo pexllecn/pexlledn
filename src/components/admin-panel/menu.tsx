@@ -74,9 +74,9 @@ export function Menu({ isOpen }: MenuProps) {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
-                              variant={active ? "outline2" : "ghost"}
+                              variant={active ? "outline3" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-8 mb-1 p-3 hover:bg-primary/10",
+                                "w-full justify-start h-8 mb-1 p-3 hover:bg-muted-foreground/10",
                                 !active && "text-muted-foreground"
                               )}
                               asChild
@@ -102,7 +102,7 @@ export function Menu({ isOpen }: MenuProps) {
                                 </p>
                                 {isOpen !== false && notificationCount && (
                                   <Badge
-                                    variant="default"
+                                    variant="decline"
                                     className={cn(
                                       "ml-auto px-2 min-w-[20px] flex items-center justify-center",
                                       typeof notificationCount === "string" &&

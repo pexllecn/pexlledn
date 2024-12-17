@@ -131,7 +131,7 @@ export default function RealEstateSearch() {
                   </p>
                 </label>
                 {/* Apartment */}
-                <label className="relative flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-input px-2 py-3 text-center bg-background outline-offset-2 transition-colors has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-primary/15 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring/70">
+                <label className="relative flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-input px-2 py-3 text-center bg-background outline-offset-2 transition-colors has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-primary/15 has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-ring/70">
                   <RadioGroupItem
                     id="radio-apartment"
                     value="apartment"
@@ -180,7 +180,7 @@ export default function RealEstateSearch() {
                 defaultValue={[500, 4500]}
                 max={5000}
                 step={100}
-                className="mb-4 [&_[role=slider]]:h-4 [&_[role=slider]]:w-4 [&_[role=slider]]:border-2 [&_[role=slider]]:border-black [&_[role=slider]]:bg-white"
+                className="mb-4 [&_[role=slider]]:h-4 [&_[role=slider]]:w-4 [&_[role=slider]]:border-2 [&_[role=slider]]:border-primary [&_[role=slider]]:bg-white"
                 onValueChange={setPriceRange}
               />
               <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4">

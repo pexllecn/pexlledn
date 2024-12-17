@@ -76,9 +76,9 @@ export function CollapseMenuButton({
     >
       <CollapsibleTrigger className="w-full mb-1 cursor-pointer" asChild>
         <Button
-          variant={active ? "outline2" : "ghost"}
+          variant={active ? "outline3" : "ghost"}
           className={cn(
-            "w-full justify-start h-8 mb-1 px-3 py-1 hover:bg-primary/10",
+            "w-full justify-start h-8 mb-1 px-3 py-1 hover:bg-muted-foreground/10",
             !active && "text-muted-foreground font-normal"
           )}
         >
@@ -115,9 +115,9 @@ export function CollapseMenuButton({
         {submenus.map(({ href, label, active, notificationCount }, index) => (
           <Button
             key={index}
-            variant={active ? "outline2" : "ghost"}
+            variant={active ? "outline3" : "ghost"}
             className={cn(
-              "w-full justify-start h-8 mb-1 p-3 hover:bg-primary/10",
+              "w-full justify-start h-8 mb-1 p-3 hover:bg-muted-foreground/10",
               !active && "text-muted-foreground"
             )}
             asChild
