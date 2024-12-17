@@ -14,7 +14,7 @@ export function ThemeCustomizerButton() {
       <Button
         variant="primary"
         size="icon"
-        className="fixed bottom-4 right-4 z-50 rounded-lg"
+        className="fixed right-4 bottom-4 z-50 rounded-lg"
         onClick={() => setCustomizeOpen(true)}
       >
         <Settings className="h-5 w-5 animate-spin-slow" />
