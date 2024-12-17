@@ -51,9 +51,9 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
     // Merged spring configuration with custom overrides
     const springConfig = {
       type: "spring",
-      stiffness: animationConfig.stiffness || 350,
-      damping: animationConfig.damping || 25,
-      restDelta: 0.001,
+      stiffness: animationConfig.stiffness || 300,
+      damping: animationConfig.damping || 30,
+      restDelta: 0.01,
     };
 
     const startDismissal = useCallback(() => {
@@ -136,14 +136,12 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
         height: "44px",
         y: -50,
         opacity: 0,
-        scale: 0.8,
       },
       visible: {
         maxWidth: "300px",
         height: "50px",
         y: 0,
         opacity: 1,
-        scale: 1,
       },
       expanded: {
         maxWidth: "380px",
@@ -151,19 +149,15 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
         minHeight: "120px",
         y: 0,
         opacity: 1,
-        scale: 1,
       },
       exit: {
         maxWidth: "120px",
         height: "44px",
         opacity: 0,
         y: -50,
-        scale: 0.8,
         transition: {
-          type: "spring",
-          stiffness: 400,
-          damping: 30,
-          duration: 0.5,
+          duration: 0.3,
+          ease: "easeInOut",
         },
       },
     };
@@ -175,7 +169,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
       <AnimatePresence mode="wait">
         {isVisible && (
           <motion.div
-            layout
+            layout="position"
             className={cn(
               "fixed top-4 left-0 right-0 mx-auto bg-foreground text-background rounded-3xl overflow-hidden z-[1000001]",
               "shadow-none border border-white/10 group",
@@ -199,8 +193,6 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
             }}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
-            whileHover={{ scale: dismissalStage === "visible" ? 1.02 : 1 }}
-            whileTap={{ scale: dismissalStage === "visible" ? 0.98 : 1 }}
             role="alert"
             aria-live="polite"
             aria-expanded={isExpanded}
@@ -209,9 +201,10 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
             {/* Dismiss Button */}
             {dismissalStage === "visible" && (
               <motion.button
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 onClick={handleDismissClick}
                 className={cn(
                   "absolute top-2 right-2 z-10",
@@ -232,14 +225,10 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
             <AnimatePresence>
               {isExpanded && dismissalStage === "visible" && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{
-                    ...springConfig,
-                    ease: "easeInOut",
-                    duration: 0.3,
-                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                   className="px-4 pb-4"
                 >
                   {expandedContent}
