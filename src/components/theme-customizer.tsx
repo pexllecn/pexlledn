@@ -79,11 +79,11 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
                 <Button
                   key={c.value}
                   variant={color === c.value ? "outline2" : "outline"}
-                  className="justify-center gap-2 px-1 py-6"
+                  className="justify-start gap-2 px-4 py-6"
                   onClick={() => setColor(c.value)}
                 >
                   <span
-                    className="rounded-lg lg:h-4 lg:w-4 h-2 w-2 border border-muted"
+                    className=" rounded-lg lg:h-4 lg:w-4 h-2 w-2 border border-muted"
                     style={{ backgroundColor: c.hex }}
                     aria-hidden="true"
                   />
