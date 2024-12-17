@@ -21,7 +21,7 @@ export default function AdminPanelLayout({
       <div className="p-2 bg-muted ">
         <main
           className={cn(
-            "pt-3 shadow-md shadow-black/5 rounded-2xl border-r dark:border dark:border-muted-background min-h-[calc(100vh_-_52px)] bg-background transition-[margin-left] ease-in-out duration-300",
+            "pt-3 shadow-md shadow-black/5 rounded-xl border-r dark:border dark:border-muted-background min-h-[calc(100vh_-_52px)] bg-background transition-[margin-left] ease-in-out duration-300",
             sidebar?.isOpen === false ? "lg:ml-[52px]" : "lg:ml-56"
           )}
         >
