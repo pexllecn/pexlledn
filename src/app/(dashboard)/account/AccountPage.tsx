@@ -123,7 +123,7 @@ export default function AccountPage() {
 
           <div className="space-y-6 p-0">
             {activeTab === "profile" && (
-              <Card className="shadow-none border-none">
+              <Card className="shadow-none border-none bg-background">
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
                   <CardDescription>
@@ -226,7 +226,7 @@ export default function AccountPage() {
             )}
 
             {activeTab === "notifications" && (
-              <Card className="shadow-none border-none">
+              <Card className="shadow-none border-none bg-background">
                 <CardHeader>
                   <CardTitle>Notification Preferences</CardTitle>
                   <CardDescription>
@@ -281,7 +281,7 @@ export default function AccountPage() {
             )}
 
             {activeTab === "preferences" && (
-              <Card className="shadow-none border-none">
+              <Card className="shadow-none border-none bg-background">
                 <CardHeader>
                   <CardTitle>Account Preferences</CardTitle>
                   <CardDescription>
@@ -339,7 +339,7 @@ export default function AccountPage() {
 
             {activeTab === "security" && (
               <div className="space-y-6">
-                <Card className="shadow-none border-none">
+                <Card className="shadow-none border-none bg-background">
                   <CardHeader>
                     <CardTitle>Password</CardTitle>
                     <CardDescription>
@@ -367,7 +367,7 @@ export default function AccountPage() {
                   </CardFooter>
                 </Card>
 
-                <Card className="shadow-none border-none">
+                <Card className="shadow-none border-none bg-background">
                   <CardHeader>
                     <CardTitle>Two-Factor Authentication</CardTitle>
                     <CardDescription>
@@ -402,7 +402,7 @@ export default function AccountPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="shadow-none border-none">
+                <Card className="shadow-none border-none bg-background">
                   <CardHeader>
                     <CardTitle>Active Sessions</CardTitle>
                     <CardDescription>
