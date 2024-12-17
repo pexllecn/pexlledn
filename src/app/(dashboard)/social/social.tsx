@@ -271,45 +271,49 @@ function Post({
               <img src={image} alt="Post image" className="w-full h-auto" />
             </div>
           )}
-          <div className="flex flex-wrap gap-4 sm:gap-6 mt-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground p-0"
-            >
-              <Heart className="h-4 w-4 mr-2" />
-              {likes}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground p-0"
-            >
-              <Repeat className="h-4 w-4 mr-2" />
-              {replies}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground p-0"
-            >
-              <MessageSquare className="h-4 w-4 mr-2" />
-              {comments}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground lg:ml-auto ml-16 p-0"
-            >
-              <Bookmark className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground p-0"
-            >
-              <Share className="h-4 w-4" />
-            </Button>
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mt-3">
+            <div className="flex flex-wrap gap-2 sm:gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors p-0 lg:p-2"
+              >
+                <Heart className="h-4 w-4 mr-1" />
+                {likes}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors p-0 lg:p-2"
+              >
+                <Repeat className="h-4 w-4 mr-1" />
+                {replies}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors p-0 lg:p-2"
+              >
+                <MessageSquare className="h-4 w-4 mr-1" />
+                {comments}
+              </Button>
+            </div>
+            <div className="flex gap-2 sm:gap-4 ml-auto">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors p-0 lg:p-2"
+              >
+                <Bookmark className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors p-0 lg:p-2"
+              >
+                <Share className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
