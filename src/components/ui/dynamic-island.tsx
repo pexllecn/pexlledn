@@ -79,7 +79,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
             setDismissalStage("dismissed");
             onDismiss();
           }, 500); // Exit animation duration
-        }, 300); // Collapse animation duration
+        }, 500); // Collapse animation duration
       } else {
         // If not expanded, immediately start exiting
         setDismissalStage("exiting");

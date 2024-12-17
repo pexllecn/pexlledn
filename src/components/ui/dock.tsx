@@ -142,7 +142,7 @@ const DockIndicator: React.FC<DockIndicatorProps> = ({
   <div
     className={cn(
       "absolute h-12 rounded-lg transition-all duration-300 ease-in-out",
-      isPathInNavItems ? "bg-primary/20" : "bg-transparent",
+      isPathInNavItems ? "bg-primary/30" : "bg-transparent",
       className
     )}
     style={style}
