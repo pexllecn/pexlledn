@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTheme as useNextTheme } from "next-themes";
-import { Settings, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTheme } from "@/contexts/theme-context";
@@ -42,45 +41,22 @@ interface ThemeCustomizerProps {
 }
 
 export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
-
-  const {
-    radius,
-    color,
-    menuPlacement,
-    menuBehavior,
-    layout,
-    setRadius,
-    setColor,
-    setMenuPlacement,
-    setMenuBehavior,
-    setLayout,
-    sidebarOpen,
-    setSidebarOpen,
-  } = useTheme();
+  const { radius, color, setRadius, setColor } = useTheme();
   const { theme, setTheme } = useNextTheme();
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className=" sm:max-w-[400px]">
-        <DialogHeader>
-          <DialogTitle>Theme Settings</DialogTitle>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="w-[300px] sm:w-[400px]">
+        <SheetHeader>
+          <SheetTitle>Theme Settings</SheetTitle>
+        </SheetHeader>
         <div className="grid gap-4 py-4">
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label>Mode</Label>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <Button
                 variant={theme === "light" ? "outline2" : "outline"}
-                className="justify-start gap-2 py-6 font-normal"
+                className="flex justify-start gap-2 py-6 font-normal"
                 onClick={() => setTheme("light")}
               >
                 <Sun className="h-4 w-4" />
@@ -88,7 +64,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
               </Button>
               <Button
                 variant={theme === "dark" ? "outline2" : "outline"}
-                className="justify-start gap-2 py-6 font-normal"
+                className="flex justify-start gap-2 py-6 font-normal"
                 onClick={() => setTheme("dark")}
               >
                 <Moon className="h-4 w-4" />
@@ -103,7 +79,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
                 <Button
                   key={c.value}
                   variant={color === c.value ? "outline2" : "outline"}
-                  className="justify-center gap-2 px-1 py-6"
+                  className="flex justify-start gap-2 py-6 font-normal"
                   onClick={() => setColor(c.value)}
                 >
                   <span
@@ -141,7 +117,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
             </RadioGroup>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

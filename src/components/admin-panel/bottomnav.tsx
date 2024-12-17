@@ -27,12 +27,6 @@ export function BottomNav() {
     { href: "/users", icon: Plus, label: "Add" },
     { href: "/kanban", icon: Kanban, label: "Kanban" },
     { href: "/account", icon: User, label: "Account" },
-    {
-      href: "#",
-      icon: Settings,
-      label: "Theme",
-      onClick: () => setThemeCustomizerOpen(true),
-    },
   ];
 
   const isPathInNavItems = navItems.some((item) => item.href === pathname);
@@ -51,37 +45,18 @@ export function BottomNav() {
             label={item.label}
             isActive={item.href !== "#" && pathname === item.href}
           >
-            {item.onClick ? (
-              <button
-                onClick={item.onClick}
-                className="flex h-full w-full items-center justify-center bg-primary text-primary-foreground rounded-lg"
-              >
-                <item.icon
-                  className={cn(
-                    "h-5 w-5 ",
-                    item.label === "Theme" && "animate-spin-slow"
-                  )}
-                  strokeWidth={1}
-                />
-              </button>
-            ) : (
-              <Link
-                href={item.href}
-                className="flex h-full w-full items-center justify-center"
-              >
-                <item.icon
-                  className="h-5 w-5"
-                  strokeWidth={pathname === item.href ? 2 : 1}
-                />
-              </Link>
-            )}
+            <Link
+              href={item.href}
+              className="flex h-full w-full items-center justify-center"
+            >
+              <item.icon
+                className="h-5 w-5"
+                strokeWidth={pathname === item.href ? 2 : 1}
+              />
+            </Link>
           </DockIcon>
         ))}
       </Dock>
-      <ThemeCustomizer
-        open={themeCustomizerOpen}
-        onOpenChange={setThemeCustomizerOpen}
-      />
     </div>
   );
 }

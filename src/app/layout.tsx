@@ -3,10 +3,10 @@ import { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/theme-context";
-import { ThemeCustomizer } from "@/components/theme-customizer";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
 import { ZoomPreventer } from "@/components/ZoomPreventer";
+import { ThemeCustomizerButton } from "@/components/theme-customizer-button";
 
 export const metadata: Metadata = {
   title: {
@@ -29,6 +29,7 @@ export default function RootLayout({
             {children}
             <ZoomPreventer />
             <Toaster />
+            <ThemeCustomizerButton />
           </BreadcrumbProvider>
         </ThemeProvider>
       </body>
