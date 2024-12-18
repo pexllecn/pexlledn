@@ -143,11 +143,17 @@ export function getMenuList(pathname: string): Group[] {
             },
             {
               href: "/realestate/redetails",
-              label: "Real Estate Search",
+              label: "Real Estate lisings",
               active: pathname === "/realestate/redetails",
             },
+            {
+              href: "/realestate/reresults",
+              label: "Search Results",
+              active: pathname === "/realestate/reresults",
+              notificationCount: "new",
+            },
           ],
-          notificationCount: "",
+          notificationCount: "new",
         },
         {
           href: "",

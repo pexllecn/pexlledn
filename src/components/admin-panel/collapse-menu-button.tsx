@@ -57,7 +57,7 @@ export function CollapseMenuButton({
     if (!count) return null;
     return (
       <Badge
-        variant="default"
+        variant="decline"
         className={cn(
           "ml-auto px-2 min-w-[20px] flex items-center justify-center",
           typeof notificationCount === "string" && "text-1xs"
@@ -149,7 +149,7 @@ export function CollapseMenuButton({
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button
-                variant={active ? "outline2" : "ghost"}
+                variant={active ? "outline3" : "ghost"}
                 className="w-full justify-start h-8 mb-1 hover:bg-muted p-3 text-muted-foreground"
               >
                 <div className="w-full items-center flex justify-between">
