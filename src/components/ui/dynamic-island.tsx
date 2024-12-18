@@ -119,7 +119,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
         filter: "blur(10px)",
       },
       visible: {
-        maxWidth: "300px",
+        maxWidth: "320px",
         scale: 1,
         y: 0,
         opacity: 1,
@@ -202,7 +202,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
             <motion.div
               layout
               transition={elasticTransition}
-              className="p-2 pr-8"
+              className="p-2 pr-8 mr-3"
             >
               {content}
             </motion.div>
