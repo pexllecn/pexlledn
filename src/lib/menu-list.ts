@@ -25,6 +25,7 @@ import {
   LogIn,
   ScanFace,
   Vibrate,
+  HeartPulse,
 } from "lucide-react";
 
 type Submenu = {
@@ -129,6 +130,14 @@ export function getMenuList(pathname: string): Group[] {
           icon: Truck,
           submenus: [],
           notificationCount: "",
+        },
+        {
+          href: "/medical",
+          label: "Medical",
+          active: pathname.includes("/medical"),
+          icon: HeartPulse,
+          submenus: [],
+          notificationCount: "New",
         },
         {
           href: "",

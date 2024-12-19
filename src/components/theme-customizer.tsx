@@ -33,6 +33,7 @@ const radiusOptions = [
   { label: "0.75", value: "0.75" },
   { label: "1", value: "1" },
   { label: "1.5", value: "1.5" },
+  { label: "2.5", value: "2.5" },
 ] as const;
 
 interface ThemeCustomizerProps {
