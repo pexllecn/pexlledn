@@ -159,10 +159,10 @@ export function getMenuList(pathname: string): Group[] {
               href: "/realestate/reresults",
               label: "Search Results",
               active: pathname === "/realestate/reresults",
-              notificationCount: "new",
+              notificationCount: "New",
             },
           ],
-          notificationCount: "new",
+          notificationCount: "New",
         },
         {
           href: "",
