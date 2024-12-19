@@ -1,152 +1,159 @@
 "use client";
-
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import React, { PropsWithChildren, useRef } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  motion,
+  MotionValue,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  MotionProps,
+} from "framer-motion";
+import { cn } from "@/lib/utils";
 
-interface DockContextType {
-  setActiveIcon: (element: HTMLElement | null) => void;
-  isPathInNavItems: boolean;
+export interface DockProps extends VariantProps<typeof dockVariants> {
+  className?: string;
+  iconSize?: number;
+  iconMagnification?: number;
+  iconDistance?: number;
+  direction?: "top" | "middle" | "bottom";
+  children: React.ReactNode;
+  isPathInNavItems?: boolean;
 }
 
-const DockContext = React.createContext<DockContextType | undefined>(undefined);
+const DEFAULT_SIZE = 40;
+const DEFAULT_MAGNIFICATION = 60;
+const DEFAULT_DISTANCE = 140;
 
-interface DockProps extends React.HTMLAttributes<HTMLDivElement> {
-  direction?: "left" | "right" | "middle";
-  isPathInNavItems: boolean;
-}
+const dockVariants = cva(
+  "supports-backdrop-blur:bg-white/10 supports-backdrop-blur:dark:bg-black/10 mx-auto flex h-[58px] w-max items-center justify-center gap-2 rounded-lg border p-2 backdrop-blur-md"
+);
 
 const Dock = React.forwardRef<HTMLDivElement, DockProps>(
   (
-    { className, direction = "middle", isPathInNavItems, children, ...props },
+    {
+      className,
+      children,
+      iconSize = DEFAULT_SIZE,
+      iconMagnification = DEFAULT_MAGNIFICATION,
+      iconDistance = DEFAULT_DISTANCE,
+      direction = "middle",
+      isPathInNavItems,
+      ...props
+    },
     ref
   ) => {
-    const [indicatorStyle, setIndicatorStyle] = React.useState({
-      left: 0,
-      width: 0,
-    });
-    const dockRef = React.useRef<HTMLDivElement>(null);
-    const [activeIcon, setActiveIcon] = React.useState<HTMLElement | null>(
-      null
-    );
+    const mouseX = useMotionValue(Infinity);
 
-    React.useEffect(() => {
-      const updateIndicator = () => {
-        if (dockRef.current && activeIcon) {
-          const iconRect = activeIcon.getBoundingClientRect();
-          const dockRect = dockRef.current.getBoundingClientRect();
-          setIndicatorStyle({
-            left: iconRect.left - dockRect.left,
-            width: iconRect.width,
+    const renderChildren = () => {
+      return React.Children.map(children, (child) => {
+        if (React.isValidElement(child) && child.type === DockIcon) {
+          return React.cloneElement(child, {
+            ...child.props,
+            mouseX: mouseX,
+            size: iconSize,
+            magnification: iconMagnification,
+            distance: iconDistance,
           });
         }
-      };
-
-      updateIndicator();
-      window.addEventListener("resize", updateIndicator);
-      return () => window.removeEventListener("resize", updateIndicator);
-    }, [activeIcon]);
+        return child;
+      });
+    };
 
     return (
-      <DockContext.Provider value={{ setActiveIcon, isPathInNavItems }}>
-        <TooltipProvider>
-          <div
-            ref={ref}
-            className={cn(
-              "z-50 group flex h-16 items-center justify-center gap-1 rounded-lg border bg-background/60 p-2 shadow-xs backdrop-blur transition-all duration-300 ease-in-out",
-              direction === "left" && "justify-start",
-              direction === "right" && "justify-end",
-              className
-            )}
-            {...props}
-          >
-            <div
-              ref={dockRef}
-              className="relative flex items-center transition-all duration-300 ease-in-out gap-2"
-            >
-              <DockIndicator
-                style={indicatorStyle}
-                isPathInNavItems={isPathInNavItems}
-              />
-              {children}
-            </div>
-          </div>
-        </TooltipProvider>
-      </DockContext.Provider>
+      <motion.div
+        ref={ref}
+        onMouseMove={(e) => mouseX.set(e.pageX)}
+        onMouseLeave={() => mouseX.set(Infinity)}
+        {...props}
+        className={cn(dockVariants({ className }), {
+          "items-start": direction === "top",
+          "items-center": direction === "middle",
+          "items-end": direction === "bottom",
+        })}
+      >
+        {renderChildren()}
+      </motion.div>
     );
   }
 );
+
 Dock.displayName = "Dock";
 
-const DockIcon = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {
-    label: string;
-    isActive?: boolean;
-  }
->(({ className, label, isActive, children, ...props }, ref) => {
-  const iconRef = React.useRef<HTMLDivElement>(null);
-  const context = React.useContext(DockContext);
-
-  if (!context) {
-    throw new Error("DockIcon must be used within a Dock");
-  }
-
-  const { setActiveIcon } = context;
-
-  React.useEffect(() => {
-    if (isActive && iconRef.current) {
-      setActiveIcon(iconRef.current);
-    }
-  }, [isActive, setActiveIcon]);
-
-  return (
-    <Tooltip delayDuration={100}>
-      <TooltipTrigger asChild>
-        <div
-          ref={iconRef}
-          className={cn(
-            "relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg transition-all duration-300 ease-in-out ",
-            isActive
-              ? "text-primary"
-              : "text-muted-foreground hover:text-primary hover:bg-primary/10",
-            className
-          )}
-          {...props}
-        >
-          {children}
-        </div>
-      </TooltipTrigger>
-      <TooltipContent side="top">
-        <p>{label}</p>
-      </TooltipContent>
-    </Tooltip>
-  );
-});
-DockIcon.displayName = "DockIcon";
-
-interface DockIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {
-  isPathInNavItems: boolean;
+export interface DockIconProps
+  extends Omit<MotionProps & React.HTMLAttributes<HTMLDivElement>, "children"> {
+  size?: number;
+  magnification?: number;
+  distance?: number;
+  mouseX?: MotionValue<number>;
+  className?: string;
+  children?: React.ReactNode;
+  props?: PropsWithChildren;
+  isActive?: boolean;
+  label?: string;
 }
 
-const DockIndicator: React.FC<DockIndicatorProps> = ({
-  style,
+const DockIcon = ({
+  size = DEFAULT_SIZE,
+  magnification = DEFAULT_MAGNIFICATION,
+  distance = DEFAULT_DISTANCE,
+  mouseX,
   className,
-  isPathInNavItems,
-}) => (
-  <div
-    className={cn(
-      "absolute h-12 rounded-lg transition-all duration-300 ease-in-out",
-      isPathInNavItems ? "bg-primary/30" : "bg-transparent",
-      className
-    )}
-    style={style}
-  />
-);
+  children,
+  isActive,
+  label,
+  ...props
+}: DockIconProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const padding = Math.max(6, size * 0.2);
+  const defaultMouseX = useMotionValue(Infinity);
 
-export { Dock, DockIcon };
+  const distanceCalc = useTransform(mouseX ?? defaultMouseX, (val: number) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+    return val - bounds.x - bounds.width / 2;
+  });
+
+  const widthSync = useTransform(
+    distanceCalc,
+    [-distance, 0, distance],
+    [size, magnification, size]
+  );
+
+  const scaleSize = useSpring(widthSync, {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ width: scaleSize, height: scaleSize, padding }}
+      className={cn(
+        "flex aspect-square cursor-pointer items-center justify-center rounded-lg relative",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      {isActive && (
+        <motion.div
+          layoutId="activeTab"
+          className="absolute inset-0 rounded-lg bg-primary/20 dark:bg-primary/10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          }}
+        />
+      )}
+    </motion.div>
+  );
+};
+
+DockIcon.displayName = "DockIcon";
+
+export { Dock, DockIcon, dockVariants };
