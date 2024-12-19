@@ -51,9 +51,9 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
 
     const morphTransition = {
       type: "spring",
-      stiffness: 300,
-      damping: 15,
-      mass: 0.5,
+      stiffness: 240,
+      damping: 13,
+      mass: 0.6,
       restDelta: 0.01,
       restSpeed: 0.01,
     };
