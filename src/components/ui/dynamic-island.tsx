@@ -43,8 +43,19 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
     const elasticTransition = {
       type: "spring",
       stiffness: 400,
-      damping: 25,
+      damping: 50,
       mass: 1,
+      restDelta: 0.01,
+      restSpeed: 0.01,
+    };
+
+    const morphTransition = {
+      type: "spring",
+      stiffness: 300,
+      damping: 15,
+      mass: 0.5,
+      restDelta: 0.01,
+      restSpeed: 0.01,
     };
 
     const startDismissal = useCallback(() => {
@@ -64,7 +75,7 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
           dismissalTimerRef.current = setTimeout(() => {
             setDismissalStage("dismissed");
             onDismiss();
-          }, 500);
+          }, 300);
         }, 300);
       } else {
         setDismissalStage("exiting");
@@ -106,43 +117,96 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
     const handleDismissClick = useCallback(
       (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (dismissalStage !== "visible") return;
+
+        window.navigator.vibrate?.(10);
         startDismissal();
       },
-      [startDismissal]
+      [dismissalStage, startDismissal]
     );
 
     const variants = {
       hidden: {
+        width: "120px",
+        height: "36px",
         scale: 0.8,
-        y: 20,
+        y: +20,
         opacity: 0,
         filter: "blur(10px)",
       },
       visible: {
-        maxWidth: "320px",
+        width: "320px",
+        height: "50px",
         scale: 1,
         y: 0,
         opacity: 1,
-        height: "50px",
         filter: "blur(0px)",
-        transition: elasticTransition,
+        transition: {
+          ...morphTransition,
+          opacity: { duration: 0.2 },
+          filter: { duration: 0.2 },
+        },
       },
       expanded: {
-        maxWidth: "380px",
+        width: "380px",
+        height: "auto",
         minHeight: "160px",
         scale: 1,
         y: 0,
         opacity: 1,
-        height: "auto",
         filter: "blur(0px)",
-        transition: elasticTransition,
+        transition: {
+          ...morphTransition,
+          height: { type: "spring", stiffness: 300, damping: 20 },
+          opacity: { duration: 0.2 },
+          filter: { duration: 0.2 },
+        },
       },
       exit: {
+        width: "120px",
+        height: "36px",
         scale: 0.8,
-        y: 20,
+        y: +20,
         opacity: 0,
         filter: "blur(10px)",
-        transition: elasticTransition,
+        transition: {
+          ...morphTransition,
+          opacity: { duration: 0.1, delay: 0.1 },
+          filter: { duration: 0.1 },
+          scale: { duration: 0.5, type: "spring", stiffness: 200, damping: 20 },
+        },
+      },
+    };
+
+    const contentVariants = {
+      hidden: {
+        opacity: 0,
+        scale: 0.9,
+        filter: "blur(8px)",
+      },
+      visible: {
+        opacity: 1,
+        scale: 1,
+        filter: "blur(0px)",
+        transition: {
+          type: "spring",
+          stiffness: 450,
+          damping: 25,
+          mass: 0.8,
+          filter: { duration: 0.1 },
+        },
+      },
+      exit: {
+        opacity: 0,
+        scale: 0.9,
+        filter: "blur(8px)",
+        transition: {
+          type: "spring",
+          stiffness: 450,
+          damping: 25,
+          mass: 0.8,
+          filter: { duration: 0.1 },
+        },
       },
     };
 
@@ -153,13 +217,11 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
         {isVisible && (
           <motion.div
             layout
-            transition={elasticTransition}
+            layoutId="dynamic-island"
             className={cn(
-              "fixed top-4 left-0 right-0 mx-auto bg-foreground text-background rounded-3xl overflow-hidden z-[1000001]",
-              "shadow-lg backdrop-blur-sm",
-              theme === "light"
-                ? "bg-white/90 text-black"
-                : "bg-black/90 text-white",
+              "fixed top-2 left-0 right-0 mx-auto bg-foreground text-background rounded-[24px] overflow-hidden z-[1000001]",
+              "shadow-md backdrop-blur-sm",
+
               dismissalStage === "visible" && "cursor-pointer"
             )}
             initial="hidden"
@@ -181,16 +243,14 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
           >
             {dismissalStage === "visible" && (
               <motion.button
-                initial={{ opacity: 0, scale: 0.8, filter: "blur(5px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, scale: 0.8, filter: "blur(5px)" }}
-                transition={elasticTransition}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={contentVariants}
                 onClick={handleDismissClick}
                 className={cn(
-                  "absolute top-2 right-2 z-10",
-                  theme === "light"
-                    ? "bg-black/10 hover:bg-black/20 text-black/70 hover:text-black/90"
-                    : "bg-white/10 hover:bg-white/20 text-white/70 hover:text-white/90",
+                  "absolute top-3 right-2 z-10",
+                  "bg-white/10 ",
                   "rounded-full p-1"
                 )}
                 aria-label="Dismiss notification"
@@ -201,18 +261,25 @@ const DynamicIsland: React.FC<DynamicIslandProps> = memo(
 
             <motion.div
               layout
-              transition={elasticTransition}
+              layoutId="dynamic-island-content"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={contentVariants}
               className="p-2 pr-8 mr-3"
             >
               {content}
             </motion.div>
-            <AnimatePresence>
+
+            <AnimatePresence mode="wait">
               {isExpanded && dismissalStage === "visible" && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0, filter: "blur(5px)" }}
-                  animate={{ opacity: 1, height: "auto", filter: "blur(0px)" }}
-                  exit={{ opacity: 0, height: 0, filter: "blur(5px)" }}
-                  transition={elasticTransition}
+                  layout
+                  layoutId="dynamic-island-expanded"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={contentVariants}
                   className="px-4 pb-4"
                 >
                   {expandedContent}
