@@ -85,13 +85,13 @@ const Slider = React.forwardRef<
     <SliderPrimitive.Root
       ref={ref}
       className={cn(
-        "relative flex w-full touch-none select-none items-center data-[orientation=vertical]:h-full data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col data-[disabled]:opacity-50",
+        "p-4 relative flex w-full touch-none select-none items-center data-[orientation=vertical]:h-full data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col data-[disabled]:opacity-50",
         className
       )}
       onValueChange={handleValueChange}
       {...props}
     >
-      <SliderPrimitive.Track className="relative grow overflow-hidden rounded-full bg-primary/30 data-[orientation=horizontal]:h-2 data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-2">
+      <SliderPrimitive.Track className="relative grow overflow-hidden rounded-full bg-primary/30 data-[orientation=horizontal]:h-1 data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-2">
         <SliderPrimitive.Range className="absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full" />
       </SliderPrimitive.Track>
       {internalValue?.map((value, index) => (
