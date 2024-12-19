@@ -23,7 +23,9 @@ const TabsList = React.forwardRef<
   useEffect(() => {
     const updateIndicator = () => {
       if (tabsListRef.current) {
-        const activeTab = tabsListRef.current.querySelector<HTMLElement>('[data-state="active"]');
+        const activeTab = tabsListRef.current.querySelector<HTMLElement>(
+          '[data-state="active"]'
+        );
 
         if (activeTab) {
           const activeRect = activeTab.getBoundingClientRect();
@@ -68,14 +70,14 @@ const TabsList = React.forwardRef<
         ref={ref}
         className={cn(
           "relative inline-flex items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
-          className,
+          className
         )}
         {...props}
       />
       <div
         className={cn(
           "absolute rounded-sm bg-background shadow dark:bg-zinc-800",
-          !isInitialRender && "transition-all duration-300 ease-in-out",
+          !isInitialRender && "transition-trasform duration-200 ease-in-out"
         )}
         style={indicatorStyle}
       />
@@ -92,7 +94,7 @@ const TabsTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "rounded-xs z-10 inline-flex h-8 items-center justify-center whitespace-nowrap px-3 text-sm font-normal ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground",
-      className,
+      className
     )}
     {...props}
   />
@@ -107,7 +109,7 @@ const TabsContent = React.forwardRef<
     ref={ref}
     className={cn(
       "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className,
+      className
     )}
     {...props}
   />

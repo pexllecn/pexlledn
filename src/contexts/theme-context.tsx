@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { type ThemeProviderProps } from "next-themes/dist/types";
 
 type Color =
   | "black"
@@ -35,7 +36,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   const [radius, setRadius] = useState("1.5");
   const [color, setColor] = useState<Color>("yellow");
   const [menuPlacement, setMenuPlacement] =
@@ -53,12 +54,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [radius, color, layout, menuPlacement, menuBehavior]);
 
   return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
+    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
       <ThemeContext.Provider
         value={{
           radius,

@@ -93,13 +93,6 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/pricing",
-          label: "Pricing",
-          active: pathname.includes("/pricing"),
-          icon: DollarSign,
-          submenus: [],
-        },
-        {
           href: "/work",
           label: "Work",
           active: pathname.includes("/work"),
@@ -240,6 +233,11 @@ export function getMenuList(pathname: string): Group[] {
               href: "/account",
               label: "Account",
               active: pathname.includes("/account"),
+            },
+            {
+              href: "/pricing",
+              label: "Pricing",
+              active: pathname.includes("/pricing"),
             },
           ],
           notificationCount: "",

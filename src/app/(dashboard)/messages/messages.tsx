@@ -350,7 +350,7 @@ export default function EnhancedChatApp() {
                               className={cn(
                                 "rounded-lg p-3",
                                 msg.isSent
-                                  ? "bg-blue-600 text-white"
+                                  ? "bg-primary text-primary-foreground"
                                   : "bg-background text-foreground"
                               )}
                             >
