@@ -211,8 +211,8 @@ export default function TeamMembers() {
                         <div
                           className={`h-2 w-2 rounded-full ${
                             member.status === "Active"
-                              ? "bg-green-400"
-                              : "bg-red-400"
+                              ? "bg-green-500"
+                              : "bg-red-500"
                           }`}
                         />
                         {member.status}
