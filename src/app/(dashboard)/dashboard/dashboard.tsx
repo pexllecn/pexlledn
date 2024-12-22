@@ -137,7 +137,7 @@ export default function DashboardPage() {
   const DrawerDialogDemo = () => {
     if (isDesktop) {
       return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog>
           <DialogTrigger asChild>
             <Button size="default">
               <Download className="mr-2 h-4 w-4" />
@@ -197,7 +197,6 @@ export default function DashboardPage() {
             <div className="hidden md:flex items-center space-x-2">
               <CalendarDateRangePicker />
               <Button
-                className="shadow-none"
                 variant="outline"
                 onClick={() =>
                   toast("Event has been created", {
@@ -207,16 +206,13 @@ export default function DashboardPage() {
                       onClick: () => console.log("Undo"),
                     },
                     classNames: {
-                      toast: "bg-background border-none rounded-lg",
-                      title: "font-normal text-foreground",
-                      description: "font-light text-muted-foreground",
-                      actionButton: "bg-primary text-primary-foreground",
-                      cancelButton: "bg-muted text-muted-foreground",
+                      toast:
+                        "bg-foreground text-background border-none rounded-lg",
                     },
                   })
                 }
               >
-                Add to Calendar
+                Show Toast
               </Button>
               <DrawerDialogDemo />
             </div>

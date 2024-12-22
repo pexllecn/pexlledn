@@ -28,7 +28,7 @@ export default function RootLayout({
           <BreadcrumbProvider>
             {children}
             <ZoomPreventer />
-            <Toaster />
+            <Toaster richColors position="top-center" />
             <ThemeCustomizerButton />
           </BreadcrumbProvider>
         </ThemeProvider>

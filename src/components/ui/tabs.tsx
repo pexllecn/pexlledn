@@ -1,87 +1,100 @@
 "use client";
-
-import { cn } from "@/lib/utils";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { cn } from "@/lib/utils";
 
-const Tabs = TabsPrimitive.Root;
+type TabsContextType = {
+  activeTab: string | undefined;
+  setActiveTab: React.Dispatch<React.SetStateAction<string | undefined>>;
+} | null;
+
+const TabsContext = React.createContext<TabsContextType>(null);
+
+const Tabs = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+>(({ className, ...props }, ref) => {
+  const [activeTab, setActiveTab] = React.useState<string | undefined>(
+    props.defaultValue
+  );
+
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <TabsPrimitive.Root
+        ref={ref}
+        className={cn("relative", className)}
+        {...props}
+        onValueChange={(value) => {
+          setActiveTab(value);
+          props.onValueChange?.(value);
+        }}
+      />
+    </TabsContext.Provider>
+  );
+});
+Tabs.displayName = TabsPrimitive.Root.displayName;
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
 >(({ className, ...props }, ref) => {
-  const [indicatorStyle, setIndicatorStyle] = useState({
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-  });
-  const [isInitialRender, setIsInitialRender] = useState(true);
-  const tabsListRef = useRef<HTMLDivElement | null>(null);
+  const tabsListRef = React.useRef<HTMLDivElement | null>(null);
+  const context = React.useContext(TabsContext);
+  const activeTab = context ? context.activeTab : undefined;
+  const [backgroundStyle, setBackgroundStyle] = React.useState({});
 
-  useEffect(() => {
-    const updateIndicator = () => {
-      if (tabsListRef.current) {
-        const activeTab = tabsListRef.current.querySelector<HTMLElement>(
-          '[data-state="active"]'
-        );
-
-        if (activeTab) {
-          const activeRect = activeTab.getBoundingClientRect();
-          const tabsRect = tabsListRef.current.getBoundingClientRect();
-          setIndicatorStyle((prevStyle) => ({
-            left: activeRect.left - tabsRect.left,
-            top: activeRect.top - tabsRect.top,
-            width: activeRect.width,
-            height: activeRect.height,
-          }));
+  React.useEffect(() => {
+    const updateBackground = () => {
+      const tabsList = tabsListRef.current;
+      if (tabsList) {
+        const activeTabElement = tabsList.querySelector(
+          `[data-state="active"]`
+        ) as HTMLElement | null;
+        if (activeTabElement) {
+          setBackgroundStyle({
+            width: `${activeTabElement.clientWidth}px`,
+            transform: `translateX(${activeTabElement.offsetLeft}px)`,
+            height: "calc(100% - 0.6rem)", // Subtracting 0.5rem (8px) for padding
+            top: "0.3rem", // Adding 0.25rem (4px) top padding
+            transition: "all 0.3s ease",
+          });
         }
       }
     };
 
-    // Initial update without transition
-    updateIndicator();
+    updateBackground();
+    window.addEventListener("resize", updateBackground);
+    return () => window.removeEventListener("resize", updateBackground);
+  }, [activeTab]);
 
-    // Set a small timeout to enable transitions after the initial render
-    const timer = setTimeout(() => {
-      setIsInitialRender(false);
-    }, 50);
-
-    window.addEventListener("resize", updateIndicator);
-    const observer = new MutationObserver(updateIndicator);
-    if (tabsListRef.current) {
-      observer.observe(tabsListRef.current, {
-        attributes: true,
-        childList: true,
-        subtree: true,
-      });
-    }
-    return () => {
-      window.removeEventListener("resize", updateIndicator);
-      observer.disconnect();
-      clearTimeout(timer);
-    };
-  }, []);
+  // Combine the forwarded ref and our internal ref
+  const combinedRef = React.useCallback(
+    (element: HTMLDivElement | null) => {
+      tabsListRef.current = element;
+      if (typeof ref === "function") {
+        ref(element);
+      } else if (ref) {
+        ref.current = element;
+      }
+    },
+    [ref]
+  );
 
   return (
-    <div className="relative" ref={tabsListRef}>
-      <TabsPrimitive.List
-        ref={ref}
-        className={cn(
-          "relative inline-flex items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
-          className
-        )}
-        {...props}
-      />
+    <TabsPrimitive.List
+      ref={combinedRef}
+      className={cn(
+        "inline-flex h-10 items-center justify-center rounded-[calc(var(--radius)-0.05rem)] bg-muted p-1 text-muted-foreground relative",
+        className
+      )}
+      {...props}
+    >
       <div
-        className={cn(
-          "absolute rounded-sm bg-background shadow dark:bg-zinc-800",
-          !isInitialRender && "transition-trasform duration-200 ease-in-out"
-        )}
-        style={indicatorStyle}
+        className="absolute left-0 bg-background rounded-[calc(var(--radius)-0.25rem)] transition-all duration-300 ease-in-out shadow"
+        style={backgroundStyle}
       />
-    </div>
+      {props.children}
+    </TabsPrimitive.List>
   );
 });
 TabsList.displayName = TabsPrimitive.List.displayName;
@@ -93,7 +106,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "rounded-xs z-10 inline-flex h-8 items-center justify-center whitespace-nowrap px-3 text-sm font-normal ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] px-3 py-1.5 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground relative z-10",
       className
     )}
     {...props}
@@ -116,4 +129,4 @@ const TabsContent = React.forwardRef<
 ));
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
-export { Tabs, TabsContent, TabsList, TabsTrigger };
+export { Tabs, TabsList, TabsTrigger, TabsContent };
