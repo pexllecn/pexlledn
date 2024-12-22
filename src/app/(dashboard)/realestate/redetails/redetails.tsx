@@ -81,7 +81,7 @@ export default function RealEstateSearch() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
-        <div className="flex flex-col lg:flex-row min-h-screen">
+        <div className="p-4 flex flex-col lg:flex-row min-h-screen">
           {/* Mobile menu toggle */}
           <div className="lg:hidden p-4">
             <Button

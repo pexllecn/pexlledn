@@ -32,10 +32,10 @@ export function Menu({ isOpen }: MenuProps) {
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
-      <nav className="mt-5 h-full w-full">
+      <nav className="mt-5 px-2 h-full w-full">
         <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1">
           {menuList.map(({ groupLabel, menus }, index) => (
-            <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
+            <li className={cn("w-full", groupLabel ? "" : "")} key={index}>
               {(isOpen && groupLabel) || isOpen === undefined ? (
                 <p className="text-sm font-normal px-3 pb-2 max-w-[248px] truncate transition-none">
                   {groupLabel}
@@ -76,7 +76,7 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "outline3" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-8 mb-1 p-3 hover:bg-muted-foreground/10",
+                                "w-full justify-start h-8 mb-1 p-3 hover:bg-muted-foreground/10 hover:text-foreground",
                                 !active && "text-muted-foreground"
                               )}
                               asChild
@@ -138,7 +138,7 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
-          <li className="w-full grow flex items-end">
+          {/* <li className="w-full grow flex items-end">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -167,7 +167,7 @@ export function Menu({ isOpen }: MenuProps) {
                 )}
               </Tooltip>
             </TooltipProvider>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </ScrollArea>

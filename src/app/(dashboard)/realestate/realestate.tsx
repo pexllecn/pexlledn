@@ -25,7 +25,7 @@ export default function Dashboard() {
         transition={{ duration: 0.3 }}
         variants={variants1}
       >
-        <div className="dashboard-container bg-background min-h-screen py-3 lg:p-4">
+        <div className="bg-background min-h-screen py-3 lg:p-6">
           <header className="mb-4 sm:mb-6 overflow-x-auto">
             <nav className="flex space-x-4 sm:space-x-6 text-sm sm:text-base text-muted-foreground min-w-max">
               <a
