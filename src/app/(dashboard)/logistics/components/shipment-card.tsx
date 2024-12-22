@@ -43,7 +43,7 @@ export function ShipmentCard({
   return (
     <Card
       className={`p-4 mb-4 hover:bg-accent/50 transition-colors rounded-lg ${
-        isSelected ? "border-primary bg-primary/15 border" : ""
+        isSelected ? "border-primary bg-primary/10 border" : ""
       }`}
     >
       <div className="flex justify-between items-center mb-2">

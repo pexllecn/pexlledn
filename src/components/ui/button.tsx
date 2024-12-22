@@ -17,7 +17,8 @@ const buttonVariants = cva(
         lightred: "bg-destructive/10 text-destructive hover:bg-destructive/90",
         outline:
           "border border-muted-background bg-background text-foreground hover:bg-accent hover:text-accent-foreground",
-        outline2: "border border-primary/30 bg-primary/15 hover:bg-primary/10",
+        outline2:
+          " bg-primary/10 border border-ring ring-ring/20 hover:bg-primary/10",
         outline3: "bg-white shadow text-black ",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",

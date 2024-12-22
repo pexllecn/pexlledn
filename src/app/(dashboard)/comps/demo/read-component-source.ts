@@ -7,6 +7,10 @@ export async function readComponentSource(
 ) {
   const filePath = path.join(
     process.cwd(),
+    "src",
+    "app",
+    "(dashboard)",
+    "comps",
     "components",
     directory,
     `${componentName}.tsx`

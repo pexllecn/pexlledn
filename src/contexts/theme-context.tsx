@@ -37,7 +37,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  const [radius, setRadius] = useState("1.5");
+  const [radius, setRadius] = useState("0.75");
   const [color, setColor] = useState<Color>("yellow");
   const [menuPlacement, setMenuPlacement] =
     useState<MenuPlacement>("horizontal");

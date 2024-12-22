@@ -1,127 +1,325 @@
 "use client";
 
+import React, { useState } from "react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Layout,
+  AlertCircle,
+  User,
+  Navigation,
+  ToggleLeft,
+  MessageSquare,
+  ChevronDown,
+  List,
+  Sliders,
+  HelpCircle,
+  Sparkles,
+  Search,
+} from "lucide-react";
+import { ButtonIcon, InputIcon } from "@radix-ui/react-icons";
+import { Tabs } from "react-aria-components";
 
-const components = [
+interface Component {
+  name: string;
+  href: string;
+  icon: React.ReactNode;
+  description: string;
+  category: string;
+  highlight?: boolean;
+}
+
+const components: Component[] = [
   {
     name: "Accordion",
     href: "/comps/accordions",
-    image:
-      "https://images.unsplash.com/photo-1598791318878-10e76d178023?w=500&q=80",
+    icon: <Layout className="w-6 h-6" />,
+    description: "Expandable content sections",
+    category: "Layout",
   },
   {
     name: "Alert, Notification, and Banner",
     href: "/comps/alerts-notifications-banners",
-    image:
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80",
+    icon: <AlertCircle className="w-6 h-6" />,
+    description: "User feedback components",
+    category: "Feedback",
   },
   {
     name: "Avatar and Badge",
     href: "/comps/avatars-badges",
-    image:
-      "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=500&q=80",
+    icon: <User className="w-6 h-6" />,
+    description: "User representation elements",
+    category: "Data Display",
   },
   {
     name: "Breadcrumb and Pagination",
     href: "/comps/breadcrumbs-paginations",
-    image:
-      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=500&q=80",
+    icon: <Navigation className="w-6 h-6" />,
+    description: "Navigation helpers",
+    category: "Navigation",
   },
   {
     name: "Button",
     href: "/comps/buttons",
-    image:
-      "https://images.unsplash.com/photo-1614179924047-e1ab49a0a0cf?w=500&q=80",
+    icon: <ButtonIcon className="w-6 h-6" />,
+    description: "Interactive buttons",
+    category: "Input",
   },
   {
     name: "Checkbox, Radio, and Switch",
     href: "/comps/checks-radios-switches",
-    image:
-      "https://images.unsplash.com/photo-1586282391129-76a6df230234?w=500&q=80",
+    icon: <ToggleLeft className="w-6 h-6" />,
+    description: "Selection controls",
+    category: "Input",
   },
   {
     name: "Dialog",
     href: "/comps/dialogs",
-    image:
-      "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=500&q=80",
+    icon: <MessageSquare className="w-6 h-6" />,
+    description: "Modal windows",
+    category: "Overlay",
   },
   {
     name: "Dropdown and Popover",
     href: "/comps/dropdowns-popovers",
-    image:
-      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=500&q=80",
+    icon: <ChevronDown className="w-6 h-6" />,
+    description: "Contextual menus",
+    category: "Overlay",
   },
   {
     name: "Input and Textarea",
     href: "/comps/inputs",
-    image:
-      "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=500&q=80",
+    icon: <InputIcon className="w-6 h-6" />,
+    description: "Text input fields",
+    category: "Input",
   },
   {
     name: "Select",
     href: "/comps/selects",
-    image:
-      "https://images.unsplash.com/photo-1555952494-efd681c7e3f9?w=500&q=80",
+    icon: <List className="w-6 h-6" />,
+    description: "Option selection",
+    category: "Input",
   },
   {
     name: "Slider",
     href: "/comps/sliders",
-    image:
-      "https://images.unsplash.com/photo-1595079676601-f1adf5be5dee?w=500&q=80",
+    icon: <Sliders className="w-6 h-6" />,
+    description: "Range selection",
+    category: "Input",
   },
   {
     name: "Tab",
     href: "/comps/tabs",
-    image:
-      "https://images.unsplash.com/photo-1512314889357-e157c22f938d?w=500&q=80",
+    icon: <Tabs className="w-6 h-6" />,
+    description: "Content organization",
+    category: "Navigation",
   },
   {
     name: "Tooltip",
     href: "/comps/tooltips",
-    image:
-      "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?w=500&q=80",
+    icon: <HelpCircle className="w-6 h-6" />,
+    description: "Contextual information",
+    category: "Overlay",
   },
 ];
 
-const variants1 = {
-  hidden: { filter: "blur(10px)", opacity: 0 },
-  visible: { filter: "blur(0px)", opacity: 1 },
-};
+interface CategoriesProps {
+  activeCategory: string;
+  setActiveCategory: (category: string) => void;
+  categories: string[];
+  counts: Record<string, number>;
+}
+
+const Categories: React.FC<CategoriesProps> = ({
+  activeCategory,
+  setActiveCategory,
+  categories,
+  counts,
+}) => (
+  <div className="mb-8 flex flex-wrap gap-2">
+    {categories.map((category) => (
+      <button
+        key={category}
+        onClick={() => setActiveCategory(category)}
+        className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all ${
+          activeCategory === category
+            ? "bg-primary text-primary-foreground shadow-lg"
+            : "bg-muted hover:bg-muted/80"
+        }`}
+      >
+        {category}
+        <span
+          className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
+            activeCategory === category
+              ? "bg-primary-foreground/20 text-primary-foreground"
+              : "bg-muted-foreground/20 text-muted-foreground"
+          }`}
+        >
+          {counts[category]}
+        </span>
+      </button>
+    ))}
+  </div>
+);
+
+const ComponentCard: React.FC<{ component: Component }> = ({ component }) => (
+  <div className="group relative">
+    <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary to-primary-foreground opacity-0 blur transition duration-300 group-hover:opacity-30" />
+    <Link href={component.href}>
+      <div className="relative rounded-lg border-none bg-muted p-6 shadow-none transition-all duration-200 hover:shadow-md">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="rounded-lg bg-muted p-2 text-muted-foreground">
+            {component.icon}
+          </div>
+          <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+            {component.category}
+          </span>
+        </div>
+        <h3 className="mb-2 text-lg font-semibold">{component.name}</h3>
+        <p className="text-sm text-muted-foreground">{component.description}</p>
+        <div className="mt-4 flex items-center text-sm font-medium text-primary">
+          Explore component
+          <svg
+            className="ml-2 h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </div>
+      </div>
+    </Link>
+  </div>
+);
 
 export default function Page() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  // Get unique categories and add "All"
+  const categories = [
+    "All",
+    ...Array.from(new Set(components.map((c) => c.category))),
+  ];
+
+  // Filter components based on category and search query
+  const filteredComponents = components.filter((component) => {
+    const matchesCategory =
+      activeCategory === "All" || component.category === activeCategory;
+    const matchesSearch =
+      component.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      component.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // Calculate counts for each category
+  const counts = categories.reduce((acc, category) => {
+    if (category === "All") {
+      acc[category] = components.length;
+    } else {
+      acc[category] = components.filter((c) => c.category === category).length;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <ContentLayout title="Components">
-      <main className="p-4">
-        <div className="px-4 sm:px-6">
-          <div className="mx-auto w-full max-w-7xl">
-            <h2 className="mb-6 text-2xl font-bold">Components</h2>
+      <div className="min-h-screen bg-background">
+        <main className="p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="relative mb-4 text-center">
+              <div className="relative z-10">
+                <div className="mb-2 flex items-center justify-center gap-2">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Beautifully crafted UI components
+                  </span>
+                </div>
+                <h1 className="mb-4 bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
+                  Component Library
+                </h1>
+                <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+                  Explore our collection of beautiful and functional UI
+                  components
+                </p>
+              </div>
+
+              {/* Search Bar */}
+              <div className="mx-auto my-8 max-w-md">
+                <div className="relative">
+                  <Search
+                    className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transition-colors ${
+                      isSearchFocused ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search components..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => setIsSearchFocused(false)}
+                    className="w-full rounded-full bg-muted py-2 pl-10 pr-4 text-sm transition-shadow focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  {searchQuery && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="rounded-full p-1 hover:bg-muted-foreground/20"
+                      >
+                        <svg
+                          className="h-4 w-4 text-muted-foreground"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Category Filters */}
+              <Categories
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
+                categories={categories}
+                counts={counts}
+              />
+            </div>
+
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {components.map((component, index) => (
-                <Link href={component.href} className="block">
-                  <div className="overflow-hidden rounded-lg border border-border bg-background shadow-sm transition-all hover:shadow-md">
-                    <div className="aspect-w-16 aspect-h-9 relative">
-                      <Image
-                        src={component.image}
-                        alt={component.name}
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold">
-                        {component.name}
-                      </h3>
-                    </div>
-                  </div>
-                </Link>
+              {filteredComponents.map((component) => (
+                <ComponentCard key={component.name} component={component} />
               ))}
             </div>
+
+            {/* Empty State */}
+            {filteredComponents.length === 0 && (
+              <div className="mt-12 text-center">
+                <p className="text-lg text-muted-foreground">
+                  No components found matching your criteria
+                </p>
+              </div>
+            )}
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </ContentLayout>
   );
 }

@@ -441,14 +441,15 @@ function ChatList({
           className="pl-10 border-none bg-muted shadow-none"
         />
       </div>
-      <ScrollArea className="h-[calc(100vh-8rem)]">
+
+      <div>
         {chats.map((chat) => (
           <div
             key={chat.id}
             className={cn(
               "flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
               selectedChat && selectedChat.id === chat.id
-                ? "bg-primary/15 border-primary border text-primary"
+                ? "bg-primary/10 border border-ring ring-ring/20 text-primary"
                 : "hover:bg-accent/50"
             )}
             onClick={() => onSelectChat(chat)}
@@ -489,7 +490,7 @@ function ChatList({
             </div>
           </div>
         ))}
-      </ScrollArea>
+      </div>
     </div>
   );
 }
