@@ -1,5 +1,4 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import Cta from "../demo/cta";
 import DemoComponent from "../demo/demo-component";
 import PageHeader from "../demo/page-header";
 

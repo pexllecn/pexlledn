@@ -43,10 +43,10 @@ export default function DropdownDemo() {
           />
           <div className="flex min-w-0 flex-col">
             <span className="truncate text-sm font-medium text-foreground">
-              Keith Kennedy
+              Khaled
             </span>
             <span className="truncate text-xs font-normal text-muted-foreground">
-              k.kennedy@originui.com
+              k.alkurdi@pexlle.com
             </span>
           </div>
         </DropdownMenuLabel>

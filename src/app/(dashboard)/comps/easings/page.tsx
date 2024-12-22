@@ -1,5 +1,4 @@
 import PageHeader from "../demo/page-header";
-import XLinks from "../demo/x-links";
 import type { Metadata } from "next";
 import Easings from "./easings";
 import { ContentLayout } from "@/components/admin-panel/content-layout";

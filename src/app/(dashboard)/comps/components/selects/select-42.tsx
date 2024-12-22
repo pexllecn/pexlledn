@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 const organizations = [
   {
-    value: "originui",
+    value: "pexlle",
     label: "Pexlle",
   },
   {
@@ -36,7 +36,7 @@ const organizations = [
 
 export default function SelectDemo() {
   const [open, setOpen] = useState<boolean>(false);
-  const [value, setValue] = useState<string>("originui");
+  const [value, setValue] = useState<string>("pexlle");
 
   return (
     <div className="space-y-2">

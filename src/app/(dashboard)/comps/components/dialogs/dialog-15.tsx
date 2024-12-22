@@ -13,13 +13,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Check, Copy, UserRoundPlus } from "lucide-react";
 import { useRef, useState } from "react";
 
 export default function DialogDemo() {
-  const [emails, setEmails] = useState(["mark@yourcompany.com", "jane@yourcompany.com", ""]);
+  const [emails, setEmails] = useState([
+    "mark@yourcompany.com",
+    "jane@yourcompany.com",
+    "",
+  ]);
   const [copied, setCopied] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastInputRef = useRef<HTMLInputElement>(null);
@@ -109,7 +118,7 @@ export default function DialogDemo() {
               id="input-53"
               className="pe-9"
               type="text"
-              defaultValue="https://originui.com/refer/87689"
+              defaultValue="https://pexlle.com/"
               readOnly
             />
             <TooltipProvider delayDuration={0}>
@@ -124,7 +133,7 @@ export default function DialogDemo() {
                     <div
                       className={cn(
                         "transition-all",
-                        copied ? "scale-100 opacity-100" : "scale-0 opacity-0",
+                        copied ? "scale-100 opacity-100" : "scale-0 opacity-0"
                       )}
                     >
                       <Check
@@ -137,14 +146,16 @@ export default function DialogDemo() {
                     <div
                       className={cn(
                         "absolute transition-all",
-                        copied ? "scale-0 opacity-0" : "scale-100 opacity-100",
+                        copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
                       )}
                     >
                       <Copy size={16} strokeWidth={2} aria-hidden="true" />
                     </div>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent className="px-2 py-1 text-xs">Copy to clipboard</TooltipContent>
+                <TooltipContent className="px-2 py-1 text-xs">
+                  Copy to clipboard
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>

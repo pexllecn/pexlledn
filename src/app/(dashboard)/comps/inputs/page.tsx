@@ -1,6 +1,5 @@
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
-import Cta from "../demo/cta";
 import DemoComponent from "../demo/demo-component";
 import PageHeader from "../demo/page-header";
 import type { Metadata } from "next";

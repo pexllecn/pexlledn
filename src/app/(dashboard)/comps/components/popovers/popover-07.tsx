@@ -4,8 +4,17 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Code, Facebook, Mail, Twitter, Check, Copy } from "lucide-react";
 import { useRef, useState } from "react";
@@ -35,13 +44,25 @@ export default function PopoverDemo() {
               <Button size="icon" variant="outline" aria-label="Embed">
                 <Code size={16} strokeWidth={2} aria-hidden="true" />
               </Button>
-              <Button size="icon" variant="outline" aria-label="Share on Twitter">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Share on Twitter"
+              >
                 <Twitter size={16} strokeWidth={2} aria-hidden="true" />
               </Button>
-              <Button size="icon" variant="outline" aria-label="Share on Facebook">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Share on Facebook"
+              >
                 <Facebook size={16} strokeWidth={2} aria-hidden="true" />
               </Button>
-              <Button size="icon" variant="outline" aria-label="Share via email">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Share via email"
+              >
                 <Mail size={16} strokeWidth={2} aria-hidden="true" />
               </Button>
             </div>
@@ -52,7 +73,7 @@ export default function PopoverDemo() {
                   id="input-53"
                   className="pe-9"
                   type="text"
-                  defaultValue="https://originui.com/Avx8HD"
+                  defaultValue="https://pexlle.com"
                   aria-label="Share link"
                   readOnly
                 />
@@ -68,7 +89,9 @@ export default function PopoverDemo() {
                         <div
                           className={cn(
                             "transition-all",
-                            copied ? "scale-100 opacity-100" : "scale-0 opacity-0",
+                            copied
+                              ? "scale-100 opacity-100"
+                              : "scale-0 opacity-0"
                           )}
                         >
                           <Check
@@ -81,14 +104,18 @@ export default function PopoverDemo() {
                         <div
                           className={cn(
                             "absolute transition-all",
-                            copied ? "scale-0 opacity-0" : "scale-100 opacity-100",
+                            copied
+                              ? "scale-0 opacity-0"
+                              : "scale-100 opacity-100"
                           )}
                         >
                           <Copy size={16} strokeWidth={2} aria-hidden="true" />
                         </div>
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent className="px-2 py-1 text-xs">Copy to clipboard</TooltipContent>
+                    <TooltipContent className="px-2 py-1 text-xs">
+                      Copy to clipboard
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
