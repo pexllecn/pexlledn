@@ -26,6 +26,7 @@ import {
   ScanFace,
   Vibrate,
   HeartPulse,
+  Component,
 } from "lucide-react";
 
 type Submenu = {
@@ -130,7 +131,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/medical"),
           icon: HeartPulse,
           submenus: [],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "",
@@ -152,10 +153,10 @@ export function getMenuList(pathname: string): Group[] {
               href: "/realestate/reresults",
               label: "Search Results",
               active: pathname === "/realestate/reresults",
-              notificationCount: "New",
+              notificationCount: "",
             },
           ],
-          notificationCount: "New",
+          notificationCount: "",
         },
         {
           href: "",
@@ -247,6 +248,19 @@ export function getMenuList(pathname: string): Group[] {
           label: "Dynamic Island",
           active: pathname.includes("/noti"),
           icon: Vibrate,
+          submenus: [],
+          notificationCount: "New",
+        },
+      ],
+    },
+    {
+      groupLabel: "Components",
+      menus: [
+        {
+          href: "/comps",
+          label: "Components",
+          active: pathname.includes("/comps"),
+          icon: Component,
           submenus: [],
           notificationCount: "New",
         },

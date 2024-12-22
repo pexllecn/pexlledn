@@ -5,7 +5,7 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode
+  ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
 
@@ -23,7 +23,7 @@ const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(
 );
 
 export const BreadcrumbProvider: React.FC<{ children: ReactNode }> = ({
-  children
+  children,
 }) => {
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
   const pathname = usePathname();
@@ -35,7 +35,7 @@ export const BreadcrumbProvider: React.FC<{ children: ReactNode }> = ({
     const pathArray = linkPath.map((path, i) => {
       return {
         label: path.charAt(0).toUpperCase() + path.slice(1),
-        href: "/" + linkPath.slice(0, i + 1).join("/")
+        href: "/" + linkPath.slice(0, i + 1).join("/"),
       };
     });
 

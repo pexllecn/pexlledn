@@ -1,37 +1,59 @@
-import { useState, useRef, ChangeEvent } from 'react'
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export function useImageUpload() {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+interface UseImageUploadProps {
+  onUpload?: (url: string) => void;
+}
 
-  const handleThumbnailClick = () => {
-    fileInputRef.current?.click()
-  }
+export function useImageUpload({ onUpload }: UseImageUploadProps = {}) {
+  const previewRef = useRef<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string)
+  const handleThumbnailClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        setFileName(file.name);
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+        previewRef.current = url;
+        onUpload?.(url);
       }
-      reader.readAsDataURL(file)
-    }
-  }
+    },
+    [onUpload],
+  );
 
-  const handleRemove = () => {
-    setPreviewUrl(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+  const handleRemove = useCallback(() => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
     }
-  }
+    setPreviewUrl(null);
+    setFileName(null);
+    previewRef.current = null;
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [previewUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (previewRef.current) {
+        URL.revokeObjectURL(previewRef.current);
+      }
+    };
+  }, []);
 
   return {
     previewUrl,
+    fileName,
     fileInputRef,
     handleThumbnailClick,
     handleFileChange,
     handleRemove,
-  }
+  };
 }
-
