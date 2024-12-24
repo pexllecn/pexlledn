@@ -39,6 +39,12 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Kbd } from "@/components/ui/kbd";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface NavbarProps {
   title: string;
@@ -151,20 +157,29 @@ export function Navbar({ title }: NavbarProps) {
 
           <div className="flex items-center space-x-2 justify-end">
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-lg w-8 h-8"
-                >
-                  <Bell
-                    className="text-muted-foreground h-4 w-4"
-                    strokeWidth={1}
-                  />
-                  <span className="absolute right-2 top-1 h-2 w-2 rounded-full bg-red-500" />
-                  <span className="sr-only">Toggle notifications</span>
-                </Button>
-              </PopoverTrigger>
+              <TooltipProvider>
+                <Tooltip delayDuration={50}>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="relative rounded-lg w-8 h-8"
+                      >
+                        <Bell
+                          className="text-muted-foreground h-4 w-4"
+                          strokeWidth={1}
+                        />
+                        <span className="absolute right-2 top-1 h-2 w-2 rounded-full bg-red-500" />
+                        <span className="sr-only">Toggle notifications</span>
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent showArrow={true}>
+                    <p>Notifications</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <PopoverContent className="w-80 p-0" align="end">
                 <NotificationsPopover />
               </PopoverContent>
