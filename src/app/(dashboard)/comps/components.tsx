@@ -17,9 +17,12 @@ import {
   HelpCircle,
   Sparkles,
   Search,
+  ChevronRight,
 } from "lucide-react";
 import { ButtonIcon, InputIcon } from "@radix-ui/react-icons";
 import { Tabs } from "react-aria-components";
+import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
+import { cn } from "@/lib/utils";
 
 interface Component {
   name: string;
@@ -137,7 +140,7 @@ const Categories: React.FC<CategoriesProps> = ({
   categories,
   counts,
 }) => (
-  <div className="mb-8 flex flex-wrap gap-2">
+  <div className="my-8 flex flex-wrap justify-center  gap-2">
     {categories.map((category) => (
       <button
         key={category}
@@ -149,15 +152,6 @@ const Categories: React.FC<CategoriesProps> = ({
         }`}
       >
         {category}
-        <span
-          className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
-            activeCategory === category
-              ? "bg-primary-foreground/20 text-primary-foreground"
-              : "bg-muted-foreground/20 text-muted-foreground"
-          }`}
-        >
-          {counts[category]}
-        </span>
       </button>
     ))}
   </div>
@@ -165,20 +159,20 @@ const Categories: React.FC<CategoriesProps> = ({
 
 const ComponentCard: React.FC<{ component: Component }> = ({ component }) => (
   <div className="group relative">
-    <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary to-primary-foreground opacity-0 blur transition duration-300 group-hover:opacity-30" />
+    <div className="" />
     <Link href={component.href}>
-      <div className="relative rounded-lg border-none bg-muted p-6 shadow-none transition-all duration-200 hover:shadow-md">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="rounded-lg bg-muted p-2 text-muted-foreground">
+      <div className="relative group-hover:text-primary rounded-lg border border-muted bg-muted p-6 shadow-none transition-all duration-200 hover:bg-primary/10  hover:border-ring hover:ring-ring/30 hover:ring-[3px]">
+        <div className=" flex items-center justify-between">
+          <div className="rounded-lg bg-primary/10 p-2 text-primary">
             {component.icon}
           </div>
           <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
             {component.category}
           </span>
         </div>
-        <h3 className="mb-2 text-lg font-semibold">{component.name}</h3>
+        <h3 className="mt-2 text-lg font-semibold">{component.name}</h3>
         <p className="text-sm text-muted-foreground">{component.description}</p>
-        <div className="mt-4 flex items-center text-sm font-medium text-primary">
+        <div className="mt-4 flex items-center text-sm font-medium text-foreground/50 group-hover:text-primary">
           Explore component
           <svg
             className="ml-2 h-4 w-4"
@@ -234,64 +228,30 @@ export default function Page() {
     <ContentLayout title="Components">
       <div className="min-h-screen bg-background">
         <main className="p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-5xl">
             <div className="relative mb-4 text-center">
               <div className="relative z-10">
                 <div className="mb-2 flex items-center justify-center gap-2">
-                  <Sparkles className="h-6 w-6 text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Beautifully crafted UI components
-                  </span>
+                  <AnimatedGradientText>
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <hr className="mx-2 h-4 w-[1px] shrink-0 bg-gray-300" />{" "}
+                    <span
+                      className={cn(
+                        `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                      )}
+                    >
+                      Beautifully crafted UI components
+                    </span>
+                    <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+                  </AnimatedGradientText>
                 </div>
-                <h1 className="mb-4 bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
+                <h1 className="mb-4 text-primary text-4xl font-bold tracking-tight  sm:text-5xl">
                   Component Library
                 </h1>
                 <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
                   Explore our collection of beautiful and functional UI
                   components
                 </p>
-              </div>
-
-              {/* Search Bar */}
-              <div className="mx-auto my-8 max-w-md">
-                <div className="relative">
-                  <Search
-                    className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transition-colors ${
-                      isSearchFocused ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Search components..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setIsSearchFocused(true)}
-                    onBlur={() => setIsSearchFocused(false)}
-                    className="w-full rounded-full bg-muted py-2 pl-10 pr-4 text-sm transition-shadow focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {searchQuery && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <button
-                        onClick={() => setSearchQuery("")}
-                        className="rounded-full p-1 hover:bg-muted-foreground/20"
-                      >
-                        <svg
-                          className="h-4 w-4 text-muted-foreground"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Category Filters */}
