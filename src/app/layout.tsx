@@ -9,6 +9,9 @@ import { ZoomPreventer } from "@/components/ZoomPreventer";
 import { ThemeCustomizerButton } from "@/components/theme-customizer-button";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://pexlle.com"
+  ),
   title: {
     template: "%s | Pexlle",
     default: "Pexlle",
