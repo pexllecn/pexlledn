@@ -1,8 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { type ThemeProviderProps } from "next-themes/dist/types";
 
 type Color =
   | "black"
@@ -36,25 +41,76 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  const [radius, setRadius] = useState("1.5");
-  const [color, setColor] = useState<Color>("yellow");
-  const [menuPlacement, setMenuPlacement] =
-    useState<MenuPlacement>("horizontal");
-  const [menuBehavior, setMenuBehavior] = useState<MenuBehavior>("pinned");
-  const [layout, setLayout] = useState<Layout>("fluid");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+const usePersistentState = <T extends string | boolean>(
+  key: string,
+  defaultValue: T
+): [T, (value: T) => void] => {
+  const [state, setState] = useState<T>(() => {
+    if (typeof window !== "undefined") {
+      const persistedValue = localStorage.getItem(key);
+      if (persistedValue !== null) {
+        if (typeof defaultValue === "boolean") {
+          return (persistedValue === "true") as T;
+        }
+        return persistedValue as T;
+      }
+    }
+    return defaultValue;
+  });
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--radius", `${radius}rem`);
-    document.documentElement.setAttribute("data-color", color);
-    document.documentElement.setAttribute("data-layout", layout);
-    document.documentElement.setAttribute("data-menu-placement", menuPlacement);
-    document.documentElement.setAttribute("data-menu-behavior", menuBehavior);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(key, state.toString());
+    }
+  }, [key, state]);
+
+  return [state, setState];
+};
+
+export function ThemeProvider({ children, ...props }: any) {
+  const [radius, setRadius] = usePersistentState<string>("theme-radius", "1.5");
+  const [color, setColor] = usePersistentState<Color>("theme-color", "yellow");
+  const [menuPlacement, setMenuPlacement] = usePersistentState<MenuPlacement>(
+    "theme-menu-placement",
+    "horizontal"
+  );
+  const [menuBehavior, setMenuBehavior] = usePersistentState<MenuBehavior>(
+    "theme-menu-behavior",
+    "pinned"
+  );
+  const [layout, setLayout] = usePersistentState<Layout>(
+    "theme-layout",
+    "fluid"
+  );
+  const [sidebarOpen, setSidebarOpen] = usePersistentState<boolean>(
+    "theme-sidebar-open",
+    true
+  );
+
+  const updateDocumentStyles = useCallback(() => {
+    if (typeof window !== "undefined") {
+      document.documentElement.style.setProperty("--radius", `${radius}rem`);
+      document.documentElement.setAttribute("data-color", color);
+      document.documentElement.setAttribute("data-layout", layout);
+      document.documentElement.setAttribute(
+        "data-menu-placement",
+        menuPlacement
+      );
+      document.documentElement.setAttribute("data-menu-behavior", menuBehavior);
+    }
   }, [radius, color, layout, menuPlacement, menuBehavior]);
 
+  useEffect(() => {
+    updateDocumentStyles();
+  }, [updateDocumentStyles]);
+
   return (
-    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      {...props}
+    >
       <ThemeContext.Provider
         value={{
           radius,
