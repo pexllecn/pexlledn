@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -23,7 +28,7 @@ const CopyButton = ({ componentSource }: { componentSource: string }) => {
       className={cn(
         "absolute right-2 top-2 transition-opacity",
         !copied &&
-          "lg:opacity-0 lg:group-focus-within/item:opacity-100 lg:group-hover/item:opacity-100",
+          "lg:opacity-0 lg:group-focus-within/item:opacity-100 lg:group-hover/item:opacity-100"
       )}
     >
       <TooltipProvider delayDuration={0}>
@@ -40,7 +45,7 @@ const CopyButton = ({ componentSource }: { componentSource: string }) => {
               <div
                 className={cn(
                   "transition-all",
-                  copied ? "scale-100 opacity-100" : "scale-0 opacity-0",
+                  copied ? "scale-100 opacity-100" : "scale-0 opacity-0"
                 )}
               >
                 <svg
@@ -59,7 +64,7 @@ const CopyButton = ({ componentSource }: { componentSource: string }) => {
               <div
                 className={cn(
                   "absolute transition-all",
-                  copied ? "scale-0 opacity-0" : "scale-100 opacity-100",
+                  copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
                 )}
               >
                 <svg
@@ -75,7 +80,7 @@ const CopyButton = ({ componentSource }: { componentSource: string }) => {
               </div>
             </Button>
           </TooltipTrigger>
-          <TooltipContent className="px-2 py-1 text-xs text-muted-foreground">Copy</TooltipContent>
+          <TooltipContent className="px-2 py-1 text-xs">Copy</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
