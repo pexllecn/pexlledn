@@ -37,7 +37,7 @@ export function ModeToggle() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="bottom">
+        <TooltipContent side="bottom" showArrow={true}>
           <div className="flex items-center">
             Switch Theme
             <Kbd className="ml-2 rounded-lg">

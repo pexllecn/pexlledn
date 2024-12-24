@@ -76,7 +76,7 @@ export function PropertyCard({
                   />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent showArrow={true}>
                 <p>{isSaved ? "Remove from favorites" : "Add to favorites"}</p>
               </TooltipContent>
             </Tooltip>
@@ -93,7 +93,7 @@ export function PropertyCard({
                   <Eye className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent showArrow={true}>
                 <p>View details</p>
               </TooltipContent>
             </Tooltip>

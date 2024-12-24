@@ -49,7 +49,11 @@ export function Menu({ isOpen }: MenuProps) {
                         <Ellipsis className="h-5 w-5" />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={10}>
+                    <TooltipContent
+                      side="right"
+                      sideOffset={10}
+                      showArrow={true}
+                    >
                       <p>{groupLabel}</p>
                     </TooltipContent>
                   </Tooltip>
@@ -117,7 +121,11 @@ export function Menu({ isOpen }: MenuProps) {
                             </Button>
                           </TooltipTrigger>
                           {isOpen === false && (
-                            <TooltipContent side="right" sideOffset={10}>
+                            <TooltipContent
+                              side="right"
+                              sideOffset={10}
+                              showArrow={true}
+                            >
                               {label}
                             </TooltipContent>
                           )}

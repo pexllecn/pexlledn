@@ -45,7 +45,7 @@ export function SidebarToggle({ isOpen, setIsOpen }: SidebarToggleProps) {
               )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">
+          <TooltipContent side="right" showArrow={true}>
             <div className="flex items-center">
               Toggle Sidebar
               <Kbd className="ml-2">

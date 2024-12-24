@@ -181,6 +181,7 @@ export function CollapseMenuButton({
             align="start"
             alignOffset={2}
             sideOffset={10}
+            showArrow={true}
           >
             <div className="flex items-center">
               {label}

@@ -122,7 +122,7 @@ const DockIcon = React.forwardRef<
           {children}
         </div>
       </TooltipTrigger>
-      <TooltipContent side="top">
+      <TooltipContent side="top" showArrow={true}>
         <p>{label}</p>
       </TooltipContent>
     </Tooltip>

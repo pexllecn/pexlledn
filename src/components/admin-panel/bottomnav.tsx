@@ -77,7 +77,7 @@ export function BottomNav() {
                     />
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent showArrow={true}>
                   <p>{item.label}</p>
                 </TooltipContent>
               </Tooltip>
