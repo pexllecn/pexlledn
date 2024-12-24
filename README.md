@@ -29,9 +29,9 @@ A stunning and functional retractable sidebar for Next.js built on top of [shadc
 
 ## Demo
 
-The app is hosted on Vercel. [Click here](https://shadcn-ui-sidebar.salimi.my) to visit.
+The app is hosted on Vercel. [Click here](https://pexlledn.vercel.app/dashboard) to visit.
 <br>
-Direct demo link: `https://shadcn-ui-sidebar.salimi.my`
+Direct demo link: `https://pexlledn.vercel.app/dashboard`
 
 ## Screenshots
 
@@ -41,12 +41,9 @@ Direct demo link: `https://shadcn-ui-sidebar.salimi.my`
 
 #### Dark mode
 
-![Dark mode](/screenshots/screenshot-2.png)
+![Dark mode](/public/dashboardd.png)
 
-#### Mini sidebar
-
-![Mini sidebar](/screenshots/screenshot-3.png)
 
 #### Sheet menu
 
-<img src="/screenshots/screenshot-4.png" width="300">
+<img src="/public/mdashboard.png" width="300">
