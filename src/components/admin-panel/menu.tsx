@@ -103,7 +103,7 @@ export function Menu({ isOpen }: MenuProps) {
                                 </p>
                                 {isOpen !== false && notificationCount && (
                                   <Badge
-                                    variant="decline"
+                                    variant="outline2"
                                     className={cn(
                                       "ml-auto px-2 min-w-[20px] flex items-center justify-center",
                                       typeof notificationCount === "string" &&
