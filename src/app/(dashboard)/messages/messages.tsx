@@ -449,7 +449,7 @@ function ChatList({
             className={cn(
               "flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
               selectedChat && selectedChat.id === chat.id
-                ? "bg-primary/10 border border-ring ring-ring/20 text-primary"
+                ? "bg-primary/10 border border-ring ring-ring/20 text-spcolor"
                 : "hover:bg-accent/50"
             )}
             onClick={() => onSelectChat(chat)}

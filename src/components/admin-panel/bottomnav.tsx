@@ -61,7 +61,7 @@ export function BottomNav() {
                 className={cn(
                   "h-5 w-5 transition-all duration-200 text-muted-foreground",
                   {
-                    "text-primary": pathname === item.href,
+                    "text-spcolor": pathname === item.href,
                   }
                 )}
                 strokeWidth={pathname === item.href ? 2 : 1}

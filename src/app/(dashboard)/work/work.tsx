@@ -246,7 +246,7 @@ export default function JobSearchPage() {
                               <Card
                                 className={`cursor-pointer shadow-none bg-muted/70 ${
                                   selectedJob?.id === job.id
-                                    ? "bg-primary/10 border border-ring ring-ring/20 text-primary"
+                                    ? "bg-primary/10 border border-ring ring-ring/20 text-spcolor"
                                     : "border-none"
                                 }`}
                                 onClick={() => handleJobSelect(job)}
