@@ -18,9 +18,9 @@ import {
   Sparkles,
   Search,
   ChevronRight,
+  BetweenVerticalEnd,
 } from "lucide-react";
 import { ButtonIcon, InputIcon } from "@radix-ui/react-icons";
-import { Tabs } from "react-aria-components";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 
@@ -114,7 +114,7 @@ const components: Component[] = [
   {
     name: "Tab",
     href: "/comps/tabs",
-    icon: <Tabs className="w-6 h-6" />,
+    icon: <BetweenVerticalEnd className="w-6 h-6" />,
     description: "Content organization",
     category: "Navigation",
   },
