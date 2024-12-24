@@ -163,7 +163,7 @@ const ComponentCard: React.FC<{ component: Component }> = ({ component }) => (
     <Link href={component.href}>
       <div className="relative group-hover:text-primary rounded-lg border border-muted bg-muted p-6 shadow-none transition-all duration-200 hover:bg-primary/10  hover:border-ring hover:ring-ring/30 hover:ring-[3px]">
         <div className=" flex items-center justify-between">
-          <div className="rounded-lg bg-primary/10 p-2 text-primary">
+          <div className="rounded-lg bg-primary/10 p-2 text-spcolor">
             {component.icon}
           </div>
           <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
@@ -245,7 +245,7 @@ export default function Page() {
                     <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
                   </AnimatedGradientText>
                 </div>
-                <h1 className="mb-4 text-primary text-4xl font-bold tracking-tight  sm:text-5xl">
+                <h1 className="mb-4 text-spcolor text-4xl font-bold tracking-tight  sm:text-5xl">
                   Component Library
                 </h1>
                 <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
