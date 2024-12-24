@@ -38,7 +38,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   const [radius, setRadius] = useState("1.5");
-  const [color, setColor] = useState<Color>("yellow");
+  const [color, setColor] = useState<Color>("lime");
   const [menuPlacement, setMenuPlacement] =
     useState<MenuPlacement>("horizontal");
   const [menuBehavior, setMenuBehavior] = useState<MenuBehavior>("pinned");
