@@ -250,7 +250,7 @@ export default function Page() {
                 </h1>
                 <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
                   Explore our collection of beautiful and functional UI
-                  components
+                  components ported from OriginUI
                 </p>
               </div>
 
