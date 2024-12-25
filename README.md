@@ -1,4 +1,4 @@
-# [shadcn/ui sidebar](https://shadcn-ui-sidebar.salimi.my) &middot; [![Author Salimi](https://img.shields.io/badge/Author-Salimi-%3C%3E)](https://www.salimi.my)
+# [shadcn/ui templates](https://pexlledn.vercel.app/) &middot; [![Author Pexlle](https://img.shields.io/badge/Author-Salimi-%3C%3E)](https://www.pexlle.com)
 
 A stunning and functional retractable sidebar for Next.js built on top of [shadcn/ui](https://ui.shadcn.com) complete with desktop and mobile responsiveness.
 
