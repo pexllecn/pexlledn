@@ -289,7 +289,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setInitialValue(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-400"
+                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -318,7 +318,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setTargetValue(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-400"
+                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -335,7 +335,7 @@ export default function CryptoCalculator() {
                       className={cn(
                         "text-5xl font-normal",
                         initialValue === "0" && targetValue === "0"
-                          ? "text-gray-400"
+                          ? "text-gray-200"
                           : Number.parseFloat(
                               calculatePercentageChange(
                                 initialValue,
@@ -399,7 +399,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setBaseNumber(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-400"
+                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -428,7 +428,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setPercentageInput(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-400"
+                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -444,7 +444,7 @@ export default function CryptoCalculator() {
                       className={cn(
                         "text-5xl font-normal",
                         baseNumber === "0" && percentageInput === "0"
-                          ? "text-gray-400"
+                          ? "text-gray-200"
                           : Number.parseFloat(
                               calculateFromPercentage(
                                 baseNumber,
