@@ -27,6 +27,7 @@ import {
   Vibrate,
   HeartPulse,
   Component,
+  Calculator,
 } from "lucide-react";
 
 type Submenu = {
@@ -60,6 +61,13 @@ export function getMenuList(pathname: string): Group[] {
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
           icon: LayoutGrid,
+          submenus: [],
+        },
+        {
+          href: "/cal",
+          label: "Calulator",
+          active: pathname.includes("/cal"),
+          icon: Calculator,
           submenus: [],
         },
         // {

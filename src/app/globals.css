@@ -114,12 +114,12 @@
     --primary: 24.6 95% 53.1%;
     --primary-foreground: 0 0% 98%;
     --spcolor: 24.6 95% 53.1%;
+    --accent: 34.3 100% 91.8%; /* This makes it 10% opaque, effectively lighter */
   }
 
   .dark[data-color="orange"] {
     --primary: 20.5 90.2% 48.2%;
     --primary-foreground: 60 9.1% 97.8%;
-    --spcolor: 20.5 90.2% 48.2%;
   }
 
   :root[data-color="green"] {

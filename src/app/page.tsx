@@ -75,6 +75,12 @@ export default function Component() {
                 >
                   Dashboard
                 </Link>
+                <Link
+                  href="/cal"
+                  className="text-sm font-normal text-foreground"
+                >
+                  Calculator
+                </Link>
               </nav>
               <ModeToggle />
             </div>
