@@ -333,7 +333,7 @@ export default function CryptoCalculator() {
                     </div>
                     <div
                       className={cn(
-                        "text-4xl font-normal",
+                        "text-5xl font-normal",
                         initialValue === "0" && targetValue === "0"
                           ? "text-gray-400"
                           : Number.parseFloat(
@@ -442,7 +442,7 @@ export default function CryptoCalculator() {
                     </div>
                     <div
                       className={cn(
-                        "text-4xl font-normal",
+                        "text-5xl font-normal",
                         baseNumber === "0" && percentageInput === "0"
                           ? "text-gray-400"
                           : Number.parseFloat(
