@@ -120,7 +120,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setInvestmentAmount(numeric);
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
+                          className="text-4xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                         <DropdownMenu>
@@ -175,7 +175,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setTargetPrice(numeric);
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
+                          className="text-4xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -289,7 +289,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setInitialValue(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
+                          className="text-4xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -318,7 +318,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setTargetValue(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
+                          className="text-4xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -333,7 +333,7 @@ export default function CryptoCalculator() {
                     </div>
                     <div
                       className={cn(
-                        "text-5xl font-normal",
+                        "text-4xl font-normal",
                         initialValue === "0" && targetValue === "0"
                           ? "text-gray-200"
                           : Number.parseFloat(
@@ -399,7 +399,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setBaseNumber(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
+                          className="text-4xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -428,7 +428,7 @@ export default function CryptoCalculator() {
                               .replace(/^(-)*(\d+)\.(\d).*$/, "$1$2.$3");
                             setPercentageInput(numeric || "0");
                           }}
-                          className="text-5xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
+                          className="text-4xl font-normal bg-transparent border-none outline-none w-full placeholder:text-gray-200"
                           placeholder="0"
                         />
                       </div>
@@ -442,7 +442,7 @@ export default function CryptoCalculator() {
                     </div>
                     <div
                       className={cn(
-                        "text-5xl font-normal",
+                        "text-4xl font-normal",
                         baseNumber === "0" && percentageInput === "0"
                           ? "text-gray-200"
                           : Number.parseFloat(
