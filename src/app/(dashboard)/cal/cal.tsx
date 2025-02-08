@@ -326,7 +326,7 @@ export default function CryptoCalculator() {
                   </CardContent>
                 </Card>
 
-                <div className="p-4 bg-muted border rounded-md">
+                <div className="p-4 rounded-md">
                   <div className="text-right">
                     <div className="text-base text-muted-foreground">
                       Percentage Change
@@ -335,7 +335,7 @@ export default function CryptoCalculator() {
                       className={cn(
                         "text-4xl font-normal",
                         initialValue === "0" && targetValue === "0"
-                          ? "text-gray-200"
+                          ? ""
                           : Number.parseFloat(
                               calculatePercentageChange(
                                 initialValue,
@@ -435,7 +435,7 @@ export default function CryptoCalculator() {
                     </div>
                   </CardContent>
                 </Card>
-                <div className="p-4 bg-muted border rounded-md">
+                <div className="p-4 rounded-md">
                   <div className="text-right">
                     <div className="text-base text-muted-foreground">
                       Result
@@ -444,7 +444,7 @@ export default function CryptoCalculator() {
                       className={cn(
                         "text-4xl font-normal",
                         baseNumber === "0" && percentageInput === "0"
-                          ? "text-gray-200"
+                          ? ""
                           : Number.parseFloat(
                               calculateFromPercentage(
                                 baseNumber,
