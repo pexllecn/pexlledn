@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 const COIN_ID = "ethereum"
 const CURRENCY = "eur"
@@ -18,11 +18,11 @@ async function fetchPrice() {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const encoder = new TextEncoder()
   const stream = new ReadableStream({
     async start(controller) {
-      while (true) {
+      const sendPrice = async () => {
         const price = await fetchPrice()
         if (price !== null) {
           const data = JSON.stringify({ price: price.toFixed(2) })
@@ -30,8 +30,18 @@ export async function GET() {
         } else {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: "Failed to fetch price" })}\n\n`))
         }
-        await new Promise((resolve) => setTimeout(resolve, 10000)) // Update every 10 seconds
       }
+
+      const interval = setInterval(sendPrice, 10000) // Update every 10 seconds
+
+      // Send initial price
+      await sendPrice()
+
+      // Handle client disconnect
+      request.signal.addEventListener("abort", () => {
+        clearInterval(interval)
+        controller.close()
+      })
     },
   })
 
@@ -43,4 +53,6 @@ export async function GET() {
     },
   })
 }
+
+export const dynamic = "force-dynamic"
 
