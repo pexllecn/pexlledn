@@ -33,6 +33,12 @@ A stunning and functional retractable sidebar for Next.js built on top of [shadc
    cp .env.example .env
    ```
 
+3. Install dependencies (including the Stripe package)
+
+   ```bash
+   npm install
+   ```
+
 ## Demo
 
 The app is hosted on Vercel. [Click here](https://pexlledn.vercel.app/dashboard) to visit.
