@@ -27,11 +27,27 @@ A stunning and functional retractable sidebar for Next.js built on top of [shadc
    git clone https://github.com/pexllecn/pexlledn
    ```
 
+2. Copy `.env.example` to `.env` and fill in your Stripe keys
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Install dependencies (including the Stripe package)
+
+   ```bash
+   npm install
+   ```
+
 ## Demo
 
 The app is hosted on Vercel. [Click here](https://pexlledn.vercel.app/dashboard) to visit.
 <br>
 Direct demo link: `https://pexlledn.vercel.app/dashboard`
+
+## Premium Access
+
+The `/premium` page demonstrates how to lock features behind a subscription. Users can upgrade via Stripe checkout.
 
 ## Screenshots
 
