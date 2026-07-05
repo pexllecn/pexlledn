@@ -1,0 +1,352 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Download,
+  FileText,
+  Mail,
+  MoreHorizontal,
+  Printer,
+  TriangleAlert,
+  TrendingUp,
+} from "lucide-react";
+
+const revenueConfig = {
+  billed: { label: "Billed", color: "hsl(var(--chart-1))" },
+  collected: { label: "Collected", color: "hsl(var(--chart-2))" },
+} satisfies ChartConfig;
+
+const revenueData = [
+  { month: "Jan", billed: 82000, collected: 71000 },
+  { month: "Feb", billed: 88000, collected: 79000 },
+  { month: "Mar", billed: 91000, collected: 84000 },
+  { month: "Apr", billed: 86000, collected: 80000 },
+  { month: "May", billed: 97000, collected: 90000 },
+  { month: "Jun", billed: 104000, collected: 96000 },
+];
+
+type Invoice = {
+  id: string;
+  patient: string;
+  service: string;
+  amount: string;
+  date: string;
+  status: "Paid" | "Pending" | "Overdue";
+};
+
+const invoices: Invoice[] = [
+  { id: "INV-9042", patient: "Emma Johnson", service: "Annual physical", amount: "$220.00", date: "Jul 5", status: "Paid" },
+  { id: "INV-9043", patient: "Liam Chen", service: "Cardiac echo", amount: "$680.00", date: "Jul 5", status: "Pending" },
+  { id: "INV-9044", patient: "Sofia Rossi", service: "Blood panel", amount: "$140.00", date: "Jul 4", status: "Paid" },
+  { id: "INV-9045", patient: "Noah Patel", service: "Skin biopsy", amount: "$310.00", date: "Jul 3", status: "Overdue" },
+  { id: "INV-9046", patient: "Ava Martinez", service: "Ultrasound", amount: "$260.00", date: "Jul 2", status: "Pending" },
+  { id: "INV-9047", patient: "Mia Wong", service: "Diabetes review", amount: "$180.00", date: "Jun 30", status: "Paid" },
+];
+
+const statusVariant: Record<Invoice["status"], "success" | "yellow" | "decline"> = {
+  Paid: "success",
+  Pending: "yellow",
+  Overdue: "decline",
+};
+
+export default function BillingPage() {
+  const [page, setPage] = useState(1);
+  const pageSize = 4;
+  const totalPages = Math.max(1, Math.ceil(invoices.length / pageSize));
+  const current = Math.min(page, totalPages);
+  const paged = invoices.slice((current - 1) * pageSize, current * pageSize);
+
+  const variants = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
+  return (
+    <ContentLayout title="Billing">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.5 }}
+        variants={variants}
+      >
+        <div className="flex-1 space-y-4 lg:p-4 py-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-3xl font-normal">Billing</h2>
+              <p className="text-muted-foreground mt-1">
+                Revenue, invoices and insurance claims
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => toast.success("Report exported")}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Export report
+            </Button>
+          </div>
+
+          <Alert variant="destructive">
+            <TriangleAlert className="h-4 w-4" />
+            <AlertTitle>1 invoice is overdue</AlertTitle>
+            <AlertDescription>
+              INV-9045 ($310.00) is 5 days past due. Send a reminder to keep
+              your collection rate above 90%.
+            </AlertDescription>
+          </Alert>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: "Billed this month", value: "$104,000", sub: "+7% MoM" },
+              { label: "Collected", value: "$96,000", sub: "92% collection rate" },
+              { label: "Outstanding", value: "$8,000", sub: "12 open invoices" },
+              { label: "Overdue", value: "$310", sub: "1 invoice" },
+            ].map((s) => (
+              <Card key={s.label} className="bg-muted border-none">
+                <CardHeader className="pb-2">
+                  <CardDescription>{s.label}</CardDescription>
+                  <CardTitle className="text-2xl tabular-nums">
+                    {s.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-xs text-muted-foreground">
+                  {s.sub}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="bg-muted border-none">
+            <CardHeader>
+              <CardTitle>Billed vs Collected</CardTitle>
+              <CardDescription>Last 6 months</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                config={revenueConfig}
+                className="aspect-auto h-[240px] w-full"
+              >
+                <AreaChart
+                  accessibilityLayer
+                  data={revenueData}
+                  margin={{ left: 12, right: 12 }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <defs>
+                    <linearGradient id="fillBilled" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-billed)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="var(--color-billed)" stopOpacity={0.1} />
+                    </linearGradient>
+                    <linearGradient id="fillCollected" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-collected)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="var(--color-collected)" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <Area dataKey="billed" type="natural" fill="url(#fillBilled)" fillOpacity={0.4} stroke="var(--color-billed)" stackId="a" />
+                  <Area dataKey="collected" type="natural" fill="url(#fillCollected)" fillOpacity={0.4} stroke="var(--color-collected)" stackId="b" />
+                </AreaChart>
+              </ChartContainer>
+            </CardContent>
+            <CardFooter>
+              <div className="flex items-center gap-2 text-sm">
+                Collection rate up to 92% <TrendingUp className="h-4 w-4" />
+              </div>
+            </CardFooter>
+          </Card>
+
+          <Card className="bg-muted border-none">
+            <CardHeader>
+              <CardTitle>Recent invoices</CardTitle>
+              <CardDescription>{invoices.length} of 148 invoices</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Invoice</TableHead>
+                    <TableHead className="hidden sm:table-cell">Patient</TableHead>
+                    <TableHead className="hidden md:table-cell">Service</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="w-8" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paged.map((inv) => (
+                    <TableRow key={inv.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <p className="leading-none">{inv.id}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {inv.date}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell text-muted-foreground">
+                        {inv.patient}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell text-muted-foreground">
+                        {inv.service}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={statusVariant[inv.status]}>
+                          {inv.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {inv.amount}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="More actions"
+                              className="h-8 w-8"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => toast("Invoice opened")}
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              View invoice
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => toast.success("Reminder sent")}
+                            >
+                              <Mail className="mr-2 h-4 w-4" />
+                              Send reminder
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => toast("Printing…")}
+                            >
+                              <Printer className="mr-2 h-4 w-4" />
+                              Print
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => toast.success("Marked as paid")}
+                            >
+                              Mark as paid
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-xs text-muted-foreground">
+                  {`${(current - 1) * pageSize + 1}–${Math.min(
+                    current * pageSize,
+                    invoices.length
+                  )} of ${invoices.length}`}
+                </p>
+                <Pagination className="mx-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        aria-disabled={current === 1}
+                        className={
+                          current === 1 ? "pointer-events-none opacity-50" : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.max(1, p - 1));
+                        }}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          href="#"
+                          isActive={current === i + 1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        aria-disabled={current === totalPages}
+                        className={
+                          current === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.min(totalPages, p + 1));
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
+    </ContentLayout>
+  );
+}

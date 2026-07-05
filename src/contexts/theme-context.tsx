@@ -37,6 +37,8 @@ interface ThemeContextType {
   setLayout: (layout: Layout) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  hideBottomNav: boolean;
+  setHideBottomNav: (hide: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -86,6 +88,10 @@ export function ThemeProvider({ children, ...props }: any) {
     "theme-sidebar-open",
     true
   );
+  const [hideBottomNav, setHideBottomNav] = usePersistentState<boolean>(
+    "theme-hide-bottom-nav",
+    false
+  );
 
   const updateDocumentStyles = useCallback(() => {
     if (typeof window !== "undefined") {
@@ -125,6 +131,8 @@ export function ThemeProvider({ children, ...props }: any) {
           setLayout,
           sidebarOpen,
           setSidebarOpen,
+          hideBottomNav,
+          setHideBottomNav,
         }}
       >
         {children}

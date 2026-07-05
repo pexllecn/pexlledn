@@ -1,0 +1,405 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  CalendarPlus,
+  FileText,
+  MoreHorizontal,
+  Phone,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  UserRound,
+} from "lucide-react";
+
+type Patient = {
+  name: string;
+  id: string;
+  age: number;
+  gender: "M" | "F";
+  condition: string;
+  lastVisit: string;
+  risk: "Low" | "Medium" | "High";
+  avatar: string;
+  fallback: string;
+};
+
+const patients: Patient[] = [
+  { name: "Emma Johnson", id: "PT-1042", age: 34, gender: "F", condition: "Hypertension", lastVisit: "Jul 5, 2026", risk: "Medium", avatar: "/avatar-80-01.jpg", fallback: "EJ" },
+  { name: "Liam Chen", id: "PT-1043", age: 58, gender: "M", condition: "Coronary artery disease", lastVisit: "Jul 5, 2026", risk: "High", avatar: "/avatar-80-02.jpg", fallback: "LC" },
+  { name: "Sofia Rossi", id: "PT-1044", age: 27, gender: "F", condition: "Anemia", lastVisit: "Jul 4, 2026", risk: "Low", avatar: "/avatar-80-03.jpg", fallback: "SR" },
+  { name: "Noah Patel", id: "PT-1045", age: 41, gender: "M", condition: "Eczema", lastVisit: "Jul 3, 2026", risk: "Low", avatar: "/avatar-80-04.jpg", fallback: "NP" },
+  { name: "Ava Martinez", id: "PT-1046", age: 31, gender: "F", condition: "Pregnancy · 2nd trimester", lastVisit: "Jul 2, 2026", risk: "Medium", avatar: "/avatar-80-05.jpg", fallback: "AM" },
+  { name: "Ethan Brooks", id: "PT-1047", age: 46, gender: "M", condition: "Lower back injury", lastVisit: "Jun 30, 2026", risk: "Low", avatar: "/avatar-80-06.jpg", fallback: "EB" },
+  { name: "Mia Wong", id: "PT-1048", age: 52, gender: "F", condition: "Type 2 diabetes", lastVisit: "Jun 28, 2026", risk: "High", avatar: "/avatar-80-07.jpg", fallback: "MW" },
+];
+
+const riskVariant: Record<Patient["risk"], "success" | "yellow" | "decline"> = {
+  Low: "success",
+  Medium: "yellow",
+  High: "decline",
+};
+
+export default function PatientsPage() {
+  const [query, setQuery] = useState("");
+  const [risk, setRisk] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+
+  const refresh = () => {
+    setLoading(true);
+    toast("Refreshing patient list…");
+    setTimeout(() => {
+      setLoading(false);
+      toast.success("Patient list up to date");
+    }, 1200);
+  };
+
+  const variants = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
+  const filtered = patients.filter((p) => {
+    const q =
+      p.name.toLowerCase().includes(query.toLowerCase()) ||
+      p.id.toLowerCase().includes(query.toLowerCase());
+    const r = risk === "all" || p.risk === risk;
+    return q && r;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const current = Math.min(page, totalPages);
+  const paged = filtered.slice((current - 1) * pageSize, current * pageSize);
+
+  return (
+    <ContentLayout title="Patients">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.5 }}
+        variants={variants}
+      >
+        <div className="flex-1 space-y-4 lg:p-4 py-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-3xl font-normal">Patients</h2>
+              <p className="text-muted-foreground mt-1">
+                {patients.length} active patient records
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={refresh} disabled={loading}>
+                <RefreshCw
+                  className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+                />
+                Refresh
+              </Button>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add patient
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              { label: "Total patients", value: "1,284" },
+              { label: "New this month", value: "62" },
+              { label: "High-risk", value: "48" },
+            ].map((s) => (
+              <Card key={s.label} className="bg-muted border-none">
+                <CardHeader className="pb-2">
+                  <CardDescription>{s.label}</CardDescription>
+                  <CardTitle className="text-2xl tabular-nums">
+                    {s.value}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="bg-muted border-none">
+            <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="relative flex-1 md:max-w-xs">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  aria-label="Search patients by name or ID"
+                  placeholder="Search name or ID..."
+                  className="pl-9"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
+              <Tabs value={risk} onValueChange={setRisk}>
+                <TabsList>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="Low">Low</TabsTrigger>
+                  <TabsTrigger value="Medium">Medium</TabsTrigger>
+                  <TabsTrigger value="High">High</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Patient</TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Condition
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Last visit
+                    </TableHead>
+                    <TableHead>Risk</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {loading &&
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={`sk-${i}`}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Skeleton className="h-9 w-9 rounded-full" />
+                            <div className="space-y-2">
+                              <Skeleton className="h-3 w-28" />
+                              <Skeleton className="h-2.5 w-20" />
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <Skeleton className="h-3 w-32" />
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          <Skeleton className="h-3 w-20" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-5 w-14 rounded-full" />
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Skeleton className="ml-auto h-8 w-8 rounded-md" />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  {!loading &&
+                    paged.map((p) => (
+                      <ContextMenu key={p.id}>
+                        <ContextMenuTrigger asChild>
+                          <TableRow>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-9 w-9">
+                                  <AvatarImage src={p.avatar} />
+                                  <AvatarFallback>{p.fallback}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="leading-none">{p.name}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {p.id} · {p.age}
+                                    {p.gender}
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell text-muted-foreground">
+                              {p.condition}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell text-muted-foreground">
+                              {p.lastVisit}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={riskVariant[p.risk]}>
+                                {p.risk}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    aria-label="More actions"
+                                    className="h-8 w-8"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>
+                                    {p.name}
+                                  </DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => toast("Opening record…")}
+                                  >
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Open record
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      toast.success("Appointment booked")
+                                    }
+                                  >
+                                    <CalendarPlus className="mr-2 h-4 w-4" />
+                                    Book appointment
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => toast("Calling patient…")}
+                                  >
+                                    <Phone className="mr-2 h-4 w-4" />
+                                    Call
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          <ContextMenuItem
+                            onClick={() => toast("Opening record…")}
+                          >
+                            <FileText className="mr-2 h-4 w-4" />
+                            Open record
+                          </ContextMenuItem>
+                          <ContextMenuItem
+                            onClick={() => toast.success("Appointment booked")}
+                          >
+                            <CalendarPlus className="mr-2 h-4 w-4" />
+                            Book appointment
+                          </ContextMenuItem>
+                          <ContextMenuSeparator />
+                          <ContextMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => toast.error("Archived patient")}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Archive
+                          </ContextMenuItem>
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    ))}
+                  {!loading && filtered.length === 0 && (
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        className="text-center text-muted-foreground py-8"
+                      >
+                        No patients match your search.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-xs text-muted-foreground">
+                  {filtered.length === 0
+                    ? "No results"
+                    : `${(current - 1) * pageSize + 1}–${Math.min(
+                        current * pageSize,
+                        filtered.length
+                      )} of ${filtered.length}`}
+                </p>
+                <Pagination className="mx-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        aria-disabled={current === 1}
+                        className={
+                          current === 1 ? "pointer-events-none opacity-50" : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.max(1, p - 1));
+                        }}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          href="#"
+                          isActive={current === i + 1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        aria-disabled={current === totalPages}
+                        className={
+                          current === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.min(totalPages, p + 1));
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
+    </ContentLayout>
+  );
+}

@@ -327,6 +327,55 @@ body {
   width: 100%;
 }
 
+/* Keep white text legible over light gradient/photo surfaces (a11y contrast) */
+.text-on-media {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+}
+
+/* Accessibility: screen-reader-only text that becomes visible on focus (skip link) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link:focus {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 0.9rem;
+  margin: 0;
+  clip: auto;
+  overflow: visible;
+  white-space: normal;
+  border-radius: 0.5rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Accessibility: honour reduced-motion for all CSS animation/transition */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @layer utilities {
   @keyframes spin-slow {
     to {
