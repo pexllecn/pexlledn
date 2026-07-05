@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/contexts/theme-context";
 
 const colors = [
@@ -42,7 +43,8 @@ interface ThemeCustomizerProps {
 }
 
 export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
-  const { radius, color, setRadius, setColor } = useTheme();
+  const { radius, color, setRadius, setColor, hideBottomNav, setHideBottomNav } =
+    useTheme();
   const { theme, setTheme } = useNextTheme();
 
   return (
@@ -116,6 +118,22 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
                 </div>
               ))}
             </RadioGroup>
+          </div>
+          <div className="space-y-2">
+            <Label>Navigation</Label>
+            <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5 pr-4">
+                <p className="text-sm font-normal">Hide bottom navigation</p>
+                <p className="text-xs text-muted-foreground">
+                  Remove the floating dock at the bottom of the screen.
+                </p>
+              </div>
+              <Switch
+                checked={hideBottomNav}
+                onCheckedChange={setHideBottomNav}
+                aria-label="Hide bottom navigation"
+              />
+            </div>
           </div>
         </div>
       </SheetContent>

@@ -29,6 +29,10 @@ import {
   Component,
   Calculator,
   Dumbbell,
+  Landmark,
+  Stethoscope,
+  Plane,
+  UtensilsCrossed,
 } from "lucide-react";
 
 type Submenu = {
@@ -55,7 +59,7 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: "KayFitness",
+      groupLabel: "Apps",
       menus: [
         {
           href: "",
@@ -74,6 +78,12 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname === "/fitness/workouts",
             },
             {
+              href: "/fitness/schedule",
+              label: "Schedule",
+              active: pathname === "/fitness/schedule",
+              notificationCount: "New",
+            },
+            {
               href: "/fitness/nutrition",
               label: "Nutrition",
               active: pathname === "/fitness/nutrition",
@@ -82,6 +92,142 @@ export function getMenuList(pathname: string): Group[] {
               href: "/fitness/progress",
               label: "Progress",
               active: pathname === "/fitness/progress",
+            },
+          ],
+          notificationCount: "New",
+        },
+        {
+          href: "",
+          label: "Banking",
+          active: pathname.includes("/banking"),
+          icon: Landmark,
+          submenus: [
+            {
+              href: "/banking",
+              label: "Overview",
+              active: pathname === "/banking",
+            },
+            {
+              href: "/banking/cards",
+              label: "Cards",
+              active: pathname === "/banking/cards",
+            },
+            {
+              href: "/banking/transactions",
+              label: "Transactions",
+              active: pathname === "/banking/transactions",
+            },
+            {
+              href: "/banking/payments",
+              label: "Payments",
+              active: pathname === "/banking/payments",
+            },
+            {
+              href: "/banking/investments",
+              label: "Investments",
+              active: pathname === "/banking/investments",
+            },
+          ],
+          notificationCount: "New",
+        },
+        {
+          href: "",
+          label: "Clinic",
+          active: pathname.includes("/clinic"),
+          icon: Stethoscope,
+          submenus: [
+            {
+              href: "/clinic",
+              label: "Overview",
+              active: pathname === "/clinic",
+            },
+            {
+              href: "/clinic/appointments",
+              label: "Appointments",
+              active: pathname === "/clinic/appointments",
+            },
+            {
+              href: "/clinic/patients",
+              label: "Patients",
+              active: pathname === "/clinic/patients",
+            },
+            {
+              href: "/clinic/staff",
+              label: "Staff",
+              active: pathname === "/clinic/staff",
+            },
+            {
+              href: "/clinic/billing",
+              label: "Billing",
+              active: pathname === "/clinic/billing",
+            },
+          ],
+          notificationCount: "New",
+        },
+        {
+          href: "",
+          label: "Travel",
+          active: pathname.includes("/travel"),
+          icon: Plane,
+          submenus: [
+            {
+              href: "/travel",
+              label: "Overview",
+              active: pathname === "/travel",
+            },
+            {
+              href: "/travel/trips",
+              label: "Trips",
+              active: pathname === "/travel/trips",
+            },
+            {
+              href: "/travel/flights",
+              label: "Flights",
+              active: pathname === "/travel/flights",
+            },
+            {
+              href: "/travel/stays",
+              label: "Stays",
+              active: pathname === "/travel/stays",
+            },
+            {
+              href: "/travel/explore",
+              label: "Explore",
+              active: pathname === "/travel/explore",
+            },
+          ],
+          notificationCount: "New",
+        },
+        {
+          href: "",
+          label: "Restaurant",
+          active: pathname.includes("/restaurant"),
+          icon: UtensilsCrossed,
+          submenus: [
+            {
+              href: "/restaurant",
+              label: "Overview",
+              active: pathname === "/restaurant",
+            },
+            {
+              href: "/restaurant/orders",
+              label: "Orders",
+              active: pathname === "/restaurant/orders",
+            },
+            {
+              href: "/restaurant/menu",
+              label: "Menu",
+              active: pathname === "/restaurant/menu",
+            },
+            {
+              href: "/restaurant/reservations",
+              label: "Reservations",
+              active: pathname === "/restaurant/reservations",
+            },
+            {
+              href: "/restaurant/reviews",
+              label: "Reviews",
+              active: pathname === "/restaurant/reviews",
             },
           ],
           notificationCount: "New",

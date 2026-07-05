@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
+import { useTheme } from "@/contexts/theme-context";
 
 interface NavItem {
   href: string;
@@ -26,6 +27,12 @@ interface NavItem {
 export function BottomNav() {
   const pathname = usePathname();
   const sidebar = useSidebarToggle((state) => state);
+  const { hideBottomNav } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const navItems: NavItem[] = [
     { href: "/dashboard", icon: Home, label: "Home" },
@@ -36,6 +43,8 @@ export function BottomNav() {
   ];
 
   const isPathInNavItems = navItems.some((item) => item.href === pathname);
+
+  if (mounted && hideBottomNav) return null;
 
   return (
     <TooltipProvider delayDuration={50}>
