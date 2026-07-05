@@ -18,15 +18,15 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Card,
   CardContent,
@@ -131,20 +131,20 @@ export default function ReviewsPage() {
               Replied
             </Badge>
           ) : (
-            <Dialog>
-              <DialogTrigger asChild>
+            <ResponsiveDialog>
+              <ResponsiveDialogTrigger asChild>
                 <Button variant="outline" size="sm">
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Reply
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[460px]">
-                <DialogHeader>
-                  <DialogTitle>Reply to {r.name}</DialogTitle>
-                  <DialogDescription>
+              </ResponsiveDialogTrigger>
+              <ResponsiveDialogContent className="sm:max-w-[460px]">
+                <ResponsiveDialogHeader>
+                  <ResponsiveDialogTitle>Reply to {r.name}</ResponsiveDialogTitle>
+                  <ResponsiveDialogDescription>
                     Your reply is posted publicly on {r.source}.
-                  </DialogDescription>
-                </DialogHeader>
+                  </ResponsiveDialogDescription>
+                </ResponsiveDialogHeader>
                 <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
                   “{r.text}”
                 </div>
@@ -155,11 +155,11 @@ export default function ReviewsPage() {
                     r.name.split(" ")[0]
                   }, thank you for dining with us! `}
                 />
-                <DialogFooter>
-                  <DialogClose asChild>
+                <ResponsiveDialogFooter>
+                  <ResponsiveDialogClose asChild>
                     <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <DialogClose asChild>
+                  </ResponsiveDialogClose>
+                  <ResponsiveDialogClose asChild>
                     <Button
                       onClick={() =>
                         toast.success(`Reply to ${r.name} posted`)
@@ -167,10 +167,10 @@ export default function ReviewsPage() {
                     >
                       Post reply
                     </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  </ResponsiveDialogClose>
+                </ResponsiveDialogFooter>
+              </ResponsiveDialogContent>
+            </ResponsiveDialog>
           )}
         </div>
       </div>

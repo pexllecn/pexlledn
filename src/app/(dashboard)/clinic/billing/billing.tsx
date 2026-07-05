@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
@@ -93,6 +94,12 @@ const statusVariant: Record<Invoice["status"], "success" | "yellow" | "decline">
 };
 
 export default function BillingPage() {
+  const [page, setPage] = useState(1);
+  const pageSize = 4;
+  const totalPages = Math.max(1, Math.ceil(invoices.length / pageSize));
+  const current = Math.min(page, totalPages);
+  const paged = invoices.slice((current - 1) * pageSize, current * pageSize);
+
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
@@ -211,7 +218,7 @@ export default function BillingPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices.map((inv) => (
+                  {paged.map((inv) => (
                     <TableRow key={inv.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -282,27 +289,60 @@ export default function BillingPage() {
                   ))}
                 </TableBody>
               </Table>
-              <Pagination className="mt-4">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href="#" onClick={(e) => e.preventDefault()} />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" onClick={(e) => e.preventDefault()} isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" onClick={(e) => e.preventDefault()}>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" onClick={(e) => e.preventDefault()}>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" onClick={(e) => e.preventDefault()} />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-xs text-muted-foreground">
+                  {`${(current - 1) * pageSize + 1}–${Math.min(
+                    current * pageSize,
+                    invoices.length
+                  )} of ${invoices.length}`}
+                </p>
+                <Pagination className="mx-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        aria-disabled={current === 1}
+                        className={
+                          current === 1 ? "pointer-events-none opacity-50" : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.max(1, p - 1));
+                        }}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          href="#"
+                          isActive={current === i + 1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        aria-disabled={current === totalPages}
+                        className={
+                          current === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.min(totalPages, p + 1));
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
             </CardContent>
           </Card>
         </div>

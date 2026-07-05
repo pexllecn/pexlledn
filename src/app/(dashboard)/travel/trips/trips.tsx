@@ -184,6 +184,13 @@ export default function TripsPage() {
                 </ContextMenuContent>
               </ContextMenu>
             ))}
+            {list.length === 0 && (
+              <Card className="bg-muted border-none md:col-span-2 lg:col-span-3">
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  No {filter === "all" ? "" : filter + " "}trips yet.
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <Card className="bg-muted border-none">

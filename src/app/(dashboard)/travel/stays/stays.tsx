@@ -14,15 +14,15 @@ import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Card,
   CardContent,
@@ -106,6 +106,7 @@ export default function StaysPage() {
             <div className="relative flex-1 md:max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
+                aria-label="Search stays"
                 placeholder="Search stays..."
                 className="pl-9"
                 value={query}
@@ -196,66 +197,63 @@ export default function StaysPage() {
                     <span className="text-lg tabular-nums">${s.price}</span>
                     <span className="text-muted-foreground"> / night</span>
                   </p>
-                  <Drawer>
-                    <DrawerTrigger asChild>
+                  <ResponsiveDialog>
+                    <ResponsiveDialogTrigger asChild>
                       <Button size="sm">View</Button>
-                    </DrawerTrigger>
-                    <DrawerContent>
-                      <div className="mx-auto w-full max-w-md">
-                        <DrawerHeader>
-                          <div
-                            className={`h-32 rounded-xl bg-gradient-to-br ${s.cover} mb-3`}
-                          />
-                          <DrawerTitle>{s.name}</DrawerTitle>
-                          <DrawerDescription className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {s.area} · {s.type} · {s.reviews} reviews
-                          </DrawerDescription>
-                        </DrawerHeader>
-                        <div className="px-4 flex flex-wrap gap-2">
-                          {s.amenities.map((a) => (
-                            <span
-                              key={a.label}
-                              className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground"
-                            >
-                              <a.icon className="h-3 w-3" />
-                              {a.label}
-                            </span>
-                          ))}
-                        </div>
-                        <DrawerFooter>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm">
-                              <span className="text-2xl tabular-nums">
-                                ${s.price}
-                              </span>
-                              <span className="text-muted-foreground">
-                                {" "}
-                                / night
-                              </span>
-                            </p>
-                            <span className="flex items-center gap-1 text-sm">
-                              <Star className="h-4 w-4 fill-current text-[#f5a623]" />
-                              {s.rating}
-                            </span>
-                          </div>
-                          <Button
-                            onClick={() =>
-                              toast.success(`Reserved ${s.name}`, {
-                                description: "Aug 12 – 20 · 2 guests",
-                              })
-                            }
+                    </ResponsiveDialogTrigger>
+                    <ResponsiveDialogContent className="sm:max-w-md">
+                      <ResponsiveDialogHeader>
+                        <div
+                          className={`h-32 rounded-xl bg-gradient-to-br ${s.cover} mb-3`}
+                        />
+                        <ResponsiveDialogTitle>{s.name}</ResponsiveDialogTitle>
+                        <ResponsiveDialogDescription className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {s.area} · {s.type} · {s.reviews} reviews
+                        </ResponsiveDialogDescription>
+                      </ResponsiveDialogHeader>
+                      <div className="flex flex-wrap gap-2 py-1">
+                        {s.amenities.map((a) => (
+                          <span
+                            key={a.label}
+                            className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground"
                           >
-                            Reserve for $
-                            {(s.price * 8).toLocaleString()} total
-                          </Button>
-                          <DrawerClose asChild>
-                            <Button variant="outline">Close</Button>
-                          </DrawerClose>
-                        </DrawerFooter>
+                            <a.icon className="h-3 w-3" />
+                            {a.label}
+                          </span>
+                        ))}
                       </div>
-                    </DrawerContent>
-                  </Drawer>
+                      <div className="flex items-center justify-between py-1">
+                        <p className="text-sm">
+                          <span className="text-2xl tabular-nums">
+                            ${s.price}
+                          </span>
+                          <span className="text-muted-foreground"> / night</span>
+                        </p>
+                        <span className="flex items-center gap-1 text-sm">
+                          <Star className="h-4 w-4 fill-current text-[#f5a623]" />
+                          {s.rating}
+                        </span>
+                      </div>
+                      <ResponsiveDialogFooter className="flex-col-reverse sm:flex-col-reverse gap-2">
+                        <ResponsiveDialogClose asChild>
+                          <Button variant="outline" className="w-full">
+                            Close
+                          </Button>
+                        </ResponsiveDialogClose>
+                        <Button
+                          className="w-full"
+                          onClick={() =>
+                            toast.success(`Reserved ${s.name}`, {
+                              description: "Aug 12 – 20 · 2 guests",
+                            })
+                          }
+                        >
+                          Reserve for ${(s.price * 8).toLocaleString()} total
+                        </Button>
+                      </ResponsiveDialogFooter>
+                    </ResponsiveDialogContent>
+                  </ResponsiveDialog>
                 </CardFooter>
               </Card>
             ))}

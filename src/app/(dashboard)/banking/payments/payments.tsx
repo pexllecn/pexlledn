@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,25 +18,15 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Select,
   SelectContent,
@@ -84,7 +73,6 @@ export default function PaymentsPage() {
   const [speed, setSpeed] = useState("instant");
   const [otp, setOtp] = useState("");
   const [open, setOpen] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const recipient = payees[selected];
   const confirm = () => {
@@ -240,79 +228,42 @@ export default function PaymentsPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                {isDesktop ? (
-                  <Dialog
-                    open={open}
-                    onOpenChange={(o) => {
-                      setOpen(o);
-                      if (!o) setOtp("");
-                    }}
-                  >
-                    <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-                    <DialogContent className="sm:max-w-[400px]">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                          <ShieldCheck className="h-5 w-5 text-primary" />
-                          Confirm transfer
-                        </DialogTitle>
-                        <DialogDescription>
-                          Sending{" "}
-                          <span className="text-foreground">
-                            ${amount || "0.00"}
-                          </span>{" "}
-                          to {recipient.name}. Enter the 6-digit code sent to
-                          your phone.
-                        </DialogDescription>
-                      </DialogHeader>
-                      {otpField}
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button disabled={otp.length < 6} onClick={confirm}>
-                          Confirm &amp; send
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                ) : (
-                  <Drawer
-                    open={open}
-                    onOpenChange={(o) => {
-                      setOpen(o);
-                      if (!o) setOtp("");
-                    }}
-                  >
-                    <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
-                    <DrawerContent>
-                      <div className="mx-auto w-full max-w-md">
-                        <DrawerHeader>
-                          <DrawerTitle className="flex items-center gap-2">
-                            <ShieldCheck className="h-5 w-5 text-primary" />
-                            Confirm transfer
-                          </DrawerTitle>
-                          <DrawerDescription>
-                            Sending{" "}
-                            <span className="text-foreground">
-                              ${amount || "0.00"}
-                            </span>{" "}
-                            to {recipient.name}. Enter the 6-digit code sent to
-                            your phone.
-                          </DrawerDescription>
-                        </DrawerHeader>
-                        {otpField}
-                        <DrawerFooter>
-                          <Button disabled={otp.length < 6} onClick={confirm}>
-                            Confirm &amp; send
-                          </Button>
-                          <DrawerClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                          </DrawerClose>
-                        </DrawerFooter>
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
-                )}
+                <ResponsiveDialog
+                  open={open}
+                  onOpenChange={(o) => {
+                    setOpen(o);
+                    if (!o) setOtp("");
+                  }}
+                >
+                  <ResponsiveDialogTrigger asChild>
+                    {triggerButton}
+                  </ResponsiveDialogTrigger>
+                  <ResponsiveDialogContent className="sm:max-w-[400px]">
+                    <ResponsiveDialogHeader>
+                      <ResponsiveDialogTitle className="flex items-center gap-2">
+                        <ShieldCheck className="h-5 w-5 text-primary" />
+                        Confirm transfer
+                      </ResponsiveDialogTitle>
+                      <ResponsiveDialogDescription>
+                        Sending{" "}
+                        <span className="text-foreground">
+                          ${amount || "0.00"}
+                        </span>{" "}
+                        to {recipient.name}. Enter the 6-digit code sent to your
+                        phone.
+                      </ResponsiveDialogDescription>
+                    </ResponsiveDialogHeader>
+                    {otpField}
+                    <ResponsiveDialogFooter className="flex-col-reverse sm:flex-row sm:justify-end gap-2">
+                      <ResponsiveDialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </ResponsiveDialogClose>
+                      <Button disabled={otp.length < 6} onClick={confirm}>
+                        Confirm &amp; send
+                      </Button>
+                    </ResponsiveDialogFooter>
+                  </ResponsiveDialogContent>
+                </ResponsiveDialog>
               </CardFooter>
             </Card>
 

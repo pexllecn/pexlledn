@@ -99,6 +99,8 @@ export default function TransactionsPage() {
   const [account, setAccount] = useState("all");
   const [selected, setSelected] = useState<string[]>([]);
   const [date, setDate] = useState<Date | undefined>();
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -114,6 +116,10 @@ export default function TransactionsPage() {
     const a = account === "all" || tx.account === account;
     return q && t && a;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const current = Math.min(page, totalPages);
+  const paged = filtered.slice((current - 1) * pageSize, current * pageSize);
 
   const income = data.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
   const spend = data.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
@@ -191,6 +197,7 @@ export default function TransactionsPage() {
                 <div className="relative flex-1 md:max-w-xs">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
+                    aria-label="Search transactions"
                     placeholder="Search transactions..."
                     className="pl-9"
                     value={query}
@@ -265,7 +272,7 @@ export default function TransactionsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((tx) => {
+                  {paged.map((tx) => {
                     const id = tx.name + tx.date;
                     return (
                     <TableRow key={id} data-state={selected.includes(id) ? "selected" : undefined}>
@@ -381,27 +388,62 @@ export default function TransactionsPage() {
                   )}
                 </TableBody>
               </Table>
-              <Pagination className="mt-4">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href="#" onClick={(e) => e.preventDefault()} />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" onClick={(e) => e.preventDefault()} isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" onClick={(e) => e.preventDefault()}>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" onClick={(e) => e.preventDefault()}>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" onClick={(e) => e.preventDefault()} />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-xs text-muted-foreground">
+                  {filtered.length === 0
+                    ? "No results"
+                    : `${(current - 1) * pageSize + 1}–${Math.min(
+                        current * pageSize,
+                        filtered.length
+                      )} of ${filtered.length}`}
+                </p>
+                <Pagination className="mx-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        aria-disabled={current === 1}
+                        className={
+                          current === 1 ? "pointer-events-none opacity-50" : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.max(1, p - 1));
+                        }}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          href="#"
+                          isActive={current === i + 1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        aria-disabled={current === totalPages}
+                        className={
+                          current === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.min(totalPages, p + 1));
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
             </CardContent>
           </Card>
         </div>

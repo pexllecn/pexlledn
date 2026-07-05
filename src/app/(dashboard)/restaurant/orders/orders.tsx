@@ -16,16 +16,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Card,
   CardContent,
@@ -160,8 +159,8 @@ export default function OrdersPage() {
                             Split bill
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
+                          <ResponsiveDialog>
+                            <ResponsiveDialogTrigger asChild>
                               <DropdownMenuItem
                                 onSelect={(e) => e.preventDefault()}
                                 className="text-destructive focus:text-destructive"
@@ -169,32 +168,35 @@ export default function OrdersPage() {
                                 <X className="mr-2 h-4 w-4" />
                                 Void order
                               </DropdownMenuItem>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
+                            </ResponsiveDialogTrigger>
+                            <ResponsiveDialogContent>
+                              <ResponsiveDialogHeader>
+                                <ResponsiveDialogTitle>
                                   Void order {o.id}?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
+                                </ResponsiveDialogTitle>
+                                <ResponsiveDialogDescription>
                                   This removes the {o.items.length}-item order
                                   for {o.where} ({o.total}) and notifies the
                                   kitchen. This can&apos;t be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>
-                                  Keep order
-                                </AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() =>
-                                    toast.error(`Order ${o.id} voided`)
-                                  }
-                                >
-                                  Void order
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                                </ResponsiveDialogDescription>
+                              </ResponsiveDialogHeader>
+                              <ResponsiveDialogFooter>
+                                <ResponsiveDialogClose asChild>
+                                  <Button variant="outline">Keep order</Button>
+                                </ResponsiveDialogClose>
+                                <ResponsiveDialogClose asChild>
+                                  <Button
+                                    variant="destructive"
+                                    onClick={() =>
+                                      toast.error(`Order ${o.id} voided`)
+                                    }
+                                  >
+                                    Void order
+                                  </Button>
+                                </ResponsiveDialogClose>
+                              </ResponsiveDialogFooter>
+                            </ResponsiveDialogContent>
+                          </ResponsiveDialog>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
@@ -249,6 +251,13 @@ export default function OrdersPage() {
                 </Card>
               );
             })}
+            {list.length === 0 && (
+              <Card className="bg-muted border-none md:col-span-2 lg:col-span-3">
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  No {filter === "all" ? "" : filter + " "}orders right now.
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </motion.div>

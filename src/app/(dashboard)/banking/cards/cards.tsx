@@ -11,16 +11,15 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Card,
   CardContent,
@@ -220,38 +219,43 @@ export default function CardsPage() {
                       tooltipContent={(v) => `$${v.toLocaleString()}`}
                     />
                   </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
+                  <ResponsiveDialog>
+                    <ResponsiveDialogTrigger asChild>
                       <Button variant="lightred" size="sm" className="w-full">
                         <TriangleAlert className="mr-2 h-4 w-4" />
                         Report lost or stolen
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
+                    </ResponsiveDialogTrigger>
+                    <ResponsiveDialogContent>
+                      <ResponsiveDialogHeader>
+                        <ResponsiveDialogTitle>
                           Report {current.label}?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
+                        </ResponsiveDialogTitle>
+                        <ResponsiveDialogDescription>
                           This permanently blocks the card ending in{" "}
                           {current.number} and ships a replacement. This can&apos;t
                           be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Keep card</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() =>
-                            toast.success("Card blocked", {
-                              description: "A replacement is on its way.",
-                            })
-                          }
-                        >
-                          Block & replace
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                        </ResponsiveDialogDescription>
+                      </ResponsiveDialogHeader>
+                      <ResponsiveDialogFooter>
+                        <ResponsiveDialogClose asChild>
+                          <Button variant="outline">Keep card</Button>
+                        </ResponsiveDialogClose>
+                        <ResponsiveDialogClose asChild>
+                          <Button
+                            variant="destructive"
+                            onClick={() =>
+                              toast.success("Card blocked", {
+                                description: "A replacement is on its way.",
+                              })
+                            }
+                          >
+                            Block &amp; replace
+                          </Button>
+                        </ResponsiveDialogClose>
+                      </ResponsiveDialogFooter>
+                    </ResponsiveDialogContent>
+                  </ResponsiveDialog>
                 </CardContent>
               </Card>
 

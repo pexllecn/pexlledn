@@ -92,6 +92,8 @@ export default function PatientsPage() {
   const [query, setQuery] = useState("");
   const [risk, setRisk] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
 
   const refresh = () => {
     setLoading(true);
@@ -114,6 +116,10 @@ export default function PatientsPage() {
     const r = risk === "all" || p.risk === risk;
     return q && r;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const current = Math.min(page, totalPages);
+  const paged = filtered.slice((current - 1) * pageSize, current * pageSize);
 
   return (
     <ContentLayout title="Patients">
@@ -167,6 +173,7 @@ export default function PatientsPage() {
               <div className="relative flex-1 md:max-w-xs">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                  aria-label="Search patients by name or ID"
                   placeholder="Search name or ID..."
                   className="pl-9"
                   value={query}
@@ -225,7 +232,7 @@ export default function PatientsPage() {
                       </TableRow>
                     ))}
                   {!loading &&
-                    filtered.map((p) => (
+                    paged.map((p) => (
                       <ContextMenu key={p.id}>
                         <ContextMenuTrigger asChild>
                           <TableRow>
@@ -335,23 +342,56 @@ export default function PatientsPage() {
               </Table>
               <div className="flex items-center justify-between mt-4">
                 <p className="text-xs text-muted-foreground">
-                  Showing {filtered.length} of 1,284
+                  {filtered.length === 0
+                    ? "No results"
+                    : `${(current - 1) * pageSize + 1}–${Math.min(
+                        current * pageSize,
+                        filtered.length
+                      )} of ${filtered.length}`}
                 </p>
                 <Pagination className="mx-0 w-auto">
                   <PaginationContent>
                     <PaginationItem>
-                      <PaginationPrevious href="#" onClick={(e) => e.preventDefault()} />
+                      <PaginationPrevious
+                        href="#"
+                        aria-disabled={current === 1}
+                        className={
+                          current === 1 ? "pointer-events-none opacity-50" : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.max(1, p - 1));
+                        }}
+                      />
                     </PaginationItem>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          href="#"
+                          isActive={current === i + 1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(i + 1);
+                          }}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
                     <PaginationItem>
-                      <PaginationLink href="#" onClick={(e) => e.preventDefault()} isActive>
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#" onClick={(e) => e.preventDefault()}>2</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext href="#" onClick={(e) => e.preventDefault()} />
+                      <PaginationNext
+                        href="#"
+                        aria-disabled={current === totalPages}
+                        className={
+                          current === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage((p) => Math.min(totalPages, p + 1));
+                        }}
+                      />
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>

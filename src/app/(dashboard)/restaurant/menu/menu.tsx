@@ -23,26 +23,15 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  ResponsiveDialog,
+  ResponsiveDialogClose,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Card,
   CardContent,
@@ -124,20 +113,20 @@ export default function MenuPage() {
                 {dishes.length} dishes · toggle availability in real time
               </p>
             </div>
-            <Dialog>
-              <DialogTrigger asChild>
+            <ResponsiveDialog>
+              <ResponsiveDialogTrigger asChild>
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
                   Add dish
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[480px]">
-                <DialogHeader>
-                  <DialogTitle>Add a dish</DialogTitle>
-                  <DialogDescription>
+              </ResponsiveDialogTrigger>
+              <ResponsiveDialogContent className="sm:max-w-[480px]">
+                <ResponsiveDialogHeader>
+                  <ResponsiveDialogTitle>Add a dish</ResponsiveDialogTitle>
+                  <ResponsiveDialogDescription>
                     New dishes appear on the menu once available.
-                  </DialogDescription>
-                </DialogHeader>
+                  </ResponsiveDialogDescription>
+                </ResponsiveDialogHeader>
                 <div className="grid gap-4 py-2">
                   <div className="grid gap-2">
                     <Label htmlFor="dish-name">Name</Label>
@@ -186,18 +175,18 @@ export default function MenuPage() {
                     />
                   </div>
                 </div>
-                <DialogFooter>
-                  <DialogClose asChild>
+                <ResponsiveDialogFooter>
+                  <ResponsiveDialogClose asChild>
                     <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <DialogClose asChild>
+                  </ResponsiveDialogClose>
+                  <ResponsiveDialogClose asChild>
                     <Button onClick={() => toast.success("Dish added to menu")}>
                       Save dish
                     </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  </ResponsiveDialogClose>
+                </ResponsiveDialogFooter>
+              </ResponsiveDialogContent>
+            </ResponsiveDialog>
           </div>
 
           <Menubar>
@@ -244,6 +233,7 @@ export default function MenuPage() {
             <div className="relative flex-1 md:max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
+                aria-label="Search dishes"
                 placeholder="Search dishes..."
                 className="pl-9"
                 value={query}
@@ -329,8 +319,8 @@ export default function MenuPage() {
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
+                      <ResponsiveDialog>
+                        <ResponsiveDialogTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -339,34 +329,46 @@ export default function MenuPage() {
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
+                        </ResponsiveDialogTrigger>
+                        <ResponsiveDialogContent>
+                          <ResponsiveDialogHeader>
+                            <ResponsiveDialogTitle>
                               Remove {d.name}?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
+                            </ResponsiveDialogTitle>
+                            <ResponsiveDialogDescription>
                               This takes the dish off every menu immediately.
                               You can add it back later.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() =>
-                                toast.error(`${d.name} removed from menu`)
-                              }
-                            >
-                              Remove
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                            </ResponsiveDialogDescription>
+                          </ResponsiveDialogHeader>
+                          <ResponsiveDialogFooter>
+                            <ResponsiveDialogClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </ResponsiveDialogClose>
+                            <ResponsiveDialogClose asChild>
+                              <Button
+                                variant="destructive"
+                                onClick={() =>
+                                  toast.error(`${d.name} removed from menu`)
+                                }
+                              >
+                                Remove
+                              </Button>
+                            </ResponsiveDialogClose>
+                          </ResponsiveDialogFooter>
+                        </ResponsiveDialogContent>
+                      </ResponsiveDialog>
                     </div>
                   </CardFooter>
                 </Card>
               );
             })}
+            {filtered.length === 0 && (
+              <Card className="bg-muted border-none md:col-span-2 lg:col-span-3">
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  No dishes match your search.
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </motion.div>
