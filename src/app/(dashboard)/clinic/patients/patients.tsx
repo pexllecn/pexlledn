@@ -261,6 +261,7 @@ export default function PatientsPage() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
+                                    aria-label="More actions"
                                     className="h-8 w-8"
                                   >
                                     <MoreHorizontal className="h-4 w-4" />
@@ -339,18 +340,18 @@ export default function PatientsPage() {
                 <Pagination className="mx-0 w-auto">
                   <PaginationContent>
                     <PaginationItem>
-                      <PaginationPrevious href="#" />
+                      <PaginationPrevious href="#" onClick={(e) => e.preventDefault()} />
                     </PaginationItem>
                     <PaginationItem>
-                      <PaginationLink href="#" isActive>
+                      <PaginationLink href="#" onClick={(e) => e.preventDefault()} isActive>
                         1
                       </PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
-                      <PaginationLink href="#">2</PaginationLink>
+                      <PaginationLink href="#" onClick={(e) => e.preventDefault()}>2</PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
-                      <PaginationNext href="#" />
+                      <PaginationNext href="#" onClick={(e) => e.preventDefault()} />
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>

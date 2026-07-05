@@ -323,6 +323,7 @@ export default function MenuPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Edit"
                         className="h-8 w-8"
                         onClick={() => toast(`Editing ${d.name}`)}
                       >
@@ -333,6 +334,7 @@ export default function MenuPage() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            aria-label="Delete"
                             className="h-8 w-8 text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />

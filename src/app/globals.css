@@ -327,6 +327,11 @@ body {
   width: 100%;
 }
 
+/* Keep white text legible over light gradient/photo surfaces (a11y contrast) */
+.text-on-media {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+}
+
 @layer utilities {
   @keyframes spin-slow {
     to {

@@ -244,6 +244,7 @@ export default function BillingPage() {
                             <Button
                               variant="ghost"
                               size="icon"
+                              aria-label="More actions"
                               className="h-8 w-8"
                             >
                               <MoreHorizontal className="h-4 w-4" />
@@ -284,21 +285,21 @@ export default function BillingPage() {
               <Pagination className="mt-4">
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href="#" />
+                    <PaginationPrevious href="#" onClick={(e) => e.preventDefault()} />
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" isActive>
+                    <PaginationLink href="#" onClick={(e) => e.preventDefault()} isActive>
                       1
                     </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#">2</PaginationLink>
+                    <PaginationLink href="#" onClick={(e) => e.preventDefault()}>2</PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
+                    <PaginationLink href="#" onClick={(e) => e.preventDefault()}>3</PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationNext href="#" />
+                    <PaginationNext href="#" onClick={(e) => e.preventDefault()} />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>

@@ -99,7 +99,11 @@ export default function RestaurantPage() {
               <TooltipProvider delayDuration={100}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      aria-label="Table status"
+                    >
                       <Info className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>

@@ -497,7 +497,12 @@ export default function FitnessPage() {
                         </p>
                       </div>
                       {!exercise.done && (
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Start ${exercise.name}`}
+                          className="h-8 w-8"
+                        >
                           <Play className="h-4 w-4" />
                         </Button>
                       )}

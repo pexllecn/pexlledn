@@ -140,6 +140,7 @@ export default function OrdersPage() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            aria-label="More actions"
                             className="h-7 w-7"
                           >
                             <MoreVertical className="h-4 w-4" />

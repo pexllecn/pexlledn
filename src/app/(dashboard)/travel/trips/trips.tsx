@@ -130,7 +130,7 @@ export default function TripsPage() {
                       >
                         {t.status}
                       </Badge>
-                      <div className="text-white">
+                      <div className="text-on-media text-white">
                         <p className="text-lg leading-none">{t.city}</p>
                         <p className="text-xs opacity-90 mt-1 flex items-center gap-1">
                           <MapPin className="h-3 w-3" />

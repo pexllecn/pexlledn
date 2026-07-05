@@ -242,7 +242,7 @@ export default function TravelPage() {
                       <Badge className="absolute right-3 top-3 bg-background/80 text-foreground border-none">
                         {d.tag}
                       </Badge>
-                      <p className="text-white text-lg leading-none">
+                      <p className="text-on-media text-white text-lg leading-none">
                         {d.city}
                       </p>
                     </div>

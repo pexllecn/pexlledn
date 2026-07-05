@@ -187,6 +187,7 @@ export default function ReservationsPage() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label="Call"
                       className="h-8 w-8"
                       onClick={() => toast(`Calling ${r.name}…`)}
                     >

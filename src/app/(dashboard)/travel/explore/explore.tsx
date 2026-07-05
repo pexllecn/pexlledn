@@ -236,7 +236,7 @@ export default function ExplorePage() {
                       <ThermometerSun className="h-3 w-3" />
                       {place.temp}
                     </Badge>
-                    <div className="absolute bottom-3 left-3 text-white">
+                    <div className="absolute bottom-3 left-3 text-on-media text-white">
                       <HoverCard openDelay={100}>
                         <HoverCardTrigger asChild>
                           <p className="text-lg leading-none cursor-pointer underline decoration-dotted underline-offset-4">

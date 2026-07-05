@@ -320,6 +320,7 @@ export default function BankingPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="More actions"
                         className="h-8 w-8 shrink-0"
                       >
                         <MoreHorizontal className="h-4 w-4" />
