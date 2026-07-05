@@ -28,6 +28,7 @@ import {
   HeartPulse,
   Component,
   Calculator,
+  Dumbbell,
 } from "lucide-react";
 
 type Submenu = {
@@ -53,6 +54,40 @@ type Group = {
 
 export function getMenuList(pathname: string): Group[] {
   return [
+    {
+      groupLabel: "KayFitness",
+      menus: [
+        {
+          href: "",
+          label: "KayFitness",
+          active: pathname.includes("/fitness"),
+          icon: Dumbbell,
+          submenus: [
+            {
+              href: "/fitness",
+              label: "Overview",
+              active: pathname === "/fitness",
+            },
+            {
+              href: "/fitness/workouts",
+              label: "Workouts",
+              active: pathname === "/fitness/workouts",
+            },
+            {
+              href: "/fitness/nutrition",
+              label: "Nutrition",
+              active: pathname === "/fitness/nutrition",
+            },
+            {
+              href: "/fitness/progress",
+              label: "Progress",
+              active: pathname === "/fitness/progress",
+            },
+          ],
+          notificationCount: "New",
+        },
+      ],
+    },
     {
       groupLabel: "Main Pages",
       menus: [
