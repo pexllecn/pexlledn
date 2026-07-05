@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Card,
   CardContent,
@@ -26,11 +34,13 @@ import {
   ChefHat,
   Clock,
   DollarSign,
+  Info,
   Plus,
   Soup,
   Star,
   Timer,
   TrendingUp,
+  TriangleAlert,
   Utensils,
 } from "lucide-react";
 
@@ -85,13 +95,40 @@ export default function RestaurantPage() {
                 4 orders in the kitchen
               </p>
             </div>
-            <Button asChild>
-              <Link href="/restaurant/orders">
+            <div className="flex items-center gap-2">
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Info className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent showArrow>
+                    18 of 24 tables currently seated
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <Button
+                onClick={() =>
+                  toast.success("New order", {
+                    description: "Pick a table or channel to start.",
+                  })
+                }
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 New order
-              </Link>
-            </Button>
+              </Button>
+            </div>
           </div>
+
+          <Alert variant="destructive">
+            <TriangleAlert className="h-4 w-4" />
+            <AlertTitle>2 items are running low</AlertTitle>
+            <AlertDescription>
+              Miso Salmon is 86&apos;d and Wagyu Burger has 4 portions left.
+              Update the menu so servers don&apos;t oversell.
+            </AlertDescription>
+          </Alert>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[

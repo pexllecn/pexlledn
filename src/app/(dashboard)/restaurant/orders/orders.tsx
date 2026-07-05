@@ -2,11 +2,30 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Card,
   CardContent,
@@ -14,7 +33,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Bike, Clock, ShoppingBag, Utensils } from "lucide-react";
+import {
+  Bike,
+  Clock,
+  MoreVertical,
+  Printer,
+  ShoppingBag,
+  Split,
+  Utensils,
+  X,
+} from "lucide-react";
 
 type Order = {
   id: string;
@@ -103,7 +131,72 @@ export default function OrdersPage() {
                         </p>
                       </div>
                     </div>
-                    <Badge variant={statusVariant[o.status]}>{o.status}</Badge>
+                    <div className="flex items-center gap-1">
+                      <Badge variant={statusVariant[o.status]}>
+                        {o.status}
+                      </Badge>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => toast("Printing ticket…")}
+                          >
+                            <Printer className="mr-2 h-4 w-4" />
+                            Print ticket
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => toast.success("Bill split")}
+                          >
+                            <Split className="mr-2 h-4 w-4" />
+                            Split bill
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                                className="text-destructive focus:text-destructive"
+                              >
+                                <X className="mr-2 h-4 w-4" />
+                                Void order
+                              </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Void order {o.id}?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This removes the {o.items.length}-item order
+                                  for {o.where} ({o.total}) and notifies the
+                                  kitchen. This can&apos;t be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>
+                                  Keep order
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() =>
+                                    toast.error(`Order ${o.id} voided`)
+                                  }
+                                >
+                                  Void order
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-1.5">
                     {o.items.map((it) => (
@@ -130,6 +223,17 @@ export default function OrdersPage() {
                       <Button
                         size="sm"
                         variant={o.status === "Ready" ? "default" : "outline"}
+                        onClick={() => {
+                          const next =
+                            o.status === "New"
+                              ? "accepted — sent to kitchen"
+                              : o.status === "Cooking"
+                              ? "marked ready"
+                              : o.status === "Ready"
+                              ? "served"
+                              : "opened";
+                          toast.success(`Order ${o.id} ${next}`);
+                        }}
                       >
                         {o.status === "New"
                           ? "Accept"

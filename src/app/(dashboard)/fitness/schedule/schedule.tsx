@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AvatarGroup } from "@/components/ui/avatar-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Card,
   CardContent,
@@ -156,15 +163,37 @@ export default function SchedulePage() {
                   </span>
                 </CardContent>
                 <CardFooter className="justify-between">
-                  <AvatarGroup
-                    avatars={c.avatars}
-                    max={3}
-                    className="[&>span]:h-7 [&>span]:w-7 -space-x-3"
-                  />
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <AvatarGroup
+                            avatars={c.avatars}
+                            max={3}
+                            className="[&>span]:h-7 [&>span]:w-7 -space-x-3"
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent showArrow>
+                        {c.spots === "Full"
+                          ? "Class is full"
+                          : `${c.spots} to join`}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Button
                     variant={c.booked ? "outline" : "default"}
                     size="sm"
                     disabled={c.spots === "Full" && !c.booked}
+                    onClick={() =>
+                      c.booked
+                        ? toast(`Cancelled ${c.title}`, {
+                            description: `${c.time} · ${c.coach}`,
+                          })
+                        : toast.success(`Booked ${c.title}`, {
+                            description: `${c.time} · ${c.room} · ${c.coach}`,
+                          })
+                    }
                   >
                     {c.booked ? "Cancel" : c.spots === "Full" ? "Waitlist" : "Book"}
                   </Button>

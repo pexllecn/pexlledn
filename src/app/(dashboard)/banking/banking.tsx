@@ -2,10 +2,26 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Card,
   CardContent,
@@ -34,10 +50,14 @@ import {
   ArrowUpRight,
   CreditCard,
   Eye,
+  FileText,
   Landmark,
+  MoreHorizontal,
   Plus,
   PiggyBank,
   Send,
+  Snowflake,
+  Sparkles,
   TrendingUp,
   Wallet,
 } from "lucide-react";
@@ -151,7 +171,14 @@ export default function BankingPage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline">
+              <Button
+                variant="outline"
+                onClick={() =>
+                  toast.success("Add money", {
+                    description: "Choose an account to top up.",
+                  })
+                }
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add money
               </Button>
@@ -164,12 +191,31 @@ export default function BankingPage() {
             </div>
           </div>
 
+          <Alert>
+            <Sparkles className="h-4 w-4" />
+            <AlertTitle>You could save $180/mo</AlertTitle>
+            <AlertDescription>
+              3 subscriptions look unused. Review them to trim recurring spend.
+            </AlertDescription>
+          </Alert>
+
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4 md:col-span-3 bg-primary text-primary-foreground border-none overflow-hidden relative">
               <CardHeader className="pb-2">
                 <CardDescription className="text-primary-foreground/70 flex items-center gap-2">
                   Total balance
-                  <Eye className="h-3.5 w-3.5" />
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button aria-label="Balance visibility">
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent showArrow>
+                        Only visible to you
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </CardDescription>
                 <CardTitle className="text-4xl tabular-nums">
                   $24,680.55
@@ -269,6 +315,41 @@ export default function BankingPage() {
                     </p>
                   </div>
                   <p className="text-lg tabular-nums">{account.balance}</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>{account.name}</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => toast("Opening account details…")}
+                      >
+                        <Eye className="mr-2 h-4 w-4" />
+                        View details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => toast("Statement downloaded")}
+                      >
+                        <FileText className="mr-2 h-4 w-4" />
+                        Download statement
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => toast.error(`${account.name} frozen`)}
+                      >
+                        <Snowflake className="mr-2 h-4 w-4" />
+                        Freeze account
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </CardContent>
               </Card>
             ))}

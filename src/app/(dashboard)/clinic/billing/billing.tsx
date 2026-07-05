@@ -1,9 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Card,
   CardContent,
@@ -27,7 +44,15 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { Download, FileText, TrendingUp } from "lucide-react";
+import {
+  Download,
+  FileText,
+  Mail,
+  MoreHorizontal,
+  Printer,
+  TriangleAlert,
+  TrendingUp,
+} from "lucide-react";
 
 const revenueConfig = {
   billed: { label: "Billed", color: "hsl(var(--chart-1))" },
@@ -89,11 +114,23 @@ export default function BillingPage() {
                 Revenue, invoices and insurance claims
               </p>
             </div>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              onClick={() => toast.success("Report exported")}
+            >
               <Download className="mr-2 h-4 w-4" />
               Export report
             </Button>
           </div>
+
+          <Alert variant="destructive">
+            <TriangleAlert className="h-4 w-4" />
+            <AlertTitle>1 invoice is overdue</AlertTitle>
+            <AlertDescription>
+              INV-9045 ($310.00) is 5 days past due. Send a reminder to keep
+              your collection rate above 90%.
+            </AlertDescription>
+          </Alert>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
@@ -170,6 +207,7 @@ export default function BillingPage() {
                     <TableHead className="hidden md:table-cell">Service</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="w-8" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -200,10 +238,70 @@ export default function BillingPage() {
                       <TableCell className="text-right tabular-nums">
                         {inv.amount}
                       </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => toast("Invoice opened")}
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              View invoice
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => toast.success("Reminder sent")}
+                            >
+                              <Mail className="mr-2 h-4 w-4" />
+                              Send reminder
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => toast("Printing…")}
+                            >
+                              <Printer className="mr-2 h-4 w-4" />
+                              Print
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => toast.success("Marked as paid")}
+                            >
+                              Mark as paid
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              <Pagination className="mt-4">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </CardContent>
           </Card>
         </div>

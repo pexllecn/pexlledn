@@ -2,12 +2,47 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import MultipleSelector from "@/components/ui/multiselect";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Card,
   CardContent,
@@ -15,7 +50,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Flame, Leaf, Pencil, Plus, Search, Star } from "lucide-react";
+import {
+  Flame,
+  Leaf,
+  Pencil,
+  Plus,
+  Search,
+  Star,
+  Trash2,
+} from "lucide-react";
+
+const dietaryOptions = [
+  { value: "vegetarian", label: "Vegetarian" },
+  { value: "vegan", label: "Vegan" },
+  { value: "gluten-free", label: "Gluten-free" },
+  { value: "spicy", label: "Spicy" },
+  { value: "nut-free", label: "Nut-free" },
+  { value: "signature", label: "Signature" },
+];
 
 type Dish = {
   name: string;
@@ -72,11 +124,121 @@ export default function MenuPage() {
                 {dishes.length} dishes · toggle availability in real time
               </p>
             </div>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add dish
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add dish
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[480px]">
+                <DialogHeader>
+                  <DialogTitle>Add a dish</DialogTitle>
+                  <DialogDescription>
+                    New dishes appear on the menu once available.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="dish-name">Name</Label>
+                    <Input id="dish-name" placeholder="e.g. Lobster Ravioli" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="dish-desc">Description</Label>
+                    <Textarea
+                      id="dish-desc"
+                      placeholder="Short, appetising description…"
+                      rows={2}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="dish-price">Price</Label>
+                      <Input id="dish-price" placeholder="$0" />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label>Course</Label>
+                      <RadioGroup
+                        defaultValue="Mains"
+                        className="flex flex-wrap gap-2"
+                      >
+                        {["Starters", "Mains", "Desserts"].map((c) => (
+                          <Label
+                            key={c}
+                            className="flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs cursor-pointer has-[:checked]:border-primary/50 has-[:checked]:bg-primary/5"
+                          >
+                            <RadioGroupItem
+                              value={c}
+                              className="sr-only"
+                            />
+                            {c}
+                          </Label>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Dietary tags</Label>
+                    <MultipleSelector
+                      defaultOptions={dietaryOptions}
+                      placeholder="Add tags…"
+                      badgeClassName="bg-primary/15 text-primary"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button onClick={() => toast.success("Dish added to menu")}>
+                      Save dish
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
+
+          <Menubar>
+            <MenubarMenu>
+              <MenubarTrigger>Menu</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem onClick={() => toast("New menu created")}>
+                  New menu <MenubarShortcut>⌘N</MenubarShortcut>
+                </MenubarItem>
+                <MenubarItem onClick={() => toast.success("Menu duplicated")}>
+                  Duplicate
+                </MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem onClick={() => toast.success("Menu published")}>
+                  Publish <MenubarShortcut>⌘P</MenubarShortcut>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+            <MenubarMenu>
+              <MenubarTrigger>Edit</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem onClick={() => toast("Reordering enabled")}>
+                  Reorder dishes
+                </MenubarItem>
+                <MenubarItem onClick={() => toast("Bulk price update")}>
+                  Bulk edit prices
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+            <MenubarMenu>
+              <MenubarTrigger>View</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem onClick={() => toast("Previewing customer view")}>
+                  Customer preview
+                </MenubarItem>
+                <MenubarItem onClick={() => toast("QR code generated")}>
+                  Generate QR code
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
 
           <div className="flex flex-col gap-3 md:flex-row md:items-center">
             <div className="relative flex-1 md:max-w-sm">
@@ -144,19 +306,61 @@ export default function MenuPage() {
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={avail[idx]}
-                        onCheckedChange={(v) =>
+                        onCheckedChange={(v) => {
                           setAvail((prev) =>
                             prev.map((t, j) => (j === idx ? v : t))
-                          )
-                        }
+                          );
+                          toast[v ? "success" : "warning"](
+                            `${d.name} ${v ? "available" : "86'd"}`
+                          );
+                        }}
                       />
                       <span className="text-xs text-muted-foreground">
                         {avail[idx] ? "Available" : "Sold out"}
                       </span>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => toast(`Editing ${d.name}`)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Remove {d.name}?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This takes the dish off every menu immediately.
+                              You can add it back later.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() =>
+                                toast.error(`${d.name} removed from menu`)
+                              }
+                            >
+                              Remove
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </CardFooter>
                 </Card>
               );

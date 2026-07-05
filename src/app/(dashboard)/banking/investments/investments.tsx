@@ -1,9 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import {
   Card,
   CardContent,
@@ -77,6 +85,7 @@ const watchlist = [
 ];
 
 export default function InvestmentsPage() {
+  const [range, setRange] = useState("6M");
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
@@ -106,13 +115,36 @@ export default function InvestmentsPage() {
             </Button>
           </div>
 
+          <Alert>
+            <TrendingUp className="h-4 w-4" />
+            <AlertTitle>Markets are open</AlertTitle>
+            <AlertDescription>
+              Tech is leading today, up 1.4%. Your portfolio is outperforming
+              the S&amp;P 500 by 3.2% this month.
+            </AlertDescription>
+          </Alert>
+
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4 bg-muted border-none">
-              <CardHeader>
-                <CardDescription>Portfolio value</CardDescription>
-                <CardTitle className="text-4xl tabular-nums">
-                  $52,840.00
-                </CardTitle>
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <div>
+                  <CardDescription>Portfolio value</CardDescription>
+                  <CardTitle className="text-4xl tabular-nums">
+                    $52,840.00
+                  </CardTitle>
+                </div>
+                <ToggleGroup
+                  type="single"
+                  value={range}
+                  onValueChange={(v) => v && setRange(v)}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleGroupItem value="1M">1M</ToggleGroupItem>
+                  <ToggleGroupItem value="6M">6M</ToggleGroupItem>
+                  <ToggleGroupItem value="1Y">1Y</ToggleGroupItem>
+                  <ToggleGroupItem value="ALL">All</ToggleGroupItem>
+                </ToggleGroup>
               </CardHeader>
               <CardContent>
                 <ChartContainer
@@ -246,17 +278,42 @@ export default function InvestmentsPage() {
                     {holdings.map((h) => (
                       <TableRow key={h.symbol}>
                         <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-1xs font-medium">
-                              {h.symbol.slice(0, 3)}
-                            </div>
-                            <div>
-                              <p className="leading-none">{h.symbol}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {h.shares} · {h.name}
+                          <HoverCard openDelay={100}>
+                            <HoverCardTrigger asChild>
+                              <div className="flex items-center gap-3 cursor-pointer">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-1xs font-medium">
+                                  {h.symbol.slice(0, 3)}
+                                </div>
+                                <div>
+                                  <p className="leading-none underline decoration-dotted underline-offset-4">
+                                    {h.symbol}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {h.shares} · {h.name}
+                                  </p>
+                                </div>
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-64">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium">{h.name}</p>
+                                <Badge
+                                  variant={h.up ? "success" : "decline"}
+                                >
+                                  {h.up ? "+" : ""}
+                                  {h.change}%
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-2">
+                                Holding {h.shares} @ {h.price}. Current position
+                                value {h.value}, contributing to your{" "}
+                                {h.symbol === "BTC" || h.symbol === "ETH"
+                                  ? "crypto"
+                                  : "equities"}{" "}
+                                allocation.
                               </p>
-                            </div>
-                          </div>
+                            </HoverCardContent>
+                          </HoverCard>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell tabular-nums text-muted-foreground">
                           {h.price}

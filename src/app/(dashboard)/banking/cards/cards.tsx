@@ -2,12 +2,25 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Card,
   CardContent,
@@ -22,6 +35,7 @@ import {
   Plane,
   ShoppingBag,
   Snowflake,
+  TriangleAlert,
   Utensils,
   Wifi,
 } from "lucide-react";
@@ -68,6 +82,7 @@ export default function CardsPage() {
   const [active, setActive] = useState(0);
   const [frozen, setFrozen] = useState(false);
   const [toggles, setToggles] = useState(controls.map((c) => c.on));
+  const [limit, setLimit] = useState([3000]);
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -151,26 +166,92 @@ export default function CardsPage() {
                   <Button
                     variant={frozen ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setFrozen((f) => !f)}
+                    onClick={() => {
+                      setFrozen((f) => !f);
+                      toast[frozen ? "success" : "warning"](
+                        frozen
+                          ? `${current.label} unfrozen`
+                          : `${current.label} frozen`
+                      );
+                    }}
                   >
                     <Snowflake className="mr-2 h-4 w-4" />
                     {frozen ? "Frozen" : "Freeze"}
                   </Button>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Monthly spend
-                    </span>
-                    <span className="tabular-nums">
-                      ${current.spent.toLocaleString()} / $
-                      {current.limit.toLocaleString()}
-                    </span>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        Monthly spend
+                      </span>
+                      <span className="tabular-nums">
+                        ${current.spent.toLocaleString()} / $
+                        {current.limit.toLocaleString()}
+                      </span>
+                    </div>
+                    <Progress
+                      value={(current.spent / current.limit) * 100}
+                      className="h-2 mt-2"
+                    />
                   </div>
-                  <Progress
-                    value={(current.spent / current.limit) * 100}
-                    className="h-2"
-                  />
+                  <Separator />
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        Monthly limit
+                      </span>
+                      <span className="tabular-nums">
+                        ${limit[0].toLocaleString()}
+                      </span>
+                    </div>
+                    <Slider
+                      value={limit}
+                      onValueChange={setLimit}
+                      onValueCommit={(v) =>
+                        toast.success(
+                          `Limit set to $${v[0].toLocaleString()}`
+                        )
+                      }
+                      min={500}
+                      max={10000}
+                      step={100}
+                      showTooltip
+                      tooltipContent={(v) => `$${v.toLocaleString()}`}
+                    />
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="lightred" size="sm" className="w-full">
+                        <TriangleAlert className="mr-2 h-4 w-4" />
+                        Report lost or stolen
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Report {current.label}?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This permanently blocks the card ending in{" "}
+                          {current.number} and ships a replacement. This can&apos;t
+                          be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Keep card</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() =>
+                            toast.success("Card blocked", {
+                              description: "A replacement is on its way.",
+                            })
+                          }
+                        >
+                          Block & replace
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </CardContent>
               </Card>
 
@@ -191,11 +272,14 @@ export default function CardsPage() {
                         <span className="flex-1 text-sm">{control.label}</span>
                         <Switch
                           checked={toggles[i]}
-                          onCheckedChange={(v) =>
+                          onCheckedChange={(v) => {
                             setToggles((prev) =>
                               prev.map((t, idx) => (idx === i ? v : t))
-                            )
-                          }
+                            );
+                            toast(
+                              `${control.label} ${v ? "enabled" : "disabled"}`
+                            );
+                          }}
                         />
                       </div>
                       {i < controls.length - 1 && <Separator />}

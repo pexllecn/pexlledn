@@ -7,6 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import {
   Card,
   CardContent,
@@ -29,6 +35,7 @@ import {
   HeartPulse,
   Plus,
   Stethoscope,
+  TriangleAlert,
   TrendingUp,
   UserRound,
   Users,
@@ -98,6 +105,15 @@ export default function ClinicPage() {
               </Link>
             </Button>
           </div>
+
+          <Alert variant="destructive">
+            <TriangleAlert className="h-4 w-4" />
+            <AlertTitle>Ward B nearing capacity</AlertTitle>
+            <AlertDescription>
+              28 of 30 beds are occupied. Consider expediting 3 pending
+              discharges before the afternoon intake.
+            </AlertDescription>
+          </Alert>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
@@ -207,16 +223,49 @@ export default function ClinicPage() {
                       <p className="text-sm tabular-nums">{a.time}</p>
                     </div>
                     <Separator orientation="vertical" className="h-8" />
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={a.avatar} />
-                      <AvatarFallback>{a.fallback}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm leading-none">{a.patient}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {a.reason} · {a.doctor}
-                      </p>
-                    </div>
+                    <HoverCard openDelay={100}>
+                      <HoverCardTrigger asChild>
+                        <div className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
+                          <Avatar className="h-9 w-9">
+                            <AvatarImage src={a.avatar} />
+                            <AvatarFallback>{a.fallback}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm leading-none underline decoration-dotted underline-offset-4">
+                              {a.patient}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {a.reason} · {a.doctor}
+                            </p>
+                          </div>
+                        </div>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-72">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={a.avatar} />
+                            <AvatarFallback>{a.fallback}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-sm font-medium">{a.patient}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Appointment at {a.time} · {a.doctor}
+                            </p>
+                          </div>
+                        </div>
+                        <Separator className="my-3" />
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-muted-foreground">Reason</p>
+                            <p>{a.reason}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Status</p>
+                            <p>{a.status}</p>
+                          </div>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
                     <Badge variant={statusVariant[a.status]}>{a.status}</Badge>
                   </div>
                   {i < todaysAppointments.length - 1 && <Separator />}

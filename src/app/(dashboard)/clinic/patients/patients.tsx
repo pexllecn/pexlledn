@@ -2,12 +2,37 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Card,
   CardContent,
@@ -23,7 +48,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, UserRound } from "lucide-react";
+import {
+  CalendarPlus,
+  FileText,
+  MoreHorizontal,
+  Phone,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  UserRound,
+} from "lucide-react";
 
 type Patient = {
   name: string;
@@ -56,6 +91,16 @@ const riskVariant: Record<Patient["risk"], "success" | "yellow" | "decline"> = {
 export default function PatientsPage() {
   const [query, setQuery] = useState("");
   const [risk, setRisk] = useState("all");
+  const [loading, setLoading] = useState(false);
+
+  const refresh = () => {
+    setLoading(true);
+    toast("Refreshing patient list…");
+    setTimeout(() => {
+      setLoading(false);
+      toast.success("Patient list up to date");
+    }, 1200);
+  };
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -86,10 +131,18 @@ export default function PatientsPage() {
                 {patients.length} active patient records
               </p>
             </div>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add patient
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={refresh} disabled={loading}>
+                <RefreshCw
+                  className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+                />
+                Refresh
+              </Button>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add patient
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -145,40 +198,129 @@ export default function PatientsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((p) => (
-                    <TableRow key={p.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-9 w-9">
-                            <AvatarImage src={p.avatar} />
-                            <AvatarFallback>{p.fallback}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="leading-none">{p.name}</p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {p.id} · {p.age}
-                              {p.gender}
-                            </p>
+                  {loading &&
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={`sk-${i}`}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Skeleton className="h-9 w-9 rounded-full" />
+                            <div className="space-y-2">
+                              <Skeleton className="h-3 w-28" />
+                              <Skeleton className="h-2.5 w-20" />
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell text-muted-foreground">
-                        {p.condition}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">
-                        {p.lastVisit}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={riskVariant[p.risk]}>{p.risk}</Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          Open
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {filtered.length === 0 && (
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <Skeleton className="h-3 w-32" />
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          <Skeleton className="h-3 w-20" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-5 w-14 rounded-full" />
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Skeleton className="ml-auto h-8 w-8 rounded-md" />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  {!loading &&
+                    filtered.map((p) => (
+                      <ContextMenu key={p.id}>
+                        <ContextMenuTrigger asChild>
+                          <TableRow>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-9 w-9">
+                                  <AvatarImage src={p.avatar} />
+                                  <AvatarFallback>{p.fallback}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="leading-none">{p.name}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {p.id} · {p.age}
+                                    {p.gender}
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell text-muted-foreground">
+                              {p.condition}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell text-muted-foreground">
+                              {p.lastVisit}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={riskVariant[p.risk]}>
+                                {p.risk}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>
+                                    {p.name}
+                                  </DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => toast("Opening record…")}
+                                  >
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Open record
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      toast.success("Appointment booked")
+                                    }
+                                  >
+                                    <CalendarPlus className="mr-2 h-4 w-4" />
+                                    Book appointment
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => toast("Calling patient…")}
+                                  >
+                                    <Phone className="mr-2 h-4 w-4" />
+                                    Call
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          <ContextMenuItem
+                            onClick={() => toast("Opening record…")}
+                          >
+                            <FileText className="mr-2 h-4 w-4" />
+                            Open record
+                          </ContextMenuItem>
+                          <ContextMenuItem
+                            onClick={() => toast.success("Appointment booked")}
+                          >
+                            <CalendarPlus className="mr-2 h-4 w-4" />
+                            Book appointment
+                          </ContextMenuItem>
+                          <ContextMenuSeparator />
+                          <ContextMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => toast.error("Archived patient")}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Archive
+                          </ContextMenuItem>
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    ))}
+                  {!loading && filtered.length === 0 && (
                     <TableRow>
                       <TableCell
                         colSpan={5}
@@ -190,6 +332,29 @@ export default function PatientsPage() {
                   )}
                 </TableBody>
               </Table>
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-xs text-muted-foreground">
+                  Showing {filtered.length} of 1,284
+                </p>
+                <Pagination className="mx-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious href="#" />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#" isActive>
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">2</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext href="#" />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
             </CardContent>
           </Card>
         </div>

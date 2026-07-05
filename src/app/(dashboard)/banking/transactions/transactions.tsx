@@ -2,11 +2,35 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -29,7 +53,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowDownLeft, ArrowUpRight, Download, Search } from "lucide-react";
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  CalendarIcon,
+  Copy,
+  Download,
+  Flag,
+  MoreHorizontal,
+  Receipt,
+  Search,
+} from "lucide-react";
 
 type Tx = {
   name: string;
@@ -63,6 +97,8 @@ export default function TransactionsPage() {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("all");
   const [account, setAccount] = useState("all");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [date, setDate] = useState<Date | undefined>();
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -98,9 +134,18 @@ export default function TransactionsPage() {
                 {data.length} transactions across all accounts
               </p>
             </div>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              onClick={() =>
+                toast.success("Export started", {
+                  description: `${
+                    selected.length || data.length
+                  } transactions will be emailed as CSV.`,
+                })
+              }
+            >
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              Export{selected.length ? ` (${selected.length})` : " CSV"}
             </Button>
           </div>
 
@@ -151,6 +196,9 @@ export default function TransactionsPage() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                   />
+                  <Kbd className="absolute right-2 top-1/2 -translate-y-1/2">
+                    /
+                  </Kbd>
                 </div>
                 <Tabs value={type} onValueChange={setType}>
                   <TabsList>
@@ -159,6 +207,22 @@ export default function TransactionsPage() {
                     <TabsTrigger value="out">Spending</TabsTrigger>
                   </TabsList>
                 </Tabs>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      {date ? date.toLocaleDateString() : "Any date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
                 <Select value={account} onValueChange={setAccount}>
                   <SelectTrigger className="w-full md:w-[160px]">
                     <SelectValue placeholder="Account" />
@@ -176,6 +240,20 @@ export default function TransactionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-8">
+                      <Checkbox
+                        checked={
+                          selected.length === filtered.length &&
+                          filtered.length > 0
+                        }
+                        onCheckedChange={(v) =>
+                          setSelected(
+                            v ? filtered.map((t) => t.name + t.date) : []
+                          )
+                        }
+                        aria-label="Select all"
+                      />
+                    </TableHead>
                     <TableHead>Transaction</TableHead>
                     <TableHead className="hidden sm:table-cell">
                       Account
@@ -183,11 +261,27 @@ export default function TransactionsPage() {
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="w-8" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((tx) => (
-                    <TableRow key={tx.name + tx.date}>
+                  {filtered.map((tx) => {
+                    const id = tx.name + tx.date;
+                    return (
+                    <TableRow key={id} data-state={selected.includes(id) ? "selected" : undefined}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selected.includes(id)}
+                          onCheckedChange={(v) =>
+                            setSelected((prev) =>
+                              v
+                                ? [...prev, id]
+                                : prev.filter((x) => x !== id)
+                            )
+                          }
+                          aria-label="Select row"
+                        />
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div
@@ -232,12 +326,52 @@ export default function TransactionsPage() {
                           minimumFractionDigits: 2,
                         })}
                       </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => toast("Receipt opened")}
+                            >
+                              <Receipt className="mr-2 h-4 w-4" />
+                              View receipt
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                toast.success("Transaction ID copied")
+                              }
+                            >
+                              <Copy className="mr-2 h-4 w-4" />
+                              Copy ID
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() =>
+                                toast.error("Transaction flagged for review")
+                              }
+                            >
+                              <Flag className="mr-2 h-4 w-4" />
+                              Report problem
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                   {filtered.length === 0 && (
                     <TableRow>
                       <TableCell
-                        colSpan={5}
+                        colSpan={7}
                         className="text-center text-muted-foreground py-8"
                       >
                         No transactions match your filters.
@@ -246,6 +380,27 @@ export default function TransactionsPage() {
                   )}
                 </TableBody>
               </Table>
+              <Pagination className="mt-4">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </CardContent>
           </Card>
         </div>

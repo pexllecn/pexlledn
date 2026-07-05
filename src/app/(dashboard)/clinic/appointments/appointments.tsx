@@ -2,12 +2,28 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Calendar } from "@/components/ui/calendar";
+import { Progress } from "@/components/ui/progress";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Card,
   CardContent,
@@ -15,7 +31,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CalendarDays, Clock, Plus, Video } from "lucide-react";
+import {
+  Activity,
+  CalendarDays,
+  CalendarIcon,
+  Clock,
+  Droplet,
+  HeartPulse,
+  Plus,
+  Thermometer,
+  Video,
+} from "lucide-react";
 
 type Appt = {
   patient: string;
@@ -49,6 +75,7 @@ const statusVariant: Record<Appt["status"], "success" | "yellow" | "secondary"> 
 
 export default function AppointmentsPage() {
   const [day, setDay] = useState<"today" | "tomorrow">("today");
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 6, 5));
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -73,10 +100,28 @@ export default function AppointmentsPage() {
                 Manage the clinic schedule and patient queue
               </p>
             </div>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Book appointment
-            </Button>
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <CalendarIcon className="h-4 w-4" />
+                    {date ? date.toLocaleDateString() : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Book appointment
+              </Button>
+            </div>
           </div>
 
           <Tabs value={day} onValueChange={(v) => setDay(v as typeof day)}>
@@ -127,16 +172,81 @@ export default function AppointmentsPage() {
                     </div>
                     <Separator />
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        View chart
-                      </Button>
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button variant="outline" size="sm" className="flex-1">
+                            View chart
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[320px] sm:w-[440px] overflow-y-auto">
+                          <SheetHeader>
+                            <SheetTitle className="flex items-center gap-3">
+                              <Avatar className="h-10 w-10">
+                                <AvatarImage src={a.avatar} />
+                                <AvatarFallback>{a.fallback}</AvatarFallback>
+                              </Avatar>
+                              {a.patient}
+                            </SheetTitle>
+                            <SheetDescription>
+                              {a.reason} · {a.doctor} · {a.time}
+                            </SheetDescription>
+                          </SheetHeader>
+                          <div className="grid grid-cols-2 gap-3 py-6">
+                            {[
+                              { label: "Heart rate", value: "72 bpm", icon: HeartPulse },
+                              { label: "Temp", value: "36.7°C", icon: Thermometer },
+                              { label: "SpO₂", value: "98%", icon: Activity },
+                              { label: "Glucose", value: "5.4 mmol", icon: Droplet },
+                            ].map((v) => (
+                              <div
+                                key={v.label}
+                                className="rounded-lg bg-muted p-3"
+                              >
+                                <v.icon className="h-4 w-4 text-muted-foreground" />
+                                <p className="text-lg tabular-nums mt-2 leading-none">
+                                  {v.value}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {v.label}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="space-y-3">
+                            <p className="text-sm font-medium">
+                              Treatment progress
+                            </p>
+                            <div className="space-y-1">
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>Care plan</span>
+                                <span>68%</span>
+                              </div>
+                              <Progress value={68} className="h-2" />
+                            </div>
+                          </div>
+                        </SheetContent>
+                      </Sheet>
                       {a.type === "Telehealth" ? (
-                        <Button size="sm" className="flex-1">
+                        <Button
+                          size="sm"
+                          className="flex-1"
+                          onClick={() =>
+                            toast.success(`Starting call with ${a.patient}…`)
+                          }
+                        >
                           <Video className="mr-2 h-4 w-4" />
                           Start call
                         </Button>
                       ) : (
-                        <Button size="sm" className="flex-1">
+                        <Button
+                          size="sm"
+                          className="flex-1"
+                          onClick={() =>
+                            toast.success(`${a.patient} checked in`, {
+                              description: `${a.room} · ${a.doctor}`,
+                            })
+                          }
+                        >
                           Check in
                         </Button>
                       )}

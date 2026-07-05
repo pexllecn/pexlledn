@@ -1,11 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
 import {
   Card,
   CardContent,
@@ -18,6 +40,7 @@ import {
   Compass,
   Heart,
   MapPin,
+  Plane,
   Search,
   Sparkles,
   Star,
@@ -34,15 +57,16 @@ type Place = {
   rating: number;
   cover: string;
   saved: boolean;
+  blurb: string;
 };
 
 const places: Place[] = [
-  { name: "Santorini", country: "Greece", tag: "Beaches", temp: "27°", rating: 4.9, cover: "from-sky-400 to-blue-300", saved: true },
-  { name: "Banff", country: "Canada", tag: "Mountains", temp: "12°", rating: 4.8, cover: "from-emerald-400 to-teal-300", saved: false },
-  { name: "Marrakesh", country: "Morocco", tag: "Culture", temp: "31°", rating: 4.7, cover: "from-amber-400 to-orange-300", saved: false },
-  { name: "Queenstown", country: "New Zealand", tag: "Mountains", temp: "9°", rating: 4.9, cover: "from-indigo-400 to-violet-300", saved: true },
-  { name: "Tulum", country: "Mexico", tag: "Beaches", temp: "29°", rating: 4.6, cover: "from-rose-400 to-pink-300", saved: false },
-  { name: "Porto", country: "Portugal", tag: "Cities", temp: "24°", rating: 4.8, cover: "from-fuchsia-400 to-purple-300", saved: false },
+  { name: "Santorini", country: "Greece", tag: "Beaches", temp: "27°", rating: 4.9, cover: "from-sky-400 to-blue-300", saved: true, blurb: "Whitewashed cliffs and caldera sunsets over the Aegean." },
+  { name: "Banff", country: "Canada", tag: "Mountains", temp: "12°", rating: 4.8, cover: "from-emerald-400 to-teal-300", saved: false, blurb: "Turquoise glacial lakes ringed by the Canadian Rockies." },
+  { name: "Marrakesh", country: "Morocco", tag: "Culture", temp: "31°", rating: 4.7, cover: "from-amber-400 to-orange-300", saved: false, blurb: "Souks, riads and mint tea in the Red City." },
+  { name: "Queenstown", country: "New Zealand", tag: "Mountains", temp: "9°", rating: 4.9, cover: "from-indigo-400 to-violet-300", saved: true, blurb: "Adventure capital wrapped around Lake Wakatipu." },
+  { name: "Tulum", country: "Mexico", tag: "Beaches", temp: "29°", rating: 4.6, cover: "from-rose-400 to-pink-300", saved: false, blurb: "Cenotes, ruins and beach clubs on the Riviera Maya." },
+  { name: "Porto", country: "Portugal", tag: "Cities", temp: "24°", rating: 4.8, cover: "from-fuchsia-400 to-purple-300", saved: false, blurb: "Port cellars and azulejo tiles along the Douro." },
 ];
 
 const aiPicks = [
@@ -54,6 +78,18 @@ const aiPicks = [
 export default function ExplorePage() {
   const [active, setActive] = useState("Trending");
   const [saved, setSaved] = useState(places.map((p) => p.saved));
+  const [cmdOpen, setCmdOpen] = useState(false);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setCmdOpen((o) => !o);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -62,6 +98,7 @@ export default function ExplorePage() {
 
   const list =
     active === "Trending" ? places : places.filter((p) => p.tag === active);
+  const savedPlaces = places.filter((_, i) => saved[i]);
 
   return (
     <ContentLayout title="Explore">
@@ -79,13 +116,51 @@ export default function ExplorePage() {
             </p>
           </div>
 
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search destinations, cities, experiences..."
-              className="pl-9 h-11"
-            />
-          </div>
+          <button
+            onClick={() => setCmdOpen(true)}
+            className="flex h-11 w-full items-center gap-2 rounded-lg border bg-background px-3 text-sm text-muted-foreground transition-colors hover:bg-accent"
+          >
+            <Search className="h-4 w-4" />
+            Search destinations, cities, experiences...
+            <Kbd className="ml-auto">⌘K</Kbd>
+          </button>
+
+          <CommandDialog open={cmdOpen} onOpenChange={setCmdOpen}>
+            <CommandInput placeholder="Search destinations or experiences..." />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Destinations">
+                {places.map((p) => (
+                  <CommandItem
+                    key={p.name}
+                    onSelect={() => {
+                      setCmdOpen(false);
+                      toast(`Opening ${p.name}, ${p.country}`);
+                    }}
+                  >
+                    <MapPin className="mr-2 h-4 w-4" />
+                    {p.name}
+                    <span className="text-muted-foreground ml-1">
+                      · {p.country}
+                    </span>
+                    <CommandShortcut>{p.temp}</CommandShortcut>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Quick actions">
+                <CommandItem
+                  onSelect={() => {
+                    setCmdOpen(false);
+                    toast.success("New trip started ✈️");
+                  }}
+                >
+                  <Plane className="mr-2 h-4 w-4" />
+                  Plan a new trip
+                </CommandItem>
+              </CommandGroup>
+            </CommandList>
+          </CommandDialog>
 
           <div className="flex gap-2 overflow-x-auto pb-1">
             {categories.map((c) => (
@@ -130,17 +205,22 @@ export default function ExplorePage() {
           </Card>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {list.map((place, i) => {
+            {list.map((place) => {
               const idx = places.indexOf(place);
               return (
                 <Card key={place.name} className="bg-muted border-none overflow-hidden">
                   <div className={`relative h-40 bg-gradient-to-br ${place.cover} p-3`}>
                     <button
-                      onClick={() =>
+                      onClick={() => {
                         setSaved((prev) =>
                           prev.map((v, j) => (j === idx ? !v : v))
-                        )
-                      }
+                        );
+                        toast[saved[idx] ? "message" : "success"](
+                          saved[idx]
+                            ? `Removed ${place.name}`
+                            : `Saved ${place.name}`
+                        );
+                      }}
                       className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80"
                       aria-label="Save"
                     >
@@ -157,7 +237,21 @@ export default function ExplorePage() {
                       {place.temp}
                     </Badge>
                     <div className="absolute bottom-3 left-3 text-white">
-                      <p className="text-lg leading-none">{place.name}</p>
+                      <HoverCard openDelay={100}>
+                        <HoverCardTrigger asChild>
+                          <p className="text-lg leading-none cursor-pointer underline decoration-dotted underline-offset-4">
+                            {place.name}
+                          </p>
+                        </HoverCardTrigger>
+                        <HoverCardContent className="w-64 text-foreground">
+                          <p className="text-sm font-medium">
+                            {place.name}, {place.country}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {place.blurb}
+                          </p>
+                        </HoverCardContent>
+                      </HoverCard>
                       <p className="text-xs opacity-90 mt-1 flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
                         {place.country}
@@ -180,6 +274,67 @@ export default function ExplorePage() {
               );
             })}
           </div>
+
+          <Card className="bg-muted border-none overflow-hidden">
+            <CardHeader>
+              <CardTitle>Trip planner</CardTitle>
+              <CardDescription>
+                Drag the divider to balance your map and saved list
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="min-h-[280px] border-t"
+              >
+                <ResizablePanel defaultSize={55} minSize={30}>
+                  <div className="relative h-full min-h-[280px] bg-gradient-to-br from-emerald-200/40 to-sky-200/40 dark:from-emerald-900/20 dark:to-sky-900/20 flex items-center justify-center">
+                    <div className="text-center text-muted-foreground">
+                      <MapPin className="mx-auto h-6 w-6" />
+                      <p className="text-sm mt-2">Interactive map</p>
+                    </div>
+                  </div>
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={45} minSize={25}>
+                  <div className="p-4">
+                    <p className="text-sm font-medium mb-2">
+                      Saved places ({savedPlaces.length})
+                    </p>
+                    <ScrollArea className="h-[220px] pr-3">
+                      <div className="space-y-2">
+                        {savedPlaces.length ? (
+                          savedPlaces.map((p) => (
+                            <div
+                              key={p.name}
+                              className="flex items-center gap-3 rounded-lg bg-background/60 p-2.5"
+                            >
+                              <div
+                                className={`h-9 w-9 shrink-0 rounded-lg bg-gradient-to-br ${p.cover}`}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm leading-none">{p.name}</p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {p.country}
+                                </p>
+                              </div>
+                              <Badge variant="secondary" className="text-1xs">
+                                {p.temp}
+                              </Badge>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-sm text-muted-foreground">
+                            Tap the heart on a destination to save it here.
+                          </p>
+                        )}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </CardContent>
+          </Card>
         </div>
       </motion.div>
     </ContentLayout>

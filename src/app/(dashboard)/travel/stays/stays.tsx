@@ -2,11 +2,27 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Card,
   CardContent,
@@ -49,6 +65,14 @@ const stays: Stay[] = [
 export default function StaysPage() {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("all");
+  const [price, setPrice] = useState([300]);
+  const amenityOptions = ["Wi-Fi", "Pool", "Breakfast", "Kitchen", "Onsen"];
+  const [amenities, setAmenities] = useState<string[]>([]);
+
+  const toggleAmenity = (a: string) =>
+    setAmenities((prev) =>
+      prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]
+    );
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -58,7 +82,8 @@ export default function StaysPage() {
   const filtered = stays.filter((s) => {
     const q = s.name.toLowerCase().includes(query.toLowerCase());
     const t = type === "all" || s.type === type;
-    return q && t;
+    const p = s.price <= price[0];
+    return q && t && p;
   });
 
   return (
@@ -97,18 +122,57 @@ export default function StaysPage() {
             </Tabs>
           </div>
 
+          <Card className="bg-muted border-none">
+            <CardContent className="flex flex-col gap-6 p-4 md:flex-row md:items-center">
+              <div className="space-y-2 md:w-64">
+                <div className="flex items-center justify-between">
+                  <Label>Max price / night</Label>
+                  <span className="text-sm tabular-nums text-muted-foreground">
+                    ${price[0]}
+                  </span>
+                </div>
+                <Slider
+                  value={price}
+                  onValueChange={setPrice}
+                  min={100}
+                  max={300}
+                  step={5}
+                  showTooltip
+                  tooltipContent={(v) => `$${v}`}
+                />
+              </div>
+              <Separator orientation="vertical" className="hidden md:block h-10" />
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {amenityOptions.map((a) => (
+                  <Label
+                    key={a}
+                    className="flex items-center gap-2 cursor-pointer text-sm"
+                  >
+                    <Checkbox
+                      checked={amenities.includes(a)}
+                      onCheckedChange={() => toggleAmenity(a)}
+                    />
+                    {a}
+                  </Label>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((s) => (
               <Card key={s.name} className="bg-muted border-none overflow-hidden flex flex-col">
-                <div className={`relative h-36 bg-gradient-to-br ${s.cover} p-3 flex items-start justify-between`}>
-                  <Badge className="bg-background/80 text-foreground border-none">
-                    {s.type}
-                  </Badge>
-                  <Badge className="bg-background/80 text-foreground border-none gap-1">
-                    <Star className="h-3 w-3 fill-current text-[#f5a623]" />
-                    {s.rating}
-                  </Badge>
-                </div>
+                <AspectRatio ratio={16 / 9}>
+                  <div className={`h-full w-full bg-gradient-to-br ${s.cover} p-3 flex items-start justify-between`}>
+                    <Badge className="bg-background/80 text-foreground border-none">
+                      {s.type}
+                    </Badge>
+                    <Badge className="bg-background/80 text-foreground border-none gap-1">
+                      <Star className="h-3 w-3 fill-current text-[#f5a623]" />
+                      {s.rating}
+                    </Badge>
+                  </div>
+                </AspectRatio>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">{s.name}</CardTitle>
                   <CardDescription className="flex items-center gap-1">
@@ -132,7 +196,66 @@ export default function StaysPage() {
                     <span className="text-lg tabular-nums">${s.price}</span>
                     <span className="text-muted-foreground"> / night</span>
                   </p>
-                  <Button size="sm">Reserve</Button>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button size="sm">View</Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <div className="mx-auto w-full max-w-md">
+                        <DrawerHeader>
+                          <div
+                            className={`h-32 rounded-xl bg-gradient-to-br ${s.cover} mb-3`}
+                          />
+                          <DrawerTitle>{s.name}</DrawerTitle>
+                          <DrawerDescription className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {s.area} · {s.type} · {s.reviews} reviews
+                          </DrawerDescription>
+                        </DrawerHeader>
+                        <div className="px-4 flex flex-wrap gap-2">
+                          {s.amenities.map((a) => (
+                            <span
+                              key={a.label}
+                              className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground"
+                            >
+                              <a.icon className="h-3 w-3" />
+                              {a.label}
+                            </span>
+                          ))}
+                        </div>
+                        <DrawerFooter>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm">
+                              <span className="text-2xl tabular-nums">
+                                ${s.price}
+                              </span>
+                              <span className="text-muted-foreground">
+                                {" "}
+                                / night
+                              </span>
+                            </p>
+                            <span className="flex items-center gap-1 text-sm">
+                              <Star className="h-4 w-4 fill-current text-[#f5a623]" />
+                              {s.rating}
+                            </span>
+                          </div>
+                          <Button
+                            onClick={() =>
+                              toast.success(`Reserved ${s.name}`, {
+                                description: "Aug 12 – 20 · 2 guests",
+                              })
+                            }
+                          >
+                            Reserve for $
+                            {(s.price * 8).toLocaleString()} total
+                          </Button>
+                          <DrawerClose asChild>
+                            <Button variant="outline">Close</Button>
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
                 </CardFooter>
               </Card>
             ))}

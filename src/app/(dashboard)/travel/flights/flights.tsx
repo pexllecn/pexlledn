@@ -2,13 +2,23 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Card,
   CardContent,
@@ -20,6 +30,7 @@ import {
 import {
   ArrowRight,
   ArrowLeftRight,
+  CalendarIcon,
   Clock,
   Plane,
   PlaneLanding,
@@ -60,6 +71,10 @@ const booked = {
 
 export default function FlightsPage() {
   const [trip, setTrip] = useState("round");
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 7, 12));
+  const [cabin, setCabin] = useState("economy");
+  const [maxPrice, setMaxPrice] = useState([1200]);
+  const [nonstop, setNonstop] = useState(false);
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -109,7 +124,25 @@ export default function FlightsPage() {
               </div>
               <div className="space-y-2">
                 <Label>Depart</Label>
-                <Input type="date" defaultValue="2026-08-12" />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2 font-normal"
+                    >
+                      <CalendarIcon className="h-4 w-4" />
+                      {date ? date.toLocaleDateString() : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="space-y-2">
                 <Label>Travellers</Label>
@@ -125,6 +158,60 @@ export default function FlightsPage() {
                 Search flights
               </Button>
             </CardFooter>
+          </Card>
+
+          <Card className="bg-muted border-none">
+            <CardContent className="grid gap-6 p-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label>Cabin class</Label>
+                <RadioGroup
+                  value={cabin}
+                  onValueChange={setCabin}
+                  className="flex flex-wrap gap-2"
+                >
+                  {["economy", "premium", "business"].map((c) => (
+                    <Label
+                      key={c}
+                      htmlFor={`cabin-${c}`}
+                      className="flex items-center gap-2 rounded-full border px-3 py-1.5 cursor-pointer capitalize has-[:checked]:border-primary/50 has-[:checked]:bg-primary/5"
+                    >
+                      <RadioGroupItem
+                        value={c}
+                        id={`cabin-${c}`}
+                        className="sr-only"
+                      />
+                      {c}
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Max price</Label>
+                  <span className="text-sm tabular-nums text-muted-foreground">
+                    ${maxPrice[0]}
+                  </span>
+                </div>
+                <Slider
+                  value={maxPrice}
+                  onValueChange={setMaxPrice}
+                  min={600}
+                  max={2000}
+                  step={20}
+                  showTooltip
+                  tooltipContent={(v) => `$${v}`}
+                />
+              </div>
+              <div className="flex items-end">
+                <Label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={nonstop}
+                    onCheckedChange={(v) => setNonstop(!!v)}
+                  />
+                  Nonstop flights only
+                </Label>
+              </div>
+            </CardContent>
           </Card>
 
           <div className="grid gap-4 grid-cols-1 lg:grid-cols-7">
@@ -179,7 +266,17 @@ export default function FlightsPage() {
                         <p className="text-lg tabular-nums leading-none">
                           {f.price}
                         </p>
-                        <Button size="sm" className="mt-2">
+                        <Button
+                          size="sm"
+                          className="mt-2"
+                          onClick={() =>
+                            toast.success(`${f.airline} ${f.code} selected`, {
+                              description: `${cabin} · ${f.price} · depart ${
+                                date?.toLocaleDateString() ?? "—"
+                              }`,
+                            })
+                          }
+                        >
                           Select
                         </Button>
                       </div>

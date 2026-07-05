@@ -1,11 +1,23 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import {
   Card,
   CardContent,
@@ -91,10 +103,32 @@ export default function StaffPage() {
             {staff.map((s) => (
               <Card key={s.name} className="bg-muted border-none">
                 <CardHeader className="flex flex-row items-start gap-3 space-y-0">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={s.avatar} />
-                    <AvatarFallback>{s.fallback}</AvatarFallback>
-                  </Avatar>
+                  <HoverCard openDelay={100}>
+                    <HoverCardTrigger asChild>
+                      <Avatar className="h-12 w-12 cursor-pointer">
+                        <AvatarImage src={s.avatar} />
+                        <AvatarFallback>{s.fallback}</AvatarFallback>
+                      </Avatar>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-64">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={s.avatar} />
+                          <AvatarFallback>{s.fallback}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{s.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {s.role}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3">
+                        {s.dept} · {s.rating}★ · {s.patients} patients today.
+                        Available for consults and roster changes.
+                      </p>
+                    </HoverCardContent>
+                  </HoverCard>
                   <div className="flex-1 min-w-0">
                     <CardTitle className="text-base truncate">{s.name}</CardTitle>
                     <CardDescription className="truncate">
@@ -120,7 +154,11 @@ export default function StaffPage() {
                     </span>{" "}
                     patients today
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toast(`Opening ${s.name}'s roster`)}
+                  >
                     <CalendarClock className="mr-2 h-4 w-4" />
                     Roster
                   </Button>
@@ -128,6 +166,64 @@ export default function StaffPage() {
               </Card>
             ))}
           </div>
+
+          <Card className="bg-muted border-none">
+            <CardHeader>
+              <CardTitle>Department directory</CardTitle>
+              <CardDescription>
+                Expand a department to see who&apos;s on today
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                {departments.map((d) => {
+                  const members = staff.filter((s) => s.dept === d.name);
+                  return (
+                    <AccordionItem key={d.name} value={d.name}>
+                      <AccordionTrigger className="hover:no-underline">
+                        <div className="flex items-center gap-3">
+                          <span>{d.name}</span>
+                          <Badge variant="secondary">{d.staff} staff</Badge>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-2">
+                          {members.length ? (
+                            members.map((m) => (
+                              <div
+                                key={m.name}
+                                className="flex items-center gap-3 rounded-lg bg-background/60 p-2.5"
+                              >
+                                <Avatar className="h-8 w-8">
+                                  <AvatarImage src={m.avatar} />
+                                  <AvatarFallback>{m.fallback}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm leading-none">
+                                    {m.name}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {m.role}
+                                  </p>
+                                </div>
+                                <Badge variant={statusVariant[m.status]}>
+                                  {m.status}
+                                </Badge>
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              No one rostered in this department today.
+                            </p>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            </CardContent>
+          </Card>
         </div>
       </motion.div>
     </ContentLayout>

@@ -2,12 +2,28 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Card,
   CardContent,
@@ -15,7 +31,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Clock, Phone, Plus, Users, Utensils } from "lucide-react";
+import {
+  CalendarIcon,
+  Clock,
+  MapPin,
+  Phone,
+  Plus,
+  StickyNote,
+  Users,
+  Utensils,
+} from "lucide-react";
 
 type Reservation = {
   name: string;
@@ -48,6 +73,7 @@ const statusVariant: Record<Reservation["status"], "success" | "info" | "yellow"
 
 export default function ReservationsPage() {
   const [slot, setSlot] = useState<"lunch" | "dinner">("dinner");
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 6, 5));
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -73,10 +99,28 @@ export default function ReservationsPage() {
                 Saturday, July 5 · {covers} covers booked
               </p>
             </div>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add reservation
-            </Button>
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <CalendarIcon className="h-4 w-4" />
+                    {date ? date.toLocaleDateString() : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add reservation
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-4">
@@ -140,9 +184,73 @@ export default function ReservationsPage() {
                       </p>
                     </div>
                     <Badge variant={statusVariant[r.status]}>{r.status}</Badge>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => toast(`Calling ${r.name}…`)}
+                    >
                       <Phone className="h-4 w-4" />
                     </Button>
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          Details
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent className="w-[320px] sm:w-[420px]">
+                        <SheetHeader>
+                          <SheetTitle className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage src={r.avatar} />
+                              <AvatarFallback>{r.fallback}</AvatarFallback>
+                            </Avatar>
+                            {r.name}
+                          </SheetTitle>
+                          <SheetDescription>
+                            {slot === "lunch" ? "Lunch" : "Dinner"} service ·{" "}
+                            {date?.toLocaleDateString()}
+                          </SheetDescription>
+                        </SheetHeader>
+                        <div className="grid gap-3 py-6">
+                          {[
+                            { label: "Time", value: r.time, icon: Clock },
+                            {
+                              label: "Party size",
+                              value: `${r.guests} guests`,
+                              icon: Users,
+                            },
+                            { label: "Table", value: r.table, icon: MapPin },
+                            {
+                              label: "Note",
+                              value: r.note ?? "None",
+                              icon: StickyNote,
+                            },
+                          ].map((d) => (
+                            <div
+                              key={d.label}
+                              className="flex items-center gap-3 rounded-lg bg-muted p-3"
+                            >
+                              <d.icon className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground flex-1">
+                                {d.label}
+                              </span>
+                              <span className="text-sm">{d.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <SheetFooter>
+                          <Button
+                            className="w-full"
+                            onClick={() =>
+                              toast.success(`${r.name} seated at ${r.table}`)
+                            }
+                          >
+                            Seat party
+                          </Button>
+                        </SheetFooter>
+                      </SheetContent>
+                    </Sheet>
                   </div>
                   {i < list.length - 1 && <Separator />}
                 </div>

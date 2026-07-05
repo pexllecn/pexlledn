@@ -1,12 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -15,7 +35,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MessageSquare, Star, ThumbsUp } from "lucide-react";
+import {
+  ChevronsUpDown,
+  Filter,
+  MessageSquare,
+  Star,
+  ThumbsUp,
+} from "lucide-react";
 
 const breakdown = [
   { stars: 5, pct: 72 },
@@ -51,10 +77,105 @@ const reviews: Review[] = [
 ];
 
 export default function ReviewsPage() {
+  const [rating, setRating] = useState("all");
+  const [onlyUnreplied, setOnlyUnreplied] = useState(false);
+  const [openOlder, setOpenOlder] = useState(false);
+
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
   };
+
+  const filteredReviews = reviews.filter((r) => {
+    const byRating = rating === "all" || r.rating === Number(rating);
+    const byReplied = !onlyUnreplied || !r.replied;
+    return byRating && byReplied;
+  });
+
+  const ReviewRow = ({ r }: { r: Review }) => (
+    <div className="flex gap-3 py-4">
+      <Avatar className="h-10 w-10">
+        <AvatarImage src={r.avatar} />
+        <AvatarFallback>{r.fallback}</AvatarFallback>
+      </Avatar>
+      <div className="flex-1 min-w-0 space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-sm leading-none">{r.name}</p>
+          <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <Star
+                key={n}
+                className={`h-3 w-3 ${
+                  n <= r.rating
+                    ? "fill-[#f5a623] text-[#f5a623]"
+                    : "fill-muted text-muted"
+                }`}
+              />
+            ))}
+          </div>
+          <Badge variant="secondary" className="text-1xs">
+            {r.source}
+          </Badge>
+          <span className="text-1xs text-muted-foreground">{r.time}</span>
+        </div>
+        <p className="text-sm text-muted-foreground">{r.text}</p>
+        {r.dish && (
+          <Badge variant="outline" className="text-1xs">
+            {r.dish}
+          </Badge>
+        )}
+        <div className="flex items-center gap-2 pt-1">
+          {r.replied ? (
+            <Badge variant="success" className="text-1xs gap-1">
+              <ThumbsUp className="h-3 w-3" />
+              Replied
+            </Badge>
+          ) : (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Reply
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[460px]">
+                <DialogHeader>
+                  <DialogTitle>Reply to {r.name}</DialogTitle>
+                  <DialogDescription>
+                    Your reply is posted publicly on {r.source}.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                  “{r.text}”
+                </div>
+                <Textarea
+                  placeholder="Thanks so much for your feedback…"
+                  rows={4}
+                  defaultValue={`Hi ${
+                    r.name.split(" ")[0]
+                  }, thank you for dining with us! `}
+                />
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button
+                      onClick={() =>
+                        toast.success(`Reply to ${r.name} posted`)
+                      }
+                    >
+                      Post reply
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <ContentLayout title="Reviews">
@@ -151,66 +272,71 @@ export default function ReviewsPage() {
           </div>
 
           <Card className="bg-muted border-none">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between space-y-0">
               <div className="space-y-1.5">
                 <CardTitle>Recent reviews</CardTitle>
-                <CardDescription>2 awaiting a reply</CardDescription>
+                <CardDescription>
+                  {filteredReviews.length} shown · 2 awaiting a reply
+                </CardDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <ToggleGroup
+                  type="single"
+                  value={rating}
+                  onValueChange={(v) => setRating(v || "all")}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleGroupItem value="all" aria-label="All ratings">
+                    <Filter className="h-3.5 w-3.5" />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="5">5★</ToggleGroupItem>
+                  <ToggleGroupItem value="4">4★</ToggleGroupItem>
+                  <ToggleGroupItem value="3">3★</ToggleGroupItem>
+                </ToggleGroup>
+                <Toggle
+                  variant="outline"
+                  size="sm"
+                  pressed={onlyUnreplied}
+                  onPressedChange={setOnlyUnreplied}
+                >
+                  Unreplied
+                </Toggle>
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              {reviews.map((r, i) => (
+              {filteredReviews.slice(0, 2).map((r, i) => (
                 <div key={r.name}>
-                  <div className="flex gap-3 py-4">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={r.avatar} />
-                      <AvatarFallback>{r.fallback}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0 space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm leading-none">{r.name}</p>
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map((n) => (
-                            <Star
-                              key={n}
-                              className={`h-3 w-3 ${
-                                n <= r.rating
-                                  ? "fill-[#f5a623] text-[#f5a623]"
-                                  : "fill-muted text-muted"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <Badge variant="secondary" className="text-1xs">
-                          {r.source}
-                        </Badge>
-                        <span className="text-1xs text-muted-foreground">
-                          {r.time}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{r.text}</p>
-                      {r.dish && (
-                        <Badge variant="outline" className="text-1xs">
-                          {r.dish}
-                        </Badge>
-                      )}
-                      <div className="flex items-center gap-2 pt-1">
-                        {r.replied ? (
-                          <Badge variant="success" className="text-1xs gap-1">
-                            <ThumbsUp className="h-3 w-3" />
-                            Replied
-                          </Badge>
-                        ) : (
-                          <Button variant="outline" size="sm">
-                            <MessageSquare className="mr-2 h-4 w-4" />
-                            Reply
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {i < reviews.length - 1 && <Separator />}
+                  <ReviewRow r={r} />
+                  {i < Math.min(filteredReviews.length, 2) - 1 && <Separator />}
                 </div>
               ))}
+              {filteredReviews.length > 2 && (
+                <Collapsible open={openOlder} onOpenChange={setOpenOlder}>
+                  <CollapsibleContent>
+                    {filteredReviews.slice(2).map((r) => (
+                      <div key={r.name}>
+                        <Separator />
+                        <ReviewRow r={r} />
+                      </div>
+                    ))}
+                  </CollapsibleContent>
+                  <Separator />
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full mt-2">
+                      <ChevronsUpDown className="mr-2 h-4 w-4" />
+                      {openOlder
+                        ? "Show fewer"
+                        : `Show ${filteredReviews.length - 2} older reviews`}
+                    </Button>
+                  </CollapsibleTrigger>
+                </Collapsible>
+              )}
+              {filteredReviews.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted-foreground">
+                  No reviews match this filter.
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>

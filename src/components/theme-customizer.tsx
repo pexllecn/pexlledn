@@ -49,11 +49,11 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[300px] sm:w-[400px]">
-        <SheetHeader>
+      <SheetContent className="w-[300px] sm:w-[400px] flex flex-col gap-0 max-h-[calc(100dvh-2rem)]">
+        <SheetHeader className="shrink-0">
           <SheetTitle>Theme Settings</SheetTitle>
         </SheetHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-4 flex-1 overflow-y-auto -mr-3 pr-3">
           <div className="space-y-2">
             <Label>Mode</Label>
             <div className="flex gap-4">

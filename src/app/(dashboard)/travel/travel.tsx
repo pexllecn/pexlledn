@@ -2,12 +2,20 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { AvatarGroup } from "@/components/ui/avatar-group";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import {
   Card,
   CardContent,
@@ -94,11 +102,15 @@ export default function TravelPage() {
                 departure in 38 days
               </p>
             </div>
-            <Button asChild>
-              <Link href="/travel/explore">
-                <Plus className="mr-2 h-4 w-4" />
-                Plan a trip
-              </Link>
+            <Button
+              onClick={() =>
+                toast.success("Let's plan something ✈️", {
+                  description: "Pick a destination to start a new trip.",
+                })
+              }
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Plan a trip
             </Button>
           </div>
 
@@ -200,6 +212,46 @@ export default function TravelPage() {
                 </CardFooter>
               </Card>
             ))}
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-lg">Need inspiration?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Trending destinations for your dates
+                </p>
+              </div>
+            </div>
+            <Carousel opts={{ align: "start" }} className="w-full">
+              <CarouselContent className="-ml-2">
+                {[
+                  { city: "Kyoto", tag: "Culture", cover: "from-rose-400 to-orange-300" },
+                  { city: "Lisbon", tag: "City break", cover: "from-sky-400 to-cyan-300" },
+                  { city: "Reykjavik", tag: "Nature", cover: "from-indigo-400 to-violet-300" },
+                  { city: "Marrakesh", tag: "Culture", cover: "from-amber-400 to-yellow-300" },
+                  { city: "Bali", tag: "Beaches", cover: "from-emerald-400 to-teal-300" },
+                ].map((d) => (
+                  <CarouselItem
+                    key={d.city}
+                    className="pl-2 basis-4/5 sm:basis-1/2 lg:basis-1/3"
+                  >
+                    <div
+                      className={`relative h-36 rounded-2xl bg-gradient-to-br ${d.cover} p-4 flex flex-col justify-end`}
+                    >
+                      <Badge className="absolute right-3 top-3 bg-background/80 text-foreground border-none">
+                        {d.tag}
+                      </Badge>
+                      <p className="text-white text-lg leading-none">
+                        {d.city}
+                      </p>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden sm:flex" />
+              <CarouselNext className="hidden sm:flex" />
+            </Carousel>
           </div>
 
           <Card className="bg-muted border-none">

@@ -2,13 +2,42 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Select,
   SelectContent,
@@ -26,9 +55,11 @@ import {
 } from "@/components/ui/card";
 import {
   CalendarClock,
+  Clock,
   Plus,
   Repeat,
   Send,
+  ShieldCheck,
   Zap,
 } from "lucide-react";
 
@@ -50,6 +81,46 @@ const scheduled = [
 export default function PaymentsPage() {
   const [amount, setAmount] = useState("");
   const [selected, setSelected] = useState(0);
+  const [speed, setSpeed] = useState("instant");
+  const [otp, setOtp] = useState("");
+  const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const recipient = payees[selected];
+  const confirm = () => {
+    setOpen(false);
+    setOtp("");
+    toast.success(`$${amount} sent to ${recipient.name}`, {
+      description:
+        speed === "instant"
+          ? "Arriving instantly."
+          : "Arriving in 1–3 business days.",
+    });
+  };
+
+  const triggerButton = (
+    <Button className="w-full" disabled={!amount}>
+      <Send className="mr-2 h-4 w-4" />
+      Send {amount ? `$${amount}` : "money"} to {recipient.name.split(" ")[0]}
+    </Button>
+  );
+
+  const otpField = (
+    <div className="flex justify-center py-2">
+      <InputOTP
+        maxLength={6}
+        value={otp}
+        onChange={setOtp}
+        render={({ slots }) => (
+          <InputOTPGroup>
+            {slots.map((slot, i) => (
+              <InputOTPSlot key={i} {...slot} />
+            ))}
+          </InputOTPGroup>
+        )}
+      />
+    </div>
+  );
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
@@ -139,16 +210,109 @@ export default function PaymentsPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
+                  <Label>Transfer speed</Label>
+                  <RadioGroup
+                    value={speed}
+                    onValueChange={setSpeed}
+                    className="grid grid-cols-2 gap-2"
+                  >
+                    <Label
+                      htmlFor="instant"
+                      className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer has-[:checked]:border-primary/50 has-[:checked]:bg-primary/5"
+                    >
+                      <RadioGroupItem value="instant" id="instant" />
+                      <Zap className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Instant · $0.50</span>
+                    </Label>
+                    <Label
+                      htmlFor="standard"
+                      className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer has-[:checked]:border-primary/50 has-[:checked]:bg-primary/5"
+                    >
+                      <RadioGroupItem value="standard" id="standard" />
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">1–3 days · Free</span>
+                    </Label>
+                  </RadioGroup>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="note">Note (optional)</Label>
-                  <Input id="note" placeholder="What's it for?" />
+                  <Textarea id="note" placeholder="What's it for?" rows={2} />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" disabled={!amount}>
-                  <Send className="mr-2 h-4 w-4" />
-                  Send {amount ? `$${amount}` : "money"} to{" "}
-                  {payees[selected].name.split(" ")[0]}
-                </Button>
+                {isDesktop ? (
+                  <Dialog
+                    open={open}
+                    onOpenChange={(o) => {
+                      setOpen(o);
+                      if (!o) setOtp("");
+                    }}
+                  >
+                    <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+                    <DialogContent className="sm:max-w-[400px]">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          <ShieldCheck className="h-5 w-5 text-primary" />
+                          Confirm transfer
+                        </DialogTitle>
+                        <DialogDescription>
+                          Sending{" "}
+                          <span className="text-foreground">
+                            ${amount || "0.00"}
+                          </span>{" "}
+                          to {recipient.name}. Enter the 6-digit code sent to
+                          your phone.
+                        </DialogDescription>
+                      </DialogHeader>
+                      {otpField}
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button disabled={otp.length < 6} onClick={confirm}>
+                          Confirm &amp; send
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Drawer
+                    open={open}
+                    onOpenChange={(o) => {
+                      setOpen(o);
+                      if (!o) setOtp("");
+                    }}
+                  >
+                    <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+                    <DrawerContent>
+                      <div className="mx-auto w-full max-w-md">
+                        <DrawerHeader>
+                          <DrawerTitle className="flex items-center gap-2">
+                            <ShieldCheck className="h-5 w-5 text-primary" />
+                            Confirm transfer
+                          </DrawerTitle>
+                          <DrawerDescription>
+                            Sending{" "}
+                            <span className="text-foreground">
+                              ${amount || "0.00"}
+                            </span>{" "}
+                            to {recipient.name}. Enter the 6-digit code sent to
+                            your phone.
+                          </DrawerDescription>
+                        </DrawerHeader>
+                        {otpField}
+                        <DrawerFooter>
+                          <Button disabled={otp.length < 6} onClick={confirm}>
+                            Confirm &amp; send
+                          </Button>
+                          <DrawerClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                )}
               </CardFooter>
             </Card>
 
