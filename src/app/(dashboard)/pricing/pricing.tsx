@@ -35,6 +35,7 @@ interface PricingPlanProps {
   billingPeriod: "monthly" | "annual";
   isDisabled?: boolean;
   hideBillingPeriod?: boolean;
+  onSelect?: () => void;
 }
 
 const PricingPlan: React.FC<PricingPlanProps> = ({
@@ -69,6 +70,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
         )}
       </p>
       <Button
+        onClick={onSelect}
         className={`w-[90%] mx-auto ${
           isCurrentPlan
             ? ""
@@ -109,6 +111,21 @@ export default function PricingPage() {
 
   const handleBillingPeriodChange = (value: string) => {
     setBillingPeriod(value as "monthly" | "annual");
+  };
+
+  const handleCheckout = async () => {
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url as string;
+    }
   };
 
   const variants1 = {
@@ -185,6 +202,7 @@ export default function PricingPage() {
               buttonText="Choose Premium"
               isHighlighted={true}
               billingPeriod={billingPeriod}
+              onSelect={handleCheckout}
             />
 
             <PricingPlan
