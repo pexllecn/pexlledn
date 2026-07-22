@@ -33,6 +33,7 @@ import {
   Stethoscope,
   Plane,
   UtensilsCrossed,
+  Clapperboard,
 } from "lucide-react";
 
 type Submenu = {
@@ -61,6 +62,55 @@ export function getMenuList(pathname: string): Group[] {
     {
       groupLabel: "Apps",
       menus: [
+        {
+          href: "",
+          label: "Media",
+          active: pathname.includes("/media"),
+          icon: Clapperboard,
+          submenus: [
+            {
+              href: "/media",
+              label: "Overview",
+              active: pathname === "/media",
+            },
+            {
+              href: "/media/photos",
+              label: "Photos",
+              active: pathname === "/media/photos",
+            },
+            {
+              href: "/media/music",
+              label: "Music",
+              active: pathname === "/media/music",
+            },
+            {
+              href: "/media/videos",
+              label: "Videos",
+              active: pathname === "/media/videos",
+            },
+            {
+              href: "/media/podcasts",
+              label: "Podcasts",
+              active: pathname === "/media/podcasts",
+            },
+            {
+              href: "/media/live",
+              label: "Live TV",
+              active: pathname === "/media/live",
+            },
+            {
+              href: "/media/library",
+              label: "Library",
+              active: pathname === "/media/library",
+            },
+            {
+              href: "/media/settings",
+              label: "Settings",
+              active: pathname === "/media/settings",
+            },
+          ],
+          notificationCount: "New",
+        },
         {
           href: "",
           label: "KayFitness",
