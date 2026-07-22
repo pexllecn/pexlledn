@@ -471,3 +471,14 @@ body {
     animation: toast-out-bottom 0.4s cubic-bezier(0.755, 0.05, 0.855, 0.06) both;
   }
 }
+
+/* Utility: hide scrollbars for horizontal chip/scroll rows (Media app) */
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
