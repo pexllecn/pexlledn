@@ -60,6 +60,41 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   return [
     {
+      groupLabel: "Home",
+      menus: [
+        {
+          href: "/dashboard",
+          label: "Dashboard",
+          active: pathname.includes("/dashboard"),
+          icon: LayoutGrid,
+          submenus: [],
+        },
+        {
+          href: "/kanban",
+          label: "Kanban",
+          active: pathname.includes("/kanban"),
+          icon: Kanban,
+          submenus: [],
+        },
+        {
+          href: "/messages",
+          label: "Messages",
+          active: pathname.includes("/messages"),
+          icon: MessageCircleMore,
+          submenus: [],
+          notificationCount: "32",
+        },
+        {
+          href: "/mail",
+          label: "Mail",
+          active: pathname.includes("/mail"),
+          icon: Inbox,
+          submenus: [],
+          notificationCount: "",
+        },
+      ],
+    },
+    {
       groupLabel: "Apps",
       menus: [
         {
@@ -113,41 +148,6 @@ export function getMenuList(pathname: string): Group[] {
         },
         {
           href: "",
-          label: "KayFitness",
-          active: pathname.includes("/fitness"),
-          icon: Dumbbell,
-          submenus: [
-            {
-              href: "/fitness",
-              label: "Overview",
-              active: pathname === "/fitness",
-            },
-            {
-              href: "/fitness/workouts",
-              label: "Workouts",
-              active: pathname === "/fitness/workouts",
-            },
-            {
-              href: "/fitness/schedule",
-              label: "Schedule",
-              active: pathname === "/fitness/schedule",
-              notificationCount: "New",
-            },
-            {
-              href: "/fitness/nutrition",
-              label: "Nutrition",
-              active: pathname === "/fitness/nutrition",
-            },
-            {
-              href: "/fitness/progress",
-              label: "Progress",
-              active: pathname === "/fitness/progress",
-            },
-          ],
-          notificationCount: "New",
-        },
-        {
-          href: "",
           label: "Banking",
           active: pathname.includes("/banking"),
           icon: Landmark,
@@ -178,7 +178,6 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname === "/banking/investments",
             },
           ],
-          notificationCount: "New",
         },
         {
           href: "",
@@ -212,41 +211,84 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname === "/clinic/billing",
             },
           ],
-          notificationCount: "New",
         },
         {
           href: "",
-          label: "Travel",
-          active: pathname.includes("/travel"),
-          icon: Plane,
+          label: "Fitness",
+          active: pathname.includes("/fitness"),
+          icon: Dumbbell,
           submenus: [
             {
-              href: "/travel",
+              href: "/fitness",
               label: "Overview",
-              active: pathname === "/travel",
+              active: pathname === "/fitness",
             },
             {
-              href: "/travel/trips",
-              label: "Trips",
-              active: pathname === "/travel/trips",
+              href: "/fitness/workouts",
+              label: "Workouts",
+              active: pathname === "/fitness/workouts",
             },
             {
-              href: "/travel/flights",
-              label: "Flights",
-              active: pathname === "/travel/flights",
+              href: "/fitness/schedule",
+              label: "Schedule",
+              active: pathname === "/fitness/schedule",
+              notificationCount: "New",
             },
             {
-              href: "/travel/stays",
-              label: "Stays",
-              active: pathname === "/travel/stays",
+              href: "/fitness/nutrition",
+              label: "Nutrition",
+              active: pathname === "/fitness/nutrition",
             },
             {
-              href: "/travel/explore",
-              label: "Explore",
-              active: pathname === "/travel/explore",
+              href: "/fitness/progress",
+              label: "Progress",
+              active: pathname === "/fitness/progress",
             },
           ],
-          notificationCount: "New",
+        },
+        {
+          href: "/education",
+          label: "Education",
+          active: pathname.includes("/education"),
+          icon: GraduationCap,
+          submenus: [],
+        },
+        {
+          href: "/logistics",
+          label: "Logistics",
+          active: pathname.includes("/logistics"),
+          icon: Truck,
+          submenus: [],
+        },
+        {
+          href: "/medical",
+          label: "Medical",
+          active: pathname.includes("/medical"),
+          icon: HeartPulse,
+          submenus: [],
+        },
+        {
+          href: "",
+          label: "Real Estate",
+          active: pathname.includes("/realestate"),
+          icon: Building,
+          submenus: [
+            {
+              href: "/realestate",
+              label: "Building Management",
+              active: pathname === "/realestate",
+            },
+            {
+              href: "/realestate/redetails",
+              label: "Real Estate Listings",
+              active: pathname === "/realestate/redetails",
+            },
+            {
+              href: "/realestate/reresults",
+              label: "Search Results",
+              active: pathname === "/realestate/reresults",
+            },
+          ],
         },
         {
           href: "",
@@ -280,65 +322,51 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname === "/restaurant/reviews",
             },
           ],
-          notificationCount: "New",
+        },
+        {
+          href: "",
+          label: "Travel",
+          active: pathname.includes("/travel"),
+          icon: Plane,
+          submenus: [
+            {
+              href: "/travel",
+              label: "Overview",
+              active: pathname === "/travel",
+            },
+            {
+              href: "/travel/trips",
+              label: "Trips",
+              active: pathname === "/travel/trips",
+            },
+            {
+              href: "/travel/flights",
+              label: "Flights",
+              active: pathname === "/travel/flights",
+            },
+            {
+              href: "/travel/stays",
+              label: "Stays",
+              active: pathname === "/travel/stays",
+            },
+            {
+              href: "/travel/explore",
+              label: "Explore",
+              active: pathname === "/travel/explore",
+            },
+          ],
         },
       ],
     },
     {
-      groupLabel: "Main Pages",
+      groupLabel: "Workspace",
       menus: [
-        {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
-          icon: LayoutGrid,
-          submenus: [],
-        },
-        {
-          href: "/cal",
-          label: "Calulator",
-          active: pathname.includes("/cal"),
-          icon: Calculator,
-          submenus: [],
-        },
-        // {
-        //   href: "/timeline",
-        //   label: "Timeline",
-        //   active: pathname.includes("/timeline"),
-        //   icon: MessageSquareQuote,
-        //   submenus: [],
-        //   notificationCount: "",
-        // },
-        {
-          href: "/messages",
-          label: "Messages",
-          active: pathname.includes("/messages"),
-          icon: MessageCircleMore,
-          submenus: [],
-          notificationCount: "32",
-        },
-        // {
-        //   href: "/calendar",
-        //   label: "Calendar",
-        //   active: pathname.includes("/calendar"),
-        //   icon: CalendarDays,
-        //   submenus: [],
-        //   notificationCount: "New",
-        // },
-        {
-          href: "/kanban",
-          label: "Kanban",
-          active: pathname.includes("/kanban"),
-          icon: Kanban,
-          submenus: [],
-        },
         {
           href: "/work",
           label: "Work",
           active: pathname.includes("/work"),
           icon: Briefcase,
           submenus: [],
-          notificationCount: "",
         },
         {
           href: "/lead",
@@ -346,56 +374,6 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/lead"),
           icon: Banknote,
           submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "/education",
-          label: "Education",
-          active: pathname.includes("/education"),
-          icon: GraduationCap,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "/logistics",
-          label: "Logistics",
-          active: pathname.includes("/logistics"),
-          icon: Truck,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "/medical",
-          label: "Medical",
-          active: pathname.includes("/medical"),
-          icon: HeartPulse,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "",
-          label: "Real Estate",
-          active: pathname.includes("/realestate"),
-          icon: Building,
-          submenus: [
-            {
-              href: "/realestate",
-              label: "Building Management",
-              active: pathname === "/realestate",
-            },
-            {
-              href: "/realestate/redetails",
-              label: "Real Estate lisings",
-              active: pathname === "/realestate/redetails",
-            },
-            {
-              href: "/realestate/reresults",
-              label: "Search Results",
-              active: pathname === "/realestate/reresults",
-              notificationCount: "",
-            },
-          ],
-          notificationCount: "",
         },
         {
           href: "",
@@ -412,10 +390,8 @@ export function getMenuList(pathname: string): Group[] {
               href: "/social/profile",
               label: "Profile",
               active: pathname === "/social/profile",
-              notificationCount: "",
             },
           ],
-          notificationCount: "",
         },
         {
           href: "",
@@ -427,7 +403,6 @@ export function getMenuList(pathname: string): Group[] {
               href: "/user/1",
               label: "User Profile",
               active: pathname.includes("/user/1"),
-              notificationCount: "",
             },
             {
               href: "/posts",
@@ -438,7 +413,6 @@ export function getMenuList(pathname: string): Group[] {
               href: "/posts/new",
               label: "All Posts",
               active: pathname === "/posts/new",
-              notificationCount: "",
             },
             {
               href: "/categories",
@@ -451,12 +425,35 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname.includes("/filters"),
             },
           ],
-          notificationCount: "",
         },
+        {
+          href: "/cal",
+          label: "Calculator",
+          active: pathname.includes("/cal"),
+          icon: Calculator,
+          submenus: [],
+        },
+        {
+          href: "/noti",
+          label: "Dynamic Island",
+          active: pathname.includes("/noti"),
+          icon: Vibrate,
+          submenus: [],
+          notificationCount: "New",
+        },
+      ],
+    },
+    {
+      groupLabel: "Settings",
+      menus: [
         {
           href: "",
           label: "Settings",
-          active: pathname.includes("/users"),
+          active:
+            pathname.includes("/users") ||
+            pathname.includes("/teams") ||
+            pathname.includes("/account") ||
+            pathname.includes("/pricing"),
           icon: Settings,
           submenus: [
             {
@@ -480,20 +477,11 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname.includes("/pricing"),
             },
           ],
-          notificationCount: "",
-        },
-        {
-          href: "/noti",
-          label: "Dynamic Island",
-          active: pathname.includes("/noti"),
-          icon: Vibrate,
-          submenus: [],
-          notificationCount: "New",
         },
       ],
     },
     {
-      groupLabel: "Components",
+      groupLabel: "Templates",
       menus: [
         {
           href: "/comps",
@@ -502,6 +490,20 @@ export function getMenuList(pathname: string): Group[] {
           icon: Component,
           submenus: [],
           notificationCount: "New",
+        },
+        {
+          href: "/music",
+          label: "Music",
+          active: pathname === "/music",
+          icon: CirclePlay,
+          submenus: [],
+        },
+        {
+          href: "/playground",
+          label: "Playground",
+          active: pathname.includes("/playground"),
+          icon: SquareDashedBottomCode,
+          submenus: [],
         },
       ],
     },
@@ -514,7 +516,6 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/signin"),
           icon: LogIn,
           submenus: [],
-          notificationCount: "",
         },
         {
           href: "/register",
@@ -522,36 +523,6 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/register"),
           icon: ScanFace,
           submenus: [],
-          notificationCount: "",
-        },
-      ],
-    },
-    {
-      groupLabel: "Shadcn Templates",
-      menus: [
-        {
-          href: "/mail",
-          label: "Mail",
-          active: pathname.includes("/mail"),
-          icon: Inbox,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "/music",
-          label: "Music",
-          active: pathname.includes("/music"),
-          icon: CirclePlay,
-          submenus: [],
-          notificationCount: "",
-        },
-        {
-          href: "/playground",
-          label: "Playground",
-          active: pathname.includes("/playground"),
-          icon: SquareDashedBottomCode,
-          submenus: [],
-          notificationCount: "",
         },
       ],
     },

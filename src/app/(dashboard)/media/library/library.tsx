@@ -1,20 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Clock, Download, Heart, ListVideo, Play, Plus } from "lucide-react";
 import {
-  Clock,
-  Download,
-  Heart,
-  ListVideo,
-  Play,
-  Plus,
-} from "lucide-react";
+  MediaPage,
+  GradientText,
+  glass,
+  glassHover,
+} from "../components/media-ui";
 
 const playlists = [
   { name: "Focus Flow", items: 42, kind: "Music", seed: "lib-1", tint: "from-violet-500 to-fuchsia-500" },
@@ -55,29 +51,27 @@ function MediaRow({
   return (
     <div className="space-y-2">
       {items.map((it) => (
-        <Card
+        <div
           key={it.seed}
-          className="group bg-muted border-none transition-colors hover:bg-muted/70"
+          className={`group ${glass} flex items-center gap-4 p-3 transition-colors hover:border-border`}
         >
-          <CardContent className="p-3 flex items-center gap-4">
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`https://picsum.photos/seed/${it.seed}/120/120`}
-                alt={it.title}
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
-                <Play className="h-4 w-4 text-white fill-current" />
-              </div>
+          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://picsum.photos/seed/${it.seed}/120/120`}
+              alt={it.title}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+              <Play className="h-4 w-4 fill-current text-white" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium truncate">{it.title}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{it.meta}</p>
-            </div>
-            <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
-          </CardContent>
-        </Card>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">{it.title}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{it.meta}</p>
+          </div>
+          <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+        </div>
       ))}
     </div>
   );
@@ -85,107 +79,96 @@ function MediaRow({
 
 export default function Library() {
   const [tab, setTab] = useState("playlists");
-  const variants = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
-  };
 
   return (
-    <ContentLayout title="Library">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.5 }}
-        variants={variants}
-      >
-        <div className="flex-1 space-y-5 lg:p-4 py-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="text-3xl font-normal">Your library</h2>
-              <p className="text-muted-foreground mt-1">
-                Playlists, favorites and downloads — all in one place
-              </p>
-            </div>
-            <Button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none hover:opacity-90">
-              <Plus className="mr-2 h-4 w-4" /> New playlist
-            </Button>
-          </div>
-
-          <Tabs value={tab} onValueChange={setTab}>
-            <TabsList>
-              <TabsTrigger value="playlists">
-                <ListVideo className="mr-1.5 h-4 w-4" /> Playlists
-              </TabsTrigger>
-              <TabsTrigger value="liked">
-                <Heart className="mr-1.5 h-4 w-4" /> Liked
-              </TabsTrigger>
-              <TabsTrigger value="recent">
-                <Clock className="mr-1.5 h-4 w-4" /> Recents
-              </TabsTrigger>
-              <TabsTrigger value="downloads">
-                <Download className="mr-1.5 h-4 w-4" /> Downloads
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="playlists" className="mt-5">
-              <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
-                {playlists.map((p) => (
-                  <Card
-                    key={p.name}
-                    className="group bg-muted border-none overflow-hidden cursor-pointer"
-                  >
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`https://picsum.photos/seed/${p.seed}/600/380`}
-                        alt={p.name}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div
-                        className={`absolute top-3 left-3 rounded-lg bg-gradient-to-r ${p.tint} px-2 py-0.5 text-1xs font-medium text-white`}
-                      >
-                        {p.kind}
-                      </div>
-                      <div className="absolute bottom-3 right-3 flex h-11 w-11 translate-y-2 items-center justify-center rounded-full bg-white text-black opacity-0 shadow-lg transition-all group-hover:translate-y-0 group-hover:opacity-100">
-                        <Play className="h-5 w-5 fill-current" />
-                      </div>
-                    </div>
-                    <CardContent className="p-3">
-                      <p className="text-sm font-medium truncate">{p.name}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {p.items} items
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="liked" className="mt-5">
-              <MediaRow items={liked} icon={Heart} />
-            </TabsContent>
-
-            <TabsContent value="recent" className="mt-5">
-              <MediaRow items={recents} icon={Clock} />
-            </TabsContent>
-
-            <TabsContent value="downloads" className="mt-5">
-              <div className="mb-4 flex items-center gap-3 rounded-xl bg-emerald-500/10 p-3 text-sm">
-                <Download className="h-4 w-4 text-emerald-600" />
-                <span>
-                  <span className="font-medium">3 items</span> available offline ·
-                  350 MB used
-                </span>
-                <Badge variant="secondary" className="ml-auto">
-                  Auto-download on
-                </Badge>
-              </div>
-              <MediaRow items={downloads} icon={Download} />
-            </TabsContent>
-          </Tabs>
+    <MediaPage title="Library">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-4xl font-semibold tracking-tight">
+            Your <GradientText>library</GradientText>
+          </h2>
+          <p className="mt-1.5 text-muted-foreground">
+            Playlists, favorites and downloads — all in one place
+          </p>
         </div>
-      </motion.div>
-    </ContentLayout>
+        <Button className="rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none shadow-lg shadow-fuchsia-500/25 hover:opacity-90">
+          <Plus className="mr-2 h-4 w-4" /> New playlist
+        </Button>
+      </div>
+
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList className="rounded-full">
+          <TabsTrigger value="playlists" className="rounded-full">
+            <ListVideo className="mr-1.5 h-4 w-4" /> Playlists
+          </TabsTrigger>
+          <TabsTrigger value="liked" className="rounded-full">
+            <Heart className="mr-1.5 h-4 w-4" /> Liked
+          </TabsTrigger>
+          <TabsTrigger value="recent" className="rounded-full">
+            <Clock className="mr-1.5 h-4 w-4" /> Recents
+          </TabsTrigger>
+          <TabsTrigger value="downloads" className="rounded-full">
+            <Download className="mr-1.5 h-4 w-4" /> Downloads
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="playlists" className="mt-5">
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+            {playlists.map((p) => (
+              <div
+                key={p.name}
+                className={`group ${glassHover} cursor-pointer overflow-hidden rounded-3xl border border-border/60`}
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://picsum.photos/seed/${p.seed}/600/380`}
+                    alt={p.name}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <span
+                    className={`absolute left-3 top-3 rounded-full bg-gradient-to-r ${p.tint} px-2.5 py-0.5 text-1xs font-medium text-white`}
+                  >
+                    {p.kind}
+                  </span>
+                  <div className="absolute bottom-3 right-3 flex h-12 w-12 translate-y-2 items-center justify-center rounded-full bg-white text-black opacity-0 shadow-xl transition-all group-hover:translate-y-0 group-hover:opacity-100">
+                    <Play className="h-5 w-5 fill-current" />
+                  </div>
+                  <div className="absolute bottom-3 left-3 text-white">
+                    <p className="text-sm font-semibold leading-none">
+                      {p.name}
+                    </p>
+                    <p className="mt-1 text-1xs text-white/70">{p.items} items</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="liked" className="mt-5">
+          <MediaRow items={liked} icon={Heart} />
+        </TabsContent>
+
+        <TabsContent value="recent" className="mt-5">
+          <MediaRow items={recents} icon={Clock} />
+        </TabsContent>
+
+        <TabsContent value="downloads" className="mt-5">
+          <div className="mb-4 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm">
+            <Download className="h-4 w-4 text-emerald-500" />
+            <span>
+              <span className="font-semibold">3 items</span> available offline ·
+              350 MB used
+            </span>
+            <Badge variant="secondary" className="ml-auto rounded-full">
+              Auto-download on
+            </Badge>
+          </div>
+          <MediaRow items={downloads} icon={Download} />
+        </TabsContent>
+      </Tabs>
+    </MediaPage>
   );
 }

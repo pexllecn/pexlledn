@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Eye, Radio, Send, Users } from "lucide-react";
+import { MediaPage, SectionHeading, glass } from "../components/media-ui";
 
 const channels = [
   { name: "City Cam · Tokyo", cat: "Travel", viewers: "12.4K", seed: "live-1", live: true },
@@ -42,137 +40,127 @@ export default function Live() {
     setMsg("");
   };
 
-  const variants = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
-  };
-
   return (
-    <ContentLayout title="Live TV">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.5 }}
-        variants={variants}
-      >
-        <div className="flex-1 space-y-4 lg:p-4 py-6">
-          <div className="grid gap-4 lg:grid-cols-3">
-            {/* Player */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://picsum.photos/seed/${channel.seed}/1280/720`}
-                  alt={channel.name}
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <Badge className="bg-red-600 text-white border-none gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-                    LIVE
-                  </Badge>
-                  <Badge className="bg-black/60 text-white border-none gap-1.5">
-                    <Eye className="h-3 w-3" /> {channel.viewers}
-                  </Badge>
-                </div>
-              </div>
+    <MediaPage title="Live TV">
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Player */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="relative aspect-video overflow-hidden rounded-3xl bg-black ring-1 ring-border/60">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://picsum.photos/seed/${channel.seed}/1280/720`}
+              alt={channel.name}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute left-4 top-4 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-2.5 py-1 text-1xs font-semibold text-white">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+                LIVE
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-1xs text-white backdrop-blur-md">
+                <Eye className="h-3 w-3" /> {channel.viewers}
+              </span>
+            </div>
+          </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="/avatar-40-02.jpg" alt={channel.name} />
-                    <AvatarFallback>LV</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">{channel.name}</p>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Users className="h-3 w-3" /> {channel.viewers} watching ·{" "}
-                      {channel.cat}
-                    </p>
-                  </div>
-                </div>
-                <Button className="bg-gradient-to-r from-emerald-500 to-teal-400 text-white border-none hover:opacity-90">
-                  <Radio className="mr-2 h-4 w-4" /> Follow
-                </Button>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-11 w-11 ring-2 ring-emerald-500/25">
+                <AvatarImage src="/avatar-40-02.jpg" alt={channel.name} />
+                <AvatarFallback>LV</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-semibold">{channel.name}</p>
+                <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Users className="h-3 w-3" /> {channel.viewers} watching ·{" "}
+                  {channel.cat}
+                </p>
               </div>
             </div>
-
-            {/* Live chat */}
-            <Card className="bg-muted border-none flex flex-col">
-              <CardContent className="p-4 flex flex-col h-[440px]">
-                <div className="flex items-center justify-between pb-3 border-b">
-                  <p className="text-sm font-medium">Live chat</p>
-                  <Badge variant="secondary" className="gap-1">
-                    <Users className="h-3 w-3" /> {channel.viewers}
-                  </Badge>
-                </div>
-                <div className="flex-1 space-y-3 overflow-y-auto py-3 no-scrollbar">
-                  {messages.map((m, i) => (
-                    <div key={i} className="text-sm leading-snug">
-                      <span className={`font-medium ${m.color}`}>{m.user}</span>
-                      <span className="text-muted-foreground"> {m.msg}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 pt-3 border-t">
-                  <Input
-                    value={msg}
-                    onChange={(e) => setMsg(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && send()}
-                    placeholder="Say something…"
-                    className="bg-background"
-                  />
-                  <Button size="icon" onClick={send} className="shrink-0">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Channel grid */}
-          <h3 className="text-xl font-normal">Live channels</h3>
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
-            {channels.map((c, i) => (
-              <button
-                key={c.seed}
-                onClick={() => setActive(i)}
-                className={`group text-left rounded-2xl overflow-hidden border transition-all ${
-                  i === active
-                    ? "border-emerald-500 ring-2 ring-emerald-500/30"
-                    : "border-transparent"
-                }`}
-              >
-                <div className="relative aspect-video overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://picsum.photos/seed/${c.seed}/500/280`}
-                    alt={c.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  {c.live ? (
-                    <Badge className="absolute top-2 left-2 bg-red-600 text-white border-none text-1xs gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                      LIVE
-                    </Badge>
-                  ) : (
-                    <Badge className="absolute top-2 left-2 bg-black/60 text-white border-none text-1xs">
-                      Offline
-                    </Badge>
-                  )}
-                  <Badge className="absolute bottom-2 right-2 bg-black/70 text-white border-none text-1xs gap-1">
-                    <Eye className="h-3 w-3" /> {c.viewers}
-                  </Badge>
-                </div>
-                <div className="p-3 bg-muted">
-                  <p className="text-sm font-medium truncate">{c.name}</p>
-                  <p className="text-xs text-muted-foreground">{c.cat}</p>
-                </div>
-              </button>
-            ))}
+            <Button className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-white border-none shadow-lg shadow-emerald-500/25 hover:opacity-90">
+              <Radio className="mr-2 h-4 w-4" /> Follow
+            </Button>
           </div>
         </div>
-      </motion.div>
-    </ContentLayout>
+
+        {/* Live chat */}
+        <div className={`${glass} flex flex-col p-4`}>
+          <div className="flex h-[440px] flex-col">
+            <div className="flex items-center justify-between border-b border-border/60 pb-3">
+              <p className="text-sm font-semibold">Live chat</p>
+              <Badge variant="secondary" className="gap-1 rounded-full">
+                <Users className="h-3 w-3" /> {channel.viewers}
+              </Badge>
+            </div>
+            <div className="no-scrollbar flex-1 space-y-3 overflow-y-auto py-3">
+              {messages.map((m, i) => (
+                <div key={i} className="text-sm leading-snug">
+                  <span className={`font-semibold ${m.color}`}>{m.user}</span>
+                  <span className="text-muted-foreground"> {m.msg}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 border-t border-border/60 pt-3">
+              <Input
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && send()}
+                placeholder="Say something…"
+                className="rounded-full bg-background"
+              />
+              <Button
+                size="icon"
+                onClick={send}
+                className="shrink-0 rounded-full"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Channel grid */}
+      <SectionHeading title="Live channels" subtitle="Streaming now" />
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+        {channels.map((c, i) => (
+          <button
+            key={c.seed}
+            onClick={() => setActive(i)}
+            className={`group overflow-hidden rounded-3xl border text-left transition-all hover:-translate-y-1 ${
+              i === active
+                ? "border-emerald-500 ring-2 ring-emerald-500/30"
+                : "border-border/60"
+            }`}
+          >
+            <div className="relative aspect-video overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://picsum.photos/seed/${c.seed}/500/280`}
+                alt={c.name}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {c.live ? (
+                <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-1xs font-semibold text-white">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+                  LIVE
+                </span>
+              ) : (
+                <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-1xs text-white backdrop-blur-md">
+                  Offline
+                </span>
+              )}
+              <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-0.5 text-1xs text-white backdrop-blur-md">
+                <Eye className="h-3 w-3" /> {c.viewers}
+              </span>
+            </div>
+            <div className="bg-card/70 p-3 backdrop-blur-xl">
+              <p className="truncate text-sm font-semibold">{c.name}</p>
+              <p className="text-xs text-muted-foreground">{c.cat}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </MediaPage>
   );
 }

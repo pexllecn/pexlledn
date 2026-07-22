@@ -171,7 +171,7 @@ export default function Component() {
               <LogoSection logo={logo} />
             </div>
             <p className="text-gray-500 text-sm">
-              © 2024 Pexlle Inc. All rights reserved.
+              © {new Date().getFullYear()} Pexlle Inc. All rights reserved.
             </p>
             <nav className="text-xs flex space-x-4 mt-2">
               <Link href="#" className="text-gray-500 hover:text-gray-900">

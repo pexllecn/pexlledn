@@ -1,16 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   ArrowRight,
   Clock,
@@ -24,36 +15,19 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
+import {
+  MediaPage,
+  GradientText,
+  SectionHeading,
+  glass,
+  glassHover,
+} from "./components/media-ui";
 
 const shortcuts = [
-  {
-    href: "/media/photos",
-    label: "Photos",
-    sub: "3,204 items",
-    icon: ImageIcon,
-    tint: "from-sky-500 to-cyan-400",
-  },
-  {
-    href: "/media/music",
-    label: "Music",
-    sub: "512 tracks",
-    icon: Headphones,
-    tint: "from-violet-500 to-fuchsia-500",
-  },
-  {
-    href: "/media/videos",
-    label: "Videos",
-    sub: "148 videos",
-    icon: Film,
-    tint: "from-rose-500 to-orange-400",
-  },
-  {
-    href: "/media/live",
-    label: "Live TV",
-    sub: "24 channels",
-    icon: Radio,
-    tint: "from-emerald-500 to-teal-400",
-  },
+  { href: "/media/photos", label: "Photos", sub: "3,204 items", icon: ImageIcon, tint: "from-sky-500 to-cyan-400" },
+  { href: "/media/music", label: "Music", sub: "512 tracks", icon: Headphones, tint: "from-violet-500 to-fuchsia-500" },
+  { href: "/media/videos", label: "Videos", sub: "148 videos", icon: Film, tint: "from-rose-500 to-orange-400" },
+  { href: "/media/live", label: "Live TV", sub: "24 channels", icon: Radio, tint: "from-emerald-500 to-teal-400" },
 ];
 
 const stats = [
@@ -78,179 +52,182 @@ const trending = [
 ];
 
 export default function Media() {
-  const variants = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
-  };
-
   return (
-    <ContentLayout title="Media">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.5 }}
-        variants={variants}
-      >
-        <div className="flex-1 space-y-4 lg:p-4 py-6">
-          {/* Hero */}
-          <div className="relative overflow-hidden rounded-2xl border-none">
-            <div className="absolute inset-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://picsum.photos/seed/media-hero/1600/600"
-                alt="Featured"
-                className="h-full w-full object-cover"
+    <MediaPage title="Media">
+      {/* Hero */}
+      <div className="relative overflow-hidden rounded-[28px] border border-border/60">
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://picsum.photos/seed/media-hero-v2/1800/800"
+            alt="Featured"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+          <div className="absolute -bottom-24 -right-10 h-72 w-72 rounded-full bg-fuchsia-500/30 blur-[100px]" />
+        </div>
+        <div className="relative p-7 sm:p-12 max-w-2xl">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
+            <Flame className="h-3.5 w-3.5 text-orange-300" /> Featured today
+          </span>
+          <h2 className="mt-5 text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight">
+            Your world of media, <GradientText>beautifully together</GradientText>
+          </h2>
+          <p className="text-muted-foreground mt-4 text-base max-w-lg">
+            Photos, music, videos and live streams — curated, organized and
+            ready wherever you are.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none shadow-lg shadow-fuchsia-500/25 hover:opacity-90"
+            >
+              <Link href="/media/videos">
+                <Play className="mr-2 h-4 w-4 fill-current" /> Start watching
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="rounded-full border-border/70 bg-background/50 backdrop-blur-md"
+            >
+              <Link href="/media/library">Open library</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Shortcuts — bento tiles */}
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        {shortcuts.map((s) => (
+          <Link key={s.label} href={s.href} className="group">
+            <div className={`${glass} ${glassHover} relative overflow-hidden p-5`}>
+              <div
+                className={`pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br ${s.tint} opacity-20 blur-2xl transition-opacity group-hover:opacity-40`}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-            </div>
-            <div className="relative p-6 sm:p-10 max-w-xl">
-              <Badge className="mb-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none">
-                <Flame className="mr-1 h-3 w-3" /> Featured
-              </Badge>
-              <h2 className="text-3xl sm:text-4xl font-normal leading-tight">
-                Your whole world of media, in one place
-              </h2>
-              <p className="text-muted-foreground mt-3">
-                Photos, music, videos and live streams — beautifully organized
-                and ready wherever you are.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button
-                  asChild
-                  className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none hover:opacity-90"
-                >
-                  <Link href="/media/videos">
-                    <Play className="mr-2 h-4 w-4 fill-current" /> Start watching
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link href="/media/library">Go to library</Link>
-                </Button>
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${s.tint} text-white shadow-lg`}
+              >
+                <s.icon className="h-6 w-6" />
+              </div>
+              <p className="mt-4 font-semibold tracking-tight">{s.label}</p>
+              <div className="mt-1 flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">{s.sub}</p>
+                <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 -translate-x-2 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
               </div>
             </div>
-          </div>
+          </Link>
+        ))}
+      </div>
 
-          {/* Shortcuts */}
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-            {shortcuts.map((s) => (
-              <Link key={s.label} href={s.href}>
-                <Card className="group bg-muted border-none overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lg">
-                  <CardContent className="p-5 flex items-center gap-4">
-                    <div
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${s.tint} text-white shadow-md`}
-                    >
-                      <s.icon className="h-6 w-6" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-medium leading-none">{s.label}</p>
-                      <p className="text-xs text-muted-foreground mt-1.5">
-                        {s.sub}
-                      </p>
-                    </div>
-                    <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className={`${glass} p-5`}>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">{s.label}</p>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <s.icon className="h-4 w-4" />
+              </div>
+            </div>
+            <div className="mt-3 text-3xl font-semibold tabular-nums tracking-tight">
+              {s.value}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1.5">{s.sub}</p>
           </div>
+        ))}
+      </div>
 
-          {/* Stats */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {stats.map((s) => (
-              <Card key={s.label} className="bg-muted border-none">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-normal">
-                    {s.label}
-                  </CardTitle>
-                  <s.icon className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-normal tabular-nums">
-                    {s.value}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">{s.sub}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Continue watching */}
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-normal">Continue watching</h3>
-            <Button variant="ghost" size="sm" asChild>
+      {/* Continue watching */}
+      <div className="space-y-4">
+        <SectionHeading
+          title="Continue watching"
+          subtitle="Pick up where you left off"
+          action={
+            <Button variant="ghost" size="sm" className="rounded-full" asChild>
               <Link href="/media/library">
                 See all <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
-          </div>
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-            {continueWatching.map((c) => (
-              <Card
-                key={c.title}
-                className="group bg-muted border-none overflow-hidden"
-              >
-                <div className="relative aspect-video overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://picsum.photos/seed/${c.seed}/600/340`}
-                    alt={c.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-black">
-                      <Play className="h-5 w-5 fill-current" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/25">
-                    <div
-                      className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500"
-                      style={{ width: `${c.progress}%` }}
-                    />
+          }
+        />
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          {continueWatching.map((c) => (
+            <div
+              key={c.title}
+              className={`group ${glass} ${glassHover} overflow-hidden`}
+            >
+              <div className="relative aspect-video overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://picsum.photos/seed/${c.seed}/600/340`}
+                  alt={c.title}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 text-black shadow-xl">
+                    <Play className="h-5 w-5 fill-current" />
                   </div>
                 </div>
-                <CardContent className="p-3">
-                  <p className="text-sm leading-none truncate">{c.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1.5">{c.sub}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Trending */}
-          <Card className="bg-muted border-none">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" /> Trending this week
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-              {trending.map((t, i) => (
-                <div
-                  key={t.title}
-                  className="flex items-center gap-3 rounded-xl bg-background/60 p-3"
-                >
-                  <span className="text-2xl font-semibold text-muted-foreground/40 tabular-nums w-6">
-                    {i + 1}
-                  </span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://picsum.photos/seed/${t.seed}/120/120`}
-                    alt={t.title}
-                    className="h-12 w-12 rounded-lg object-cover"
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                  <div
+                    className="h-full bg-gradient-to-r from-violet-400 to-fuchsia-500"
+                    style={{ width: `${c.progress}%` }}
                   />
-                  <div className="min-w-0">
-                    <p className="text-sm leading-none truncate">{t.title}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t.cat} · {t.views}
-                    </p>
-                  </div>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
+              </div>
+              <div className="p-3">
+                <p className="text-sm font-medium leading-none truncate">
+                  {c.title}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1.5">{c.sub}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      </motion.div>
-    </ContentLayout>
+      </div>
+
+      {/* Trending */}
+      <div className={`${glass} p-6`}>
+        <SectionHeading
+          title={
+            <span className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-fuchsia-500" /> Trending this
+              week
+            </span>
+          }
+        />
+        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+          {trending.map((t, i) => (
+            <div
+              key={t.title}
+              className="group flex items-center gap-3 rounded-2xl bg-muted/60 p-3 transition-colors hover:bg-muted"
+            >
+              <span className="w-6 text-center text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-violet-500 to-fuchsia-500 tabular-nums">
+                {i + 1}
+              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://picsum.photos/seed/${t.seed}/120/120`}
+                alt={t.title}
+                className="h-12 w-12 rounded-xl object-cover"
+              />
+              <div className="min-w-0">
+                <p className="text-sm font-medium leading-none truncate">
+                  {t.title}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t.cat} · {t.views}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </MediaPage>
   );
 }
