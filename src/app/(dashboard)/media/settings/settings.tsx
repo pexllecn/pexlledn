@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Cinema, card, AccentButton } from "../components/media-ui";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import {
   Bell,
   Download,
@@ -14,19 +16,6 @@ import {
   Wifi,
 } from "lucide-react";
 
-function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${on ? "bg-orange-500" : "bg-muted dark:bg-white/15"}`}
-    >
-      <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${on ? "translate-x-[22px]" : "translate-x-0.5"}`}
-      />
-    </button>
-  );
-}
-
 function Row({ title, desc, on, toggle }: { title: string; desc: string; on: boolean; toggle: () => void }) {
   return (
     <div className="flex items-center justify-between gap-4 border-t border-border py-3.5 first:border-t-0 dark:border-white/5">
@@ -34,7 +23,11 @@ function Row({ title, desc, on, toggle }: { title: string; desc: string; on: boo
         <p className="text-sm font-medium text-foreground">{title}</p>
         <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>
       </div>
-      <Toggle on={on} onClick={toggle} />
+      <Switch
+        checked={on}
+        onCheckedChange={toggle}
+        className="data-[state=checked]:bg-orange-500"
+      />
     </div>
   );
 }
@@ -178,13 +171,11 @@ export default function Settings() {
             <span className="flex items-center gap-2"><Download className="h-4 w-4 text-muted-foreground" /> Download cache limit</span>
             <span className="font-semibold tabular-nums text-foreground">{storage} GB</span>
           </div>
-          <input
-            type="range"
-            min={0}
+          <Slider
+            value={[storage]}
+            onValueChange={(v) => setStorage(v[0])}
             max={50}
-            value={storage}
-            onChange={(e) => setStorage(Number(e.target.value))}
-            className="h-1 w-full cursor-pointer appearance-none rounded-full bg-muted accent-orange-500 dark:bg-white/15"
+            step={1}
           />
           <div className="mt-1 flex justify-between text-1xs text-muted-foreground"><span>0 GB</span><span>50 GB</span></div>
           <div className="mt-4">
