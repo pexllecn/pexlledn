@@ -1,25 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import { motion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { FadeIn, SectionTitle, surface } from "@/components/rich";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Flame, Clock, Trophy, PlayCircle } from "lucide-react";
-
-const variants = {
-  hidden: { filter: "blur(10px)", opacity: 0 },
-  visible: { filter: "blur(0px)", opacity: 1 },
-};
-
-const stats = [
-  { label: "Day streak", value: "18", icon: Flame },
-  { label: "Hours learned", value: "42.5", icon: Clock },
-  { label: "Courses done", value: "7", icon: Trophy },
-  { label: "In progress", value: "3", icon: PlayCircle },
-];
+import { Flame, Clock, Trophy, PlayCircle, Award, Zap, Target, Medal } from "lucide-react";
 
 const inProgress = [
   { title: "3D Character Modeling Masterclass", author: "Diana Prince", pct: 62, next: "Lesson 14 · Rigging", seed: "edu-c1" },
@@ -28,105 +13,137 @@ const inProgress = [
 ];
 
 const weekly = [
-  { d: "Mon", h: 1.2 },
-  { d: "Tue", h: 2.1 },
-  { d: "Wed", h: 0.8 },
-  { d: "Thu", h: 2.6 },
-  { d: "Fri", h: 1.7 },
-  { d: "Sat", h: 3.2 },
-  { d: "Sun", h: 1.1 },
+  { d: "Mon", h: 1.2 }, { d: "Tue", h: 2.1 }, { d: "Wed", h: 0.8 },
+  { d: "Thu", h: 2.6 }, { d: "Fri", h: 1.7 }, { d: "Sat", h: 3.2 }, { d: "Sun", h: 1.1 },
 ];
+
+const achievements = [
+  { icon: Zap, name: "Fast Learner", desc: "5 lessons in a day", color: "text-amber-500 bg-amber-500/10", done: true },
+  { icon: Flame, name: "On Fire", desc: "14-day streak", color: "text-rose-500 bg-rose-500/10", done: true },
+  { icon: Target, name: "Focused", desc: "Finish a course", color: "text-violet-500 bg-violet-500/10", done: true },
+  { icon: Medal, name: "Top 10%", desc: "Weekly leaderboard", color: "text-emerald-500 bg-emerald-500/10", done: false },
+];
+
+function Ring({ value }: { value: number }) {
+  const r = 52;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg viewBox="0 0 120 120" className="h-36 w-36 -rotate-90">
+      <circle cx="60" cy="60" r={r} className="fill-none stroke-muted" strokeWidth="12" />
+      <circle
+        cx="60" cy="60" r={r}
+        className="fill-none stroke-violet-600"
+        strokeWidth="12"
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={c - (value / 100) * c}
+      />
+    </svg>
+  );
+}
 
 export default function LearningProgress() {
   const max = Math.max(...weekly.map((w) => w.h));
+  const overall = 64;
+
   return (
     <ContentLayout title="Progress">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.3 }}
-        variants={variants}
-      >
-        <div className="space-y-6 py-6 lg:px-4">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight">Your progress</h2>
-            <p className="text-muted-foreground mt-1">Keep the streak going 🔥</p>
-          </div>
+      <FadeIn>
+        <div>
+          <h2 className="text-3xl font-semibold tracking-tight">Your progress</h2>
+          <p className="mt-1 text-muted-foreground">Keep the streak going 🔥</p>
+        </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {stats.map((s) => (
-              <Card key={s.label} className="border-none bg-muted">
-                <CardContent className="p-5 flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-background text-primary">
-                    <s.icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-semibold tabular-nums leading-none">
-                      {s.value}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-                  </div>
-                </CardContent>
-              </Card>
+        {/* Hero: ring + stats */}
+        <div className={`grid gap-6 lg:grid-cols-[auto_1fr] ${surface} p-6 sm:p-8`}>
+          <div className="relative mx-auto flex items-center justify-center">
+            <Ring value={overall} />
+            <div className="absolute text-center">
+              <p className="text-3xl font-semibold tabular-nums">{overall}%</p>
+              <p className="text-1xs text-muted-foreground">complete</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:self-center">
+            {[
+              { icon: Flame, v: "18", l: "Day streak", c: "text-rose-500" },
+              { icon: Clock, v: "42.5h", l: "Learned", c: "text-sky-500" },
+              { icon: Trophy, v: "7", l: "Completed", c: "text-amber-500" },
+              { icon: PlayCircle, v: "3", l: "In progress", c: "text-violet-500" },
+            ].map((s) => (
+              <div key={s.l} className="rounded-2xl bg-muted/50 p-4">
+                <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-background ${s.c}`}>
+                  <s.icon className="h-4 w-4" />
+                </div>
+                <p className="mt-3 text-2xl font-semibold tabular-nums">{s.v}</p>
+                <p className="text-xs text-muted-foreground">{s.l}</p>
+              </div>
             ))}
           </div>
+        </div>
 
-          <div className="grid gap-6 lg:grid-cols-[1.6fr,1fr]">
-            <Card className="border-none bg-muted">
-              <CardHeader>
-                <CardTitle>Continue learning</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {inProgress.map((c) => (
-                  <div key={c.seed} className="flex items-center gap-4">
-                    <Image
-                      src={`https://picsum.photos/seed/${c.seed}/160/160`}
-                      alt={c.title}
-                      width={160}
-                      height={160}
-                      className="h-16 w-16 rounded-lg object-cover"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium leading-snug line-clamp-1">{c.title}</p>
-                      <p className="text-xs text-muted-foreground mb-2">{c.next}</p>
-                      <Progress value={c.pct} className="h-2" />
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="text-sm font-semibold tabular-nums">{c.pct}%</span>
-                      <Button size="sm" variant="outline" className="mt-2 block">
-                        Resume
-                      </Button>
-                    </div>
+        <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+          {/* Continue */}
+          <div className={`${surface} p-6`}>
+            <SectionTitle title="Continue learning" />
+            <div className="mt-4 space-y-4">
+              {inProgress.map((c) => (
+                <div key={c.seed} className="flex items-center gap-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`https://picsum.photos/seed/${c.seed}/160/160`} alt={c.title} className="h-16 w-16 rounded-xl object-cover" />
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-1 font-medium">{c.title}</p>
+                    <p className="mb-2 text-xs text-muted-foreground">{c.next}</p>
+                    <Progress value={c.pct} className="h-2" />
                   </div>
-                ))}
-              </CardContent>
-            </Card>
+                  <div className="shrink-0 text-right">
+                    <span className="text-sm font-semibold tabular-nums">{c.pct}%</span>
+                    <Button size="sm" variant="outline" className="mt-2 block rounded-full">Resume</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            <Card className="border-none bg-muted">
-              <CardHeader>
-                <CardTitle>This week</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex h-40 items-end justify-between gap-2">
-                  {weekly.map((w) => (
-                    <div key={w.d} className="flex flex-1 flex-col items-center gap-2">
-                      <div
-                        className="w-full rounded-t-md bg-primary/80"
-                        style={{ height: `${(w.h / max) * 100}%` }}
-                      />
-                      <span className="text-xs text-muted-foreground">{w.d}</span>
-                    </div>
-                  ))}
+          {/* Weekly */}
+          <div className={`${surface} p-6`}>
+            <SectionTitle title="This week" />
+            <div className="mt-6 flex h-40 items-end justify-between gap-2">
+              {weekly.map((w) => (
+                <div key={w.d} className="flex flex-1 flex-col items-center gap-2">
+                  <div
+                    className="w-full rounded-t-md bg-gradient-to-t from-violet-600 to-violet-400"
+                    style={{ height: `${(w.h / max) * 100}%` }}
+                  />
+                  <span className="text-xs text-muted-foreground">{w.d}</span>
                 </div>
-                <div className="mt-4 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Total this week</span>
-                  <Badge variant="secondary">12.7 hours</Badge>
-                </div>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
+            <div className="mt-4 flex items-center justify-between border-t pt-4 text-sm">
+              <span className="text-muted-foreground">Total this week</span>
+              <span className="font-semibold">12.7 hours</span>
+            </div>
           </div>
         </div>
-      </motion.div>
+
+        {/* Achievements */}
+        <SectionTitle title="Achievements" subtitle="3 of 4 unlocked" />
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          {achievements.map((a) => (
+            <div key={a.name} className={`${surface} p-5 ${a.done ? "" : "opacity-55"}`}>
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${a.color}`}>
+                <a.icon className="h-5 w-5" />
+              </div>
+              <p className="mt-3 font-medium">{a.name}</p>
+              <p className="text-xs text-muted-foreground">{a.desc}</p>
+              {a.done && (
+                <span className="mt-3 inline-flex items-center gap-1 text-1xs text-emerald-600">
+                  <Award className="h-3 w-3" /> Unlocked
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </FadeIn>
     </ContentLayout>
   );
 }
