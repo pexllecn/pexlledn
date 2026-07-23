@@ -21,11 +21,11 @@ const schedule = [
 ];
 
 const seedChat = [
-  { user: "mika", color: "text-fuchsia-400", msg: "this view is unreal 🌆" },
-  { user: "leo", color: "text-sky-400", msg: "what camera is this?" },
-  { user: "sana", color: "text-emerald-400", msg: "perfect background for work" },
-  { user: "dev", color: "text-amber-400", msg: "greetings from Berlin!" },
-  { user: "noor", color: "text-rose-400", msg: "the sunset though 😍" },
+  { user: "mika", color: "text-fuchsia-500", msg: "this view is unreal 🌆" },
+  { user: "leo", color: "text-sky-500", msg: "what camera is this?" },
+  { user: "sana", color: "text-emerald-500", msg: "perfect background for work" },
+  { user: "dev", color: "text-amber-500", msg: "greetings from Berlin!" },
+  { user: "noor", color: "text-rose-500", msg: "the sunset though 😍" },
 ];
 
 export default function Live() {
@@ -36,14 +36,14 @@ export default function Live() {
 
   const send = () => {
     if (!msg.trim()) return;
-    setMessages((m) => [...m, { user: "you", color: "text-orange-400", msg: msg.trim() }]);
+    setMessages((m) => [...m, { user: "you", color: "text-orange-500", msg: msg.trim() }]);
     setMsg("");
   };
 
   return (
     <Cinema title="Live TV">
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* player */}
+        {/* player (always-dark media) */}
         <div className="lg:col-span-2 space-y-4">
           <div className="relative aspect-video overflow-hidden rounded-3xl bg-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -66,8 +66,8 @@ export default function Live() {
                 <img src="/avatar-40-02.jpg" alt={channel.name} className="h-full w-full object-cover" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">{channel.name}</p>
-                <p className="flex items-center gap-1 text-xs text-neutral-500">
+                <p className="text-sm font-semibold text-foreground">{channel.name}</p>
+                <p className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Users className="h-3 w-3" /> {channel.viewers} watching · {channel.cat}
                 </p>
               </div>
@@ -80,9 +80,9 @@ export default function Live() {
 
         {/* chat */}
         <div className={`${card} flex h-[440px] flex-col p-4`}>
-          <div className="flex items-center justify-between border-b border-white/5 pb-3">
-            <p className="text-sm font-semibold text-white">Live chat</p>
-            <span className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-0.5 text-xs text-neutral-400">
+          <div className="flex items-center justify-between border-b border-border pb-3 dark:border-white/5">
+            <p className="text-sm font-semibold text-foreground">Live chat</p>
+            <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground dark:bg-white/5">
               <Users className="h-3 w-3" /> {channel.viewers}
             </span>
           </div>
@@ -90,17 +90,17 @@ export default function Live() {
             {messages.map((m, i) => (
               <div key={i} className="text-sm leading-snug">
                 <span className={`font-semibold ${m.color}`}>{m.user}</span>
-                <span className="text-neutral-400"> {m.msg}</span>
+                <span className="text-muted-foreground"> {m.msg}</span>
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-2 border-t border-white/5 pt-3">
+          <div className="flex items-center gap-2 border-t border-border pt-3 dark:border-white/5">
             <input
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
               placeholder="Say something…"
-              className="h-9 flex-1 rounded-full border border-white/10 bg-white/5 px-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+              className="h-9 flex-1 rounded-full border border-border bg-muted px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-orange-500 dark:bg-white/5"
             />
             <button onClick={send} className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-white hover:bg-orange-600">
               <Send className="h-4 w-4" />
@@ -118,7 +118,7 @@ export default function Live() {
               key={c.seed}
               onClick={() => setActive(i)}
               className={`group overflow-hidden rounded-2xl border text-left transition-colors ${
-                i === active ? "border-orange-500" : "border-white/5 hover:bg-white/[0.03]"
+                i === active ? "border-orange-500" : "border-border hover:bg-muted/60 dark:hover:bg-white/[0.03]"
               }`}
             >
               <div className="relative aspect-video overflow-hidden">
@@ -136,8 +136,8 @@ export default function Live() {
                 </span>
               </div>
               <div className="p-3">
-                <p className="truncate text-sm font-semibold text-white">{c.name}</p>
-                <p className="text-xs text-neutral-500">{c.cat}</p>
+                <p className="truncate text-sm font-semibold text-foreground">{c.name}</p>
+                <p className="text-xs text-muted-foreground">{c.cat}</p>
               </div>
             </button>
           ))}
@@ -151,14 +151,14 @@ export default function Live() {
         </Label>
         <div className="space-y-1">
           {schedule.map((s) => (
-            <div key={s.title} className="flex items-center gap-4 rounded-xl p-2.5 transition-colors hover:bg-white/[0.03]">
-              <span className="w-14 shrink-0 text-sm font-semibold tabular-nums text-neutral-500">{s.time}</span>
+            <div key={s.title} className="flex items-center gap-4 rounded-xl p-2.5 transition-colors hover:bg-muted/60 dark:hover:bg-white/[0.03]">
+              <span className="w-14 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">{s.time}</span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-white">{s.title}</p>
-                <p className="text-xs text-neutral-500">{s.channel}</p>
+                <p className="truncate text-sm font-medium text-foreground">{s.title}</p>
+                <p className="text-xs text-muted-foreground">{s.channel}</p>
               </div>
-              <span className="rounded-full bg-white/5 px-2 py-0.5 text-1xs text-neutral-400">{s.tag}</span>
-              <button className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-neutral-300 hover:bg-white/5">Remind me</button>
+              <span className="rounded-full bg-muted px-2 py-0.5 text-1xs text-muted-foreground dark:bg-white/5">{s.tag}</span>
+              <button className="rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted dark:hover:bg-white/5">Remind me</button>
             </div>
           ))}
         </div>

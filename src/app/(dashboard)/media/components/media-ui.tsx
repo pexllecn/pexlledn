@@ -12,9 +12,11 @@ import { cn } from "@/lib/utils";
 
 export const ACCENT = "#f97316"; // orange-500
 
-// Dark bordered card used for tiles / rails.
-export const card = "rounded-2xl border border-white/5 bg-white/[0.02]";
-export const cardHover = "transition-colors hover:bg-white/[0.04]";
+// Bordered card used for tiles / rails — adapts to light & dark.
+export const card =
+  "rounded-2xl border border-border bg-card dark:border-white/5 dark:bg-white/[0.02]";
+export const cardHover =
+  "transition-colors hover:bg-muted/60 dark:hover:bg-white/[0.04]";
 
 const pageVariants = {
   hidden: { filter: "blur(10px)", opacity: 0 },
@@ -40,10 +42,10 @@ export function Cinema({
         variants={pageVariants}
         className="pb-4"
       >
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-b from-[#101014] to-[#08080b] text-neutral-200 ring-1 ring-white/5">
+        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-b from-neutral-50 to-neutral-100 text-foreground ring-1 ring-border dark:from-[#101014] dark:to-[#08080b] dark:text-neutral-200 dark:ring-white/5">
           {/* ambient glows */}
-          <div className="pointer-events-none absolute -top-24 right-1/4 h-72 w-72 rounded-full bg-orange-600/10 blur-[130px]" />
-          <div className="pointer-events-none absolute top-1/2 -left-24 h-72 w-72 rounded-full bg-violet-600/10 blur-[130px]" />
+          <div className="pointer-events-none absolute -top-24 right-1/4 h-72 w-72 rounded-full bg-orange-500/10 blur-[130px] dark:bg-orange-600/10" />
+          <div className="pointer-events-none absolute top-1/2 -left-24 h-72 w-72 rounded-full bg-violet-500/10 blur-[130px] dark:bg-violet-600/10" />
           <div className={cn("relative p-5 sm:p-7", className)}>{children}</div>
         </div>
       </motion.div>
@@ -63,7 +65,7 @@ export function Label({
 }) {
   return (
     <div className="mb-3 flex items-center justify-between">
-      <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
         {children}
       </p>
       {action && (

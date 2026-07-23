@@ -47,7 +47,9 @@ export default function Podcasts() {
             key={c}
             onClick={() => setCat(c)}
             className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              cat === c ? "bg-orange-500 text-white" : "border border-white/10 text-neutral-300 hover:bg-white/5"
+              cat === c
+                ? "bg-orange-500 text-white"
+                : "border border-border text-muted-foreground hover:bg-muted dark:hover:bg-white/5"
             }`}
           >
             {c}
@@ -55,7 +57,7 @@ export default function Podcasts() {
         ))}
       </div>
 
-      {/* featured player */}
+      {/* featured player (always-dark accent card) */}
       <div className="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1c3e] via-[#201a30] to-[#12101a] p-6 sm:p-8">
         <div className="flex flex-col gap-6 sm:flex-row">
           <div className="relative aspect-square w-44 shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10 shadow-2xl">
@@ -76,7 +78,6 @@ export default function Podcasts() {
             <p className="mt-1 text-sm text-neutral-400">{featured.show} · {featured.len}</p>
             <p className="mt-3 max-w-lg text-sm text-neutral-400">{featured.desc}</p>
 
-            {/* waveform + controls */}
             <div className="mt-5 flex items-center gap-4">
               <button className="text-neutral-400 hover:text-white"><Rewind className="h-5 w-5" /></button>
               <button
@@ -116,17 +117,17 @@ export default function Podcasts() {
                   </div>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-white">{e.title}</p>
-                  <p className="mt-0.5 text-xs text-neutral-500">{e.show} · {e.when}</p>
+                  <p className="truncate text-sm font-semibold text-foreground">{e.title}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{e.show} · {e.when}</p>
                   {e.pct > 0 && e.pct < 100 && (
-                    <div className="mt-2 h-1 w-full max-w-xs rounded-full bg-white/10">
+                    <div className="mt-2 h-1 w-full max-w-xs rounded-full bg-muted dark:bg-white/10">
                       <div className="h-full rounded-full bg-orange-500" style={{ width: `${e.pct}%` }} />
                     </div>
                   )}
                   {e.pct === 100 && <span className="text-1xs text-emerald-500">Played</span>}
                 </div>
-                <span className="shrink-0 text-xs tabular-nums text-neutral-500">{e.len}</span>
-                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-neutral-300 hover:bg-white/5">
+                <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{e.len}</span>
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground hover:bg-muted dark:hover:bg-white/5">
                   <Plus className="h-4 w-4" />
                 </button>
               </div>
@@ -144,15 +145,15 @@ export default function Podcasts() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={`https://picsum.photos/seed/${s.seed}/200/200`} alt={s.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 </div>
-                <p className="mt-2 truncate text-sm font-medium text-white">{s.name}</p>
-                <p className="text-xs text-neutral-500">{s.eps} episodes</p>
+                <p className="mt-2 truncate text-sm font-medium text-foreground">{s.name}</p>
+                <p className="text-xs text-muted-foreground">{s.eps} episodes</p>
               </div>
             ))}
           </div>
           <div className={`${card} mt-6 p-5`}>
-            <Mic className="h-5 w-5 text-orange-400" />
-            <p className="mt-3 text-sm font-medium text-white">Discover new shows</p>
-            <p className="mt-1 text-xs text-neutral-500">
+            <Mic className="h-5 w-5 text-orange-500" />
+            <p className="mt-3 text-sm font-medium text-foreground">Discover new shows</p>
+            <p className="mt-1 text-xs text-muted-foreground">
               Hand-picked podcasts based on what you listen to.
             </p>
             <AccentButton className="mt-4">Explore</AccentButton>

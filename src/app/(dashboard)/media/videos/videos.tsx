@@ -54,7 +54,9 @@ export default function Videos() {
             key={c}
             onClick={() => setChip(c)}
             className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              chip === c ? "bg-orange-500 text-white" : "border border-white/10 text-neutral-300 hover:bg-white/5"
+              chip === c
+                ? "bg-orange-500 text-white"
+                : "border border-border text-muted-foreground hover:bg-muted dark:hover:bg-white/5"
             }`}
           >
             {c}
@@ -63,7 +65,7 @@ export default function Videos() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* theater */}
+        {/* theater (always-dark media) */}
         <div className="lg:col-span-2 space-y-4">
           <div className="group relative aspect-video overflow-hidden rounded-3xl bg-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -93,10 +95,10 @@ export default function Videos() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-white">
+            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-foreground">
               {main.title}
             </h1>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               {main.views} views · {main.when}
             </p>
           </div>
@@ -108,16 +110,16 @@ export default function Videos() {
                 <img src="/avatar-40-01.jpg" alt={main.channel} className="h-full w-full object-cover" />
               </div>
               <div>
-                <p className="flex items-center gap-1 text-sm font-semibold text-white">
+                <p className="flex items-center gap-1 text-sm font-semibold text-foreground">
                   {main.channel}
-                  <CheckCircle2 className="h-3.5 w-3.5 text-neutral-500" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
                 </p>
-                <p className="text-xs text-neutral-500">{main.subs} subscribers</p>
+                <p className="text-xs text-muted-foreground">{main.subs} subscribers</p>
               </div>
               <button
                 onClick={() => setSub((s) => !s)}
                 className={`ml-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
-                  sub ? "bg-white/10 text-white hover:bg-white/20" : "bg-orange-500 text-white hover:bg-orange-600"
+                  sub ? "bg-muted text-foreground hover:bg-muted/70 dark:bg-white/10 dark:hover:bg-white/20" : "bg-orange-500 text-white hover:bg-orange-600"
                 }`}
               >
                 {sub ? (
@@ -131,22 +133,22 @@ export default function Videos() {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="flex items-center rounded-full border border-white/10">
+              <div className="flex items-center rounded-full border border-border">
                 <button
                   onClick={() => setLiked((l) => !l)}
-                  className="flex items-center gap-1.5 rounded-l-full px-4 py-2 text-sm text-neutral-200 hover:bg-white/5"
+                  className="flex items-center gap-1.5 rounded-l-full px-4 py-2 text-sm text-foreground hover:bg-muted dark:hover:bg-white/5"
                 >
                   <ThumbsUp className={`h-4 w-4 ${liked ? "fill-orange-500 text-orange-500" : ""}`} /> 12K
                 </button>
-                <span className="h-5 w-px bg-white/10" />
-                <button className="rounded-r-full px-3 py-2 text-neutral-200 hover:bg-white/5">
+                <span className="h-5 w-px bg-border" />
+                <button className="rounded-r-full px-3 py-2 text-foreground hover:bg-muted dark:hover:bg-white/5">
                   <ThumbsDown className="h-4 w-4" />
                 </button>
               </div>
-              <button className="flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-sm text-neutral-200 hover:bg-white/5">
+              <button className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm text-foreground hover:bg-muted dark:hover:bg-white/5">
                 <Share2 className="h-4 w-4" /> Share
               </button>
-              <button className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-neutral-200 hover:bg-white/5">
+              <button className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground hover:bg-muted dark:hover:bg-white/5">
                 <Bookmark className="h-4 w-4" />
               </button>
             </div>
@@ -155,12 +157,12 @@ export default function Videos() {
           <div className={`${card} p-4`}>
             <div className="mb-2 flex flex-wrap gap-2">
               {["#nature", "#4k", "#relax"].map((t) => (
-                <span key={t} className="rounded-full bg-white/5 px-2.5 py-0.5 text-xs text-neutral-400">
+                <span key={t} className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground dark:bg-white/5">
                   {t}
                 </span>
               ))}
             </div>
-            <p className="text-sm leading-relaxed text-neutral-400">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               Filmed across three nights in the Arctic Circle — a quiet
               celebration of the northern lights. Shot in 4K with no music,
               just the wind and the sky.
@@ -173,7 +175,7 @@ export default function Videos() {
           <Label action={null}>Up next</Label>
           <div className="space-y-3">
             {upNext.map((v) => (
-              <div key={v.seed} className="group flex cursor-pointer gap-3 rounded-xl p-1.5 transition-colors hover:bg-white/[0.03]">
+              <div key={v.seed} className="group flex cursor-pointer gap-3 rounded-xl p-1.5 transition-colors hover:bg-muted/60 dark:hover:bg-white/[0.03]">
                 <div className="relative aspect-video w-40 shrink-0 overflow-hidden rounded-lg">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -186,9 +188,9 @@ export default function Videos() {
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="line-clamp-2 text-sm font-medium leading-snug text-white">{v.title}</p>
-                  <p className="mt-1 text-xs text-neutral-500">{v.channel}</p>
-                  <p className="text-xs text-neutral-500">{v.views} views</p>
+                  <p className="line-clamp-2 text-sm font-medium leading-snug text-foreground">{v.title}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{v.channel}</p>
+                  <p className="text-xs text-muted-foreground">{v.views} views</p>
                 </div>
               </div>
             ))}
@@ -213,8 +215,8 @@ export default function Videos() {
                   {v.len}
                 </span>
               </div>
-              <p className="mt-2 line-clamp-2 text-sm font-medium leading-snug text-white">{v.title}</p>
-              <p className="mt-0.5 text-xs text-neutral-500">{v.channel} · {v.views} views</p>
+              <p className="mt-2 line-clamp-2 text-sm font-medium leading-snug text-foreground">{v.title}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{v.channel} · {v.views} views</p>
             </div>
           ))}
         </div>

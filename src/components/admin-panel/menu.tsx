@@ -81,7 +81,7 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "outline3" : "ghost"}
                               className={cn(
-                                "w-full justify-start h-8 mb-1 p-3 hover:bg-muted-foreground/10 hover:text-foreground",
+                                "w-full justify-start h-8 mb-1 p-3 hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:text-foreground",
                                 !active && "text-muted-foreground"
                               )}
                               asChild

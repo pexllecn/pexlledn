@@ -15,12 +15,12 @@ const summary = [
 ];
 
 const playlists = [
-  { name: "Focus Flow", items: 42, kind: "Music", seed: "lib-1", tint: "text-orange-400 bg-orange-500/15" },
-  { name: "Weekend Watch", items: 18, kind: "Video", seed: "lib-2", tint: "text-rose-400 bg-rose-500/15" },
-  { name: "Travel Shots", items: 214, kind: "Album", seed: "lib-3", tint: "text-sky-400 bg-sky-500/15" },
-  { name: "Deep Talks", items: 26, kind: "Podcast", seed: "lib-4", tint: "text-amber-400 bg-amber-500/15" },
-  { name: "Late Night", items: 33, kind: "Music", seed: "lib-5", tint: "text-violet-400 bg-violet-500/15" },
-  { name: "Nature 4K", items: 12, kind: "Video", seed: "lib-6", tint: "text-emerald-400 bg-emerald-500/15" },
+  { name: "Focus Flow", items: 42, kind: "Music", seed: "lib-1", tint: "text-orange-300 bg-orange-500/25" },
+  { name: "Weekend Watch", items: 18, kind: "Video", seed: "lib-2", tint: "text-rose-300 bg-rose-500/25" },
+  { name: "Travel Shots", items: 214, kind: "Album", seed: "lib-3", tint: "text-sky-300 bg-sky-500/25" },
+  { name: "Deep Talks", items: 26, kind: "Podcast", seed: "lib-4", tint: "text-amber-300 bg-amber-500/25" },
+  { name: "Late Night", items: 33, kind: "Music", seed: "lib-5", tint: "text-violet-300 bg-violet-500/25" },
+  { name: "Nature 4K", items: 12, kind: "Video", seed: "lib-6", tint: "text-emerald-300 bg-emerald-500/25" },
 ];
 
 const rows: Record<string, { title: string; meta: string; seed: string }[]> = {
@@ -51,8 +51,8 @@ export default function Library() {
       {/* header */}
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-semibold tracking-tight text-white">Your library</h2>
-          <p className="mt-1 text-sm text-neutral-400">Playlists, favorites and downloads — all in one place</p>
+          <h2 className="text-3xl font-semibold tracking-tight text-foreground">Your library</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Playlists, favorites and downloads — all in one place</p>
         </div>
         <AccentButton>
           <span className="flex items-center gap-2"><Plus className="h-4 w-4" /> New playlist</span>
@@ -63,25 +63,25 @@ export default function Library() {
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {summary.map((s) => (
           <div key={s.label} className={`${card} flex items-center gap-3 p-4`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-neutral-300">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground dark:bg-white/5">
               <s.icon className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-semibold leading-none tabular-nums text-white">{s.value}</p>
-              <p className="mt-1 text-xs text-neutral-500">{s.label}</p>
+              <p className="text-2xl font-semibold leading-none tabular-nums text-foreground">{s.value}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{s.label}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* tabs */}
-      <div className="mb-5 flex gap-6 border-b border-white/5">
+      <div className="mb-5 flex gap-6 border-b border-border dark:border-white/5">
         {tabs.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`relative -mb-px pb-3 text-sm transition-colors ${
-              tab === t ? "text-white" : "text-neutral-500 hover:text-neutral-300"
+              tab === t ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t}
@@ -115,10 +115,10 @@ export default function Library() {
       ) : (
         <div className="space-y-2">
           {tab === "Downloads" && (
-            <div className="mb-4 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-neutral-200">
-              <Download className="h-4 w-4 text-emerald-400" />
+            <div className="mb-4 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-foreground">
+              <Download className="h-4 w-4 text-emerald-500" />
               <span><span className="font-semibold">3 items</span> available offline · 350 MB used</span>
-              <span className="ml-auto rounded-full bg-white/5 px-2 py-0.5 text-xs text-neutral-400">Auto-download on</span>
+              <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground dark:bg-white/5">Auto-download on</span>
             </div>
           )}
           {rows[tab].map((it) => (
@@ -131,15 +131,15 @@ export default function Library() {
                 </div>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-white">{it.title}</p>
-                <p className="mt-0.5 text-xs text-neutral-500">{it.meta}</p>
+                <p className="truncate text-sm font-semibold text-foreground">{it.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{it.meta}</p>
               </div>
               {tab === "Liked" ? (
                 <Heart className="h-4 w-4 shrink-0 fill-orange-500 text-orange-500" />
               ) : tab === "Downloads" ? (
-                <Download className="h-4 w-4 shrink-0 text-neutral-500" />
+                <Download className="h-4 w-4 shrink-0 text-muted-foreground" />
               ) : (
-                <Clock className="h-4 w-4 shrink-0 text-neutral-500" />
+                <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
               )}
             </div>
           ))}

@@ -56,7 +56,7 @@ export default function Media() {
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         {/* MAIN */}
         <div className="min-w-0 space-y-7">
-          {/* Spotlight hero */}
+          {/* Spotlight hero (always-dark media) */}
           <div className="group relative overflow-hidden rounded-3xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -77,7 +77,7 @@ export default function Media() {
               <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl">
                 Between Death and Dreams
               </h2>
-              <p className="mt-3 max-w-md text-sm text-neutral-300">
+              <p className="mt-3 max-w-md text-sm text-white/70">
                 A cinematic night session — mixed media, curated for you and
                 ready to play across every device.
               </p>
@@ -103,8 +103,8 @@ export default function Media() {
                     <q.icon className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-white">{q.label}</p>
-                    <p className="truncate text-xs text-neutral-500">{q.sub}</p>
+                    <p className="truncate text-sm font-medium text-foreground">{q.label}</p>
+                    <p className="truncate text-xs text-muted-foreground">{q.sub}</p>
                   </div>
                 </div>
               </Link>
@@ -134,8 +134,8 @@ export default function Media() {
                       <div className="h-full bg-orange-500" style={{ width: `${j.pct}%` }} />
                     </div>
                   </div>
-                  <p className="mt-2 truncate text-sm font-medium text-white">{j.title}</p>
-                  <p className="truncate text-xs text-neutral-500">{j.sub}</p>
+                  <p className="mt-2 truncate text-sm font-medium text-foreground">{j.title}</p>
+                  <p className="truncate text-xs text-muted-foreground">{j.sub}</p>
                 </div>
               ))}
             </div>
@@ -158,8 +158,8 @@ export default function Media() {
                       <Play className="ml-0.5 h-4 w-4 fill-current" />
                     </div>
                   </div>
-                  <p className="mt-2 truncate text-sm font-medium text-white">{n.title}</p>
-                  <p className="truncate text-xs text-neutral-500">{n.meta}</p>
+                  <p className="mt-2 truncate text-sm font-medium text-foreground">{n.title}</p>
+                  <p className="truncate text-xs text-muted-foreground">{n.meta}</p>
                 </div>
               ))}
             </div>
@@ -171,7 +171,7 @@ export default function Media() {
           <Rail title="Top charts">
             {charts.map((c, i) => (
               <div key={c.seed} className="group flex items-center gap-3">
-                <span className="w-5 text-center text-lg font-bold text-white/15 tabular-nums">
+                <span className="w-5 text-center text-lg font-bold text-foreground/15 tabular-nums">
                   {i + 1}
                 </span>
                 <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg">
@@ -183,10 +183,10 @@ export default function Media() {
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-white">{c.title}</p>
-                  <p className="truncate text-xs text-neutral-500">{c.artist}</p>
+                  <p className="truncate text-sm font-medium text-foreground">{c.title}</p>
+                  <p className="truncate text-xs text-muted-foreground">{c.artist}</p>
                 </div>
-                <span className="shrink-0 text-xs text-neutral-500">{c.plays}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">{c.plays}</span>
               </div>
             ))}
           </Rail>
@@ -203,16 +203,16 @@ export default function Media() {
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-white">{c.name}</p>
-                  <p className="truncate text-xs text-neutral-500">{c.tag}</p>
+                  <p className="truncate text-sm font-medium text-foreground">{c.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{c.tag}</p>
                 </div>
-                <ChevronRight className="h-4 w-4 shrink-0 text-neutral-600 transition-transform group-hover:translate-x-0.5" />
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
             ))}
           </Rail>
 
           <div className={`${card} p-5`}>
-            <div className="flex items-center gap-2 text-orange-400">
+            <div className="flex items-center gap-2 text-orange-500">
               <TrendingUp className="h-4 w-4" />
               <p className="text-sm font-medium">This week</p>
             </div>
@@ -223,8 +223,8 @@ export default function Media() {
                 { v: "18", l: "Trending" },
               ].map((s) => (
                 <div key={s.l}>
-                  <p className="text-xl font-semibold text-white tabular-nums">{s.v}</p>
-                  <p className="text-1xs text-neutral-500">{s.l}</p>
+                  <p className="text-xl font-semibold text-foreground tabular-nums">{s.v}</p>
+                  <p className="text-1xs text-muted-foreground">{s.l}</p>
                 </div>
               ))}
             </div>

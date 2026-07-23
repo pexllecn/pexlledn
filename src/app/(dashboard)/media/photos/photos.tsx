@@ -46,7 +46,7 @@ export default function Photos() {
 
   return (
     <Cinema title="Photos">
-      {/* Memory hero */}
+      {/* Memory hero (always-dark media) */}
       <div className="relative mb-7 overflow-hidden rounded-3xl">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -62,7 +62,7 @@ export default function Photos() {
           <h2 className="mt-4 text-4xl font-semibold tracking-tight text-white">
             Your trip to Iceland
           </h2>
-          <p className="mt-2 max-w-md text-sm text-neutral-300">
+          <p className="mt-2 max-w-md text-sm text-white/70">
             24 memories, rediscovered — set to a slow cinematic fade.
           </p>
           <div className="mt-5">
@@ -96,7 +96,7 @@ export default function Photos() {
       <div className="mb-8 flex flex-wrap gap-5">
         {people.map((p) => (
           <div key={p.name} className="flex flex-col items-center gap-2">
-            <div className="h-16 w-16 overflow-hidden rounded-full ring-1 ring-white/10">
+            <div className="h-16 w-16 overflow-hidden rounded-full ring-1 ring-border dark:ring-white/10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://picsum.photos/seed/${p.seed}/120/120`}
@@ -104,12 +104,12 @@ export default function Photos() {
                 className="h-full w-full object-cover"
               />
             </div>
-            <span className="text-xs text-neutral-400">{p.name}</span>
+            <span className="text-xs text-muted-foreground">{p.name}</span>
           </div>
         ))}
       </div>
 
-      {/* Grid */}
+      {/* Grid (always-dark media overlays) */}
       <Label action={null}>All photos</Label>
       <div className="grid auto-rows-[150px] grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {photos.map((p, i) => (
@@ -137,7 +137,7 @@ export default function Photos() {
         ))}
       </div>
 
-      {/* Lightbox */}
+      {/* Lightbox (always dark) */}
       <AnimatePresence>
         {active !== null && (
           <motion.div
