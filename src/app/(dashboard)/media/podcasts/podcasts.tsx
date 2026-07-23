@@ -20,6 +20,8 @@ const featured = {
   len: "1h 04m",
 };
 
+const cats = ["Top", "Technology", "Business", "Design", "Science", "Culture", "Health"];
+
 const episodes = [
   { title: "Designing calm software", show: "Signal & Noise", len: "48:12", when: "Today", seed: "pod-1", progress: 30 },
   { title: "The economics of attention", show: "Deep Focus", len: "1:02:40", when: "Yesterday", seed: "pod-2", progress: 0 },
@@ -35,8 +37,17 @@ const shows = [
   { name: "In The Mix", eps: 204, seed: "pod-s4" },
 ];
 
+const charts = [
+  { name: "The Long Game", author: "Signal & Noise", seed: "pod-c1" },
+  { name: "Deep Work Daily", author: "Deep Focus", seed: "pod-c2" },
+  { name: "Blueprints", author: "Blueprint", seed: "pod-c3" },
+  { name: "First Draft", author: "The Draft", seed: "pod-c4" },
+  { name: "On Repeat", author: "In The Mix", seed: "pod-c5" },
+];
+
 export default function Podcasts() {
   const [playing, setPlaying] = useState(false);
+  const [cat, setCat] = useState("Top");
 
   return (
     <MediaPage title="Podcasts">
@@ -49,69 +60,69 @@ export default function Podcasts() {
             Fresh episodes from shows you follow
           </p>
         </div>
-        <Button
-          variant="outline"
-          className="rounded-full bg-card/60 backdrop-blur-md"
-        >
+        <Button variant="outline" className="rounded-full">
           <Mic className="mr-2 h-4 w-4" /> Browse shows
         </Button>
       </div>
 
-      {/* Featured player */}
-      <div className="relative overflow-hidden rounded-3xl border border-border/60">
-        <div className="absolute inset-0">
+      {/* Categories */}
+      <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+        {cats.map((c) => (
+          <button
+            key={c}
+            onClick={() => setCat(c)}
+            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              cat === c ? "bg-violet-600 text-white" : "border bg-card hover:bg-muted"
+            }`}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+
+      {/* Featured player (flat) */}
+      <div className={`${glass} flex flex-col items-center gap-6 p-6 sm:flex-row sm:p-8`}>
+        <div className="relative aspect-square w-44 shrink-0 overflow-hidden rounded-2xl border">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`https://picsum.photos/seed/${featured.seed}/1200/500`}
-            alt=""
+            src={`https://picsum.photos/seed/${featured.seed}/400/400`}
+            alt={featured.title}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/50" />
-          <div className="absolute inset-0 bg-background/40 backdrop-blur-sm" />
         </div>
-        <div className="relative flex flex-col items-center gap-6 p-6 sm:flex-row sm:p-8">
-          <div className="relative aspect-square w-44 shrink-0 overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://picsum.photos/seed/${featured.seed}/400/400`}
-              alt={featured.title}
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="min-w-0 flex-1 text-center sm:text-left">
-            <span className="inline-flex rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-xs font-medium text-white">
-              Featured episode
-            </span>
-            <h3 className="mt-3 text-2xl font-semibold leading-snug tracking-tight">
-              {featured.title}
-            </h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {featured.show} · {featured.len}
-            </p>
-            <p className="mt-3 max-w-lg text-sm text-muted-foreground">
-              {featured.desc}
-            </p>
+        <div className="min-w-0 flex-1 text-center sm:text-left">
+          <span className="inline-flex rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+            Featured episode
+          </span>
+          <h3 className="mt-3 text-2xl font-semibold leading-snug tracking-tight">
+            {featured.title}
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {featured.show} · {featured.len}
+          </p>
+          <p className="mt-3 max-w-lg text-sm text-muted-foreground">
+            {featured.desc}
+          </p>
 
-            <div className="mt-5 flex items-center justify-center gap-2 sm:justify-start">
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <Rewind className="h-5 w-5" />
-              </Button>
-              <Button
-                onClick={() => setPlaying((p) => !p)}
-                className="h-14 w-14 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white border-none shadow-xl shadow-orange-500/30 hover:opacity-90"
-              >
-                {playing ? (
-                  <Pause className="h-5 w-5 fill-current" />
-                ) : (
-                  <Play className="h-5 w-5 fill-current" />
-                )}
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <FastForward className="h-5 w-5" />
-              </Button>
-              <div className="ml-3 hidden max-w-xs flex-1 sm:block">
-                <Slider defaultValue={[18]} max={100} step={1} />
-              </div>
+          <div className="mt-5 flex items-center justify-center gap-2 sm:justify-start">
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Rewind className="h-5 w-5" />
+            </Button>
+            <Button
+              onClick={() => setPlaying((p) => !p)}
+              className="h-14 w-14 rounded-full bg-violet-600 text-white hover:bg-violet-700"
+            >
+              {playing ? (
+                <Pause className="h-5 w-5 fill-current" />
+              ) : (
+                <Play className="h-5 w-5 fill-current" />
+              )}
+            </Button>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <FastForward className="h-5 w-5" />
+            </Button>
+            <div className="ml-3 hidden max-w-xs flex-1 sm:block">
+              <Slider defaultValue={[18]} max={100} step={1} />
             </div>
           </div>
         </div>
@@ -123,9 +134,9 @@ export default function Podcasts() {
         {episodes.map((e) => (
           <div
             key={e.seed}
-            className={`group ${glass} flex items-center gap-4 p-3 transition-colors hover:border-border`}
+            className={`group ${glass} ${glassHover} flex items-center gap-4 p-3`}
           >
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl">
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://picsum.photos/seed/${e.seed}/160/160`}
@@ -144,7 +155,7 @@ export default function Podcasts() {
               {e.progress > 0 && e.progress < 100 && (
                 <div className="mt-2 h-1 w-full max-w-xs rounded-full bg-muted">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
+                    className="h-full rounded-full bg-violet-500"
                     style={{ width: `${e.progress}%` }}
                   />
                 </div>
@@ -156,37 +167,65 @@ export default function Podcasts() {
             <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
               {e.len}
             </span>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 shrink-0 rounded-full"
-            >
+            <Button variant="outline" size="icon" className="h-8 w-8 shrink-0 rounded-full">
               <Plus className="h-4 w-4" />
             </Button>
           </div>
         ))}
       </div>
 
-      {/* Your shows */}
-      <SectionHeading title="Your shows" subtitle="Subscriptions" />
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        {shows.map((s) => (
-          <div
-            key={s.name}
-            className={`group ${glass} ${glassHover} cursor-pointer p-4 text-center`}
-          >
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`https://picsum.photos/seed/${s.seed}/300/300`}
-                alt={s.name}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
-            <p className="mt-3 w-full truncate text-sm font-semibold">{s.name}</p>
-            <p className="text-xs text-muted-foreground">{s.eps} episodes</p>
+      {/* Two-up: your shows + top charts */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className={`${glass} p-6`}>
+          <SectionHeading title="Your shows" subtitle="Subscriptions" />
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {shows.map((s) => (
+              <div key={s.name} className="group cursor-pointer text-center">
+                <div className="relative aspect-square overflow-hidden rounded-xl border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://picsum.photos/seed/${s.seed}/200/200`}
+                    alt={s.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <p className="mt-2 truncate text-xs font-medium">{s.name}</p>
+                <p className="text-1xs text-muted-foreground">{s.eps} eps</p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        <div className={`${glass} p-6`}>
+          <SectionHeading title="Top charts" subtitle="Popular right now" />
+          <div className="mt-4 space-y-1">
+            {charts.map((c, i) => (
+              <div
+                key={c.seed}
+                className="flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-muted/50"
+              >
+                <span className="w-5 text-center text-lg font-bold text-muted-foreground tabular-nums">
+                  {i + 1}
+                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://picsum.photos/seed/${c.seed}/120/120`}
+                  alt={c.name}
+                  className="h-11 w-11 rounded-lg object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{c.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {c.author}
+                  </p>
+                </div>
+                <Button size="icon" variant="ghost" className="rounded-full">
+                  <Play className="h-4 w-4 fill-current" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </MediaPage>
   );

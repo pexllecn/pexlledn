@@ -13,6 +13,7 @@ import {
   Monitor,
   Palette,
   Play,
+  Shield,
   Sparkles,
   Wifi,
 } from "lucide-react";
@@ -40,7 +41,7 @@ function Row({
   );
 }
 
-function Card({
+function Panel({
   icon: Icon,
   title,
   desc,
@@ -54,7 +55,7 @@ function Card({
   return (
     <div className={`${glass} p-6`}>
       <div className="mb-4 flex items-start gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-foreground">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-foreground">
           <Icon className="h-4 w-4" />
         </div>
         <div>
@@ -68,11 +69,11 @@ function Card({
 }
 
 const accents = [
-  { name: "Violet", cls: "from-violet-500 to-fuchsia-500" },
-  { name: "Rose", cls: "from-rose-500 to-orange-400" },
-  { name: "Sky", cls: "from-sky-500 to-cyan-400" },
-  { name: "Emerald", cls: "from-emerald-500 to-teal-400" },
-  { name: "Amber", cls: "from-amber-500 to-yellow-400" },
+  { name: "Violet", cls: "bg-violet-600" },
+  { name: "Rose", cls: "bg-rose-500" },
+  { name: "Sky", cls: "bg-sky-500" },
+  { name: "Emerald", cls: "bg-emerald-500" },
+  { name: "Amber", cls: "bg-amber-500" },
 ];
 
 export default function Settings() {
@@ -92,30 +93,28 @@ export default function Settings() {
           </p>
         </div>
 
-        {/* Profile */}
-        <div className="overflow-hidden rounded-3xl border border-border/60">
-          <div className="relative h-28 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_50%)]" />
-          </div>
-          <div className="bg-card/70 p-6 pt-0 backdrop-blur-xl">
-            <div className="-mt-10 flex items-end gap-4">
-              <Avatar className="h-20 w-20 border-4 border-background">
-                <AvatarImage src="/avatar-80-01.jpg" alt="Profile" />
-                <AvatarFallback>ME</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 pb-1">
-                <p className="text-lg font-semibold">Alex Rivera</p>
-                <p className="text-sm text-muted-foreground">alex@media.app</p>
-              </div>
-              <span className="mb-1 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-3 py-1 text-xs font-medium text-white">
-                <Sparkles className="h-3 w-3" /> Premium
-              </span>
+        {/* Profile (flat) */}
+        <div className={`${glass} p-6`}>
+          <div className="flex flex-wrap items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src="/avatar-80-01.jpg" alt="Profile" />
+              <AvatarFallback>ME</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="text-lg font-semibold">Alex Rivera</p>
+              <p className="text-sm text-muted-foreground">alex@media.app</p>
             </div>
+            <span className="inline-flex items-center gap-1 rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-600 dark:text-violet-400">
+              <Sparkles className="h-3 w-3" /> Premium
+            </span>
+            <Button variant="outline" size="sm" className="rounded-full">
+              Edit profile
+            </Button>
           </div>
         </div>
 
         {/* Playback */}
-        <Card icon={Play} title="Playback" desc="How your media plays by default">
+        <Panel icon={Play} title="Playback" desc="How your media plays by default">
           <div className="mb-4">
             <p className="mb-2 text-sm font-medium">Streaming quality</p>
             <div className="flex flex-wrap gap-2">
@@ -123,9 +122,9 @@ export default function Settings() {
                 <button
                   key={q}
                   onClick={() => setQuality(q)}
-                  className={`rounded-full px-3.5 py-1.5 text-sm transition-all ${
+                  className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
                     quality === q
-                      ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-md shadow-fuchsia-500/25"
+                      ? "bg-violet-600 text-white"
                       : "bg-muted hover:bg-muted/70"
                   }`}
                 >
@@ -140,10 +139,10 @@ export default function Settings() {
           <Row title="Continuous playback" desc="Pick up where you left off across devices" defaultChecked />
           <Separator />
           <Row title="Gapless audio" desc="Remove silence between tracks" />
-        </Card>
+        </Panel>
 
         {/* Appearance */}
-        <Card icon={Palette} title="Appearance" desc="Personalize how Media looks">
+        <Panel icon={Palette} title="Appearance" desc="Personalize how Media looks">
           <p className="mb-3 text-sm font-medium">Accent color</p>
           <div className="flex flex-wrap gap-3">
             {accents.map((a) => (
@@ -153,9 +152,9 @@ export default function Settings() {
                 className="flex flex-col items-center gap-1.5"
               >
                 <span
-                  className={`h-10 w-10 rounded-full bg-gradient-to-br ${a.cls} transition-transform ${
+                  className={`h-10 w-10 rounded-full ${a.cls} ${
                     accent === a.name
-                      ? "scale-110 ring-2 ring-foreground ring-offset-2 ring-offset-card"
+                      ? "ring-2 ring-foreground ring-offset-2 ring-offset-card"
                       : ""
                   }`}
                 />
@@ -167,19 +166,28 @@ export default function Settings() {
           <Row title="Reduce motion" desc="Minimize animations across the app" />
           <Separator />
           <Row title="Cinematic mode" desc="Dim the interface while watching videos" defaultChecked />
-        </Card>
+        </Panel>
 
         {/* Notifications */}
-        <Card icon={Bell} title="Notifications" desc="Choose what you hear about">
+        <Panel icon={Bell} title="Notifications" desc="Choose what you hear about">
           <Row title="New from your channels" desc="When a followed creator goes live or posts" defaultChecked />
           <Separator />
           <Row title="Recommendations" desc="Weekly picks based on your taste" defaultChecked />
           <Separator />
           <Row title="Product updates" desc="News about new features" />
-        </Card>
+        </Panel>
+
+        {/* Privacy */}
+        <Panel icon={Shield} title="Privacy" desc="Control your data and history">
+          <Row title="Save watch history" desc="Used to improve your recommendations" defaultChecked />
+          <Separator />
+          <Row title="Private profile" desc="Hide your activity from other users" />
+          <Separator />
+          <Row title="Personalized ads" desc="Show ads based on your interests" />
+        </Panel>
 
         {/* Storage */}
-        <Card icon={HardDrive} title="Storage & data" desc="Manage downloads and network use">
+        <Panel icon={HardDrive} title="Storage & data" desc="Manage downloads and network use">
           <div className="mb-2 flex items-center justify-between text-sm">
             <span className="flex items-center gap-2">
               <Download className="h-4 w-4 text-muted-foreground" />
@@ -196,16 +204,16 @@ export default function Settings() {
           <Row title="Download over Wi-Fi only" desc="Avoid using mobile data for downloads" defaultChecked />
           <Separator />
           <Row title="Stream in high quality on cellular" desc="May use significantly more data" />
-          <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl bg-muted p-3">
+          <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl bg-muted p-3">
             <Wifi className="h-4 w-4 text-emerald-500" />
             <span className="text-sm">Connected · downloading over Wi-Fi</span>
             <Button variant="outline" size="sm" className="ml-auto rounded-full">
               Clear cache
             </Button>
           </div>
-        </Card>
+        </Panel>
 
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-dashed border-border p-4">
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-dashed p-4">
           <div className="flex items-center gap-3">
             <Monitor className="h-5 w-5 text-muted-foreground" />
             <div>
@@ -219,10 +227,8 @@ export default function Settings() {
         </div>
 
         <div className="flex justify-end gap-2 pb-2">
-          <Button variant="ghost" className="rounded-full">
-            Reset
-          </Button>
-          <Button className="rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none shadow-lg shadow-fuchsia-500/25 hover:opacity-90">
+          <Button variant="ghost" className="rounded-full">Reset</Button>
+          <Button className="rounded-full bg-violet-600 text-white hover:bg-violet-700">
             Save changes
           </Button>
         </div>

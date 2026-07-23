@@ -103,46 +103,14 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/media"),
           icon: Clapperboard,
           submenus: [
-            {
-              href: "/media",
-              label: "Overview",
-              active: pathname === "/media",
-            },
-            {
-              href: "/media/photos",
-              label: "Photos",
-              active: pathname === "/media/photos",
-            },
-            {
-              href: "/media/music",
-              label: "Music",
-              active: pathname === "/media/music",
-            },
-            {
-              href: "/media/videos",
-              label: "Videos",
-              active: pathname === "/media/videos",
-            },
-            {
-              href: "/media/podcasts",
-              label: "Podcasts",
-              active: pathname === "/media/podcasts",
-            },
-            {
-              href: "/media/live",
-              label: "Live TV",
-              active: pathname === "/media/live",
-            },
-            {
-              href: "/media/library",
-              label: "Library",
-              active: pathname === "/media/library",
-            },
-            {
-              href: "/media/settings",
-              label: "Settings",
-              active: pathname === "/media/settings",
-            },
+            { href: "/media", label: "Overview", active: pathname === "/media" },
+            { href: "/media/photos", label: "Photos", active: pathname === "/media/photos" },
+            { href: "/media/music", label: "Music", active: pathname === "/media/music" },
+            { href: "/media/videos", label: "Videos", active: pathname === "/media/videos" },
+            { href: "/media/podcasts", label: "Podcasts", active: pathname === "/media/podcasts" },
+            { href: "/media/live", label: "Live TV", active: pathname === "/media/live" },
+            { href: "/media/library", label: "Library", active: pathname === "/media/library" },
+            { href: "/media/settings", label: "Settings", active: pathname === "/media/settings" },
           ],
           notificationCount: "New",
         },
@@ -152,31 +120,11 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/banking"),
           icon: Landmark,
           submenus: [
-            {
-              href: "/banking",
-              label: "Overview",
-              active: pathname === "/banking",
-            },
-            {
-              href: "/banking/cards",
-              label: "Cards",
-              active: pathname === "/banking/cards",
-            },
-            {
-              href: "/banking/transactions",
-              label: "Transactions",
-              active: pathname === "/banking/transactions",
-            },
-            {
-              href: "/banking/payments",
-              label: "Payments",
-              active: pathname === "/banking/payments",
-            },
-            {
-              href: "/banking/investments",
-              label: "Investments",
-              active: pathname === "/banking/investments",
-            },
+            { href: "/banking", label: "Overview", active: pathname === "/banking" },
+            { href: "/banking/cards", label: "Cards", active: pathname === "/banking/cards" },
+            { href: "/banking/transactions", label: "Transactions", active: pathname === "/banking/transactions" },
+            { href: "/banking/payments", label: "Payments", active: pathname === "/banking/payments" },
+            { href: "/banking/investments", label: "Investments", active: pathname === "/banking/investments" },
           ],
         },
         {
@@ -185,31 +133,24 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/clinic"),
           icon: Stethoscope,
           submenus: [
-            {
-              href: "/clinic",
-              label: "Overview",
-              active: pathname === "/clinic",
-            },
-            {
-              href: "/clinic/appointments",
-              label: "Appointments",
-              active: pathname === "/clinic/appointments",
-            },
-            {
-              href: "/clinic/patients",
-              label: "Patients",
-              active: pathname === "/clinic/patients",
-            },
-            {
-              href: "/clinic/staff",
-              label: "Staff",
-              active: pathname === "/clinic/staff",
-            },
-            {
-              href: "/clinic/billing",
-              label: "Billing",
-              active: pathname === "/clinic/billing",
-            },
+            { href: "/clinic", label: "Overview", active: pathname === "/clinic" },
+            { href: "/clinic/appointments", label: "Appointments", active: pathname === "/clinic/appointments" },
+            { href: "/clinic/patients", label: "Patients", active: pathname === "/clinic/patients" },
+            { href: "/clinic/staff", label: "Staff", active: pathname === "/clinic/staff" },
+            { href: "/clinic/billing", label: "Billing", active: pathname === "/clinic/billing" },
+          ],
+        },
+        {
+          href: "",
+          label: "Education",
+          active: pathname.includes("/education"),
+          icon: GraduationCap,
+          submenus: [
+            { href: "/education", label: "Overview", active: pathname === "/education" },
+            { href: "/education/courses", label: "Courses", active: pathname === "/education/courses" },
+            { href: "/education/instructors", label: "Instructors", active: pathname === "/education/instructors" },
+            { href: "/education/progress", label: "Progress", active: pathname === "/education/progress" },
+            { href: "/education/certificates", label: "Certificates", active: pathname === "/education/certificates" },
           ],
         },
         {
@@ -218,54 +159,38 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/fitness"),
           icon: Dumbbell,
           submenus: [
-            {
-              href: "/fitness",
-              label: "Overview",
-              active: pathname === "/fitness",
-            },
-            {
-              href: "/fitness/workouts",
-              label: "Workouts",
-              active: pathname === "/fitness/workouts",
-            },
-            {
-              href: "/fitness/schedule",
-              label: "Schedule",
-              active: pathname === "/fitness/schedule",
-              notificationCount: "New",
-            },
-            {
-              href: "/fitness/nutrition",
-              label: "Nutrition",
-              active: pathname === "/fitness/nutrition",
-            },
-            {
-              href: "/fitness/progress",
-              label: "Progress",
-              active: pathname === "/fitness/progress",
-            },
+            { href: "/fitness", label: "Overview", active: pathname === "/fitness" },
+            { href: "/fitness/workouts", label: "Workouts", active: pathname === "/fitness/workouts" },
+            { href: "/fitness/schedule", label: "Schedule", active: pathname === "/fitness/schedule", notificationCount: "New" },
+            { href: "/fitness/nutrition", label: "Nutrition", active: pathname === "/fitness/nutrition" },
+            { href: "/fitness/progress", label: "Progress", active: pathname === "/fitness/progress" },
           ],
         },
         {
-          href: "/education",
-          label: "Education",
-          active: pathname.includes("/education"),
-          icon: GraduationCap,
-          submenus: [],
-        },
-        {
-          href: "/logistics",
+          href: "",
           label: "Logistics",
           active: pathname.includes("/logistics"),
           icon: Truck,
-          submenus: [],
+          submenus: [
+            { href: "/logistics", label: "Shipments", active: pathname === "/logistics" },
+            { href: "/logistics/fleet", label: "Fleet", active: pathname === "/logistics/fleet" },
+            { href: "/logistics/tracking", label: "Tracking", active: pathname === "/logistics/tracking" },
+            { href: "/logistics/warehouses", label: "Warehouses", active: pathname === "/logistics/warehouses" },
+            { href: "/logistics/drivers", label: "Drivers", active: pathname === "/logistics/drivers" },
+          ],
         },
         {
-          href: "/medical",
+          href: "",
           label: "Medical",
           active: pathname.includes("/medical"),
           icon: HeartPulse,
-          submenus: [],
+          submenus: [
+            { href: "/medical", label: "Overview", active: pathname === "/medical" },
+            { href: "/medical/patients", label: "Patients", active: pathname === "/medical/patients" },
+            { href: "/medical/appointments", label: "Appointments", active: pathname === "/medical/appointments" },
+            { href: "/medical/records", label: "Records", active: pathname === "/medical/records" },
+            { href: "/medical/reports", label: "Reports", active: pathname === "/medical/reports" },
+          ],
         },
         {
           href: "",
@@ -273,21 +198,11 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/realestate"),
           icon: Building,
           submenus: [
-            {
-              href: "/realestate",
-              label: "Building Management",
-              active: pathname === "/realestate",
-            },
-            {
-              href: "/realestate/redetails",
-              label: "Real Estate Listings",
-              active: pathname === "/realestate/redetails",
-            },
-            {
-              href: "/realestate/reresults",
-              label: "Search Results",
-              active: pathname === "/realestate/reresults",
-            },
+            { href: "/realestate", label: "Building Management", active: pathname === "/realestate" },
+            { href: "/realestate/redetails", label: "Real Estate Listings", active: pathname === "/realestate/redetails" },
+            { href: "/realestate/reresults", label: "Search Results", active: pathname === "/realestate/reresults" },
+            { href: "/realestate/agents", label: "Agents", active: pathname === "/realestate/agents" },
+            { href: "/realestate/analytics", label: "Analytics", active: pathname === "/realestate/analytics" },
           ],
         },
         {
@@ -296,31 +211,11 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/restaurant"),
           icon: UtensilsCrossed,
           submenus: [
-            {
-              href: "/restaurant",
-              label: "Overview",
-              active: pathname === "/restaurant",
-            },
-            {
-              href: "/restaurant/orders",
-              label: "Orders",
-              active: pathname === "/restaurant/orders",
-            },
-            {
-              href: "/restaurant/menu",
-              label: "Menu",
-              active: pathname === "/restaurant/menu",
-            },
-            {
-              href: "/restaurant/reservations",
-              label: "Reservations",
-              active: pathname === "/restaurant/reservations",
-            },
-            {
-              href: "/restaurant/reviews",
-              label: "Reviews",
-              active: pathname === "/restaurant/reviews",
-            },
+            { href: "/restaurant", label: "Overview", active: pathname === "/restaurant" },
+            { href: "/restaurant/orders", label: "Orders", active: pathname === "/restaurant/orders" },
+            { href: "/restaurant/menu", label: "Menu", active: pathname === "/restaurant/menu" },
+            { href: "/restaurant/reservations", label: "Reservations", active: pathname === "/restaurant/reservations" },
+            { href: "/restaurant/reviews", label: "Reviews", active: pathname === "/restaurant/reviews" },
           ],
         },
         {
@@ -329,31 +224,11 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/travel"),
           icon: Plane,
           submenus: [
-            {
-              href: "/travel",
-              label: "Overview",
-              active: pathname === "/travel",
-            },
-            {
-              href: "/travel/trips",
-              label: "Trips",
-              active: pathname === "/travel/trips",
-            },
-            {
-              href: "/travel/flights",
-              label: "Flights",
-              active: pathname === "/travel/flights",
-            },
-            {
-              href: "/travel/stays",
-              label: "Stays",
-              active: pathname === "/travel/stays",
-            },
-            {
-              href: "/travel/explore",
-              label: "Explore",
-              active: pathname === "/travel/explore",
-            },
+            { href: "/travel", label: "Overview", active: pathname === "/travel" },
+            { href: "/travel/trips", label: "Trips", active: pathname === "/travel/trips" },
+            { href: "/travel/flights", label: "Flights", active: pathname === "/travel/flights" },
+            { href: "/travel/stays", label: "Stays", active: pathname === "/travel/stays" },
+            { href: "/travel/explore", label: "Explore", active: pathname === "/travel/explore" },
           ],
         },
       ],
@@ -362,18 +237,30 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Workspace",
       menus: [
         {
-          href: "/work",
+          href: "",
           label: "Work",
           active: pathname.includes("/work"),
           icon: Briefcase,
-          submenus: [],
+          submenus: [
+            { href: "/work", label: "Jobs", active: pathname === "/work" },
+            { href: "/work/applications", label: "Applications", active: pathname === "/work/applications" },
+            { href: "/work/saved", label: "Saved", active: pathname === "/work/saved" },
+            { href: "/work/companies", label: "Companies", active: pathname === "/work/companies" },
+            { href: "/work/profile", label: "Profile", active: pathname === "/work/profile" },
+          ],
         },
         {
-          href: "/lead",
+          href: "",
           label: "Leads",
           active: pathname.includes("/lead"),
           icon: Banknote,
-          submenus: [],
+          submenus: [
+            { href: "/lead", label: "Overview", active: pathname === "/lead" },
+            { href: "/lead/pipeline", label: "Pipeline", active: pathname === "/lead/pipeline" },
+            { href: "/lead/contacts", label: "Contacts", active: pathname === "/lead/contacts" },
+            { href: "/lead/deals", label: "Deals", active: pathname === "/lead/deals" },
+            { href: "/lead/activities", label: "Activities", active: pathname === "/lead/activities" },
+          ],
         },
         {
           href: "",
@@ -381,16 +268,8 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/social"),
           icon: BookOpenText,
           submenus: [
-            {
-              href: "/social",
-              label: "Social Timeline",
-              active: pathname === "/social",
-            },
-            {
-              href: "/social/profile",
-              label: "Profile",
-              active: pathname === "/social/profile",
-            },
+            { href: "/social", label: "Social Timeline", active: pathname === "/social" },
+            { href: "/social/profile", label: "Profile", active: pathname === "/social/profile" },
           ],
         },
         {
@@ -399,31 +278,11 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/user/1"),
           icon: Store,
           submenus: [
-            {
-              href: "/user/1",
-              label: "User Profile",
-              active: pathname.includes("/user/1"),
-            },
-            {
-              href: "/posts",
-              label: "Post Details",
-              active: pathname === "/posts",
-            },
-            {
-              href: "/posts/new",
-              label: "All Posts",
-              active: pathname === "/posts/new",
-            },
-            {
-              href: "/categories",
-              label: "Categories",
-              active: pathname.includes("/categories"),
-            },
-            {
-              href: "/filters",
-              label: "Filters",
-              active: pathname.includes("/filters"),
-            },
+            { href: "/user/1", label: "User Profile", active: pathname.includes("/user/1") },
+            { href: "/posts", label: "Post Details", active: pathname === "/posts" },
+            { href: "/posts/new", label: "All Posts", active: pathname === "/posts/new" },
+            { href: "/categories", label: "Categories", active: pathname.includes("/categories") },
+            { href: "/filters", label: "Filters", active: pathname.includes("/filters") },
           ],
         },
         {
@@ -456,26 +315,10 @@ export function getMenuList(pathname: string): Group[] {
             pathname.includes("/pricing"),
           icon: Settings,
           submenus: [
-            {
-              href: "/users",
-              label: "Users",
-              active: pathname.includes("/users"),
-            },
-            {
-              href: "/teams",
-              label: "Team Members",
-              active: pathname.includes("/teams"),
-            },
-            {
-              href: "/account",
-              label: "Account",
-              active: pathname.includes("/account"),
-            },
-            {
-              href: "/pricing",
-              label: "Pricing",
-              active: pathname.includes("/pricing"),
-            },
+            { href: "/users", label: "Users", active: pathname.includes("/users") },
+            { href: "/teams", label: "Team Members", active: pathname.includes("/teams") },
+            { href: "/account", label: "Account", active: pathname.includes("/account") },
+            { href: "/pricing", label: "Pricing", active: pathname.includes("/pricing") },
           ],
         },
       ],

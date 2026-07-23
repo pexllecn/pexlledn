@@ -4,21 +4,30 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Clock, Download, Heart, ListVideo, Play, Plus } from "lucide-react";
 import {
-  MediaPage,
-  GradientText,
-  glass,
-  glassHover,
-} from "../components/media-ui";
+  Clock,
+  Download,
+  Heart,
+  ListVideo,
+  Play,
+  Plus,
+} from "lucide-react";
+import { MediaPage, GradientText, glass, glassHover } from "../components/media-ui";
+
+const summary = [
+  { label: "Playlists", value: "24", icon: ListVideo },
+  { label: "Liked", value: "312", icon: Heart },
+  { label: "Downloaded", value: "48", icon: Download },
+  { label: "Hours saved", value: "126", icon: Clock },
+];
 
 const playlists = [
-  { name: "Focus Flow", items: 42, kind: "Music", seed: "lib-1", tint: "from-violet-500 to-fuchsia-500" },
-  { name: "Weekend Watch", items: 18, kind: "Video", seed: "lib-2", tint: "from-rose-500 to-orange-400" },
-  { name: "Travel Shots", items: 214, kind: "Album", seed: "lib-3", tint: "from-sky-500 to-cyan-400" },
-  { name: "Deep Talks", items: 26, kind: "Podcast", seed: "lib-4", tint: "from-amber-500 to-yellow-400" },
-  { name: "Late Night", items: 33, kind: "Music", seed: "lib-5", tint: "from-indigo-500 to-purple-500" },
-  { name: "Nature 4K", items: 12, kind: "Video", seed: "lib-6", tint: "from-emerald-500 to-teal-400" },
+  { name: "Focus Flow", items: 42, kind: "Music", seed: "lib-1", tint: "bg-violet-500/10 text-violet-600 dark:text-violet-400" },
+  { name: "Weekend Watch", items: 18, kind: "Video", seed: "lib-2", tint: "bg-rose-500/10 text-rose-600 dark:text-rose-400" },
+  { name: "Travel Shots", items: 214, kind: "Album", seed: "lib-3", tint: "bg-sky-500/10 text-sky-600 dark:text-sky-400" },
+  { name: "Deep Talks", items: 26, kind: "Podcast", seed: "lib-4", tint: "bg-amber-500/10 text-amber-600 dark:text-amber-400" },
+  { name: "Late Night", items: 33, kind: "Music", seed: "lib-5", tint: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" },
+  { name: "Nature 4K", items: 12, kind: "Video", seed: "lib-6", tint: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
 ];
 
 const liked = [
@@ -53,9 +62,9 @@ function MediaRow({
       {items.map((it) => (
         <div
           key={it.seed}
-          className={`group ${glass} flex items-center gap-4 p-3 transition-colors hover:border-border`}
+          className={`group ${glass} ${glassHover} flex items-center gap-4 p-3`}
         >
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl">
+          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`https://picsum.photos/seed/${it.seed}/120/120`}
@@ -91,9 +100,26 @@ export default function Library() {
             Playlists, favorites and downloads — all in one place
           </p>
         </div>
-        <Button className="rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-none shadow-lg shadow-fuchsia-500/25 hover:opacity-90">
+        <Button className="rounded-full bg-violet-600 text-white hover:bg-violet-700">
           <Plus className="mr-2 h-4 w-4" /> New playlist
         </Button>
+      </div>
+
+      {/* Summary */}
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        {summary.map((s) => (
+          <div key={s.label} className={`${glass} flex items-center gap-3 p-4`}>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <s.icon className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-semibold tabular-nums leading-none">
+                {s.value}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{s.label}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
@@ -117,28 +143,26 @@ export default function Library() {
             {playlists.map((p) => (
               <div
                 key={p.name}
-                className={`group ${glassHover} cursor-pointer overflow-hidden rounded-3xl border border-border/60`}
+                className="group cursor-pointer overflow-hidden rounded-2xl border"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`https://picsum.photos/seed/${p.seed}/600/380`}
                     alt={p.name}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute inset-0 bg-black/30" />
                   <span
-                    className={`absolute left-3 top-3 rounded-full bg-gradient-to-r ${p.tint} px-2.5 py-0.5 text-1xs font-medium text-white`}
+                    className={`absolute left-3 top-3 rounded-full px-2.5 py-0.5 text-1xs font-medium ${p.tint}`}
                   >
                     {p.kind}
                   </span>
-                  <div className="absolute bottom-3 right-3 flex h-12 w-12 translate-y-2 items-center justify-center rounded-full bg-white text-black opacity-0 shadow-xl transition-all group-hover:translate-y-0 group-hover:opacity-100">
+                  <div className="absolute bottom-3 right-3 flex h-11 w-11 translate-y-2 items-center justify-center rounded-full bg-violet-600 text-white opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
                     <Play className="h-5 w-5 fill-current" />
                   </div>
                   <div className="absolute bottom-3 left-3 text-white">
-                    <p className="text-sm font-semibold leading-none">
-                      {p.name}
-                    </p>
+                    <p className="text-sm font-semibold leading-none">{p.name}</p>
                     <p className="mt-1 text-1xs text-white/70">{p.items} items</p>
                   </div>
                 </div>

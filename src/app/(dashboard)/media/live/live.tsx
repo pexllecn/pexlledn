@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Eye, Radio, Send, Users } from "lucide-react";
+import { CalendarClock, Eye, Radio, Send, Users } from "lucide-react";
 import { MediaPage, SectionHeading, glass } from "../components/media-ui";
 
 const channels = [
@@ -15,6 +15,13 @@ const channels = [
   { name: "Cooking Live", cat: "Food", viewers: "8.9K", seed: "live-4", live: true },
   { name: "Space Launch", cat: "Science", viewers: "91K", seed: "live-5", live: true },
   { name: "Night Drive", cat: "Chill", viewers: "5.2K", seed: "live-6", live: false },
+];
+
+const schedule = [
+  { time: "18:00", title: "Evening News Live", channel: "Match Day", tag: "News" },
+  { time: "19:30", title: "Acoustic Sessions", channel: "Lo-fi Radio", tag: "Music" },
+  { time: "20:00", title: "Champions Recap", channel: "Match Day", tag: "Sports" },
+  { time: "21:15", title: "Late Night Cook-off", channel: "Cooking Live", tag: "Food" },
 ];
 
 const chat = [
@@ -45,7 +52,7 @@ export default function Live() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Player */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="relative aspect-video overflow-hidden rounded-3xl bg-black ring-1 ring-border/60">
+          <div className="relative aspect-video overflow-hidden rounded-2xl bg-black border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`https://picsum.photos/seed/${channel.seed}/1280/720`}
@@ -57,7 +64,7 @@ export default function Live() {
                 <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
                 LIVE
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-1xs text-white backdrop-blur-md">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-1xs text-white">
                 <Eye className="h-3 w-3" /> {channel.viewers}
               </span>
             </div>
@@ -65,7 +72,7 @@ export default function Live() {
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Avatar className="h-11 w-11 ring-2 ring-emerald-500/25">
+              <Avatar className="h-11 w-11">
                 <AvatarImage src="/avatar-40-02.jpg" alt={channel.name} />
                 <AvatarFallback>LV</AvatarFallback>
               </Avatar>
@@ -77,7 +84,7 @@ export default function Live() {
                 </p>
               </div>
             </div>
-            <Button className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-white border-none shadow-lg shadow-emerald-500/25 hover:opacity-90">
+            <Button className="rounded-full bg-emerald-500 text-white hover:bg-emerald-600">
               <Radio className="mr-2 h-4 w-4" /> Follow
             </Button>
           </div>
@@ -86,7 +93,7 @@ export default function Live() {
         {/* Live chat */}
         <div className={`${glass} flex flex-col p-4`}>
           <div className="flex h-[440px] flex-col">
-            <div className="flex items-center justify-between border-b border-border/60 pb-3">
+            <div className="flex items-center justify-between border-b pb-3">
               <p className="text-sm font-semibold">Live chat</p>
               <Badge variant="secondary" className="gap-1 rounded-full">
                 <Users className="h-3 w-3" /> {channel.viewers}
@@ -100,19 +107,15 @@ export default function Live() {
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-2 border-t border-border/60 pt-3">
+            <div className="flex items-center gap-2 border-t pt-3">
               <Input
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
                 placeholder="Say something…"
-                className="rounded-full bg-background"
+                className="rounded-full bg-muted"
               />
-              <Button
-                size="icon"
-                onClick={send}
-                className="shrink-0 rounded-full"
-              >
+              <Button size="icon" onClick={send} className="shrink-0 rounded-full">
                 <Send className="h-4 w-4" />
               </Button>
             </div>
@@ -127,10 +130,8 @@ export default function Live() {
           <button
             key={c.seed}
             onClick={() => setActive(i)}
-            className={`group overflow-hidden rounded-3xl border text-left transition-all hover:-translate-y-1 ${
-              i === active
-                ? "border-emerald-500 ring-2 ring-emerald-500/30"
-                : "border-border/60"
+            className={`group overflow-hidden rounded-2xl border text-left transition-colors ${
+              i === active ? "border-emerald-500" : "hover:bg-muted/40"
             }`}
           >
             <div className="relative aspect-video overflow-hidden">
@@ -138,7 +139,7 @@ export default function Live() {
               <img
                 src={`https://picsum.photos/seed/${c.seed}/500/280`}
                 alt={c.name}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               {c.live ? (
                 <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-1xs font-semibold text-white">
@@ -146,20 +147,54 @@ export default function Live() {
                   LIVE
                 </span>
               ) : (
-                <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-1xs text-white backdrop-blur-md">
+                <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-1xs text-white">
                   Offline
                 </span>
               )}
-              <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-0.5 text-1xs text-white backdrop-blur-md">
+              <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-0.5 text-1xs text-white">
                 <Eye className="h-3 w-3" /> {c.viewers}
               </span>
             </div>
-            <div className="bg-card/70 p-3 backdrop-blur-xl">
+            <div className="p-3">
               <p className="truncate text-sm font-semibold">{c.name}</p>
               <p className="text-xs text-muted-foreground">{c.cat}</p>
             </div>
           </button>
         ))}
+      </div>
+
+      {/* Upcoming schedule */}
+      <div className={`${glass} p-6`}>
+        <SectionHeading
+          title={
+            <span className="flex items-center gap-2">
+              <CalendarClock className="h-5 w-5" /> Today&apos;s schedule
+            </span>
+          }
+          subtitle="What's coming up"
+        />
+        <div className="mt-4 space-y-1">
+          {schedule.map((s) => (
+            <div
+              key={s.title}
+              className="flex items-center gap-4 rounded-xl p-2.5 transition-colors hover:bg-muted/50"
+            >
+              <span className="w-14 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
+                {s.time}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{s.title}</p>
+                <p className="text-xs text-muted-foreground">{s.channel}</p>
+              </div>
+              <span className="rounded-full bg-muted px-2 py-0.5 text-1xs text-muted-foreground">
+                {s.tag}
+              </span>
+              <Button variant="outline" size="sm" className="rounded-full">
+                Remind me
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
     </MediaPage>
   );
