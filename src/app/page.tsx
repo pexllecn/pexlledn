@@ -14,7 +14,6 @@ import {
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { GridPattern } from "@/components/magicui/animated-grid-pattern";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 import {
@@ -198,13 +197,16 @@ export default function Landing() {
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       {/* ---------------- background ---------------- */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <GridPattern
-          numSquares={40}
-          maxOpacity={0.06}
-          duration={3}
-          className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)] inset-x-0 -top-1/4 h-[150%] skew-y-6"
+        {/* dotted pattern */}
+        <div
+          className={cn(
+            "absolute inset-0 [background-size:16px_16px] [mask-image:linear-gradient(to_bottom,black,black_35%,transparent_75%)]",
+            resolvedTheme === "dark"
+              ? "bg-[radial-gradient(#26262c_1px,transparent_1px)]"
+              : "bg-[radial-gradient(#c7c9cf_1px,transparent_1px)]"
+          )}
         />
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-r from-violet-500/25 via-fuchsia-500/20 to-orange-500/25 blur-[120px]" />
+        <div className="absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px]" />
         <div className="absolute top-[40%] -left-40 h-96 w-96 rounded-full bg-sky-500/15 blur-[120px]" />
         <div className="absolute top-[70%] -right-40 h-96 w-96 rounded-full bg-orange-500/15 blur-[120px]" />
       </div>
@@ -222,10 +224,15 @@ export default function Landing() {
           </nav>
           <div className="flex items-center gap-1.5">
             <ModeToggle />
-            <Button asChild size="sm" className="rounded-full">
-              <Link href="/dashboard">
-                Open app <ArrowRight className="ml-1 h-3.5 w-3.5" />
-              </Link>
+            <Button
+              asChild
+              size="sm"
+              variant="expandIcon"
+              Icon={ArrowRight}
+              iconPlacement="right"
+              className="rounded-full"
+            >
+              <Link href="/dashboard">Open app</Link>
             </Button>
           </div>
         </div>
@@ -278,10 +285,15 @@ export default function Landing() {
           transition={{ duration: 0.7, ease, delay: 0.19 }}
           className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <Button asChild size="lg" className="rounded-full px-7 text-base shadow-lg shadow-primary/20">
-            <Link href="/dashboard">
-              Enter the demo <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+          <Button
+            asChild
+            size="lg"
+            variant="expandIcon"
+            Icon={ArrowRight}
+            iconPlacement="right"
+            className="rounded-full px-7 text-base shadow-lg shadow-primary/20"
+          >
+            <Link href="/dashboard">Enter the demo</Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="rounded-full border-border/70 bg-background/60 px-7 text-base backdrop-blur">
             <Link href="/media/music">
@@ -312,12 +324,16 @@ export default function Landing() {
 
         {/* hero mockup with tilt + floating chips */}
         <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.9, ease, delay: 0.25 }}
+          initial={{ y: 40, scale: 0.98 }}
+          animate={{ y: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease, delay: 0.15 }}
           className="relative mx-auto mt-16 max-w-5xl"
         >
-          <div className="absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[40px] bg-gradient-to-b from-violet-500/20 via-fuchsia-500/10 to-transparent blur-2xl" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-x-8 -top-10 -bottom-10 z-0 rounded-[48px] bg-primary/25 blur-3xl"
+          />
+          <div className="relative z-10">
           <Tilt>
             <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card shadow-2xl">
               <Image
@@ -373,6 +389,7 @@ export default function Landing() {
               </div>
             </motion.div>
           </Tilt>
+          </div>
         </motion.div>
       </section>
 
@@ -514,15 +531,21 @@ export default function Landing() {
                 </li>
               ))}
             </ul>
-            <Button asChild className="mt-8 rounded-full">
-              <Link href="/dashboard">Browse the apps <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+            <Button
+              asChild
+              variant="expandIcon"
+              Icon={ArrowRight}
+              iconPlacement="right"
+              className="mt-8 rounded-full"
+            >
+              <Link href="/dashboard">Browse the apps</Link>
             </Button>
           </Reveal>
 
           <Reveal delay={0.1}>
             <div className="relative">
-              <div className="absolute -inset-6 -z-10 rounded-[36px] bg-gradient-to-br from-violet-500/20 to-orange-500/20 blur-2xl" />
-              <div className="overflow-hidden rounded-2xl border border-border/60 shadow-2xl">
+              <div aria-hidden className="pointer-events-none absolute -inset-6 z-0 rounded-[36px] bg-primary/20 blur-2xl" />
+              <div className="relative z-10 overflow-hidden rounded-2xl border border-border/60 shadow-2xl">
                 <Image src="/dashboard.png" width={900} height={560} alt="Apps" className="w-full dark:hidden" />
                 <Image src="/dashboardd.png" width={900} height={560} alt="Apps dark" className="hidden w-full dark:block" />
               </div>
@@ -573,8 +596,15 @@ export default function Landing() {
                 Jump into the live demo and click through every app — no signup required.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Button asChild size="lg" className="rounded-full bg-white px-8 text-base text-violet-700 hover:bg-white/90">
-                  <Link href="/dashboard">Launch the demo <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="expandIcon"
+                  Icon={ArrowRight}
+                  iconPlacement="right"
+                  className="rounded-full bg-white px-8 text-base text-violet-700 hover:bg-white/90"
+                >
+                  <Link href="/dashboard">Launch the demo</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full border-white/40 bg-white/10 px-8 text-base text-white backdrop-blur hover:bg-white/20 hover:text-white">
                   <Link href="/comps">View components</Link>
