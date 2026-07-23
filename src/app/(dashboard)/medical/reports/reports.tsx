@@ -74,7 +74,7 @@ export default function Reports() {
             <SectionTitle title="Monthly visits" subtitle="Patients seen per month" />
             <div className="mt-6 flex h-56 items-end justify-between gap-3">
               {months.map((x) => (
-                <div key={x.m} className="group flex flex-1 flex-col items-center gap-2">
+                <div key={x.m} className="group flex h-full flex-1 flex-col items-center justify-end gap-2">
                   <span className="text-xs font-medium tabular-nums text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">{x.v}</span>
                   <div
                     className="w-full rounded-t-lg bg-gradient-to-t from-sky-600 to-cyan-400 transition-opacity hover:opacity-90"

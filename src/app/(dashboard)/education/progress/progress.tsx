@@ -109,7 +109,7 @@ export default function LearningProgress() {
             <SectionTitle title="This week" />
             <div className="mt-6 flex h-40 items-end justify-between gap-2">
               {weekly.map((w) => (
-                <div key={w.d} className="flex flex-1 flex-col items-center gap-2">
+                <div key={w.d} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
                   <div
                     className="w-full rounded-t-md bg-gradient-to-t from-violet-600 to-violet-400"
                     style={{ height: `${(w.h / max) * 100}%` }}
