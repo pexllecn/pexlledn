@@ -5,81 +5,116 @@ import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { cn } from "@/lib/utils";
 
 /**
- * Shared design language for the Media app.
- * Flat & modern: plain background, bordered surfaces, minimal shadow,
- * a single solid violet accent (no gradients). Consistent across pages.
+ * Shared "cinema" design language for the Media app.
+ * A dark, layered, premium surface with a warm orange accent — the same
+ * language across every Media page so it reads as one product.
  */
 
-// Flat bordered surface — theme-aware, no blur, no heavy shadow.
-export const glass = "rounded-2xl border bg-card";
+export const ACCENT = "#f97316"; // orange-500
 
-// Subtle, flat hover — just a background tint, no lift or shadow.
-export const glassHover = "transition-colors hover:bg-muted/40";
-
-// Solid accent used for primary actions & highlights.
-export const accent = "bg-violet-600 text-white hover:bg-violet-700";
-export const accentSoft = "bg-violet-500/10 text-violet-600 dark:text-violet-400";
+// Dark bordered card used for tiles / rails.
+export const card = "rounded-2xl border border-white/5 bg-white/[0.02]";
+export const cardHover = "transition-colors hover:bg-white/[0.04]";
 
 const pageVariants = {
   hidden: { filter: "blur(10px)", opacity: 0 },
   visible: { filter: "blur(0px)", opacity: 1 },
 };
 
-// A solid accent-colored span (kept as a component so headings stay consistent).
-export function GradientText({
+/** The dark cinematic shell every Media page sits inside. */
+export function Cinema({
+  title,
   children,
   className,
 }: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <span className={cn("text-violet-600 dark:text-violet-400", className)}>
-      {children}
-    </span>
-  );
-}
-
-export function SectionHeading({
-  title,
-  subtitle,
-  action,
-}: {
-  title: React.ReactNode;
-  subtitle?: string;
-  action?: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
-        {subtitle && (
-          <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
-        )}
-      </div>
-      {action}
-    </div>
-  );
-}
-
-export function MediaPage({
-  title,
-  children,
-}: {
   title: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <ContentLayout title={title}>
       <motion.div
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         variants={pageVariants}
-        className="flex-1 space-y-8 lg:p-4 py-6"
+        className="pb-4"
       >
-        {children}
+        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-b from-[#101014] to-[#08080b] text-neutral-200 ring-1 ring-white/5">
+          {/* ambient glows */}
+          <div className="pointer-events-none absolute -top-24 right-1/4 h-72 w-72 rounded-full bg-orange-600/10 blur-[130px]" />
+          <div className="pointer-events-none absolute top-1/2 -left-24 h-72 w-72 rounded-full bg-violet-600/10 blur-[130px]" />
+          <div className={cn("relative p-5 sm:p-7", className)}>{children}</div>
+        </div>
       </motion.div>
     </ContentLayout>
+  );
+}
+
+/** Small uppercase section label with an optional action. */
+export function Label({
+  children,
+  action = "See all",
+  onAction,
+}: {
+  children: React.ReactNode;
+  action?: string | null;
+  onAction?: () => void;
+}) {
+  return (
+    <div className="mb-3 flex items-center justify-between">
+      <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+        {children}
+      </p>
+      {action && (
+        <button
+          onClick={onAction}
+          className="text-xs text-orange-500 hover:underline"
+        >
+          {action}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** A titled block used in the right rail. */
+export function Rail({
+  title,
+  children,
+  action = "See all",
+}: {
+  title: string;
+  children: React.ReactNode;
+  action?: string | null;
+}) {
+  return (
+    <div>
+      <Label action={action}>{title}</Label>
+      <div className="space-y-4">{children}</div>
+    </div>
+  );
+}
+
+/** Solid orange pill button. */
+export function AccentButton({
+  children,
+  className,
+  onClick,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "rounded-full bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600",
+        className
+      )}
+    >
+      {children}
+    </button>
   );
 }

@@ -1,12 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { CalendarClock, Eye, Radio, Send, Users } from "lucide-react";
-import { MediaPage, SectionHeading, glass } from "../components/media-ui";
+import { Cinema, Label, card } from "../components/media-ui";
+import { Eye, Radio, Send, Users, CalendarClock } from "lucide-react";
 
 const channels = [
   { name: "City Cam · Tokyo", cat: "Travel", viewers: "12.4K", seed: "live-1", live: true },
@@ -24,47 +20,40 @@ const schedule = [
   { time: "21:15", title: "Late Night Cook-off", channel: "Cooking Live", tag: "Food" },
 ];
 
-const chat = [
-  { user: "mika", color: "text-fuchsia-500", msg: "this view is unreal 🌆" },
-  { user: "leo", color: "text-sky-500", msg: "what camera is this?" },
-  { user: "sana", color: "text-emerald-500", msg: "perfect background for work" },
-  { user: "dev", color: "text-amber-500", msg: "greetings from Berlin!" },
-  { user: "noor", color: "text-rose-500", msg: "the sunset though 😍" },
+const seedChat = [
+  { user: "mika", color: "text-fuchsia-400", msg: "this view is unreal 🌆" },
+  { user: "leo", color: "text-sky-400", msg: "what camera is this?" },
+  { user: "sana", color: "text-emerald-400", msg: "perfect background for work" },
+  { user: "dev", color: "text-amber-400", msg: "greetings from Berlin!" },
+  { user: "noor", color: "text-rose-400", msg: "the sunset though 😍" },
 ];
 
 export default function Live() {
   const [active, setActive] = useState(0);
   const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState(chat);
+  const [messages, setMessages] = useState(seedChat);
   const channel = channels[active];
 
   const send = () => {
     if (!msg.trim()) return;
-    setMessages((m) => [
-      ...m,
-      { user: "you", color: "text-violet-500", msg: msg.trim() },
-    ]);
+    setMessages((m) => [...m, { user: "you", color: "text-orange-400", msg: msg.trim() }]);
     setMsg("");
   };
 
   return (
-    <MediaPage title="Live TV">
+    <Cinema title="Live TV">
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Player */}
+        {/* player */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="relative aspect-video overflow-hidden rounded-2xl bg-black border">
+          <div className="relative aspect-video overflow-hidden rounded-3xl bg-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://picsum.photos/seed/${channel.seed}/1280/720`}
-              alt={channel.name}
-              className="h-full w-full object-cover"
-            />
+            <img src={`https://picsum.photos/seed/${channel.seed}/1280/720`} alt={channel.name} className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute left-4 top-4 flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-2.5 py-1 text-1xs font-semibold text-white">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
-                LIVE
+                <span className="h-2 w-2 animate-pulse rounded-full bg-white" /> LIVE
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-1xs text-white">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-1xs text-white backdrop-blur">
                 <Eye className="h-3 w-3" /> {channel.viewers}
               </span>
             </div>
@@ -72,130 +61,108 @@ export default function Live() {
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Avatar className="h-11 w-11">
-                <AvatarImage src="/avatar-40-02.jpg" alt={channel.name} />
-                <AvatarFallback>LV</AvatarFallback>
-              </Avatar>
+              <div className="h-11 w-11 overflow-hidden rounded-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/avatar-40-02.jpg" alt={channel.name} className="h-full w-full object-cover" />
+              </div>
               <div>
-                <p className="text-sm font-semibold">{channel.name}</p>
-                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Users className="h-3 w-3" /> {channel.viewers} watching ·{" "}
-                  {channel.cat}
+                <p className="text-sm font-semibold text-white">{channel.name}</p>
+                <p className="flex items-center gap-1 text-xs text-neutral-500">
+                  <Users className="h-3 w-3" /> {channel.viewers} watching · {channel.cat}
                 </p>
               </div>
             </div>
-            <Button className="rounded-full bg-emerald-500 text-white hover:bg-emerald-600">
-              <Radio className="mr-2 h-4 w-4" /> Follow
-            </Button>
+            <button className="flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600">
+              <Radio className="h-4 w-4" /> Follow
+            </button>
           </div>
         </div>
 
-        {/* Live chat */}
-        <div className={`${glass} flex flex-col p-4`}>
-          <div className="flex h-[440px] flex-col">
-            <div className="flex items-center justify-between border-b pb-3">
-              <p className="text-sm font-semibold">Live chat</p>
-              <Badge variant="secondary" className="gap-1 rounded-full">
-                <Users className="h-3 w-3" /> {channel.viewers}
-              </Badge>
-            </div>
-            <div className="no-scrollbar flex-1 space-y-3 overflow-y-auto py-3">
-              {messages.map((m, i) => (
-                <div key={i} className="text-sm leading-snug">
-                  <span className={`font-semibold ${m.color}`}>{m.user}</span>
-                  <span className="text-muted-foreground"> {m.msg}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-2 border-t pt-3">
-              <Input
-                value={msg}
-                onChange={(e) => setMsg(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder="Say something…"
-                className="rounded-full bg-muted"
-              />
-              <Button size="icon" onClick={send} className="shrink-0 rounded-full">
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Channel grid */}
-      <SectionHeading title="Live channels" subtitle="Streaming now" />
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
-        {channels.map((c, i) => (
-          <button
-            key={c.seed}
-            onClick={() => setActive(i)}
-            className={`group overflow-hidden rounded-2xl border text-left transition-colors ${
-              i === active ? "border-emerald-500" : "hover:bg-muted/40"
-            }`}
-          >
-            <div className="relative aspect-video overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`https://picsum.photos/seed/${c.seed}/500/280`}
-                alt={c.name}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {c.live ? (
-                <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-1xs font-semibold text-white">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
-                  LIVE
-                </span>
-              ) : (
-                <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-1xs text-white">
-                  Offline
-                </span>
-              )}
-              <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-0.5 text-1xs text-white">
-                <Eye className="h-3 w-3" /> {c.viewers}
-              </span>
-            </div>
-            <div className="p-3">
-              <p className="truncate text-sm font-semibold">{c.name}</p>
-              <p className="text-xs text-muted-foreground">{c.cat}</p>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Upcoming schedule */}
-      <div className={`${glass} p-6`}>
-        <SectionHeading
-          title={
-            <span className="flex items-center gap-2">
-              <CalendarClock className="h-5 w-5" /> Today&apos;s schedule
+        {/* chat */}
+        <div className={`${card} flex h-[440px] flex-col p-4`}>
+          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+            <p className="text-sm font-semibold text-white">Live chat</p>
+            <span className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-0.5 text-xs text-neutral-400">
+              <Users className="h-3 w-3" /> {channel.viewers}
             </span>
-          }
-          subtitle="What's coming up"
-        />
-        <div className="mt-4 space-y-1">
-          {schedule.map((s) => (
-            <div
-              key={s.title}
-              className="flex items-center gap-4 rounded-xl p-2.5 transition-colors hover:bg-muted/50"
-            >
-              <span className="w-14 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
-                {s.time}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{s.title}</p>
-                <p className="text-xs text-muted-foreground">{s.channel}</p>
+          </div>
+          <div className="flex-1 space-y-3 overflow-y-auto py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {messages.map((m, i) => (
+              <div key={i} className="text-sm leading-snug">
+                <span className={`font-semibold ${m.color}`}>{m.user}</span>
+                <span className="text-neutral-400"> {m.msg}</span>
               </div>
-              <span className="rounded-full bg-muted px-2 py-0.5 text-1xs text-muted-foreground">
-                {s.tag}
-              </span>
-              <Button variant="outline" size="sm" className="rounded-full">
-                Remind me
-              </Button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 border-t border-white/5 pt-3">
+            <input
+              value={msg}
+              onChange={(e) => setMsg(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && send()}
+              placeholder="Say something…"
+              className="h-9 flex-1 rounded-full border border-white/10 bg-white/5 px-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+            />
+            <button onClick={send} className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-white hover:bg-orange-600">
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* channel grid */}
+      <div className="mt-8">
+        <Label action="See all">Live channels</Label>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          {channels.map((c, i) => (
+            <button
+              key={c.seed}
+              onClick={() => setActive(i)}
+              className={`group overflow-hidden rounded-2xl border text-left transition-colors ${
+                i === active ? "border-orange-500" : "border-white/5 hover:bg-white/[0.03]"
+              }`}
+            >
+              <div className="relative aspect-video overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`https://picsum.photos/seed/${c.seed}/500/280`} alt={c.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                {c.live ? (
+                  <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-1xs font-semibold text-white">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> LIVE
+                  </span>
+                ) : (
+                  <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-1xs text-white">Offline</span>
+                )}
+                <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2 py-0.5 text-1xs text-white">
+                  <Eye className="h-3 w-3" /> {c.viewers}
+                </span>
+              </div>
+              <div className="p-3">
+                <p className="truncate text-sm font-semibold text-white">{c.name}</p>
+                <p className="text-xs text-neutral-500">{c.cat}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* schedule */}
+      <div className={`${card} mt-8 p-6`}>
+        <Label action={null}>
+          <span className="flex items-center gap-2"><CalendarClock className="h-4 w-4" /> Today&apos;s schedule</span>
+        </Label>
+        <div className="space-y-1">
+          {schedule.map((s) => (
+            <div key={s.title} className="flex items-center gap-4 rounded-xl p-2.5 transition-colors hover:bg-white/[0.03]">
+              <span className="w-14 shrink-0 text-sm font-semibold tabular-nums text-neutral-500">{s.time}</span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-white">{s.title}</p>
+                <p className="text-xs text-neutral-500">{s.channel}</p>
+              </div>
+              <span className="rounded-full bg-white/5 px-2 py-0.5 text-1xs text-neutral-400">{s.tag}</span>
+              <button className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-neutral-300 hover:bg-white/5">Remind me</button>
             </div>
           ))}
         </div>
       </div>
-    </MediaPage>
+    </Cinema>
   );
 }
