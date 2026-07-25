@@ -40,7 +40,7 @@ export function SavedProperties({
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-[400px] sm:w-[600px] sm:max-w-none">
+      <SheetContent className="sm:w-[600px] sm:max-w-none">
         <SheetHeader>
           <SheetTitle>Saved Properties</SheetTitle>
         </SheetHeader>

@@ -47,7 +47,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[300px] sm:w-[400px]">
+      <SheetContent className="sm:w-[400px]">
         <SheetHeader>
           <SheetTitle>Theme Settings</SheetTitle>
         </SheetHeader>

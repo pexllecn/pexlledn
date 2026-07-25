@@ -49,7 +49,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[300px] sm:w-[400px] flex flex-col gap-0 max-h-[calc(100dvh-2rem)]">
+      <SheetContent className="sm:w-[400px] flex flex-col gap-0 sm:max-h-[calc(100dvh-2rem)]">
         <SheetHeader className="shrink-0">
           <SheetTitle>Theme Settings</SheetTitle>
         </SheetHeader>
