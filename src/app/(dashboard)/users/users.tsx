@@ -27,7 +27,7 @@ function Stat({
   tint: string;
 }) {
   return (
-    <Card className="border-border bg-card">
+    <Card className="border-none bg-muted">
       <CardContent className="flex items-start gap-3 p-4">
         <div
           className={cn(

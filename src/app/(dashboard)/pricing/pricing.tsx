@@ -141,10 +141,10 @@ function PlanCard({ plan, billing }: { plan: Plan; billing: Billing }) {
   return (
     <div
       className={cn(
-        "relative flex flex-col rounded-3xl border p-6 transition-all",
+        "relative flex flex-col rounded-3xl p-6 transition-all",
         plan.highlighted
-          ? "border-primary/40 bg-card shadow-xl shadow-primary/10"
-          : "border-border bg-card hover:-translate-y-1 hover:shadow-lg"
+          ? "bg-muted shadow-xl shadow-primary/10"
+          : "bg-muted/60 hover:-translate-y-1 hover:bg-muted hover:shadow-lg"
       )}
     >
       {plan.highlighted && (
@@ -166,7 +166,7 @@ function PlanCard({ plan, billing }: { plan: Plan; billing: Billing }) {
             "flex h-11 w-11 items-center justify-center rounded-2xl",
             plan.highlighted
               ? "bg-primary text-primary-foreground"
-              : "bg-muted text-foreground"
+              : "bg-background text-foreground"
           )}
         >
           <Icon className="h-5 w-5" />
@@ -328,7 +328,7 @@ export default function PricingPage() {
             </div>
 
             {/* Stats strip */}
-            <div className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-4 rounded-3xl border border-border bg-card p-6 sm:grid-cols-4">
+            <div className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-4 rounded-3xl bg-muted p-6 sm:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.label} className="text-center">
                   <p className="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
@@ -362,7 +362,7 @@ export default function PricingPage() {
             </div>
 
             {/* CTA */}
-            <div className="mx-auto mt-16 max-w-5xl overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card p-8 text-center sm:p-12">
+            <div className="mx-auto mt-16 max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary/15 via-muted to-muted p-8 text-center sm:p-12">
               <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
                 Ready to build something great?
               </h2>

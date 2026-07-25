@@ -232,7 +232,7 @@ export default function SocialFeed() {
               Create Post
             </Button>
 
-            <div className="mt-5 rounded-2xl border border-border bg-card p-4">
+            <div className="mt-5 rounded-2xl bg-muted p-4">
               <h3 className="mb-3 text-sm font-semibold">Your communities</h3>
               <div className="space-y-1">
                 {[
@@ -251,7 +251,7 @@ export default function SocialFeed() {
             </div>
 
             {/* mini profile */}
-            <div className="mt-auto flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
+            <div className="mt-auto flex items-center gap-3 rounded-2xl bg-muted p-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src="https://i.pravatar.cc/100?img=1" />
                 <AvatarFallback>AR</AvatarFallback>
@@ -269,7 +269,7 @@ export default function SocialFeed() {
           {/* Main Content */}
           <div className="mx-auto min-w-0 max-w-2xl flex-1">
             {/* Stories */}
-            <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="rounded-2xl bg-muted p-4">
               <div className="no-scrollbar flex gap-4 overflow-x-auto">
                 {stories.map((s) => (
                   <button
@@ -307,7 +307,7 @@ export default function SocialFeed() {
             </div>
 
             {/* Composer */}
-            <div className="mt-4 rounded-2xl border border-border bg-card p-4">
+            <div className="mt-4 rounded-2xl bg-muted p-4">
               <div className="flex gap-3">
                 <Avatar>
                   <AvatarImage src="https://i.pravatar.cc/100?img=1" />
@@ -348,7 +348,7 @@ export default function SocialFeed() {
             </div>
 
             {/* Tabs */}
-            <div className="mt-4 flex items-center gap-1 rounded-2xl border border-border bg-card p-1">
+            <div className="mt-4 flex items-center gap-1 rounded-2xl bg-muted p-1">
               {feedTabs.map((tab) => (
                 <button
                   key={tab}
@@ -376,7 +376,7 @@ export default function SocialFeed() {
           {/* Right Sidebar */}
           <aside className="hidden w-80 shrink-0 space-y-4 lg:block">
             {/* profile summary */}
-            <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <div className="overflow-hidden rounded-2xl bg-muted">
               <div className="h-20 bg-gradient-to-r from-primary/30 via-fuchsia-500/20 to-sky-500/25" />
               <div className="px-4 pb-4">
                 <Avatar className="-mt-8 h-16 w-16 border-4 border-card">
@@ -402,7 +402,7 @@ export default function SocialFeed() {
             </div>
 
             {/* live now */}
-            <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="rounded-2xl bg-muted p-4">
               <div className="flex items-center justify-between">
                 <h2 className="flex items-center gap-2 text-sm font-semibold">
                   <span className="relative flex h-2 w-2">
@@ -423,7 +423,7 @@ export default function SocialFeed() {
             </div>
 
             {/* who to follow */}
-            <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="rounded-2xl bg-muted p-4">
               <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                 <Sparkles className="h-4 w-4 text-primary" /> Who to follow
               </h2>
@@ -435,7 +435,7 @@ export default function SocialFeed() {
             </div>
 
             {/* trending */}
-            <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="rounded-2xl bg-muted p-4">
               <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold">
                 <TrendingUp className="h-4 w-4 text-emerald-500" /> Trending
                 topics
@@ -469,7 +469,7 @@ function Post(post: PostData) {
   const [saved, setSaved] = React.useState(false);
 
   return (
-    <article className="rounded-2xl border border-border bg-card p-4 transition-colors hover:border-border/80">
+    <article className="rounded-2xl bg-muted p-4 transition-colors hover:bg-muted/70">
       <div className="flex gap-3">
         <Avatar className="h-11 w-11">
           <AvatarImage src={post.avatar} />

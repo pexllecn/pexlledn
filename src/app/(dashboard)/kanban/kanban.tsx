@@ -21,6 +21,9 @@ import {
   GripHorizontal,
   TrashIcon,
   FilePenLine,
+  LayoutGrid,
+  ListChecks,
+  Loader2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -404,9 +407,76 @@ export default function KanbanBoard() {
     <ContentLayout title="Kanban">
       <div className="p-6 bg-background min-h-screen">
         <div className="max-w-9xl mx-auto">
-          <h1 className="text-3xl font-normal mb-8 text-foreground">
-            Kanban Board
-          </h1>
+          {(() => {
+            const allTasks = boards.flatMap((b) => b.tasks);
+            const total = allTasks.length;
+            const done = allTasks.filter((t) => t.status === "done").length;
+            const inProgress = allTasks.filter(
+              (t) => t.status === "in-progress"
+            ).length;
+            const stats = [
+              {
+                icon: LayoutGrid,
+                label: "Boards",
+                value: boards.length,
+                tint: "bg-primary/10 text-primary",
+              },
+              {
+                icon: ListChecks,
+                label: "Total tasks",
+                value: total,
+                tint: "bg-sky-500/10 text-sky-500",
+              },
+              {
+                icon: Loader2,
+                label: "In progress",
+                value: inProgress,
+                tint: "bg-amber-500/10 text-amber-500",
+              },
+              {
+                icon: CheckCircle2,
+                label: "Completed",
+                value: done,
+                tint: "bg-emerald-500/10 text-emerald-500",
+              },
+            ];
+            return (
+              <div className="mb-8 flex flex-col gap-5">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+                      Kanban Board
+                    </h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Plan, track and move work across your boards.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                  {stats.map((s) => (
+                    <div
+                      key={s.label}
+                      className="flex items-center gap-3 rounded-2xl bg-muted p-4"
+                    >
+                      <div
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.tint}`}
+                      >
+                        <s.icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          {s.label}
+                        </p>
+                        <p className="text-2xl font-semibold leading-none tabular-nums">
+                          {s.value}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="boards" type="BOARD" direction="horizontal">
               {(provided) => (
@@ -500,7 +570,7 @@ export default function KanbanBoard() {
                                           setIsTaskDetailDialogOpen(true);
                                         }}
                                       >
-                                        <Card>
+                                        <Card className="border-none bg-background shadow-none">
                                           <CardContent className="p-3">
                                             <h3 className="font-semibold text-sm text-card-foreground mb-2 flex items-center">
                                               <GripHorizontal className="h-4 w-4 mr-2 text-muted-foreground" />
