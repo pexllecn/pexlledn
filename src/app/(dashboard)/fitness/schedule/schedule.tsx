@@ -113,10 +113,10 @@ export default function SchedulePage() {
                 <button
                   key={d}
                   onClick={() => setDay(d)}
-                  className={`flex flex-col items-center gap-1 rounded-lg border p-3 transition-colors ${
+                  className={`flex flex-col items-center gap-1 rounded-lg p-3 transition-colors ${
                     day === d
-                      ? "border-primary/50 bg-primary/10"
-                      : "border-transparent bg-muted hover:bg-accent"
+                      ? "bg-primary/10 text-primary"
+                      : "bg-muted hover:bg-accent"
                   }`}
                 >
                   <span className="text-xs text-muted-foreground">{d}</span>

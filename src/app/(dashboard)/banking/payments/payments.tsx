@@ -145,10 +145,10 @@ export default function PaymentsPage() {
                       <button
                         key={p.handle}
                         onClick={() => setSelected(i)}
-                        className={`flex shrink-0 flex-col items-center gap-1.5 rounded-lg border p-2 w-20 transition-colors ${
+                        className={`flex shrink-0 flex-col items-center gap-1.5 rounded-lg p-2 w-20 transition-colors ${
                           selected === i
-                            ? "border-primary/50 bg-primary/10"
-                            : "border-transparent bg-background/60"
+                            ? "bg-primary/10 text-primary"
+                            : "bg-background/60 hover:bg-background"
                         }`}
                       >
                         <Avatar className="h-10 w-10">
@@ -206,7 +206,7 @@ export default function PaymentsPage() {
                   >
                     <Label
                       htmlFor="instant"
-                      className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer has-[:checked]:border-primary/50 has-[:checked]:bg-primary/5"
+                      className="flex items-center gap-2 rounded-lg bg-background p-3 cursor-pointer transition-colors has-[:checked]:bg-primary/10"
                     >
                       <RadioGroupItem value="instant" id="instant" />
                       <Zap className="h-4 w-4 text-muted-foreground" />
@@ -214,7 +214,7 @@ export default function PaymentsPage() {
                     </Label>
                     <Label
                       htmlFor="standard"
-                      className="flex items-center gap-2 rounded-lg border p-3 cursor-pointer has-[:checked]:border-primary/50 has-[:checked]:bg-primary/5"
+                      className="flex items-center gap-2 rounded-lg bg-background p-3 cursor-pointer transition-colors has-[:checked]:bg-primary/10"
                     >
                       <RadioGroupItem value="standard" id="standard" />
                       <Clock className="h-4 w-4 text-muted-foreground" />

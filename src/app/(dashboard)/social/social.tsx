@@ -30,6 +30,7 @@ import { AvatarGroup } from "@/components/ui/avatar-group";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -182,15 +183,18 @@ const liveAvatars = [
   { src: "https://i.pravatar.cc/100?img=15", fallback: "E" },
 ];
 
-const feedTabs = ["For you", "Following", "Media"];
-
 export default function SocialFeed() {
   const [postContent, setPostContent] = React.useState("");
-  const [activeTab, setActiveTab] = React.useState("For you");
 
   const variants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
+  const feeds: Record<string, PostData[]> = {
+    foryou: posts,
+    following: posts.filter((p) => p.verified),
+    media: posts.filter((p) => p.image),
   };
 
   return (
@@ -201,21 +205,24 @@ export default function SocialFeed() {
         transition={{ duration: 0.4 }}
         variants={variants}
       >
-        <div className="lg:container mx-auto flex gap-6 py-4">
-          {/* Left Sidebar */}
+        <div className="lg:container mx-auto flex justify-center gap-6 py-4">
+          {/* Left Sidebar — plain nav, no boxes */}
           <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 flex-col lg:flex">
             <nav className="space-y-1">
               {menuItems.map((item) => (
                 <Link key={item.label} href={item.href}>
                   <span
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors",
-                      item.active
-                        ? "bg-primary/10 text-primary"
-                        : "text-foreground hover:bg-muted"
+                      "flex items-center gap-4 rounded-full px-4 py-2.5 text-[15px] transition-colors hover:bg-muted",
+                      item.active ? "font-bold" : "font-normal"
                     )}
                   >
-                    <item.icon className="h-5 w-5" />
+                    <item.icon
+                      className={cn(
+                        "h-5 w-5",
+                        item.active ? "text-primary" : "text-foreground"
+                      )}
+                    />
                     <span className="flex-1">{item.label}</span>
                     {item.badge && (
                       <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-1xs font-semibold text-primary-foreground">
@@ -232,9 +239,11 @@ export default function SocialFeed() {
               Create Post
             </Button>
 
-            <div className="mt-5 rounded-2xl bg-muted p-4">
-              <h3 className="mb-3 text-sm font-semibold">Your communities</h3>
-              <div className="space-y-1">
+            <div className="mt-6">
+              <h3 className="px-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Your communities
+              </h3>
+              <div className="mt-2 space-y-0.5">
                 {[
                   { e: "🎨", n: "Design Community" },
                   { e: "💻", n: "Tech Enthusiasts" },
@@ -242,7 +251,7 @@ export default function SocialFeed() {
                 ].map((c) => (
                   <button
                     key={c.n}
-                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="flex w-full items-center gap-3 rounded-full px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
                   >
                     <span>{c.e}</span> {c.n}
                   </button>
@@ -250,8 +259,10 @@ export default function SocialFeed() {
               </div>
             </div>
 
-            {/* mini profile */}
-            <div className="mt-auto flex items-center gap-3 rounded-2xl bg-muted p-3">
+            <Link
+              href="/social/profile"
+              className="mt-auto flex items-center gap-3 rounded-full p-2 transition-colors hover:bg-muted"
+            >
               <Avatar className="h-10 w-10">
                 <AvatarImage src="https://i.pravatar.cc/100?img=1" />
                 <AvatarFallback>AR</AvatarFallback>
@@ -263,13 +274,13 @@ export default function SocialFeed() {
                 </p>
               </div>
               <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-            </div>
+            </Link>
           </aside>
 
-          {/* Main Content */}
-          <div className="mx-auto min-w-0 max-w-2xl flex-1">
+          {/* Main timeline — white, Twitter-style, hairline dividers */}
+          <div className="min-w-0 max-w-[600px] flex-1 border-border lg:border-x">
             {/* Stories */}
-            <div className="rounded-2xl bg-muted p-4">
+            <div className="border-b border-border p-4">
               <div className="no-scrollbar flex gap-4 overflow-x-auto">
                 {stories.map((s) => (
                   <button
@@ -285,7 +296,7 @@ export default function SocialFeed() {
                             : "bg-gradient-to-tr from-amber-400 via-rose-500 to-fuchsia-500"
                         )}
                       >
-                        <span className="block rounded-full border-2 border-card">
+                        <span className="block rounded-full border-2 border-background">
                           <Avatar className="h-14 w-14">
                             <AvatarImage src={s.avatar} />
                             <AvatarFallback>{s.name[0]}</AvatarFallback>
@@ -293,7 +304,7 @@ export default function SocialFeed() {
                         </span>
                       </span>
                       {s.me && (
-                        <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-card bg-primary text-primary-foreground">
+                        <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground">
                           <Plus className="h-3 w-3" />
                         </span>
                       )}
@@ -307,7 +318,7 @@ export default function SocialFeed() {
             </div>
 
             {/* Composer */}
-            <div className="mt-4 rounded-2xl bg-muted p-4">
+            <div className="border-b border-border p-4">
               <div className="flex gap-3">
                 <Avatar>
                   <AvatarImage src="https://i.pravatar.cc/100?img=1" />
@@ -316,23 +327,23 @@ export default function SocialFeed() {
                 <div className="flex-1">
                   <Textarea
                     placeholder="What's happening?"
-                    className="min-h-[76px] resize-none border-none bg-transparent p-2 text-base shadow-none focus-visible:ring-0"
+                    className="min-h-[56px] resize-none border-none bg-transparent p-2 text-lg shadow-none focus-visible:ring-0"
                     value={postContent}
                     onChange={(e) => setPostContent(e.target.value)}
                   />
-                  <div className="mt-1 flex items-center justify-between border-t border-border pt-2">
-                    <div className="flex gap-1">
+                  <div className="mt-1 flex items-center justify-between">
+                    <div className="flex gap-1 text-primary">
                       <Button size="icon" variant="ghost" className="h-8 w-8">
-                        <ImageIcon className="h-4 w-4 text-primary" />
+                        <ImageIcon className="h-4 w-4" />
                       </Button>
                       <Button size="icon" variant="ghost" className="h-8 w-8">
-                        <Smile className="h-4 w-4 text-amber-500" />
+                        <Smile className="h-4 w-4" />
                       </Button>
                       <Button size="icon" variant="ghost" className="h-8 w-8">
-                        <Calendar className="h-4 w-4 text-emerald-500" />
+                        <Calendar className="h-4 w-4" />
                       </Button>
                       <Button size="icon" variant="ghost" className="h-8 w-8">
-                        <MapPin className="h-4 w-4 text-rose-500" />
+                        <MapPin className="h-4 w-4" />
                       </Button>
                     </div>
                     <Button
@@ -347,39 +358,46 @@ export default function SocialFeed() {
               </div>
             </div>
 
-            {/* Tabs */}
-            <div className="mt-4 flex items-center gap-1 rounded-2xl bg-muted p-1">
-              {feedTabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={cn(
-                    "flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-                    activeTab === tab
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
+            {/* Feed tabs — the existing Tabs component, used as-is */}
+            <Tabs defaultValue="foryou">
+              <div className="border-b border-border p-2">
+                <TabsList className="flex w-full">
+                  <TabsTrigger value="foryou" className="flex-1">
+                    For you
+                  </TabsTrigger>
+                  <TabsTrigger value="following" className="flex-1">
+                    Following
+                  </TabsTrigger>
+                  <TabsTrigger value="media" className="flex-1">
+                    Media
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-            {/* Posts */}
-            <div className="mt-4 space-y-4">
-              {posts.map((post) => (
-                <Post key={post.username} {...post} />
+              {(["foryou", "following", "media"] as const).map((key) => (
+                <TabsContent key={key} value={key} className="mt-0">
+                  <div className="divide-y divide-border">
+                    {feeds[key].map((post) => (
+                      <Post key={post.username + key} {...post} />
+                    ))}
+                    {feeds[key].length === 0 && (
+                      <p className="p-10 text-center text-sm text-muted-foreground">
+                        Nothing here yet.
+                      </p>
+                    )}
+                  </div>
+                </TabsContent>
               ))}
-            </div>
+            </Tabs>
           </div>
 
-          {/* Right Sidebar */}
-          <aside className="hidden w-80 shrink-0 space-y-4 lg:block">
+          {/* Right Sidebar — muted widget cards (secondary surfaces) */}
+          <aside className="hidden w-80 shrink-0 space-y-4 py-1 xl:block">
             {/* profile summary */}
             <div className="overflow-hidden rounded-2xl bg-muted">
               <div className="h-20 bg-gradient-to-r from-primary/30 via-fuchsia-500/20 to-sky-500/25" />
               <div className="px-4 pb-4">
-                <Avatar className="-mt-8 h-16 w-16 border-4 border-card">
+                <Avatar className="-mt-8 h-16 w-16 border-4 border-muted">
                   <AvatarImage src="https://i.pravatar.cc/100?img=1" />
                   <AvatarFallback>AR</AvatarFallback>
                 </Avatar>
@@ -444,7 +462,7 @@ export default function SocialFeed() {
                 {trending.map((t) => (
                   <button
                     key={t.topic}
-                    className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-muted"
+                    className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-background/60"
                   >
                     <div>
                       <p className="text-1xs text-muted-foreground">{t.cat}</p>
@@ -469,7 +487,7 @@ function Post(post: PostData) {
   const [saved, setSaved] = React.useState(false);
 
   return (
-    <article className="rounded-2xl bg-muted p-4 transition-colors hover:bg-muted/70">
+    <article className="cursor-pointer px-4 py-3 transition-colors hover:bg-muted/40">
       <div className="flex gap-3">
         <Avatar className="h-11 w-11">
           <AvatarImage src={post.avatar} />
@@ -494,12 +512,12 @@ function Post(post: PostData) {
             </Button>
           </div>
 
-          <p className="mt-1.5 whitespace-pre-line break-words text-[15px] leading-relaxed">
+          <p className="mt-1 whitespace-pre-line break-words text-[15px] leading-relaxed">
             {post.content}
           </p>
 
           {post.image && (
-            <div className="mt-3 overflow-hidden rounded-xl border border-border">
+            <div className="mt-3 overflow-hidden rounded-2xl border border-border">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.image}
@@ -512,15 +530,16 @@ function Post(post: PostData) {
           <div className="mt-3 flex items-center justify-between text-muted-foreground">
             <div className="flex items-center gap-1 sm:gap-3">
               <button
-                onClick={() => setLiked((v) => !v)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLiked((v) => !v);
+                }}
                 className={cn(
                   "group flex items-center gap-1.5 rounded-full px-2 py-1 text-sm transition-colors hover:bg-rose-500/10 hover:text-rose-500",
                   liked && "text-rose-500"
                 )}
               >
-                <Heart
-                  className={cn("h-4 w-4", liked && "fill-current")}
-                />
+                <Heart className={cn("h-4 w-4", liked && "fill-current")} />
                 {post.likes}
               </button>
               <button className="flex items-center gap-1.5 rounded-full px-2 py-1 text-sm transition-colors hover:bg-emerald-500/10 hover:text-emerald-500">
@@ -538,7 +557,10 @@ function Post(post: PostData) {
             </div>
             <div className="flex items-center">
               <button
-                onClick={() => setSaved((v) => !v)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSaved((v) => !v);
+                }}
                 className={cn(
                   "rounded-full p-2 transition-colors hover:bg-primary/10 hover:text-primary",
                   saved && "text-primary"
