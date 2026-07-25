@@ -16,6 +16,7 @@ import {
   Check,
   ImagePlus,
   X,
+  CornerUpLeft,
 } from "lucide-react";
 import {
   Dialog,
@@ -119,6 +120,142 @@ const trendingTopics = [
     time: "Live updates with 10k+ viewers",
   },
 ];
+
+// Replies data
+const replies = [
+  {
+    id: 1,
+    replyingTo: "@aiko_tanaka",
+    parent:
+      "Exploring the intersection of AI and UX design. Here's a sneak peek at my latest project.",
+    content:
+      "This is stunning! The way you blended the generated states into the flow is so smooth. Would love to hear more about the tooling. 👏",
+    timestamp: "1 hour ago",
+    likes: 18,
+    comments: 4,
+  },
+  {
+    id: 2,
+    replyingTo: "@moyo_shiro",
+    parent: "Just launched my new portfolio website! 🚀",
+    content:
+      "Congrats on the launch! Bookmarked for inspiration — the case-study layout is 🔥.",
+    timestamp: "3 hours ago",
+    likes: 26,
+    comments: 2,
+  },
+];
+
+// Media grid
+const mediaImages = [
+  "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1516849677043-ef67c9557e16?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=400&fit=crop",
+];
+
+// Liked posts
+const likedPosts = [
+  {
+    id: 101,
+    author: {
+      name: "Sora Kim",
+      avatar: "https://i.pravatar.cc/150?img=12",
+      username: "@sora.kim",
+    },
+    content:
+      "Design systems aren't about consistency for its own sake — they're about giving your team a shared language. 🎨",
+    image: null as string | null,
+    timestamp: "Yesterday",
+    likes: 342,
+    comments: 51,
+    shares: 88,
+  },
+  {
+    id: 102,
+    author: {
+      name: "Diego Alvarez",
+      avatar: "https://i.pravatar.cc/150?img=14",
+      username: "@diego.a",
+    },
+    content: "Golden hour from the studio window. Some views just design themselves.",
+    image:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=500&fit=crop",
+    timestamp: "2 days ago",
+    likes: 1290,
+    comments: 96,
+    shares: 210,
+  },
+];
+
+interface Post {
+  id: number;
+  author: { name: string; avatar: string; username: string };
+  content: string;
+  image?: string | null;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  shares: number;
+}
+
+function PostItem({ post }: { post: Post }) {
+  return (
+    <article className="rounded-2xl bg-muted/60 p-4">
+      <div className="flex gap-3">
+        <Avatar>
+          <AvatarImage src={post.author.avatar} alt={post.author.name} />
+          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0">
+              <span className="font-semibold">{post.author.name}</span>
+              <span className="text-muted-foreground">
+                {" "}
+                {post.author.username} · {post.timestamp}
+              </span>
+            </div>
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
+          <p>{post.content}</p>
+          {post.image && (
+            <div className="overflow-hidden rounded-xl">
+              <Image
+                src={post.image}
+                alt="Post"
+                width={800}
+                height={400}
+                className="h-[300px] w-full object-cover"
+              />
+            </div>
+          )}
+          <div className="flex items-center justify-between pt-1 text-muted-foreground">
+            <Button variant="ghost" size="sm" className="hover:text-rose-500">
+              <Heart className="mr-2 h-4 w-4" />
+              {post.likes}
+            </Button>
+            <Button variant="ghost" size="sm" className="hover:text-sky-500">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              {post.comments}
+            </Button>
+            <Button variant="ghost" size="sm" className="hover:text-emerald-500">
+              <Share2 className="mr-2 h-4 w-4" />
+              {post.shares}
+            </Button>
+            <Button variant="ghost" size="sm" className="hover:text-primary">
+              <Bookmark className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 interface ImageUploadState {
   previewUrl: string | null;
@@ -465,81 +602,74 @@ export default function SocialProfile() {
                 <TabsTrigger value="media">Media</TabsTrigger>
                 <TabsTrigger value="likes">Likes</TabsTrigger>
               </TabsList>
-              <TabsContent value="posts" className="mt-0">
-                <div>
-                  {posts.map((post) => (
-                    <article key={post.id} className="lg:p-4 py-2 border-b">
-                      <div className="flex gap-3">
-                        <Avatar>
-                          <AvatarImage
-                            src={post.author.avatar}
-                            alt={post.author.name}
-                          />
-                          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <span className="font-semibold">
-                                {post.author.name}
-                              </span>
-                              <span className="text-muted-foreground">
-                                {" "}
-                                {post.author.username} · {post.timestamp}
-                              </span>
-                            </div>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          <p>{post.content}</p>
-                          <div className="overflow-hidden rounded-lg">
-                            <Image
-                              src={post.image}
-                              alt="Post image"
-                              width={800}
-                              height={400}
-                              className="h-[300px] w-full object-cover"
-                            />
-                          </div>
-                          <div className="flex items-center justify-between pt-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-muted-foreground"
-                            >
-                              <Heart className="mr-2 h-4 w-4" />
-                              {post.likes}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-muted-foreground"
-                            >
-                              <MessageSquare className="mr-2 h-4 w-4" />
-                              {post.comments}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-muted-foreground"
-                            >
-                              <Share2 className="mr-2 h-4 w-4" />
-                              {post.shares}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-muted-foreground"
-                            >
-                              <Bookmark className="h-4 w-4" />
-                            </Button>
-                          </div>
+              <TabsContent value="posts" className="mt-0 space-y-3">
+                {posts.map((post) => (
+                  <PostItem key={post.id} post={post} />
+                ))}
+              </TabsContent>
+
+              <TabsContent value="replies" className="mt-0 space-y-3">
+                {replies.map((r) => (
+                  <div key={r.id} className="rounded-2xl bg-muted/60 p-4">
+                    <p className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <CornerUpLeft className="h-3.5 w-3.5" />
+                      Replying to{" "}
+                      <span className="font-medium text-foreground">
+                        {r.replyingTo}
+                      </span>
+                    </p>
+                    <p className="rounded-xl bg-background/70 p-3 text-sm text-muted-foreground">
+                      {r.parent}
+                    </p>
+                    <div className="mt-3 flex gap-3">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={profileData.avatar} />
+                        <AvatarFallback>
+                          {profileData.firstName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm">{r.content}</p>
+                        <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Heart className="h-3.5 w-3.5" /> {r.likes}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MessageSquare className="h-3.5 w-3.5" /> {r.comments}
+                          </span>
+                          <span className="ml-auto text-muted-foreground/70">
+                            {r.timestamp}
+                          </span>
                         </div>
                       </div>
-                    </article>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="media" className="mt-0">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {mediaImages.map((src, i) => (
+                    <div
+                      key={i}
+                      className="group relative aspect-square overflow-hidden rounded-xl bg-muted"
+                    >
+                      <Image
+                        src={src}
+                        alt={`Media ${i + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 640px) 50vw, 240px"
+                      />
+                    </div>
                   ))}
                 </div>
+              </TabsContent>
+
+              <TabsContent value="likes" className="mt-0 space-y-3">
+                {likedPosts.map((post) => (
+                  <PostItem key={post.id} post={post} />
+                ))}
               </TabsContent>
             </Tabs>
           </main>

@@ -73,7 +73,7 @@ function Card({ c, i }: { c: Comp; i: number }) {
       transition={{ duration: 0.4, ease, delay: Math.min(i * 0.03, 0.3) }}
     >
       <Link href={c.href} className="group block h-full">
-        <div className="relative h-full overflow-hidden rounded-2xl border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+        <div className="relative h-full overflow-hidden rounded-2xl bg-muted p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
           <div className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${s.grad} opacity-15 blur-2xl transition-opacity group-hover:opacity-40`} />
           <div className="flex items-center justify-between">
             <div className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${s.grad} text-white shadow-md [&_svg]:h-5 [&_svg]:w-5`}>
@@ -156,7 +156,7 @@ export default function ComponentsPage() {
             {/* stats */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               {stats.map((s) => (
-                <div key={s.label} className="flex items-center gap-2 rounded-full border bg-card/60 px-4 py-1.5 text-sm backdrop-blur">
+                <div key={s.label} className="flex items-center gap-2 rounded-full bg-muted/60 px-4 py-1.5 text-sm backdrop-blur">
                   <s.icon className="h-4 w-4 text-muted-foreground" />
                   <span className="font-semibold tabular-nums">{s.value}</span>
                   <span className="text-muted-foreground">{s.label}</span>
@@ -172,7 +172,7 @@ export default function ComponentsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search components…"
-                  className="h-11 rounded-full border-border bg-card/70 pl-11 backdrop-blur focus-visible:ring-violet-500/40"
+                  className="h-11 rounded-full border-none bg-muted pl-11 backdrop-blur focus-visible:ring-violet-500/40"
                 />
               </div>
             </div>
@@ -188,7 +188,7 @@ export default function ComponentsPage() {
                   "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
                   activeCategory === category
                     ? "bg-foreground text-background shadow-sm"
-                    : "border bg-card/60 text-muted-foreground hover:bg-muted"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted"
                 )}
               >
                 {category}

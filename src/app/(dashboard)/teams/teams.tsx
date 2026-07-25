@@ -211,7 +211,7 @@ function Stat({
   tint: string;
 }) {
   return (
-    <Card className="border-border bg-card">
+    <Card className="border-none bg-muted">
       <CardContent className="flex items-start gap-3 p-4">
         <div
           className={cn(
@@ -363,7 +363,7 @@ export default function TeamMembers() {
               return (
                 <Card
                   key={team.name}
-                  className="group border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  className="group border-none bg-muted transition-all hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
@@ -409,7 +409,7 @@ export default function TeamMembers() {
           {/* Main grid */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {/* Members table */}
-            <Card className="border-border bg-card lg:col-span-2">
+            <Card className="border-none bg-muted lg:col-span-2">
               <CardContent className="p-4 sm:p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2">
@@ -426,7 +426,7 @@ export default function TeamMembers() {
                       placeholder="Search members…"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="h-9 border-border bg-muted/50 pl-9 shadow-none"
+                      className="h-9 border-none bg-background pl-9 shadow-none"
                     />
                   </div>
                 </div>
@@ -503,7 +503,7 @@ export default function TeamMembers() {
                                 </Avatar>
                                 <span
                                   className={cn(
-                                    "absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card",
+                                    "absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-muted",
                                     member.status === "Active"
                                       ? "bg-emerald-500"
                                       : "bg-muted-foreground/40"
@@ -592,7 +592,7 @@ export default function TeamMembers() {
             {/* Side column */}
             <div className="space-y-4">
               {/* Pending invites */}
-              <Card className="border-border bg-card">
+              <Card className="border-none bg-muted">
                 <CardContent className="p-5">
                   <div className="flex items-center justify-between">
                     <h2 className="text-base font-semibold tracking-tight">
@@ -606,7 +606,7 @@ export default function TeamMembers() {
                     {pendingInvites.map((inv) => (
                       <div
                         key={inv.email}
-                        className="flex items-center gap-3 rounded-xl border border-border p-3"
+                        className="flex items-center gap-3 rounded-xl bg-background p-3"
                       >
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
                           <MailPlus className="h-4 w-4" />
@@ -646,7 +646,7 @@ export default function TeamMembers() {
               </Card>
 
               {/* Activity */}
-              <Card className="border-border bg-card">
+              <Card className="border-none bg-muted">
                 <CardContent className="p-5">
                   <div className="flex items-center justify-between">
                     <h2 className="text-base font-semibold tracking-tight">
