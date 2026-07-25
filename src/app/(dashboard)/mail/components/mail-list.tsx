@@ -21,8 +21,8 @@ export function MailList({ items }: MailListProps) {
           <button
             key={item.id}
             className={cn(
-              "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-primary/10",
-              mail.selected === item.id && "bg-primary/10 border-ring"
+              "flex flex-col items-start gap-2 rounded-lg bg-muted/50 p-3 text-left text-sm transition-all hover:bg-primary/10",
+              mail.selected === item.id && "bg-primary/10"
             )}
             onClick={() =>
               setMail({
