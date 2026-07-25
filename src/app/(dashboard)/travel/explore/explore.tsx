@@ -118,7 +118,7 @@ export default function ExplorePage() {
 
           <button
             onClick={() => setCmdOpen(true)}
-            className="flex h-11 w-full items-center gap-2 rounded-lg border bg-background px-3 text-sm text-muted-foreground transition-colors hover:bg-accent"
+            className="flex h-11 w-full items-center gap-2 rounded-lg bg-muted px-3 text-sm text-muted-foreground transition-colors hover:bg-accent"
           >
             <Search className="h-4 w-4" />
             Search destinations, cities, experiences...
