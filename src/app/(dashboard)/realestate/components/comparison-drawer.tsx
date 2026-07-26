@@ -34,7 +34,7 @@ export function ComparisonDrawer({ open, onClose, properties }: ComparisonDrawer
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="sm:w-[540px] sm:max-w-none">
+      <SheetContent className="w-[400px] sm:w-[540px] sm:max-w-none">
         <SheetHeader>
           <SheetTitle>Compare Properties</SheetTitle>
         </SheetHeader>

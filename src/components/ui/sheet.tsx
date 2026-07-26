@@ -38,14 +38,8 @@ const sheetVariants = cva(
         bottom:
           "inset-x-4 bottom-4 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         left: "inset-y-4 left-4 h-[calc(100%-2rem)] w-3/4 border-l data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
-        // Detail panel: a bottom sheet on mobile, a right-side panel on sm+
-        right: cn(
-          "inset-x-0 bottom-0 max-h-[90vh] w-full overflow-y-auto rounded-b-none rounded-t-2xl border-t",
-          "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-          "sm:inset-x-auto sm:inset-y-4 sm:right-4 sm:left-auto sm:h-[calc(100%-2rem)] sm:max-h-none sm:w-3/4 sm:max-w-sm sm:rounded-lg sm:border sm:border-r",
-          "sm:[--tw-enter-translate-y:0px] sm:[--tw-exit-translate-y:0px]",
-          "sm:data-[state=closed]:slide-out-to-right sm:data-[state=open]:slide-in-from-right"
-        ),
+        right:
+          "inset-y-4 right-4 h-[calc(100%-2rem)] w-3/4 border-r data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
       },
     },
     defaultVariants: {
@@ -69,9 +63,6 @@ const SheetContent = React.forwardRef<
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
-      {side === "right" && (
-        <div className="mx-auto -mt-2 mb-2 h-1.5 w-12 shrink-0 rounded-full bg-muted sm:hidden" />
-      )}
       {children}
       <SheetPrimitive.Close className="absolute right-4 top-4 rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary p-2">
         <svg

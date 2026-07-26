@@ -178,7 +178,7 @@ export default function AppointmentsPage() {
                             View chart
                           </Button>
                         </SheetTrigger>
-                        <SheetContent className="sm:w-[440px]">
+                        <SheetContent className="w-[320px] sm:w-[440px] overflow-y-auto">
                           <SheetHeader>
                             <SheetTitle className="flex items-center gap-3">
                               <Avatar className="h-10 w-10">
