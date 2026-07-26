@@ -199,7 +199,7 @@ export default function ReservationsPage() {
                           Details
                         </Button>
                       </SheetTrigger>
-                      <SheetContent className="sm:w-[420px]">
+                      <SheetContent className="w-[320px] sm:w-[420px]">
                         <SheetHeader>
                           <SheetTitle className="flex items-center gap-3">
                             <Avatar className="h-10 w-10">
