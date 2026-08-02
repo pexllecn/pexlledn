@@ -1,296 +1,307 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export type NotificationType =
-  | "default"
-  | "call"
-  | "music"
-  | "timer"
-  | "wifi"
-  | "battery"
-  | "gps";
+/* -------------------------------------------------------------------------- */
+/*  Size presets                                                              */
+/*                                                                            */
+/*  The real Dynamic Island morphs between a handful of discrete shapes.      */
+/*  We model each shape as a fixed width / height / corner radius and let     */
+/*  Framer Motion spring between them, exactly like iOS.                      */
+/* -------------------------------------------------------------------------- */
 
-interface DynamicIslandProps {
-  type: NotificationType;
-  content: React.ReactNode;
-  expandedContent: React.ReactNode;
-  isVisible: boolean;
-  onDismiss: () => void;
-  theme?: "light" | "dark";
+export type IslandSize =
+  | "idle" // the resting pill (mimics the notch)
+  | "minimal" // tiny circle-ish pill (single glyph)
+  | "compact" // leading + trailing blobs with a gap
+  | "long" // a wider single line
+  | "default" // one-line notification
+  | "expanded" // rich card
+  | "tall" // taller rich card
+  | "ultra"; // full live-activity card
+
+interface SizeSpec {
+  width: number;
+  height: number;
+  radius: number;
+}
+
+export const ISLAND_SIZES: Record<IslandSize, SizeSpec> = {
+  idle: { width: 130, height: 36, radius: 22 },
+  minimal: { width: 90, height: 36, radius: 22 },
+  compact: { width: 236, height: 37, radius: 22 },
+  long: { width: 320, height: 44, radius: 22 },
+  default: { width: 354, height: 62, radius: 30 },
+  expanded: { width: 360, height: 168, radius: 38 },
+  tall: { width: 366, height: 210, radius: 42 },
+  ultra: { width: 372, height: 252, radius: 44 },
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Springs                                                                    */
+/* -------------------------------------------------------------------------- */
+
+// The signature "gooey" morph of the shell.
+const SHELL_SPRING = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 30,
+  mass: 1.1,
+};
+
+// Content fades / blurs a touch quicker than the shell.
+const CONTENT_SPRING = {
+  type: "spring" as const,
+  stiffness: 500,
+  damping: 34,
+  mass: 0.7,
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Presentation of a single activity                                         */
+/* -------------------------------------------------------------------------- */
+
+export interface IslandActivity {
+  id: string;
+  /** Collapsed shape. */
+  size?: IslandSize;
+  /** Shape when the island is tapped open. */
+  expandedSize?: IslandSize;
+  /** Left blob of the compact presentation. */
+  leading?: React.ReactNode;
+  /** Right blob of the compact presentation. */
+  trailing?: React.ReactNode;
+  /** Center strip of the compact presentation. */
+  center?: React.ReactNode;
+  /** Full collapsed content (overrides leading/center/trailing layout). */
+  collapsed?: React.ReactNode;
+  /** Rich content revealed when expanded. */
+  expanded?: React.ReactNode;
+  /** Auto-open on arrival. */
+  autoExpand?: boolean;
+  /** ms before the island retracts. 0 keeps it until dismissed. */
   duration?: number;
 }
 
-const DynamicIsland: React.FC<DynamicIslandProps> = memo(
-  ({
-    type,
-    content,
-    expandedContent,
-    isVisible,
-    onDismiss,
-    theme = "dark",
-    duration = 5000,
-  }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [dismissalStage, setDismissalStage] = useState<
-      "visible" | "collapsing" | "exiting" | "dismissed"
-    >("visible");
-    const dismissalTimerRef = useRef<NodeJS.Timeout | null>(null);
+/* -------------------------------------------------------------------------- */
+/*  Content transition helper                                                  */
+/* -------------------------------------------------------------------------- */
 
-    const elasticTransition = {
-      type: "spring",
-      stiffness: 400,
-      damping: 50,
-      mass: 1,
-      restDelta: 0.01,
-      restSpeed: 0.01,
+const fade = {
+  initial: { opacity: 0, filter: "blur(6px)", scale: 0.92 },
+  animate: {
+    opacity: 1,
+    filter: "blur(0px)",
+    scale: 1,
+    transition: CONTENT_SPRING,
+  },
+  exit: {
+    opacity: 0,
+    filter: "blur(6px)",
+    scale: 0.96,
+    transition: { duration: 0.14 },
+  },
+};
+
+/* -------------------------------------------------------------------------- */
+/*  The island shell                                                          */
+/* -------------------------------------------------------------------------- */
+
+interface DynamicIslandProps {
+  activity: IslandActivity | null;
+  onDismiss: () => void;
+}
+
+export const DynamicIsland: React.FC<DynamicIslandProps> = ({
+  activity,
+  onDismiss,
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Reset / arm whenever a new activity arrives.
+  useEffect(() => {
+    if (!activity) return;
+    setExpanded(!!activity.autoExpand);
+
+    if (timer.current) clearTimeout(timer.current);
+    const duration = activity.duration ?? 4200;
+    if (duration > 0) {
+      timer.current = setTimeout(onDismiss, duration);
+    }
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
     };
+  }, [activity, onDismiss]);
 
-    const morphTransition = {
-      type: "spring",
-      stiffness: 240,
-      damping: 13,
-      mass: 0.6,
-      restDelta: 0.01,
-      restSpeed: 0.01,
-    };
+  const collapsedSize = activity?.size ?? "compact";
+  const openSize = activity?.expandedSize ?? "expanded";
+  const canExpand = !!activity?.expanded;
 
-    const startDismissal = useCallback(() => {
-      if (dismissalTimerRef.current) {
-        clearTimeout(dismissalTimerRef.current);
-      }
+  const spec =
+    ISLAND_SIZES[expanded && canExpand ? openSize : collapsedSize];
 
-      window.navigator.vibrate?.(10);
+  const buzz = () => window.navigator?.vibrate?.(8);
 
-      if (isExpanded) {
-        setIsExpanded(false);
-        setDismissalStage("collapsing");
+  const toggle = useCallback(() => {
+    if (!canExpand) return;
+    buzz();
+    // Tapping keeps the island alive a bit longer.
+    if (timer.current) clearTimeout(timer.current);
+    setExpanded((v) => !v);
+  }, [canExpand]);
 
-        dismissalTimerRef.current = setTimeout(() => {
-          setDismissalStage("exiting");
+  const showCompact = !(expanded && canExpand);
 
-          dismissalTimerRef.current = setTimeout(() => {
-            setDismissalStage("dismissed");
-            onDismiss();
-          }, 300);
-        }, 300);
-      } else {
-        setDismissalStage("exiting");
-
-        dismissalTimerRef.current = setTimeout(() => {
-          setDismissalStage("dismissed");
-          onDismiss();
-        }, 300);
-      }
-    }, [isExpanded, onDismiss]);
-
-    useEffect(() => {
-      if (isVisible) {
-        const timer = setTimeout(startDismissal, duration);
-        return () => clearTimeout(timer);
-      }
-    }, [isVisible, startDismissal, duration]);
-
-    const handleClick = useCallback(() => {
-      if (dismissalStage !== "visible") return;
-
-      window.navigator.vibrate?.(10);
-      setIsExpanded(!isExpanded);
-    }, [dismissalStage, isExpanded]);
-
-    const handleKeyDown = useCallback(
-      (event: React.KeyboardEvent) => {
-        if (dismissalStage !== "visible") return;
-
-        if (event.key === "Enter" || event.key === " ") {
-          handleClick();
-        } else if (event.key === "Escape") {
-          startDismissal();
-        }
-      },
-      [dismissalStage, handleClick, startDismissal]
-    );
-
-    const handleDismissClick = useCallback(
-      (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (dismissalStage !== "visible") return;
-
-        window.navigator.vibrate?.(10);
-        startDismissal();
-      },
-      [dismissalStage, startDismissal]
-    );
-
-    const variants = {
-      hidden: {
-        width: "120px",
-        height: "36px",
-        scale: 0.8,
-        y: +20,
-        opacity: 0,
-        filter: "blur(10px)",
-      },
-      visible: {
-        width: "320px",
-        height: "50px",
-        scale: 1,
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        transition: {
-          ...morphTransition,
-          opacity: { duration: 0.2 },
-          filter: { duration: 0.2 },
-        },
-      },
-      expanded: {
-        width: "380px",
-        height: "auto",
-        minHeight: "160px",
-        scale: 1,
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        transition: {
-          ...morphTransition,
-          height: { type: "spring", stiffness: 300, damping: 20 },
-          opacity: { duration: 0.2 },
-          filter: { duration: 0.2 },
-        },
-      },
-      exit: {
-        width: "120px",
-        height: "36px",
-        scale: 0.8,
-        y: +20,
-        opacity: 0,
-        filter: "blur(10px)",
-        transition: {
-          ...morphTransition,
-          opacity: { duration: 0.1, delay: 0.1 },
-          filter: { duration: 0.1 },
-          scale: { duration: 0.5, type: "spring", stiffness: 200, damping: 20 },
-        },
-      },
-    };
-
-    const contentVariants = {
-      hidden: {
-        opacity: 0,
-        scale: 0.9,
-        filter: "blur(8px)",
-      },
-      visible: {
-        opacity: 1,
-        scale: 1,
-        filter: "blur(0px)",
-        transition: {
-          type: "spring",
-          stiffness: 450,
-          damping: 25,
-          mass: 0.8,
-          filter: { duration: 0.1 },
-        },
-      },
-      exit: {
-        opacity: 0,
-        scale: 0.9,
-        filter: "blur(8px)",
-        transition: {
-          type: "spring",
-          stiffness: 450,
-          damping: 25,
-          mass: 0.8,
-          filter: { duration: 0.1 },
-        },
-      },
-    };
-
-    if (dismissalStage === "dismissed") return null;
-
-    return (
-      <AnimatePresence mode="wait">
-        {isVisible && (
-          <motion.div
-            layout
-            layoutId="dynamic-island"
-            className={cn(
-              "fixed top-2 left-0 right-0 mx-auto bg-foreground text-background rounded-[24px] overflow-hidden z-[1000001]",
-              "shadow-md backdrop-blur-sm",
-
-              dismissalStage === "visible" && "cursor-pointer"
-            )}
-            initial="hidden"
-            animate={
-              dismissalStage === "exiting"
-                ? "exit"
-                : isExpanded
-                ? "expanded"
-                : "visible"
-            }
-            exit="exit"
-            variants={variants}
-            onClick={handleClick}
-            onKeyDown={handleKeyDown}
-            role="alert"
-            aria-live="polite"
-            aria-expanded={isExpanded}
-            tabIndex={0}
-          >
-            {dismissalStage === "visible" && (
-              <motion.button
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={contentVariants}
-                onClick={handleDismissClick}
-                className={cn(
-                  "absolute top-3 right-2 z-10",
-                  "bg-white/10 ",
-                  "rounded-full p-1"
-                )}
-                aria-label="Dismiss notification"
-              >
-                <X size={16} strokeWidth={2.5} />
-              </motion.button>
-            )}
-
+  return (
+    <MotionConfig transition={SHELL_SPRING}>
+      <div className="pointer-events-none fixed inset-x-0 top-3 z-[100000] flex justify-center">
+        <AnimatePresence mode="popLayout">
+          {activity && (
             <motion.div
+              key="island"
               layout
-              layoutId="dynamic-island-content"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={contentVariants}
-              className="p-2 pr-8 mr-3"
-            >
-              {content}
-            </motion.div>
-
-            <AnimatePresence mode="wait">
-              {isExpanded && dismissalStage === "visible" && (
-                <motion.div
-                  layout
-                  layoutId="dynamic-island-expanded"
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={contentVariants}
-                  className="px-4 pb-4"
-                >
-                  {expandedContent}
-                </motion.div>
+              initial={{
+                width: ISLAND_SIZES.idle.width,
+                height: ISLAND_SIZES.idle.height,
+                borderRadius: ISLAND_SIZES.idle.radius,
+                scale: 0.85,
+                y: -14,
+                opacity: 0,
+                filter: "blur(8px)",
+              }}
+              animate={{
+                width: spec.width,
+                height: spec.height,
+                borderRadius: spec.radius,
+                scale: 1,
+                y: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+              }}
+              exit={{
+                width: ISLAND_SIZES.idle.width,
+                height: ISLAND_SIZES.idle.height,
+                borderRadius: ISLAND_SIZES.idle.radius,
+                scale: 0.8,
+                y: -16,
+                opacity: 0,
+                filter: "blur(9px)",
+                transition: { ...SHELL_SPRING, opacity: { duration: 0.2 } },
+              }}
+              onClick={toggle}
+              role="alert"
+              aria-live="polite"
+              aria-expanded={expanded}
+              className={cn(
+                "pointer-events-auto relative overflow-hidden bg-black text-white",
+                "shadow-[0_8px_30px_rgba(0,0,0,0.35)] ring-1 ring-white/[0.06]",
+                "select-none",
+                canExpand && "cursor-pointer"
               )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              style={{ willChange: "width, height" }}
+            >
+              {/* subtle top gloss, like the real hardware */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.05] to-transparent" />
+
+              <AnimatePresence mode="popLayout" initial={false}>
+                {showCompact ? (
+                  <motion.div
+                    key="compact"
+                    variants={fade}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="absolute inset-0"
+                  >
+                    {activity.collapsed ?? (
+                      <div className="flex h-full w-full items-center justify-between gap-2 px-3.5">
+                        <div className="flex min-w-0 items-center">
+                          {activity.leading}
+                        </div>
+                        {activity.center && (
+                          <div className="flex min-w-0 flex-1 items-center justify-center">
+                            {activity.center}
+                          </div>
+                        )}
+                        <div className="flex min-w-0 items-center justify-end">
+                          {activity.trailing}
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="expanded"
+                    variants={fade}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="absolute inset-0 p-4"
+                  >
+                    {activity.expanded}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </MotionConfig>
+  );
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Manager + context                                                          */
+/* -------------------------------------------------------------------------- */
+
+interface IslandContextValue {
+  show: (activity: IslandActivity) => void;
+  dismiss: () => void;
+}
+
+const IslandContext = createContext<IslandContextValue | null>(null);
+
+export const useDynamicIsland = () => {
+  const ctx = useContext(IslandContext);
+  if (!ctx)
+    throw new Error("useDynamicIsland must be used within DynamicIslandProvider");
+  return ctx;
+};
+
+export const DynamicIslandProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [activity, setActivity] = useState<IslandActivity | null>(null);
+
+  const show = useCallback((next: IslandActivity) => {
+    // Retract first so the shape morphs from the resting pill again.
+    setActivity(null);
+    requestAnimationFrame(() =>
+      setActivity({ ...next, id: `${next.id}-${Date.now()}` })
     );
-  }
-);
+  }, []);
+
+  const dismiss = useCallback(() => setActivity(null), []);
+
+  const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
+
+  return (
+    <IslandContext.Provider value={value}>
+      {children}
+      <DynamicIsland activity={activity} onDismiss={dismiss} />
+    </IslandContext.Provider>
+  );
+};
 
 export default DynamicIsland;
