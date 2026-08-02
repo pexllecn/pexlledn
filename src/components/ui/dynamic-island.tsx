@@ -128,6 +128,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const islandRef = useRef<HTMLDivElement>(null);
 
   // Reset / arm whenever a new activity arrives.
   useEffect(() => {
@@ -141,6 +142,26 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
     }
     return () => {
       if (timer.current) clearTimeout(timer.current);
+    };
+  }, [activity, onDismiss]);
+
+  // Tap anywhere outside the island to dismiss it — just like iOS.
+  useEffect(() => {
+    if (!activity) return;
+    const handlePointer = (e: PointerEvent) => {
+      if (islandRef.current && !islandRef.current.contains(e.target as Node)) {
+        if (timer.current) clearTimeout(timer.current);
+        onDismiss();
+      }
+    };
+    // Defer so the click that opened the island doesn't immediately close it.
+    const id = setTimeout(
+      () => document.addEventListener("pointerdown", handlePointer),
+      0
+    );
+    return () => {
+      clearTimeout(id);
+      document.removeEventListener("pointerdown", handlePointer);
     };
   }, [activity, onDismiss]);
 
