@@ -1,0 +1,249 @@
+"use client";
+
+import * as React from "react";
+import {
+  AppleShell,
+  A,
+  CardHead,
+  ChannelRow,
+  Legend,
+  RangePill,
+  Stat,
+  Surface,
+  UnderlineTabs,
+} from "../components/apple-ui";
+import {
+  ColumnsWithLine,
+  Funnel,
+  Gauge,
+  StackedArea,
+} from "../components/apple-charts";
+import {
+  ChevronDown,
+  Eye,
+  MousePointer,
+  DollarSign,
+  Linkedin,
+  Mail,
+  Search,
+  UserCheck,
+} from "lucide-react";
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+const kpis = [
+  { icon: <DollarSign className="h-4 w-4" />, label: "Ad spend", value: "$24,380", delta: 8.4 },
+  { icon: <Eye className="h-4 w-4" />, label: "Impressions", value: "1.94M", delta: 12.6 },
+  { icon: <UserCheck className="h-4 w-4" />, label: "Conversions", value: "1,286", delta: 5.2 },
+  { icon: <MousePointer className="h-4 w-4" />, label: "Cost per click", value: "$1.24", delta: -3.1 },
+];
+
+const funnelStages = [
+  { label: "Visits", pct: 100, color: A.lime },
+  { label: "Sign-ups", pct: 40, color: A.blue },
+  { label: "Trials", pct: 15, color: A.purple },
+  { label: "Customers", pct: 5, color: A.pink },
+];
+
+const funnelTotals = [
+  { label: "Visits", value: "96.4K", color: A.lime },
+  { label: "Sign-ups", value: "38.6K", color: A.blue },
+  { label: "Trials", value: "14.1K", color: A.purple },
+  { label: "Customers", value: "5.2K", color: A.pink },
+];
+
+const spend = [
+  { label: "Paid search", pct: 46, color: A.lime, amount: "$11,400" },
+  { label: "Paid social", pct: 31, color: A.blue, amount: "$7,620" },
+  { label: "Email", pct: 13, color: A.purple, amount: "$3,180" },
+  { label: "Affiliates", pct: 10, color: A.pink, amount: "$2,680" },
+];
+
+const channels = [
+  { icon: <Search className="h-3.5 w-3.5" />, label: "Google Ads", pct: 39, color: A.blue },
+  { icon: <span className="text-[13px] font-semibold">∞</span>, label: "Meta", pct: 25, color: A.blue },
+  { icon: <span className="text-[13px] font-semibold">X</span>, label: "X Ads", pct: 14, color: A.blue },
+  { icon: <Linkedin className="h-3.5 w-3.5" />, label: "LinkedIn", pct: 8, color: A.blue },
+  { icon: <Mail className="h-3.5 w-3.5" />, label: "Email", pct: 7, color: A.blue, muted: true },
+];
+
+const campaigns = [
+  { label: "Spring launch", pct: 34, color: A.purple },
+  { label: "Always-on brand", pct: 27, color: A.purple },
+  { label: "Retargeting · cart", pct: 18, color: A.purple },
+  { label: "Developer beta", pct: 12, color: A.purple },
+  { label: "Newsletter promo", pct: 9, color: A.purple, muted: true },
+];
+
+const landing = [
+  { label: "/pricing", pct: 41, color: A.lime },
+  { label: "/product/overview", pct: 24, color: A.lime },
+  { label: "/download", pct: 16, color: A.lime },
+  { label: "/blog/design-system", pct: 11, color: A.lime },
+  { label: "/careers", pct: 8, color: A.lime, muted: true },
+];
+
+const adSpend = [
+  { label: "Jan", bar: 9800, line: 2.9 },
+  { label: "Feb", bar: 10200, line: 3.0 },
+  { label: "Mar", bar: 11400, line: 2.8 },
+  { label: "Apr", bar: 10900, line: 2.9 },
+  { label: "May", bar: 13600, line: 3.2 },
+  { label: "Jun", bar: 15200, line: 3.3 },
+  { label: "Jul", bar: 14100, line: 3.2 },
+  { label: "Aug", bar: 16800, line: 3.5 },
+  { label: "Sep", bar: 19400, line: 3.6 },
+  { label: "Oct", bar: 18200, line: 3.6 },
+  { label: "Nov", bar: 21600, line: 3.7 },
+  { label: "Dec", bar: 23400, line: 3.8 },
+];
+
+const visitors = [
+  { name: "Direct", color: A.lime, data: [42, 44, 43, 46, 48, 47, 50, 53, 55, 54, 58, 62] },
+  { name: "Organic", color: A.blue, data: [28, 30, 29, 33, 35, 34, 38, 40, 42, 41, 45, 48] },
+  { name: "Referral", color: A.purple, data: [14, 16, 15, 18, 19, 21, 22, 24, 25, 27, 29, 31] },
+];
+
+export default function Analytics() {
+  return (
+    <AppleShell title="Marketing" action="New campaign">
+      <div className="min-w-0 space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {kpis.map((k) => (
+            <Stat key={k.label} {...k} />
+          ))}
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-3">
+          {/* Funnel */}
+          <Surface className="p-5">
+            <CardHead
+              title="Acquisition funnel"
+              value="96.4K"
+              delta={5.8}
+              right={<RangePill />}
+            />
+            <Funnel className="mt-6" stages={funnelStages} />
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {funnelTotals.map((f) => (
+                <div
+                  key={f.label}
+                  className="rounded-xl border border-black/[0.06] px-3 py-2.5 dark:border-white/[0.07]"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <span
+                      className="h-2 w-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: f.color }}
+                    />
+                    <span className="truncate text-[12px] text-muted-foreground">
+                      {f.label}
+                    </span>
+                  </span>
+                  <p className="mt-1 text-[14px] font-semibold tabular-nums text-foreground">
+                    {f.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Surface>
+
+          {/* Gauge */}
+          <Surface className="p-5">
+            <CardHead
+              title="Spend by channel"
+              value="$24,880"
+              delta={8.4}
+              right={<RangePill />}
+            />
+            <Gauge
+              className="mt-4"
+              segments={spend}
+              value="46%"
+              caption="Paid search"
+            />
+            <Legend
+              className="mt-2 justify-center"
+              items={spend.map((s) => ({
+                label: s.label,
+                value: s.amount,
+                color: s.color,
+              }))}
+            />
+          </Surface>
+
+          {/* Ranked tabs */}
+          <Surface className="p-5">
+            <UnderlineTabs
+              tabs={["Channels", "Campaigns", "Landing pages"]}
+              right="Sessions"
+            >
+              {(active) => {
+                const rows =
+                  active === "Channels"
+                    ? channels
+                    : active === "Campaigns"
+                    ? campaigns
+                    : landing;
+                return (
+                  <div className="mt-4 space-y-1.5">
+                    {rows.map((r) => (
+                      <ChannelRow key={r.label} {...r} />
+                    ))}
+                    <div className="flex justify-center pt-2">
+                      <button
+                        aria-label={`Show more ${active.toLowerCase()}`}
+                        className="flex h-7 w-9 items-center justify-center rounded-full bg-black/[0.05] text-muted-foreground transition-colors hover:bg-black/[0.09] dark:bg-white/[0.07] dark:hover:bg-white/[0.12]"
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              }}
+            </UnderlineTabs>
+          </Surface>
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-2">
+          <Surface className="p-5">
+            <CardHead
+              title="Ad spend · ROAS 3.6x"
+              value="$217.7K"
+              delta={9.4}
+              right={<RangePill label="This year" />}
+            />
+            <ColumnsWithLine
+              className="mt-6"
+              data={adSpend}
+              leftTicks={["25.5K", "17K", "8.5K", "0"]}
+              rightTicks={["6.0x", "4.0x", "2.0x", "0.0x"]}
+            />
+          </Surface>
+
+          <Surface className="p-5">
+            <CardHead
+              title="Visitors"
+              value="134,400"
+              delta={8.8}
+              right={<RangePill label="This year" />}
+            />
+            <StackedArea
+              className="mt-6"
+              series={visitors}
+              labels={MONTHS}
+              ticks={["16.5K", "11K", "5.5K", "0"]}
+              height={230}
+            />
+            <Legend
+              className="mt-3"
+              items={visitors.map((v) => ({ label: v.name, color: v.color }))}
+            />
+          </Surface>
+        </div>
+      </div>
+    </AppleShell>
+  );
+}

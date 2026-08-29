@@ -34,6 +34,7 @@ import {
   Plane,
   UtensilsCrossed,
   Clapperboard,
+  Apple,
 } from "lucide-react";
 
 type Submenu = {
@@ -97,6 +98,32 @@ export function getMenuList(pathname: string): Group[] {
     {
       groupLabel: "Apps",
       menus: [
+        {
+          href: "",
+          label: "Apple Design",
+          active: pathname.includes("/apple"),
+          icon: Apple,
+          submenus: [
+            { href: "/apple", label: "Overview", active: pathname === "/apple" },
+            { href: "/apple/analytics", label: "Marketing", active: pathname === "/apple/analytics" },
+            { href: "/apple/health", label: "Medical Profile", active: pathname === "/apple/health" },
+            { href: "/apple/fitness", label: "Activity", active: pathname === "/apple/fitness" },
+            { href: "/apple/profile", label: "Profile", active: pathname === "/apple/profile" },
+            { href: "/apple/finance", label: "Wallet", active: pathname === "/apple/finance" },
+            { href: "/apple/calendar", label: "Calendar", active: pathname === "/apple/calendar" },
+            { href: "/apple/messages", label: "Messages", active: pathname === "/apple/messages" },
+            { href: "/apple/mail", label: "Mail", active: pathname === "/apple/mail" },
+            { href: "/apple/photos", label: "Photos", active: pathname === "/apple/photos" },
+            { href: "/apple/music", label: "Music", active: pathname === "/apple/music" },
+            { href: "/apple/files", label: "Files", active: pathname === "/apple/files" },
+            { href: "/apple/devices", label: "Devices", active: pathname === "/apple/devices" },
+            { href: "/apple/store", label: "App Store", active: pathname === "/apple/store" },
+            { href: "/apple/team", label: "HR Team", active: pathname === "/apple/team" },
+            { href: "/apple/settings", label: "Settings", active: pathname === "/apple/settings" },
+            { href: "/apple/design", label: "Design", active: pathname === "/apple/design" },
+          ],
+          notificationCount: "New",
+        },
         {
           href: "",
           label: "Media",
