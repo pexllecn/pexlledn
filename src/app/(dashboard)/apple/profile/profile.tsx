@@ -151,6 +151,7 @@ export default function Profile() {
             <React.Fragment key={p.name}>
               {i > 0 && <Separator className="ml-14 w-auto" />}
               <Row
+                interactive
                 icon={p.icon}
                 tint={A.blue}
                 title={p.name}

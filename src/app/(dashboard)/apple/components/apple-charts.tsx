@@ -126,32 +126,55 @@ export function Gauge({
   const r = 92;
   const stroke = 34;
 
+  // Round caps overhang stroke/2 past each end -- about 10 degrees here, more
+  // than a small segment's whole sweep. So segments use butt caps separated by
+  // a real gap, and the dial's two outer ends are rounded separately below.
+  const gap = 4;
   const total = segments.reduce((s, x) => s + x.pct, 0) || 1;
   let cursor = 172;
   const arcs = segments.map((s) => {
     const sweep = (s.pct / total) * 196;
-    const from = cursor;
-    const to = cursor + sweep;
-    cursor = to;
+    const from = cursor + gap / 2;
+    const to = Math.max(cursor + sweep - gap / 2, from + 0.01);
+    cursor += sweep;
     return { ...s, from, to };
   });
+  const first = arcs[0];
+  const last = arcs[arcs.length - 1];
 
   return (
     <div className={cn("relative", className)}>
       <svg viewBox={`0 0 ${size} ${size * 0.72}`} className="w-full" role="img">
-        {/* Painted last-to-first: each segment covers the next one's start cap,
-            so the band reads as continuous and only the two outer ends stay
-            rounded. Drawing them in order would leave a gap at every join. */}
-        {[...arcs].reverse().map((a) => (
+        {arcs.map((a) => (
           <path
             key={a.label}
             d={arcPath(cx, cy, r, a.from, a.to)}
             stroke={a.color}
             strokeWidth={stroke}
-            strokeLinecap="round"
+            strokeLinecap="butt"
             fill="none"
           />
         ))}
+        {/* Zero-length round-capped arcs: they render as a dot the width of
+            the stroke, rounding just the two ends of the dial. */}
+        {first && (
+          <path
+            d={arcPath(cx, cy, r, first.from, first.from + 0.01)}
+            stroke={first.color}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            fill="none"
+          />
+        )}
+        {last && (
+          <path
+            d={arcPath(cx, cy, r, last.to - 0.01, last.to)}
+            stroke={last.color}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            fill="none"
+          />
+        )}
       </svg>
       <div className="pointer-events-none absolute inset-x-0 bottom-[14%] flex flex-col items-center">
         <span className="text-[34px] font-semibold leading-none tracking-[-0.03em] tabular-nums text-foreground">
@@ -625,6 +648,9 @@ export function ScoreRing({
   const total = segments.reduce((s, x) => s + x.pct, 0) || 1;
   let cursor = -90;
   const gap = 6;
+  // Same cap correction as Gauge: without it a 6px cap on a 61px radius eats
+  // roughly 7 degrees at each end and the segments run into one another.
+  const capDeg = ((sw / 2) / r) * (180 / Math.PI);
 
   return (
     <div
@@ -634,8 +660,9 @@ export function ScoreRing({
       <svg width={size} height={size} role="img">
         {segments.map((s, i) => {
           const sweep = (s.pct / total) * 360;
-          const from = cursor + gap / 2;
-          const to = cursor + sweep - gap / 2;
+          const inset = capDeg + gap / 2;
+          const from = cursor + inset;
+          const to = Math.max(cursor + sweep - inset, from + 0.01);
           cursor += sweep;
           return (
             <path
