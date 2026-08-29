@@ -6,12 +6,25 @@ import {
   A,
   CardHead,
   ChannelRow,
-  Hair,
   RangePill,
   Segmented,
   Stat,
-  Surface,
+  initials,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { Columns, Gauge, Heatmap, Meter } from "../components/apple-charts";
 import {
   Building2,
@@ -93,7 +106,7 @@ export default function Team() {
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="Headcount"
               value="56"
@@ -106,9 +119,9 @@ export default function Team() {
               ticks={["60", "40", "20", "0"]}
               height={230}
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="By department"
               value="4 teams"
@@ -124,109 +137,98 @@ export default function Team() {
               {departments.map((d) => (
                 <div
                   key={d.label}
-                  className="flex items-center justify-between rounded-xl border border-black/[0.06] px-3 py-2 dark:border-white/[0.07]"
+                  className="flex items-center justify-between rounded-md border border-border px-3 py-2"
                 >
                   <span className="flex min-w-0 items-center gap-1.5">
                     <span
                       className="h-2 w-2 shrink-0 rounded-full"
                       style={{ backgroundColor: d.color }}
                     />
-                    <span className="truncate text-[12px] text-muted-foreground">
+                    <span className="truncate text-xs text-muted-foreground">
                       {d.label}
                     </span>
                   </span>
-                  <span className="text-[13px] font-semibold tabular-nums text-foreground">
+                  <span className="text-sm font-semibold tabular-nums text-foreground">
                     {d.amount}
                   </span>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
           <div className="min-w-0 space-y-4">
-            <Surface className="p-5">
+            <Card className="min-w-0 p-5">
               <CardHead title="By location" value="56 people" />
               <div className="mt-4 space-y-1.5">
                 {locations.map((l) => (
                   <ChannelRow key={l.label} {...l} />
                 ))}
               </div>
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
+            <Card className="min-w-0 p-5">
               <CardHead title="Team activity" value="958" delta={14.8} />
               <Heatmap className="mt-4" weeks={30} seed={41} />
-            </Surface>
+            </Card>
           </div>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
           {/* Directory */}
-          <Surface className="overflow-hidden">
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
               <div>
-                <p className="text-[13px] text-muted-foreground">Directory</p>
-                <p className="mt-0.5 text-[18px] font-semibold tracking-[-0.02em] text-foreground">
+                <p className="text-sm text-muted-foreground">Directory</p>
+                <p className="mt-0.5 text-xl font-semibold tracking-tight text-foreground">
                   56 people
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 {["All departments", "All locations"].map((f) => (
-                  <button
-                    key={f}
-                    className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]"
-                  >
+                  <Button variant="outline" className="h-9 gap-2 rounded-full px-3.5" key={f}>
                     {f}
                     <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                  </button>
+                  </Button>
                 ))}
-                <label className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 dark:border-white/[0.08]">
-                  <Search className="h-3.5 w-3.5 text-muted-foreground" />
-                  <input
-                    placeholder="Search"
-                    className="w-24 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
-                  />
-                </label>
+                <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input placeholder="Search" className="rounded-full pl-8" />
+              </div>
               </div>
             </div>
-            <Hair />
+            <Separator />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px] text-left">
-                <thead>
-                  <tr className="text-[12px] text-muted-foreground">
+              <Table className="min-w-[720px]">
+                <TableHeader>
+                  <TableRow>
                     {["Name", "Role", "Department", "Location", "Status", ""].map((h) => (
-                      <th key={h} className="px-5 py-2.5 font-medium">
+                      <TableHead key={h}>
                         {h}
-                      </th>
+                      </TableHead>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {people.map((p) => (
-                    <tr
-                      key={p.name}
-                      className="border-t border-black/[0.06] text-[13px] transition-colors hover:bg-black/[0.02] dark:border-white/[0.07] dark:hover:bg-white/[0.03]"
-                    >
-                      <td className="px-5 py-2.5">
+                    <TableRow key={p.name}>
+                      <TableCell>
                         <span className="flex items-center gap-2.5">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={`https://i.pravatar.cc/80?img=${p.img}`}
-                            alt=""
-                            className="h-8 w-8 rounded-full object-cover"
-                          />
+                          <Avatar className="h-8 w-8 shrink-0">
+                    <AvatarImage src={`https://i.pravatar.cc/80?img=${p.img}`} alt="" />
+                    <AvatarFallback>{initials(p.name)}</AvatarFallback>
+                  </Avatar>
                           <span>
                             <span className="block font-medium text-foreground">
                               {p.name}
                             </span>
-                            <span className="block text-[11px] text-muted-foreground">
+                            <span className="block text-xs text-muted-foreground">
                               Joined {p.since}
                             </span>
                           </span>
                         </span>
-                      </td>
-                      <td className="px-5 py-2.5 text-muted-foreground">{p.role}</td>
-                      <td className="px-5 py-2.5">
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{p.role}</TableCell>
+                      <TableCell>
                         <span className="flex items-center gap-1.5 text-muted-foreground">
                           <span
                             className="h-2 w-2 rounded-full"
@@ -234,11 +236,11 @@ export default function Team() {
                           />
                           {p.dept}
                         </span>
-                      </td>
-                      <td className="px-5 py-2.5 text-muted-foreground">{p.loc}</td>
-                      <td className="px-5 py-2.5">
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{p.loc}</TableCell>
+                      <TableCell>
                         <span
-                          className="inline-flex rounded-md px-2 py-0.5 text-[12px] font-medium"
+                          className="inline-flex rounded-md px-2 py-0.5 text-xs font-medium"
                           style={{
                             color: statusTint[p.status],
                             backgroundColor: `${statusTint[p.status]}1F`,
@@ -246,50 +248,48 @@ export default function Team() {
                         >
                           {p.status}
                         </span>
-                      </td>
-                      <td className="px-5 py-2.5">
+                      </TableCell>
+                      <TableCell>
                         <span className="flex items-center gap-1">
-                          <button className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full">
                             <Mail className="h-3.5 w-3.5" />
-                          </button>
-                          <button className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full">
                             <MessageSquare className="h-3.5 w-3.5" />
-                          </button>
+                          </Button>
                         </span>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
-          </Surface>
+          </Card>
 
           {/* Time off */}
           <div className="min-w-0 space-y-4">
-            <Surface className="overflow-hidden">
+            <Card className="min-w-0 overflow-hidden">
               <div className="flex items-center justify-between px-5 py-4">
-                <p className="text-[14px] font-medium text-foreground">Time off</p>
-                <span className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
+                <p className="text-base font-medium text-foreground">Time off</p>
+                <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <CalendarDays className="h-3.5 w-3.5" /> July
                 </span>
               </div>
-              <Hair />
+              <Separator />
               {timeOff.map((t, i) => (
                 <React.Fragment key={t.name}>
-                  {i > 0 && <Hair className="ml-14" />}
-                  <div className="px-5 py-3.5">
+                  {i > 0 && <Separator className="ml-14 w-auto" />}
+                  <div>
                     <div className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`https://i.pravatar.cc/80?img=${t.img}`}
-                        alt=""
-                        className="h-9 w-9 rounded-full object-cover"
-                      />
+                      <Avatar className="h-9 w-9 shrink-0">
+                    <AvatarImage src={`https://i.pravatar.cc/80?img=${t.img}`} alt="" />
+                    <AvatarFallback>{initials(t.name)}</AvatarFallback>
+                  </Avatar>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[14px] font-medium text-foreground">
+                        <p className="truncate text-base font-medium text-foreground">
                           {t.name}
                         </p>
-                        <p className="truncate text-[12px] text-muted-foreground">
+                        <p className="truncate text-xs text-muted-foreground">
                           {t.reason} · {t.when}
                         </p>
                       </div>
@@ -298,10 +298,10 @@ export default function Team() {
                   </div>
                 </React.Fragment>
               ))}
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
-              <p className="text-[14px] font-medium text-foreground">Open roles</p>
+            <Card className="min-w-0 p-5">
+              <p className="text-base font-medium text-foreground">Open roles</p>
               <div className="mt-4 space-y-3">
                 {[
                   { role: "Senior iOS Engineer", dept: "Engineering", apps: 42, color: A.lime },
@@ -310,16 +310,16 @@ export default function Team() {
                 ].map((r) => (
                   <div
                     key={r.role}
-                    className="rounded-2xl border border-black/[0.06] p-3.5 dark:border-white/[0.07]"
+                    className="rounded-lg border border-border p-3.5"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="truncate text-[14px] font-medium text-foreground">
+                        <p className="truncate text-base font-medium text-foreground">
                           {r.role}
                         </p>
-                        <p className="text-[12px] text-muted-foreground">{r.dept}</p>
+                        <p className="text-xs text-muted-foreground">{r.dept}</p>
                       </div>
-                      <span className="shrink-0 text-[13px] font-semibold tabular-nums text-foreground">
+                      <span className="shrink-0 text-sm font-semibold tabular-nums text-foreground">
                         {r.apps}
                       </span>
                     </div>
@@ -327,7 +327,7 @@ export default function Team() {
                   </div>
                 ))}
               </div>
-            </Surface>
+            </Card>
           </div>
         </div>
       </div>

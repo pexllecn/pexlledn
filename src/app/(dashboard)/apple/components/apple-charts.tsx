@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { A, arcPath, polar, seeded, smoothPath } from "./apple-ui";
 
@@ -72,7 +73,7 @@ export function Funnel({
       <div className="pointer-events-none absolute inset-0 flex items-center">
         {stages.map((s) => (
           <div key={s.label} className="flex flex-1 justify-center">
-            <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold tabular-nums text-neutral-900 shadow-sm">
+            <span className="rounded-full bg-background px-2.5 py-1 text-xs font-semibold tabular-nums text-foreground shadow-sm">
               {s.pct}%
             </span>
           </div>
@@ -134,7 +135,7 @@ export function Gauge({
         <span className="text-[34px] font-semibold leading-none tracking-[-0.03em] tabular-nums text-foreground">
           {value}
         </span>
-        <span className="mt-1.5 text-[13px] text-muted-foreground">{caption}</span>
+        <span className="mt-1.5 text-sm text-muted-foreground">{caption}</span>
       </div>
     </div>
   );
@@ -169,7 +170,7 @@ export function Columns({
     <div className={cn("flex gap-3", className)}>
       {ticks && (
         <div
-          className="flex flex-col justify-between pb-6 text-right text-[11px] tabular-nums text-muted-foreground"
+          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
           style={{ height }}
         >
           {ticks.map((t) => (
@@ -182,21 +183,21 @@ export function Columns({
           <div
             key={d.label + i}
             className={cn(
-              "flex h-full min-w-0 flex-1 flex-col rounded-2xl",
-              highlight === i && "bg-black/[0.04] p-1 dark:bg-white/[0.05]"
+              "flex h-full min-w-0 flex-1 flex-col rounded-lg",
+              highlight === i && "bg-muted p-1"
             )}
           >
             <div className="relative min-h-0 flex-1">
-              <div className="absolute inset-0 rounded-[10px] bg-black/[0.055] dark:bg-white/[0.07]" />
+              <div className="absolute inset-0 rounded-xl bg-muted" />
               <div
-                className="absolute inset-x-0 bottom-0 rounded-[10px] transition-[height] duration-500"
+                className="absolute inset-x-0 bottom-0 rounded-xl transition-[height] duration-500"
                 style={{
                   height: `${Math.min(100, (d.value / peak) * 100)}%`,
                   backgroundColor: color,
                 }}
               />
             </div>
-            <span className="truncate pt-2 text-center text-[11px] text-muted-foreground">
+            <span className="truncate pt-2 text-center text-xs text-muted-foreground">
               {d.label}
             </span>
           </div>
@@ -242,7 +243,7 @@ export function ColumnsWithLine({
     <div className={cn("flex gap-3", className)}>
       {leftTicks && (
         <div
-          className="flex flex-col justify-between pb-6 text-right text-[11px] tabular-nums text-muted-foreground"
+          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
           style={{ height }}
         >
           {leftTicks.map((t) => (
@@ -257,14 +258,14 @@ export function ColumnsWithLine({
             <div key={d.label} className="flex h-full min-w-0 flex-1 flex-col">
               <div className="relative min-h-0 flex-1">
                 <div
-                  className="absolute inset-x-0 bottom-0 rounded-[8px]"
+                  className="absolute inset-x-0 bottom-0 rounded-xl"
                   style={{
                     height: `${(d.bar / barMax) * 100}%`,
                     backgroundColor: barColor,
                   }}
                 />
               </div>
-              <span className="pt-2 text-center text-[11px] text-muted-foreground">
+              <span className="pt-2 text-center text-xs text-muted-foreground">
                 {d.label}
               </span>
             </div>
@@ -298,7 +299,7 @@ export function ColumnsWithLine({
               cx={p.x}
               cy={p.y}
               r={3}
-              fill="white"
+              fill="hsl(var(--background))"
               stroke={lineColor}
               strokeWidth={2}
               vectorEffect="non-scaling-stroke"
@@ -309,7 +310,7 @@ export function ColumnsWithLine({
 
       {rightTicks && (
         <div
-          className="flex flex-col justify-between pb-6 text-[11px] tabular-nums text-muted-foreground"
+          className="flex flex-col justify-between pb-6 text-xs tabular-nums text-muted-foreground"
           style={{ height }}
         >
           {rightTicks.map((t) => (
@@ -355,7 +356,7 @@ export function Area({
     <div className={cn("flex gap-3", className)}>
       {ticks && (
         <div
-          className="flex flex-col justify-between pb-6 text-right text-[11px] tabular-nums text-muted-foreground"
+          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
           style={{ height }}
         >
           {ticks.map((t) => (
@@ -388,7 +389,7 @@ export function Area({
           />
         </svg>
         {labels && (
-          <div className="flex justify-between pt-2 text-[11px] text-muted-foreground">
+          <div className="flex justify-between pt-2 text-xs text-muted-foreground">
             {labels.map((l) => (
               <span key={l}>{l}</span>
             ))}
@@ -436,7 +437,7 @@ export function StackedArea({
     <div className={cn("flex gap-3", className)}>
       {ticks && (
         <div
-          className="flex flex-col justify-between pb-6 text-right text-[11px] tabular-nums text-muted-foreground"
+          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
           style={{ height }}
         >
           {ticks.map((t) => (
@@ -492,7 +493,7 @@ export function StackedArea({
             })}
         </svg>
         {labels && (
-          <div className="flex justify-between pt-2 text-[11px] text-muted-foreground">
+          <div className="flex justify-between pt-2 text-xs text-muted-foreground">
             {labels.map((l) => (
               <span key={l}>{l}</span>
             ))}
@@ -564,7 +565,7 @@ export function Heatmap({
   );
 
   const tone = [
-    "bg-black/[0.07] dark:bg-white/[0.08]",
+    "bg-muted",
     "bg-[#8E5BF6]/20",
     "bg-[#8E5BF6]/40",
     "bg-[#8E5BF6]/70",
@@ -581,12 +582,12 @@ export function Heatmap({
           {cells.map((c, i) => (
             <span
               key={i}
-              className={cn("h-[11px] w-[11px] rounded-[3px]", tone[c])}
+              className={cn("h-[11px] w-[11px] rounded", tone[c])}
             />
           ))}
         </div>
         {labels && (
-          <div className="flex min-w-[560px] justify-between pt-2 text-[11px] text-muted-foreground">
+          <div className="flex min-w-[560px] justify-between pt-2 text-xs text-muted-foreground">
             {labels.map((l) => (
               <span key={l}>{l}</span>
             ))}
@@ -830,14 +831,18 @@ export function Donut({
           />
         </g>
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-[13px] font-semibold tabular-nums text-foreground">
+      <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold tabular-nums text-foreground">
         {label ?? `${pct}%`}
       </div>
     </div>
   );
 }
 
-/** Horizontal capsule meter used in dense lists. */
+/**
+ * Horizontal meter — the repo's `Progress`, tinted per data series through a
+ * CSS variable so the indicator can carry a series colour without forking
+ * the component.
+ */
 export function Meter({
   pct,
   color = A.blue,
@@ -848,17 +853,11 @@ export function Meter({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "h-1.5 w-full overflow-hidden rounded-full bg-black/[0.07] dark:bg-white/[0.1]",
-        className
-      )}
-    >
-      <div
-        className="h-full rounded-full transition-[width] duration-500"
-        style={{ width: `${Math.min(100, pct)}%`, backgroundColor: color }}
-      />
-    </div>
+    <Progress
+      value={Math.min(100, Math.max(0, pct))}
+      style={{ ["--meter" as string]: color } as React.CSSProperties}
+      className={cn("h-1.5 bg-muted [&>div]:bg-[var(--meter)]", className)}
+    />
   );
 }
 
@@ -880,7 +879,7 @@ export function WeekBars({
       {data.map((d) => (
         <div key={d.label} className="flex h-full min-w-0 flex-1 flex-col">
           <div className="relative min-h-0 flex-1">
-            <div className="absolute inset-0 rounded-xl bg-black/[0.05] dark:bg-white/[0.07]" />
+            <div className="absolute inset-0 rounded-xl bg-muted" />
             <div
               className="absolute inset-x-0 bottom-0 rounded-xl"
               style={{
@@ -889,7 +888,7 @@ export function WeekBars({
               }}
             />
           </div>
-          <span className="pt-2 text-center text-[11px] text-muted-foreground">
+          <span className="pt-2 text-center text-xs text-muted-foreground">
             {d.label}
           </span>
         </div>

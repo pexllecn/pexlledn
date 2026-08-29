@@ -7,13 +7,16 @@ import {
   A,
   CardHead,
   Delta,
-  Hair,
   Legend,
   MiniStat,
   Segmented,
   Stat,
-  Surface,
+  initials,
 } from "./components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Area, Columns, Heatmap } from "./components/apple-charts";
 import {
   ArrowLeft,
@@ -57,43 +60,41 @@ export default function Overview() {
       <div className="min-w-0 space-y-4">
         {/* Recent hires + monthly earnings */}
         <div className="grid gap-4 xl:grid-cols-2">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[13px] text-muted-foreground">Recent hires</p>
-                <p className="mt-1 text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+                <p className="text-sm text-muted-foreground">Recent hires</p>
+                <p className="mt-1 text-2xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                   56
                 </p>
               </div>
-              <button className="flex h-8 items-center gap-1.5 rounded-full px-2.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.04] dark:hover:bg-white/[0.06]">
+              <Button variant="ghost" className="h-8 gap-1.5 rounded-full px-2.5">
                 Board team
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-              </button>
+              </Button>
             </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {hires.map((h) => (
                 <div
                   key={h.name}
-                  className="rounded-2xl border border-black/[0.06] p-3 transition-colors hover:bg-black/[0.02] dark:border-white/[0.07] dark:hover:bg-white/[0.03]"
+                  className="rounded-lg border border-border p-3 transition-colors hover:bg-muted"
                 >
                   <div className="flex items-center gap-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`https://i.pravatar.cc/80?img=${h.img}`}
-                      alt=""
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
+                    <Avatar className="h-10 w-10 shrink-0">
+                    <AvatarImage src={`https://i.pravatar.cc/80?img=${h.img}`} alt="" />
+                    <AvatarFallback>{initials(h.name)}</AvatarFallback>
+                  </Avatar>
                     <div className="min-w-0">
-                      <p className="truncate text-[14px] font-medium text-foreground">
+                      <p className="truncate text-base font-medium text-foreground">
                         {h.name}
                       </p>
-                      <p className="truncate text-[12px] text-muted-foreground">
+                      <p className="truncate text-xs text-muted-foreground">
                         {h.when}
                       </p>
                     </div>
                   </div>
-                  <div className="mt-3 rounded-xl bg-black/[0.04] py-2 text-center text-[12px] text-muted-foreground dark:bg-white/[0.05]">
+                  <div className="mt-3 rounded-md bg-muted py-2 text-center text-xs text-muted-foreground">
                     {h.role}
                   </div>
                 </div>
@@ -101,16 +102,16 @@ export default function Overview() {
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <button className="flex h-10 items-center justify-center gap-2 rounded-xl border border-black/[0.07] text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.05]">
+              <Button variant="outline" className="h-10 gap-2 rounded-md">
                 <ArrowLeft className="h-3.5 w-3.5" /> Previous
-              </button>
-              <button className="flex h-10 items-center justify-center gap-2 rounded-xl border border-black/[0.07] text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.05]">
+              </Button>
+              <Button variant="outline" className="h-10 gap-2 rounded-md">
                 Next <ArrowRight className="h-3.5 w-3.5" />
-              </button>
+              </Button>
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="January"
               value="$3,240"
@@ -123,12 +124,12 @@ export default function Overview() {
               ticks={["$10K", "$5K", "$3K", "$0"]}
               height={250}
             />
-          </Surface>
+          </Card>
         </div>
 
         {/* Revenue + contributions */}
         <div className="grid gap-4 xl:grid-cols-2">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="Revenue"
               value="$18,240"
@@ -142,9 +143,9 @@ export default function Overview() {
               ticks={["$6K", "$4K", "$2K", "$0"]}
               height={250}
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead title="Contributions this year" value="958" delta={14.8} />
 
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -155,11 +156,11 @@ export default function Overview() {
             </div>
 
             <div className="mt-6 flex items-center justify-between">
-              <p className="text-[13px] text-muted-foreground">Activity</p>
+              <p className="text-sm text-muted-foreground">Activity</p>
               <Segmented options={["Weekly", "Monthly", "Yearly"]} />
             </div>
             <Heatmap className="mt-4" weeks={52} seed={11} labels={MONTHS} />
-          </Surface>
+          </Card>
         </div>
 
         {/* Bottom KPI row */}
@@ -170,11 +171,11 @@ export default function Overview() {
         </div>
 
         {/* Cross-links into the rest of the app */}
-        <Surface className="overflow-hidden">
+        <Card className="min-w-0 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#0A6CFF]" />
-              <p className="text-[14px] font-medium text-foreground">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <p className="text-base font-medium text-foreground">
                 Continue where you left off
               </p>
             </div>
@@ -187,7 +188,7 @@ export default function Overview() {
               className="hidden sm:flex"
             />
           </div>
-          <Hair />
+          <Separator />
           <div className="grid sm:grid-cols-3">
             {[
               { href: "/apple/analytics", title: "Marketing analytics", sub: "Funnel · spend · channels" },
@@ -197,16 +198,16 @@ export default function Overview() {
               <Link
                 key={c.href}
                 href={c.href}
-                className={`px-5 py-4 transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.03] ${
-                  i > 0 ? "sm:border-l sm:border-black/[0.06] sm:dark:border-white/[0.07]" : ""
+                className={`px-5 py-4 transition-colors hover:bg-muted/50 ${
+                  i > 0 ? "sm:border-l sm:border-border sm:" : ""
                 }`}
               >
-                <p className="text-[14px] font-medium text-foreground">{c.title}</p>
-                <p className="mt-0.5 text-[12px] text-muted-foreground">{c.sub}</p>
+                <p className="text-base font-medium text-foreground">{c.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{c.sub}</p>
               </Link>
             ))}
           </div>
-        </Surface>
+        </Card>
       </div>
     </AppleShell>
   );

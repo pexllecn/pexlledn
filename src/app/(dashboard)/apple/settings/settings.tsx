@@ -4,12 +4,14 @@ import * as React from "react";
 import {
   AppleShell,
   A,
-  Hair,
   Row,
   Segmented,
-  Surface,
-  Toggle,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Donut, Meter } from "../components/apple-charts";
 import {
   Accessibility,
@@ -100,40 +102,37 @@ export default function Settings() {
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="min-w-0 space-y-4">
           {/* Account */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/[0.06] text-[22px] font-medium text-foreground/60 dark:bg-white/[0.08]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-2xl font-medium text-foreground/60">
                 M
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[17px] font-semibold tracking-[-0.01em] text-foreground">
+                <p className="truncate text-xl font-semibold tracking-tight text-foreground">
                   Mertcan Esmergül
                 </p>
-                <p className="truncate text-[13px] text-muted-foreground">
+                <p className="truncate text-sm text-muted-foreground">
                   Apple Account · iCloud+ 2 TB
                 </p>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </div>
 
-            <label className="mt-4 flex h-9 items-center gap-2 rounded-full bg-black/[0.045] px-3.5 dark:bg-white/[0.06]">
-              <Search className="h-3.5 w-3.5 text-muted-foreground" />
-              <input
-                placeholder="Search settings"
-                className="w-full bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
-              />
-            </label>
-          </Surface>
+            <div className="relative mt-4">
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input placeholder="Search settings" className="rounded-full pl-8" />
+              </div>
+          </Card>
 
           {groups.map((g) => (
             <div key={g.title}>
-              <p className="mb-2 px-2 text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 {g.title}
               </p>
-              <Surface className="overflow-hidden">
+              <Card className="min-w-0 overflow-hidden">
                 {g.rows.map((r, i) => (
                   <React.Fragment key={r.title}>
-                    {i > 0 && <Hair className="ml-14" />}
+                    {i > 0 && <Separator className="ml-14 w-auto" />}
                     <Row
                       icon={r.icon}
                       tint={r.tint}
@@ -141,7 +140,7 @@ export default function Settings() {
                       subtitle={r.subtitle}
                       right={
                         r.toggle ? (
-                          <Toggle checked={r.on} />
+                          <Switch defaultChecked={r.on} />
                         ) : (
                           <ChevronRight className="h-4 w-4 text-muted-foreground" />
                         )
@@ -149,17 +148,17 @@ export default function Settings() {
                     />
                   </React.Fragment>
                 ))}
-              </Surface>
+              </Card>
             </div>
           ))}
         </div>
 
         {/* Right column */}
         <div className="min-w-0 space-y-4">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-center gap-2">
               <Palette className="h-4 w-4 text-[#8E5BF6]" />
-              <p className="text-[14px] font-medium text-foreground">Appearance</p>
+              <p className="text-base font-medium text-foreground">Appearance</p>
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2">
@@ -168,25 +167,22 @@ export default function Settings() {
                 { label: "Dark", icon: <Moon className="h-4 w-4" /> },
                 { label: "Auto", icon: <Monitor className="h-4 w-4" /> },
               ].map((m) => (
-                <button
-                  key={m.label}
-                  className={`flex flex-col items-center gap-1.5 rounded-2xl border py-3 transition-colors ${
+                <Button variant="ghost" key={m.label}
+                  className={`flex flex-col items-center gap-1.5 rounded-lg border py-3 transition-colors ${
                     m.active
-                      ? "border-[#0A6CFF] bg-[#0A6CFF]/[0.07] text-[#0A6CFF]"
-                      : "border-black/[0.07] text-muted-foreground hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.05]"
-                  }`}
-                >
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-input text-muted-foreground hover:bg-muted"
+                  }`}>
                   {m.icon}
-                  <span className="text-[12px] font-medium">{m.label}</span>
-                </button>
+                  <span className="text-xs font-medium">{m.label}</span>
+                </Button>
               ))}
             </div>
 
-            <p className="mt-5 text-[13px] text-muted-foreground">Accent colour</p>
+            <p className="mt-5 text-sm text-muted-foreground">Accent colour</p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {accents.map((a) => (
-                <button
-                  key={a.name}
+                <Button variant="ghost" key={a.name}
                   onClick={() => setAccent(a.name)}
                   aria-label={a.name}
                   className={`h-7 w-7 rounded-full transition-transform ${
@@ -204,7 +200,7 @@ export default function Settings() {
             </div>
 
             <div className="mt-5">
-              <div className="mb-1.5 flex items-center justify-between text-[13px]">
+              <div className="mb-1.5 flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Text size</span>
                 <span className="tabular-nums text-muted-foreground">Default</span>
               </div>
@@ -214,39 +210,39 @@ export default function Settings() {
             <div className="mt-5">
               <Segmented options={["Compact", "Comfortable"]} value="Comfortable" />
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="overflow-hidden">
-            <p className="px-5 py-4 text-[14px] font-medium text-foreground">
+          <Card className="min-w-0 overflow-hidden">
+            <p className="px-5 py-4 text-base font-medium text-foreground">
               Motion & contrast
             </p>
-            <Hair />
+            <Separator />
             {motion.map((m, i) => (
               <React.Fragment key={m.label}>
-                {i > 0 && <Hair className="ml-5" />}
+                {i > 0 && <Separator className="ml-5 w-auto" />}
                 <div className="flex items-center gap-3 px-5 py-3">
-                  <span className="flex-1 text-[14px] text-foreground">{m.label}</span>
-                  <Toggle checked={m.on} />
+                  <span className="flex-1 text-base text-foreground">{m.label}</span>
+                  <Switch defaultChecked={m.on} />
                 </div>
               </React.Fragment>
             ))}
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Storage</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Storage</p>
             <div className="mt-4 flex items-center gap-4">
               <Donut pct={72} color={A.blue} size={92} label="72%" />
               <div>
-                <p className="text-[18px] font-semibold tabular-nums text-foreground">
+                <p className="text-xl font-semibold tabular-nums text-foreground">
                   464 GB
                 </p>
-                <p className="text-[12px] text-muted-foreground">used of 1 TB</p>
+                <p className="text-xs text-muted-foreground">used of 1 TB</p>
               </div>
             </div>
             <div className="mt-5 space-y-2.5">
               {storage.map((s) => (
                 <div key={s.label}>
-                  <div className="mb-1 flex items-center justify-between text-[12px]">
+                  <div className="mb-1 flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1.5 text-muted-foreground">
                       <span
                         className="h-2 w-2 rounded-full"
@@ -260,11 +256,11 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">About</p>
-            <div className="mt-3 space-y-2 text-[13px]">
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">About</p>
+            <div className="mt-3 space-y-2 text-sm">
               {[
                 ["Version", "Apple Design 1.0"],
                 ["Build", "2026.8.28"],
@@ -277,7 +273,7 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
         </div>
       </div>
     </AppleShell>

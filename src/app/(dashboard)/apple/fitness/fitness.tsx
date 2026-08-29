@@ -5,14 +5,14 @@ import {
   AppleShell,
   A,
   CardHead,
-  Hair,
   Legend,
   RangePill,
   Row,
   Segmented,
   Stat,
-  Surface,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
 import { Columns, Meter as Bar, Rings, Spark } from "../components/apple-charts";
 import {
   Award,
@@ -75,7 +75,7 @@ export default function Fitness() {
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead title="Today" value="July 5" right={<RangePill label="Day" />} />
             <div className="mt-6 flex justify-center">
               <Rings values={[88, 74, 62]} size={220} />
@@ -84,14 +84,14 @@ export default function Fitness() {
               {goals.map((g) => (
                 <div key={g.label}>
                   <div className="mb-1.5 flex items-center justify-between">
-                    <span className="flex items-center gap-2 text-[13px] font-medium text-foreground">
+                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
                       <span
                         className="h-2 w-2 rounded-full"
                         style={{ backgroundColor: g.color }}
                       />
                       {g.label}
                     </span>
-                    <span className="text-[12px] tabular-nums text-muted-foreground">
+                    <span className="text-xs tabular-nums text-muted-foreground">
                       {g.value}
                     </span>
                   </div>
@@ -99,9 +99,9 @@ export default function Fitness() {
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="p-5 xl:col-span-2">
+          <Card className="min-w-0 p-5 xl:col-span-2">
             <CardHead
               title="Calories burned"
               value="4,249"
@@ -118,19 +118,19 @@ export default function Fitness() {
               className="mt-4"
               items={[{ label: "Daily goal 600 kcal", color: A.lime }]}
             />
-          </Surface>
+          </Card>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-2">
-          <Surface className="overflow-hidden">
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4">
-              <p className="text-[14px] font-medium text-foreground">Recent workouts</p>
-              <span className="text-[13px] text-muted-foreground">This week</span>
+              <p className="text-base font-medium text-foreground">Recent workouts</p>
+              <span className="text-sm text-muted-foreground">This week</span>
             </div>
-            <Hair />
+            <Separator />
             {workouts.map((w, i) => (
               <React.Fragment key={w.name}>
-                {i > 0 && <Hair className="ml-14" />}
+                {i > 0 && <Separator className="ml-14 w-auto" />}
                 <div className="px-4 py-3">
                   <Row
                     className="px-0 py-0 hover:bg-transparent dark:hover:bg-transparent"
@@ -139,7 +139,7 @@ export default function Fitness() {
                     title={w.name}
                     subtitle={w.meta}
                     right={
-                      <span className="text-[13px] font-medium tabular-nums text-muted-foreground">
+                      <span className="text-sm font-medium tabular-nums text-muted-foreground">
                         {w.pct}%
                       </span>
                     }
@@ -148,24 +148,24 @@ export default function Fitness() {
                 </div>
               </React.Fragment>
             ))}
-          </Surface>
+          </Card>
 
           <div className="min-w-0 space-y-4">
-            <Surface className="overflow-hidden">
+            <Card className="min-w-0 overflow-hidden">
               <div className="flex items-center justify-between px-5 py-4">
-                <p className="text-[14px] font-medium text-foreground">Trends</p>
-                <span className="text-[13px] text-muted-foreground">90 days</span>
+                <p className="text-base font-medium text-foreground">Trends</p>
+                <span className="text-sm text-muted-foreground">90 days</span>
               </div>
-              <Hair />
+              <Separator />
               {trends.map((t, i) => (
                 <React.Fragment key={t.label}>
-                  {i > 0 && <Hair className="ml-5" />}
+                  {i > 0 && <Separator className="ml-5 w-auto" />}
                   <div className="flex items-center gap-4 px-5 py-3">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] text-muted-foreground">
+                      <p className="truncate text-sm text-muted-foreground">
                         {t.label}
                       </p>
-                      <p className="text-[15px] font-semibold tabular-nums text-foreground">
+                      <p className="text-base font-semibold tabular-nums text-foreground">
                         {t.value}
                       </p>
                     </div>
@@ -173,15 +173,15 @@ export default function Fitness() {
                   </div>
                 </React.Fragment>
               ))}
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
-              <p className="text-[14px] font-medium text-foreground">Awards</p>
+            <Card className="min-w-0 p-5">
+              <p className="text-base font-medium text-foreground">Awards</p>
               <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {awards.map((a) => (
                   <div
                     key={a.title}
-                    className="flex flex-col items-center rounded-2xl border border-black/[0.06] p-3 text-center dark:border-white/[0.07]"
+                    className="flex flex-col items-center rounded-lg border border-border p-3 text-center"
                   >
                     <span
                       className="flex h-9 w-9 items-center justify-center rounded-full text-white"
@@ -189,14 +189,14 @@ export default function Fitness() {
                     >
                       {a.icon}
                     </span>
-                    <p className="mt-2 text-[12px] font-medium leading-tight text-foreground">
+                    <p className="mt-2 text-xs font-medium leading-tight text-foreground">
                       {a.title}
                     </p>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">{a.sub}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{a.sub}</p>
                   </div>
                 ))}
               </div>
-            </Surface>
+            </Card>
           </div>
         </div>
       </div>

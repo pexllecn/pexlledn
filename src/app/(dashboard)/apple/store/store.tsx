@@ -4,12 +4,13 @@ import * as React from "react";
 import {
   AppleShell,
   A,
-  Hair,
   Segmented,
   Stat,
-  Surface,
-  UnderlineTabs,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Meter } from "../components/apple-charts";
 import {
   Download,
@@ -75,7 +76,7 @@ function Stars({ rating }: { rating: number }) {
           }`}
         />
       ))}
-      <span className="ml-1 text-[11px] tabular-nums text-muted-foreground">
+      <span className="ml-1 text-xs tabular-nums text-muted-foreground">
         {rating.toFixed(1)}
       </span>
     </span>
@@ -92,7 +93,7 @@ export default function Store() {
     >
       <div className="min-w-0 space-y-4">
         {/* Hero */}
-        <div className="relative overflow-hidden rounded-[22px]">
+        <div className="relative overflow-hidden rounded-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`https://picsum.photos/seed/${featured.seed}/1400/520`}
@@ -101,16 +102,16 @@ export default function Store() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-7">
-            <p className="text-[12px] font-semibold uppercase tracking-wider text-white/70">
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/70">
               {featured.kicker}
             </p>
-            <h2 className="mt-2 text-[36px] font-semibold leading-none tracking-[-0.03em] text-white">
+            <h2 className="mt-2 text-4xl font-semibold leading-none tracking-tight text-white">
               {featured.title}
             </h2>
-            <p className="mt-2 max-w-md text-[14px] text-white/75">{featured.sub}</p>
-            <button className="mt-5 rounded-full bg-white px-5 py-2 text-[13px] font-semibold text-neutral-900 transition-opacity hover:opacity-90">
+            <p className="mt-2 max-w-md text-base text-white/75">{featured.sub}</p>
+            <Button variant="outline3" className="mt-5 rounded-full bg-white px-5 py-2 text-neutral-900">
               Get
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -124,9 +125,9 @@ export default function Store() {
         {/* Categories */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {categories.map((c) => (
-            <Surface
+            <Card
               key={c.label}
-              className="flex items-center gap-3 p-4 transition-colors hover:bg-black/[0.015] dark:hover:bg-white/[0.05]"
+              className="flex items-center gap-3 p-4 transition-colors hover:bg-muted/50"
             >
               <span
                 className="flex h-9 w-9 items-center justify-center rounded-xl text-white"
@@ -134,28 +135,28 @@ export default function Store() {
               >
                 {c.icon}
               </span>
-              <span className="truncate text-[13px] font-medium text-foreground">
+              <span className="truncate text-sm font-medium text-foreground">
                 {c.label}
               </span>
-            </Surface>
+            </Card>
           ))}
         </div>
 
         {/* Apps + charts */}
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+              <p className="text-base font-semibold tracking-tight text-foreground">
                 Essential apps
               </p>
-              <button className="text-[13px] font-medium text-[#0A6CFF] hover:underline">
+              <Button variant="link" className="text-primary">
                 See all
-              </button>
+              </Button>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {apps.map((a) => (
                 <div key={a.seed} className="group">
-                  <div className="overflow-hidden rounded-[20px]">
+                  <div className="overflow-hidden rounded-lg">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`https://picsum.photos/seed/${a.seed}/300/300`}
@@ -163,89 +164,96 @@ export default function Store() {
                       className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <p className="mt-2.5 truncate text-[14px] font-medium text-foreground">
+                  <p className="mt-2.5 truncate text-base font-medium text-foreground">
                     {a.name}
                   </p>
-                  <p className="truncate text-[12px] text-muted-foreground">{a.cat}</p>
+                  <p className="truncate text-xs text-muted-foreground">{a.cat}</p>
                   <div className="mt-2 flex items-center justify-between">
                     <Stars rating={a.rating} />
-                    <button className="rounded-full bg-black/[0.06] px-3 py-1 text-[12px] font-semibold text-[#0A6CFF] transition-colors hover:bg-black/[0.1] dark:bg-white/[0.08] dark:hover:bg-white/[0.14]">
+                    <Button variant="secondary" className="rounded-full px-3 py-1 text-primary">
                       {a.price}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
           <div className="min-w-0 space-y-4">
-            <Surface className="p-5">
-              <UnderlineTabs tabs={["Top Free", "Top Paid"]}>
-                {() => (
-                  <div className="mt-3">
+            <Card className="min-w-0 p-5">
+              <Tabs defaultValue="Top Free">
+                <TabsList className="mb-3 h-9">
+                  {["Top Free", "Top Paid"].map((t) => (
+                    <TabsTrigger key={t} value={t} className="text-xs">
+                      {t}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                {["Top Free", "Top Paid"].map((t) => (
+                  <TabsContent key={t} value={t}>
                     {charts.map((c, i) => (
                       <React.Fragment key={c.name}>
-                        {i > 0 && <Hair className="ml-11" />}
+                        {i > 0 && <Separator className="ml-11 w-auto" />}
                         <div className="flex items-center gap-3 py-2.5">
-                          <span className="w-4 text-[13px] tabular-nums text-muted-foreground">
+                          <span className="w-4 text-sm tabular-nums text-muted-foreground">
                             {c.n}
                           </span>
                           <span
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] text-white"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white"
                             style={{ backgroundColor: c.tint }}
                           >
                             <Sparkles className="h-4 w-4" />
                           </span>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-[14px] font-medium text-foreground">
+                            <p className="truncate text-base font-medium text-foreground">
                               {c.name}
                             </p>
-                            <p className="truncate text-[12px] text-muted-foreground">
+                            <p className="truncate text-xs text-muted-foreground">
                               {c.cat}
                               {c.inApp ? " · In-App Purchases" : ""}
                             </p>
                           </div>
-                          <button className="shrink-0 rounded-full bg-black/[0.06] px-3 py-1 text-[12px] font-semibold text-[#0A6CFF] transition-colors hover:bg-black/[0.1] dark:bg-white/[0.08] dark:hover:bg-white/[0.14]">
+                          <Button variant="secondary" className="shrink-0 rounded-full px-3 py-1 text-primary">
                             {c.price}
-                          </button>
+                          </Button>
                         </div>
                       </React.Fragment>
                     ))}
-                  </div>
-                )}
-              </UnderlineTabs>
-            </Surface>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </Card>
 
-            <Surface className="overflow-hidden">
+            <Card className="min-w-0 overflow-hidden">
               <div className="flex items-center justify-between px-5 py-4">
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-base font-medium text-foreground">
                   Available updates
                 </p>
-                <button className="text-[13px] font-medium text-[#0A6CFF] hover:underline">
+                <Button variant="link" className="text-primary">
                   Update all
-                </button>
+                </Button>
               </div>
-              <Hair />
+              <Separator />
               {updates.map((u, i) => (
                 <React.Fragment key={u.name}>
-                  {i > 0 && <Hair className="ml-16" />}
+                  {i > 0 && <Separator className="ml-16 w-auto" />}
                   <div className="flex gap-3 px-5 py-3.5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`https://picsum.photos/seed/${u.seed}/120/120`}
                       alt=""
-                      className="h-11 w-11 shrink-0 rounded-[11px] object-cover"
+                      className="h-11 w-11 shrink-0 rounded-xl object-cover"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className="truncate text-[14px] font-medium text-foreground">
+                        <p className="truncate text-base font-medium text-foreground">
                           {u.name}
                         </p>
-                        <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
+                        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                           {u.size}
                         </span>
                       </div>
-                      <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-muted-foreground">
+                      <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-muted-foreground">
                         Version {u.version} — {u.note}
                       </p>
                       <Meter
@@ -257,7 +265,7 @@ export default function Store() {
                   </div>
                 </React.Fragment>
               ))}
-            </Surface>
+            </Card>
           </div>
         </div>
       </div>

@@ -5,14 +5,15 @@ import {
   AppleShell,
   A,
   CardHead,
-  Hair,
   Legend,
   RangePill,
   Row,
   Segmented,
   Stat,
-  Surface,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Area, Gauge, Meter } from "../components/apple-charts";
 import {
   ArrowDownLeft,
@@ -111,25 +112,25 @@ export default function Finance() {
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Your cards</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Your cards</p>
             <div className="mt-4 space-y-3">
               {cards.map((c) => (
                 <div
                   key={c.number}
-                  className={`rounded-2xl p-4 ${c.text}`}
+                  className={`rounded-lg p-4 ${c.text}`}
                   style={{
                     backgroundImage: `linear-gradient(135deg, ${c.from}, ${c.to})`,
                   }}
                 >
                   <div className="flex items-start justify-between">
-                    <span className="text-[13px] font-medium opacity-80">{c.name}</span>
+                    <span className="text-sm font-medium opacity-80">{c.name}</span>
                     <CreditCard className="h-4 w-4 opacity-70" />
                   </div>
-                  <p className="mt-6 text-[20px] font-semibold tracking-[-0.02em] tabular-nums">
+                  <p className="mt-6 text-2xl font-semibold tracking-tight tabular-nums">
                     {c.balance}
                   </p>
-                  <div className="mt-1 flex items-center justify-between text-[12px] opacity-75">
+                  <div className="mt-1 flex items-center justify-between text-xs opacity-75">
                     <span className="tabular-nums">{c.number}</span>
                     <span>{c.holder}</span>
                   </div>
@@ -139,18 +140,15 @@ export default function Finance() {
 
             <div className="mt-4 grid grid-cols-4 gap-2">
               {actions.map((a) => (
-                <button
-                  key={a.label}
-                  className="flex flex-col items-center gap-1.5 rounded-2xl border border-black/[0.06] py-3 transition-colors hover:bg-black/[0.03] dark:border-white/[0.07] dark:hover:bg-white/[0.05]"
-                >
+                <Button variant="ghost" className="flex-col gap-1.5 rounded-lg py-3" key={a.label}>
                   <span className="text-foreground/70">{a.icon}</span>
-                  <span className="text-[12px] text-muted-foreground">{a.label}</span>
-                </button>
+                  <span className="text-xs text-muted-foreground">{a.label}</span>
+                </Button>
               ))}
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="p-5 xl:col-span-2">
+          <Card className="min-w-0 p-5 xl:col-span-2">
             <CardHead
               title="Balance"
               value="$20,866"
@@ -165,11 +163,11 @@ export default function Finance() {
               ticks={["$12K", "$8K", "$4K", "$0"]}
               height={260}
             />
-          </Surface>
+          </Card>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead title="Spending" value="$3,354" delta={-6.1} right={<RangePill />} />
             <Gauge
               className="mt-4"
@@ -185,24 +183,24 @@ export default function Finance() {
                 color: c.color,
               }))}
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead title="Budgets" value="5 active" right={<RangePill label="July" />} />
             <div className="mt-6 space-y-4">
               {budgets.map((b) => (
                 <div key={b.label}>
                   <div className="mb-1.5 flex items-center justify-between">
-                    <span className="flex items-center gap-2 text-[13px] font-medium text-foreground">
+                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
                       <span
-                        className="flex h-6 w-6 items-center justify-center rounded-[7px] text-white"
+                        className="flex h-6 w-6 items-center justify-center rounded-xl text-white"
                         style={{ backgroundColor: b.color }}
                       >
                         {b.icon}
                       </span>
                       {b.label}
                     </span>
-                    <span className="text-[12px] tabular-nums text-muted-foreground">
+                    <span className="text-xs tabular-nums text-muted-foreground">
                       ${b.spent} / ${b.cap}
                     </span>
                   </div>
@@ -210,17 +208,17 @@ export default function Finance() {
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="overflow-hidden">
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4">
-              <p className="text-[14px] font-medium text-foreground">Transactions</p>
-              <span className="text-[13px] text-muted-foreground">Last 7 days</span>
+              <p className="text-base font-medium text-foreground">Transactions</p>
+              <span className="text-sm text-muted-foreground">Last 7 days</span>
             </div>
-            <Hair />
+            <Separator />
             {transactions.map((t, i) => (
               <React.Fragment key={t.name}>
-                {i > 0 && <Hair className="ml-14" />}
+                {i > 0 && <Separator className="ml-14 w-auto" />}
                 <Row
                   icon={t.icon}
                   tint={t.tint}
@@ -228,7 +226,7 @@ export default function Finance() {
                   subtitle={t.meta}
                   right={
                     <span
-                      className={`text-[13px] font-semibold tabular-nums ${
+                      className={`text-sm font-semibold tabular-nums ${
                         t.amount.startsWith("+")
                           ? "text-[#248A3D] dark:text-[#5CE07E]"
                           : "text-foreground"
@@ -240,7 +238,7 @@ export default function Finance() {
                 />
               </React.Fragment>
             ))}
-          </Surface>
+          </Card>
         </div>
       </div>
     </AppleShell>

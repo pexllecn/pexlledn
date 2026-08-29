@@ -6,7 +6,6 @@ import {
   A,
   ChannelRow,
   Delta,
-  Hair,
   Legend,
   MiniStat,
   RangePill,
@@ -14,10 +13,12 @@ import {
   Segmented,
   Stat,
   Stepper,
-  Surface,
-  Toggle,
-  UnderlineTabs,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import {
   Area,
   Columns,
@@ -36,13 +37,13 @@ import {
 import { Bell, Layers, Ruler, Sparkles, Type } from "lucide-react";
 
 const typeScale = [
-  { name: "Title", size: "26 / -0.02em", cls: "text-[26px] font-semibold tracking-[-0.02em]" },
-  { name: "Figure", size: "28 / -0.02em", cls: "text-[28px] font-semibold tracking-[-0.02em] tabular-nums" },
-  { name: "Section", size: "20 / -0.02em", cls: "text-[20px] font-semibold tracking-[-0.02em]" },
-  { name: "Row title", size: "14 / medium", cls: "text-[14px] font-medium" },
-  { name: "Body", size: "13 / regular", cls: "text-[13px]" },
-  { name: "Caption", size: "12 / regular", cls: "text-[12px] text-muted-foreground" },
-  { name: "Micro", size: "11 / regular", cls: "text-[11px] text-muted-foreground" },
+  { name: "Title", size: "26 / -0.02em", cls: "text-3xl font-semibold tracking-tight" },
+  { name: "Figure", size: "28 / -0.02em", cls: "text-3xl font-semibold tracking-tight tabular-nums" },
+  { name: "Section", size: "20 / -0.02em", cls: "text-2xl font-semibold tracking-tight" },
+  { name: "Row title", size: "14 / medium", cls: "text-base font-medium" },
+  { name: "Body", size: "13 / regular", cls: "text-sm" },
+  { name: "Caption", size: "12 / regular", cls: "text-xs text-muted-foreground" },
+  { name: "Micro", size: "11 / regular", cls: "text-xs text-muted-foreground" },
 ];
 
 const palette = [
@@ -56,19 +57,20 @@ const palette = [
   { name: "Red", value: A.red, use: "Destructive, negative delta" },
 ];
 
+// Radius comes from --radius (1.5rem) via the Tailwind scale — no literals.
 const radii = [
-  { name: "Surface", px: 22 },
-  { name: "Inset", px: 16 },
-  { name: "Control", px: 12 },
-  { name: "Icon tile", px: 8 },
+  { name: "rounded-lg", note: "--radius", cls: "rounded-lg" },
+  { name: "rounded-md", note: "−2px", cls: "rounded-md" },
+  { name: "rounded-sm", note: "−4px", cls: "rounded-sm" },
+  { name: "rounded-full", note: "pills", cls: "rounded-full" },
 ];
 
 const rules = [
-  "Chrome stays neutral — colour belongs to the data, never to the frame.",
-  "Hairline borders instead of shadows; depth comes from radius and spacing.",
-  "Every figure uses tabular numerals so columns never jitter as data changes.",
-  "One radius scale, one type scale, one spacing rhythm across all screens.",
-  "Motion is a 0.45s ease-out settle — enough to notice, never enough to wait for.",
+  "Every control is the repo's own: Card, Button, Badge, Tabs, Switch, Progress, Separator, Table, Input, Avatar.",
+  "Nothing here re-implements a component that already exists in src/components/ui.",
+  "Radius comes from --radius via rounded-lg / md / sm / full — never a pixel literal.",
+  "Chrome uses the semantic tokens, so the app follows the active theme and accent.",
+  "Colour belongs to the data; only charts introduce a hue of their own.",
 ];
 
 const demoArea = [18, 25, 26, 24, 29, 39, 34, 32, 46, 38, 36, 56];
@@ -81,57 +83,57 @@ export default function Design() {
     <AppleShell title="Design" showFilters={false} notifications={0}>
       <div className="min-w-0 space-y-4">
         {/* Intro */}
-        <Surface className="p-6">
+        <Card className="min-w-0 p-6">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#0A6CFF]" />
-            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               The language
             </p>
           </div>
-          <h2 className="mt-3 max-w-2xl text-[28px] font-semibold leading-tight tracking-[-0.02em] text-foreground">
-            Soft surfaces, hairline edges, and colour reserved for the data.
+          <h2 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-foreground">
+            Built from the design system, not beside it.
           </h2>
-          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
-            Every screen in this app is assembled from the same small set of parts.
-            This page is the reference: the scale, the palette, and each component
-            rendered at the size it ships at.
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+            Every screen is assembled from the repo's existing component library.
+            This page is the reference: the scale, the palette, and each shared
+            piece rendered at the size it ships at.
           </p>
 
           <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {rules.map((r) => (
               <div
                 key={r}
-                className="rounded-2xl bg-black/[0.035] p-4 text-[13px] leading-relaxed text-muted-foreground dark:bg-white/[0.04]"
+                className="rounded-lg bg-muted p-4 text-sm leading-relaxed text-muted-foreground"
               >
                 {r}
               </div>
             ))}
           </div>
-        </Surface>
+        </Card>
 
         {/* Type + colour + radius */}
         <div className="grid gap-4 xl:grid-cols-3">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-center gap-2">
               <Type className="h-4 w-4 text-muted-foreground" />
-              <p className="text-[14px] font-medium text-foreground">Type scale</p>
+              <p className="text-base font-medium text-foreground">Type scale</p>
             </div>
             <div className="mt-4 space-y-3">
               {typeScale.map((t) => (
                 <div key={t.name} className="flex items-baseline justify-between gap-3">
                   <span className={`${t.cls} truncate text-foreground`}>{t.name}</span>
-                  <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                     {t.size}
                   </span>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-center gap-2">
               <Layers className="h-4 w-4 text-muted-foreground" />
-              <p className="text-[14px] font-medium text-foreground">Palette</p>
+              <p className="text-base font-medium text-foreground">Palette</p>
             </div>
             <div className="mt-4 space-y-2">
               {palette.map((p) => (
@@ -141,65 +143,64 @@ export default function Design() {
                     style={{ backgroundColor: p.value }}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-foreground">
+                    <p className="truncate text-sm font-medium text-foreground">
                       {p.name}
                     </p>
-                    <p className="truncate text-[11px] text-muted-foreground">{p.use}</p>
+                    <p className="truncate text-xs text-muted-foreground">{p.use}</p>
                   </div>
-                  <span className="shrink-0 text-[11px] uppercase tabular-nums text-muted-foreground">
+                  <span className="shrink-0 text-xs uppercase tabular-nums text-muted-foreground">
                     {p.value}
                   </span>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
           <div className="min-w-0 space-y-4">
-            <Surface className="p-5">
+            <Card className="min-w-0 p-5">
               <div className="flex items-center gap-2">
                 <Ruler className="h-4 w-4 text-muted-foreground" />
-                <p className="text-[14px] font-medium text-foreground">Radius</p>
+                <p className="text-base font-medium text-foreground">Radius</p>
               </div>
               <div className="mt-4 flex items-end gap-3">
                 {radii.map((r) => (
                   <div key={r.name} className="flex flex-1 flex-col items-center gap-2">
                     <div
-                      className="h-14 w-full border border-black/[0.08] bg-black/[0.04] dark:border-white/[0.1] dark:bg-white/[0.06]"
-                      style={{ borderRadius: r.px }}
+                      className={`h-14 w-full border border-border bg-muted ${r.cls}`}
                     />
-                    <span className="text-center text-[11px] text-muted-foreground">
+                    <span className="text-center text-xs text-muted-foreground">
                       {r.name}
                       <br />
-                      {r.px}px
+                      {r.note}
                     </span>
                   </div>
                 ))}
               </div>
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
-              <p className="text-[14px] font-medium text-foreground">Deltas</p>
+            <Card className="min-w-0 p-5">
+              <p className="text-base font-medium text-foreground">Deltas</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Delta value={8.4} />
                 <Delta value={12.6} />
                 <Delta value={-3.1} />
                 <Delta value={-7.4} />
               </div>
-              <p className="mt-3 text-[12px] leading-relaxed text-muted-foreground">
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
                 Green reads as movement in the intended direction, red against it.
                 The pill never carries an arrow — the sign does that work.
               </p>
-            </Surface>
+            </Card>
           </div>
         </div>
 
         {/* Controls */}
-        <Surface className="p-5">
-          <p className="text-[14px] font-medium text-foreground">Controls</p>
+        <Card className="min-w-0 p-5">
+          <p className="text-base font-medium text-foreground">Controls</p>
           <div className="mt-4 grid gap-6 lg:grid-cols-2">
             <div className="space-y-5">
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Segmented
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -209,7 +210,7 @@ export default function Design() {
               </div>
 
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Pills & steppers
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -220,35 +221,32 @@ export default function Design() {
               </div>
 
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Buttons
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    style={{ backgroundColor: A.blue }}
-                    className="h-9 rounded-full px-4 text-[13px] font-semibold text-white"
-                  >
+                  <Button className="h-9 rounded-full px-4 text-white">
                     Primary
-                  </button>
-                  <button className="h-9 rounded-full border border-black/[0.07] px-4 text-[13px] font-medium text-foreground/80 dark:border-white/[0.08]">
+                  </Button>
+                  <Button variant="outline" className="h-9 rounded-full px-4">
                     Secondary
-                  </button>
-                  <button className="relative flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.07] dark:border-white/[0.08]">
+                  </Button>
+                  <Button variant="outline" size="icon" className="relative h-9 w-9 rounded-full">
                     <Bell className="h-4 w-4 text-foreground/70" />
-                    <span className="absolute -right-0.5 -top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#FF3B30] px-1 text-[10px] font-semibold text-white">
+                    <span className="absolute -right-0.5 -top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#FF3B30] px-1 text-1xs font-semibold text-white">
                       5
                     </span>
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Toggles & meters
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
-                  <Toggle checked />
-                  <Toggle />
+                  <Switch defaultChecked />
+                  <Switch />
                   <div className="w-40 space-y-2">
                     <Meter pct={72} color={A.blue} />
                     <Meter pct={42} color={A.lime} />
@@ -260,33 +258,45 @@ export default function Design() {
 
             <div className="space-y-5">
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Tabs
                 </p>
-                <UnderlineTabs tabs={["Channels", "Campaigns", "Landing"]} right="Sessions">
-                  {(active) => (
-                    <div className="mt-3 space-y-1.5">
-                      <ChannelRow label={`${active} · first`} pct={42} color={A.blue} />
-                      <ChannelRow label={`${active} · second`} pct={28} color={A.blue} />
-                      <ChannelRow label={`${active} · third`} pct={14} color={A.blue} muted />
-                    </div>
-                  )}
-                </UnderlineTabs>
+                <Tabs defaultValue="Channels">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <TabsList className="h-9">
+                      {["Channels", "Campaigns", "Landing"].map((t) => (
+                        <TabsTrigger key={t} value={t} className="text-xs">
+                          {t}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                    <span className="text-1xs font-medium uppercase tracking-wider text-muted-foreground">
+                      Sessions
+                    </span>
+                  </div>
+                  {["Channels", "Campaigns", "Landing"].map((t) => (
+                    <TabsContent key={t} value={t} className="space-y-1.5">
+                      <ChannelRow label={`${t} · first`} pct={42} color={A.blue} />
+                      <ChannelRow label={`${t} · second`} pct={28} color={A.blue} />
+                      <ChannelRow label={`${t} · third`} pct={14} color={A.blue} muted />
+                    </TabsContent>
+                  ))}
+                </Tabs>
               </div>
 
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Grouped rows
                 </p>
-                <div className="overflow-hidden rounded-2xl border border-black/[0.06] dark:border-white/[0.07]">
+                <div className="overflow-hidden rounded-lg border border-border">
                   <Row
                     icon={<Sparkles className="h-3.5 w-3.5" />}
                     tint={A.purple}
                     title="With a toggle"
                     subtitle="Secondary line"
-                    right={<Toggle checked />}
+                    right={<Switch defaultChecked />}
                   />
-                  <Hair className="ml-14" />
+                  <Separator className="ml-14 w-auto" />
                   <Row
                     icon={<Layers className="h-3.5 w-3.5" />}
                     tint={A.blue}
@@ -298,7 +308,7 @@ export default function Design() {
               </div>
 
               <div>
-                <p className="mb-2 text-[12px] uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
                   Figure tiles
                 </p>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -310,7 +320,7 @@ export default function Design() {
               </div>
             </div>
           </div>
-        </Surface>
+        </Card>
 
         {/* Stat cards */}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -322,8 +332,8 @@ export default function Design() {
 
         {/* Charts */}
         <div className="grid gap-4 xl:grid-cols-3">
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Funnel</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Funnel</p>
             <Funnel
               className="mt-4"
               stages={[
@@ -333,10 +343,10 @@ export default function Design() {
                 { label: "Customers", pct: 5, color: A.pink },
               ]}
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Gauge</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Gauge</p>
             <Gauge
               className="mt-2"
               segments={[
@@ -348,10 +358,10 @@ export default function Design() {
               value="46%"
               caption="Largest share"
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Rings</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Rings</p>
             <div className="mt-4 flex items-center justify-around">
               <Rings values={[88, 74, 62]} size={130} />
               <ScoreRing
@@ -374,12 +384,12 @@ export default function Design() {
               ))}
               <Donut pct={64} color={A.blue} size={62} />
             </div>
-          </Surface>
+          </Card>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-2">
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Area & stacked area</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Area & stacked area</p>
             <Area className="mt-4" data={demoArea} height={170} />
             <StackedArea
               className="mt-4"
@@ -398,16 +408,16 @@ export default function Design() {
                 { label: "Referral", color: A.purple },
               ]}
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">Columns & heatmap</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">Columns & heatmap</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <Columns data={demoColumns} highlight={4} height={170} />
               <WeekBars data={demoColumns} height={170} />
             </div>
             <Heatmap className="mt-5" weeks={40} seed={3} />
-          </Surface>
+          </Card>
         </div>
       </div>
     </AppleShell>

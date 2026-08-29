@@ -5,10 +5,11 @@ import {
   AppleShell,
   A,
   CardHead,
-  Hair,
   Segmented,
-  Surface,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Columns, Meter, Spark } from "../components/apple-charts";
 import {
   Heart,
@@ -79,9 +80,9 @@ export default function Music() {
     <AppleShell title="Music" action="New playlist" actionIcon={<ListMusic className="h-4 w-4" />}>
       <div className="min-w-0 space-y-4">
         {/* Now playing */}
-        <Surface className="overflow-hidden">
+        <Card className="min-w-0 overflow-hidden">
           <div className="grid gap-5 p-5 lg:grid-cols-[220px_minmax(0,1fr)]">
-            <div className="relative overflow-hidden rounded-[18px]">
+            <div className="relative overflow-hidden rounded-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://picsum.photos/seed/ap-now/500/500"
@@ -92,20 +93,20 @@ export default function Music() {
 
             <div className="flex flex-col justify-between">
               <div>
-                <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Now playing
                 </p>
-                <h2 className="mt-2 text-[28px] font-semibold leading-tight tracking-[-0.02em] text-foreground">
+                <h2 className="mt-2 text-3xl font-semibold leading-tight tracking-tight text-foreground">
                   Midnight City
                 </h2>
-                <p className="mt-1 text-[15px] text-muted-foreground">
+                <p className="mt-1 text-base text-muted-foreground">
                   Neon Fields — Aurora, Vol. 2
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-2">
                   {["Lossless", "Dolby Atmos", "2024"].map((t) => (
                     <span
                       key={t}
-                      className="rounded-md bg-black/[0.05] px-2 py-0.5 text-[11px] font-medium text-muted-foreground dark:bg-white/[0.08]"
+                      className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
                     >
                       {t}
                     </span>
@@ -115,20 +116,19 @@ export default function Music() {
 
               <div className="mt-6">
                 <Meter pct={42} color={A.pink} />
-                <div className="mt-1.5 flex justify-between text-[11px] tabular-nums text-muted-foreground">
+                <div className="mt-1.5 flex justify-between text-xs tabular-nums text-muted-foreground">
                   <span>1:42</span>
                   <span>-2:20</span>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">
-                  <button className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                     <Shuffle className="h-4 w-4" />
-                  </button>
-                  <button className="flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                     <SkipBack className="h-5 w-5 fill-current" />
-                  </button>
-                  <button
-                    onClick={() => setPlaying((p) => !p)}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setPlaying((p) => !p)}
                     className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground text-background transition-transform hover:scale-105"
                   >
                     {playing ? (
@@ -136,18 +136,18 @@ export default function Music() {
                     ) : (
                       <Play className="ml-0.5 h-5 w-5 fill-current" />
                     )}
-                  </button>
-                  <button className="flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                     <SkipForward className="h-5 w-5 fill-current" />
-                  </button>
-                  <button className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                     <Repeat className="h-4 w-4" />
-                  </button>
+                  </Button>
 
                   <div className="ml-auto flex items-center gap-2">
-                    <button className="flex h-9 w-9 items-center justify-center rounded-full text-[#F2529B] transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
+                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                       <Heart className="h-4 w-4 fill-current" />
-                    </button>
+                    </Button>
                     <Volume2 className="h-4 w-4 text-muted-foreground" />
                     <div className="w-20">
                       <Meter pct={68} color={A.gray} />
@@ -157,37 +157,37 @@ export default function Music() {
               </div>
             </div>
           </div>
-        </Surface>
+        </Card>
 
         {/* Rails */}
         {rails.map((rail) => (
           <div key={rail.title}>
             <div className="mb-3 flex items-center justify-between px-1">
-              <p className="text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+              <p className="text-base font-semibold tracking-tight text-foreground">
                 {rail.title}
               </p>
-              <button className="text-[13px] font-medium text-[#0A6CFF] hover:underline">
+              <Button variant="link" className="text-primary">
                 See all
-              </button>
+              </Button>
             </div>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {rail.items.map((it) => (
                 <div key={it.seed} className="group cursor-pointer">
-                  <div className="relative overflow-hidden rounded-[18px]">
+                  <div className="relative overflow-hidden rounded-lg">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`https://picsum.photos/seed/${it.seed}/400/400`}
                       alt={it.name}
                       className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <button className="absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-neutral-900 opacity-0 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100">
+                    <Button variant="outline3" size="icon" className="absolute bottom-2 right-2 h-9 w-9 rounded-full text-neutral-900 opacity-0 backdrop-blur group-hover:opacity-100">
                       <Play className="ml-0.5 h-4 w-4 fill-current" />
-                    </button>
+                    </Button>
                   </div>
-                  <p className="mt-2 truncate text-[14px] font-medium text-foreground">
+                  <p className="mt-2 truncate text-base font-medium text-foreground">
                     {it.name}
                   </p>
-                  <p className="truncate text-[12px] text-muted-foreground">{it.sub}</p>
+                  <p className="truncate text-xs text-muted-foreground">{it.sub}</p>
                 </div>
               ))}
             </div>
@@ -196,40 +196,40 @@ export default function Music() {
 
         {/* Charts + stats */}
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <Surface className="overflow-hidden">
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4">
-              <p className="text-[14px] font-medium text-foreground">Top songs</p>
+              <p className="text-base font-medium text-foreground">Top songs</p>
               <Segmented options={["Week", "Month", "Year"]} />
             </div>
-            <Hair />
+            <Separator />
             {top.map((t, i) => (
               <React.Fragment key={t.title}>
-                {i > 0 && <Hair className="ml-14" />}
-                <div className="group flex items-center gap-3 px-5 py-3 transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.03]">
-                  <span className="w-5 text-[13px] tabular-nums text-muted-foreground">
+                {i > 0 && <Separator className="ml-14 w-auto" />}
+                <div className="group flex items-center gap-3 px-5 py-3 transition-colors hover:bg-muted/50">
+                  <span className="w-5 text-sm tabular-nums text-muted-foreground">
                     {t.n}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[14px] font-medium text-foreground">
+                    <p className="truncate text-base font-medium text-foreground">
                       {t.title}
                     </p>
-                    <p className="truncate text-[12px] text-muted-foreground">
+                    <p className="truncate text-xs text-muted-foreground">
                       {t.artist}
                     </p>
                   </div>
-                  <span className="hidden text-[12px] tabular-nums text-muted-foreground sm:block">
+                  <span className="hidden text-xs tabular-nums text-muted-foreground sm:block">
                     {t.plays} plays
                   </span>
-                  <span className="w-10 text-right text-[12px] tabular-nums text-muted-foreground">
+                  <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">
                     {t.len}
                   </span>
                 </div>
               </React.Fragment>
             ))}
-          </Surface>
+          </Card>
 
           <div className="min-w-0 space-y-4">
-            <Surface className="p-5">
+            <Card className="min-w-0 p-5">
               <CardHead title="Listening time" value="14h 22m" delta={6.8} />
               <Columns
                 className="mt-5"
@@ -237,14 +237,14 @@ export default function Music() {
                 color={A.pink}
                 height={180}
               />
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
-              <p className="text-[14px] font-medium text-foreground">Top genres</p>
+            <Card className="min-w-0 p-5">
+              <p className="text-base font-medium text-foreground">Top genres</p>
               <div className="mt-4 space-y-3">
                 {genres.map((g) => (
                   <div key={g.label}>
-                    <div className="mb-1.5 flex items-center justify-between text-[13px]">
+                    <div className="mb-1.5 flex items-center justify-between text-sm">
                       <span className="text-foreground">{g.label}</span>
                       <span className="tabular-nums text-muted-foreground">
                         {g.pct}%
@@ -254,25 +254,25 @@ export default function Music() {
                   </div>
                 ))}
               </div>
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
+            <Card className="min-w-0 p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Mic2 className="h-4 w-4 text-[#8E5BF6]" />
-                  <p className="text-[14px] font-medium text-foreground">
+                  <p className="text-base font-medium text-foreground">
                     Top artist
                   </p>
                 </div>
                 <Spark data={[12, 18, 15, 24, 28, 26, 34]} color={A.purple} />
               </div>
-              <p className="mt-3 text-[18px] font-semibold tracking-[-0.01em] text-foreground">
+              <p className="mt-3 text-xl font-semibold tracking-tight text-foreground">
                 Neon Fields
               </p>
-              <p className="text-[13px] text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 284 plays this month
               </p>
-            </Surface>
+            </Card>
           </div>
         </div>
       </div>
