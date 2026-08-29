@@ -200,6 +200,7 @@ export default function Photos() {
                 <React.Fragment key={m.label}>
                   {i > 0 && <Separator className="ml-14 w-auto" />}
                   <Row
+                    interactive
                     icon={m.icon}
                     tint={m.tint}
                     title={m.label}

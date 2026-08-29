@@ -106,7 +106,7 @@ export default function Files() {
             {places.map((p, i) => (
               <React.Fragment key={p.label}>
                 {i > 0 && <Separator className="ml-14 w-auto" />}
-                <Row icon={p.icon} tint={p.tint} title={p.label} subtitle={p.meta} />
+                <Row interactive icon={p.icon} tint={p.tint} title={p.label} subtitle={p.meta} />
               </React.Fragment>
             ))}
           </Card>

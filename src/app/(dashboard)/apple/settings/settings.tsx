@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { useTheme as useNextTheme } from "next-themes";
+import { useTheme } from "@/contexts/theme-context";
+import { cn } from "@/lib/utils";
 import {
   AppleShell,
   A,
@@ -17,6 +20,7 @@ import {
   Accessibility,
   Bell,
   Bluetooth,
+  Check,
   ChevronRight,
   Cloud,
   Focus,
@@ -75,16 +79,20 @@ const motion = [
   { label: "Differentiate without colour", on: true },
 ];
 
+// Values are the app's own accent tokens (theme-context Color union), so
+// picking one actually restyles the product rather than tinting a swatch.
 const accents = [
-  { name: "Blue", color: A.blue },
-  { name: "Purple", color: A.purple },
-  { name: "Pink", color: A.pink },
-  { name: "Red", color: A.red },
-  { name: "Orange", color: A.orange },
-  { name: "Green", color: A.green },
-  { name: "Teal", color: A.teal },
-  { name: "Graphite", color: A.gray },
-];
+  { name: "Blue", value: "blue", color: A.blue },
+  { name: "Violet", value: "violet", color: A.purple },
+  { name: "Pink", value: "pink", color: A.pink },
+  { name: "Red", value: "red", color: A.red },
+  { name: "Orange", value: "orange", color: A.orange },
+  { name: "Yellow", value: "yellow", color: "#FFCC00" },
+  { name: "Green", value: "green", color: A.green },
+  { name: "Lime", value: "lime", color: A.lime },
+  { name: "Cyan", value: "cyan", color: A.teal },
+  { name: "Black", value: "black", color: A.gray },
+] as const;
 
 const storage = [
   { label: "Applications", pct: 32, size: "148 GB", color: A.blue },
@@ -95,7 +103,12 @@ const storage = [
 ];
 
 export default function Settings() {
-  const [accent, setAccent] = React.useState("Blue");
+  const { color, setColor } = useTheme();
+  const { theme, setTheme } = useNextTheme();
+  // next-themes has no value during SSR, so defer the selected state until
+  // mount rather than render a state the server could not have produced.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
 
   return (
     <AppleShell title="Settings" showFilters={false}>
@@ -134,6 +147,7 @@ export default function Settings() {
                   <React.Fragment key={r.title}>
                     {i > 0 && <Separator className="ml-14 w-auto" />}
                     <Row
+                      interactive={!r.toggle}
                       icon={r.icon}
                       tint={r.tint}
                       title={r.title}
@@ -183,20 +197,23 @@ export default function Settings() {
             <div className="mt-2.5 flex flex-wrap gap-2">
               {accents.map((a) => (
                 <button
-                  key={a.name}
-                  onClick={() => setAccent(a.name)}
+                  key={a.value}
+                  onClick={() => setColor(a.value)}
                   aria-label={a.name}
-                  className={`h-7 w-7 rounded-full transition-transform ${
-                    accent === a.name
-                      ? "ring-2 ring-offset-2 ring-offset-background"
+                  aria-pressed={mounted && color === a.value}
+                  title={a.name}
+                  className={cn(
+                    "flex h-7 w-7 items-center justify-center rounded-full transition-transform",
+                    mounted && color === a.value
+                      ? "ring-2 ring-foreground/70 ring-offset-2 ring-offset-background"
                       : "hover:scale-110"
-                  }`}
-                  style={{
-                    backgroundColor: a.color,
-                    boxShadow:
-                      accent === a.name ? `0 0 0 2px ${a.color}` : undefined,
-                  }}
-                />
+                  )}
+                  style={{ backgroundColor: a.color }}
+                >
+                  {mounted && color === a.value && (
+                    <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                  )}
+                </button>
               ))}
             </div>
 

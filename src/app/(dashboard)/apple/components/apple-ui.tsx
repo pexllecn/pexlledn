@@ -47,9 +47,10 @@ export const A = {
 
 /* ---------------------------------- shell -------------------------------- */
 
-const shellVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0 },
+// The blur-in every other page in the dashboard uses — no translate.
+const pageVariants = {
+  hidden: { filter: "blur(10px)", opacity: 0 },
+  visible: { filter: "blur(0px)", opacity: 1 },
 };
 
 /**
@@ -79,8 +80,8 @@ export function AppleShell({
       <motion.div
         initial="hidden"
         animate="visible"
-        variants={shellVariants}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        variants={pageVariants}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="pb-8"
       >
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -425,6 +426,7 @@ export function Row({
   title,
   subtitle,
   right,
+  interactive = false,
   className,
 }: {
   icon?: React.ReactNode;
@@ -432,14 +434,25 @@ export function Row({
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   right?: React.ReactNode;
+  /** Only for rows that navigate. Display rows stay inert. */
+  interactive?: boolean;
   className?: string;
 }) {
+  // A row that only displays a value (or carries its own control, like a
+  // Switch) is not a target: no hover, no press, no focus ring. Framer's tap
+  // gestures also add tabindex, which is why press feedback here made every
+  // settings row focusable. Only pass `interactive` when the row navigates.
+  const Wrapper = interactive ? motion.div : "div";
+  const motionProps = interactive
+    ? { whileTap: press, transition: quick }
+    : {};
+
   return (
-    <motion.div
-      whileTap={press}
-      transition={quick}
+    <Wrapper
+      {...motionProps}
       className={cn(
-        "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50",
+        "flex items-center gap-3 px-4 py-3",
+        interactive && "cursor-pointer transition-colors hover:bg-muted/50",
         className
       )}
     >
@@ -458,7 +471,7 @@ export function Row({
         )}
       </div>
       {right && <div className="shrink-0">{right}</div>}
-    </motion.div>
+    </Wrapper>
   );
 }
 
