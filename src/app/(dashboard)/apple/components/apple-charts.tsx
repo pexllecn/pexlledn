@@ -22,7 +22,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
-import { A, arcPath, polar, seeded } from "./apple-ui";
+import { A, polar, seeded } from "./apple-ui";
 
 /* ------------------------------------------------------------------ *
  * Charts.
@@ -103,6 +103,56 @@ export function Funnel({
   );
 }
 
+
+/**
+ * A ring segment with every corner rounded.
+ *
+ * Stroking an arc and setting a round linecap paints the cap stroke/2 BEYOND
+ * the path end, which overruns the neighbouring segment and cannot be undone
+ * without shortening the segment past the point where it disappears. So the
+ * segment is built as a filled shape instead: outer arc, end cap, inner arc
+ * back, start cap. The cap radius shrinks for a segment narrower than the band
+ * is thick, so a small slice stays a proportional rounded lozenge rather than
+ * collapsing to a dot.
+ */
+function roundedBand(
+  cx: number,
+  cy: number,
+  r: number,
+  thickness: number,
+  fromDeg: number,
+  toDeg: number
+) {
+  const span = Math.max(toDeg - fromDeg, 0.01);
+  const spanRad = (span * Math.PI) / 180;
+  const arcLen = spanRad * r;
+  // A wide segment gets a full semicircular end, matching the dial's outer
+  // ends. A narrow one would turn into a circle at that radius, so its corner
+  // radius is tied to its own length instead — rounded, but still a band.
+  const capR = Math.min(thickness / 2, arcLen / 3);
+  const capDeg = ((capR / r) * 180) / Math.PI;
+
+  const ri = r - thickness / 2;
+  const ro = r + thickness / 2;
+  const b0 = fromDeg + capDeg;
+  const b1 = Math.max(toDeg - capDeg, b0);
+  const large = b1 - b0 > 180 ? 1 : 0;
+
+  const O0 = polar(cx, cy, ro, b0);
+  const O1 = polar(cx, cy, ro, b1);
+  const I1 = polar(cx, cy, ri, b1);
+  const I0 = polar(cx, cy, ri, b0);
+
+  return [
+    `M ${O0.x} ${O0.y}`,
+    `A ${ro} ${ro} 0 ${large} 1 ${O1.x} ${O1.y}`,
+    `A ${capR} ${capR} 0 0 1 ${I1.x} ${I1.y}`,
+    `A ${ri} ${ri} 0 ${large} 0 ${I0.x} ${I0.y}`,
+    `A ${capR} ${capR} 0 0 1 ${O0.x} ${O0.y}`,
+    "Z",
+  ].join(" ");
+}
+
 /* --------------------------------- gauge --------------------------------- */
 
 /**
@@ -123,12 +173,11 @@ export function Gauge({
   const size = 260;
   const cx = size / 2;
   const cy = size / 2 + 26;
-  const r = 92;
-  const stroke = 34;
+  // A thinner band relative to the radius: at 34 on 92 the wide segments read
+  // as bulbous once both ends are rounded.
+  const r = 95;
+  const stroke = 26;
 
-  // Round caps overhang stroke/2 past each end -- about 10 degrees here, more
-  // than a small segment's whole sweep. So segments use butt caps separated by
-  // a real gap, and the dial's two outer ends are rounded separately below.
   const gap = 4;
   const total = segments.reduce((s, x) => s + x.pct, 0) || 1;
   let cursor = 172;
@@ -139,8 +188,6 @@ export function Gauge({
     cursor += sweep;
     return { ...s, from, to };
   });
-  const first = arcs[0];
-  const last = arcs[arcs.length - 1];
 
   return (
     <div className={cn("relative", className)}>
@@ -148,33 +195,10 @@ export function Gauge({
         {arcs.map((a) => (
           <path
             key={a.label}
-            d={arcPath(cx, cy, r, a.from, a.to)}
-            stroke={a.color}
-            strokeWidth={stroke}
-            strokeLinecap="butt"
-            fill="none"
+            d={roundedBand(cx, cy, r, stroke, a.from, a.to)}
+            fill={a.color}
           />
         ))}
-        {/* Zero-length round-capped arcs: they render as a dot the width of
-            the stroke, rounding just the two ends of the dial. */}
-        {first && (
-          <path
-            d={arcPath(cx, cy, r, first.from, first.from + 0.01)}
-            stroke={first.color}
-            strokeWidth={stroke}
-            strokeLinecap="round"
-            fill="none"
-          />
-        )}
-        {last && (
-          <path
-            d={arcPath(cx, cy, r, last.to - 0.01, last.to)}
-            stroke={last.color}
-            strokeWidth={stroke}
-            strokeLinecap="round"
-            fill="none"
-          />
-        )}
       </svg>
       <div className="pointer-events-none absolute inset-x-0 bottom-[14%] flex flex-col items-center">
         <span className="text-[34px] font-semibold leading-none tracking-[-0.03em] tabular-nums text-foreground">
@@ -648,9 +672,6 @@ export function ScoreRing({
   const total = segments.reduce((s, x) => s + x.pct, 0) || 1;
   let cursor = -90;
   const gap = 6;
-  // Same cap correction as Gauge: without it a 6px cap on a 61px radius eats
-  // roughly 7 degrees at each end and the segments run into one another.
-  const capDeg = ((sw / 2) / r) * (180 / Math.PI);
 
   return (
     <div
@@ -660,18 +681,14 @@ export function ScoreRing({
       <svg width={size} height={size} role="img">
         {segments.map((s, i) => {
           const sweep = (s.pct / total) * 360;
-          const inset = capDeg + gap / 2;
-          const from = cursor + inset;
-          const to = Math.max(cursor + sweep - inset, from + 0.01);
+          const from = cursor + gap / 2;
+          const to = Math.max(cursor + sweep - gap / 2, from + 0.01);
           cursor += sweep;
           return (
             <path
               key={i}
-              d={arcPath(cx, cy, r, from, to)}
-              stroke={s.color}
-              strokeWidth={sw}
-              strokeLinecap="round"
-              fill="none"
+              d={roundedBand(cx, cy, r, sw, from, to)}
+              fill={s.color}
             />
           );
         })}
