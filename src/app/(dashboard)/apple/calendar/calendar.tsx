@@ -6,9 +6,11 @@ import {
   A,
   Segmented,
   Stepper,
+  tone,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import {
   Clock,
@@ -71,7 +73,7 @@ export default function CalendarPage() {
       <div className="grid gap-4 xl:grid-cols-[300px_minmax(0,1fr)]">
         {/* Rail */}
         <div className="min-w-0 space-y-4">
-          <Card className="min-w-0 p-5">
+          <Card className={cn("min-w-0 p-5", tone.plain)}>
             <div className="flex items-center justify-between">
               <p className="text-base font-semibold text-foreground">July 2026</p>
               <Stepper label="Jul" />
@@ -102,7 +104,7 @@ export default function CalendarPage() {
             </div>
           </Card>
 
-          <Card className="min-w-0 overflow-hidden">
+          <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
             <p className="px-5 py-4 text-base font-medium text-foreground">
               My calendars
             </p>
@@ -122,7 +124,7 @@ export default function CalendarPage() {
             ))}
           </Card>
 
-          <Card className="min-w-0 overflow-hidden">
+          <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
             <p className="px-5 py-4 text-base font-medium text-foreground">
               Today · Sunday 5
             </p>

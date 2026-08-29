@@ -171,7 +171,11 @@ export default function Finance() {
               data={balance}
               color={A.green}
               labels={MONTHS}
-              format={(v) => `$${v / 1000}K`}
+              format={(v) =>
+                `$${(v / 1000).toLocaleString(undefined, {
+                  maximumFractionDigits: 1,
+                })}K`
+              }
               height={260}
             />
           </Card>

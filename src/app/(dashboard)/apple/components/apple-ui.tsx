@@ -115,6 +115,23 @@ export function AppleShell({
 }
 
 
+
+/* ---------------------------------- tone ---------------------------------- */
+
+/**
+ * Card tones.
+ *
+ * `plain` is the default surface: muted fill, no border. It is for scaffolding
+ * — KPI tiles, side rails, navigational lists — the things you read at a
+ * glance. `panel` keeps Card's own white-and-border and is reserved for
+ * surfaces that hold the actual content: a chart, a table, a reading pane.
+ * Mixing the two is what gives a page a foreground and a background.
+ */
+export const tone = {
+  plain: "border-0 bg-muted",
+  panel: "",
+} as const;
+
 /* --------------------------------- motion --------------------------------- */
 
 /**
@@ -184,7 +201,7 @@ export function Stat({
 }) {
   return (
     <motion.div variants={pop} transition={snappy} whileHover={{ y: -2 }}>
-      <Card className={cn("h-full p-5", className)}>
+      <Card className={cn("h-full p-5", tone.plain, className)}>
       <div className="mb-6 flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
         {icon}
       </div>
@@ -213,7 +230,7 @@ export function MiniStat({
 }) {
   return (
     <motion.div variants={pop} transition={snappy}>
-      <Card className={cn("rounded-md px-4 py-3", className)}>
+      <Card className={cn("rounded-md px-4 py-3", tone.plain, className)}>
       <p className="text-base font-semibold tracking-tight tabular-nums text-foreground">
         {value}
       </p>
@@ -452,7 +469,7 @@ export function Row({
       {...motionProps}
       className={cn(
         "flex items-center gap-3 px-4 py-3",
-        interactive && "cursor-pointer transition-colors hover:bg-muted/50",
+        interactive && "cursor-pointer transition-colors hover:bg-foreground/5",
         className
       )}
     >

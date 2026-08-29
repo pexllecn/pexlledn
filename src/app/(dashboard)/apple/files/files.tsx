@@ -6,9 +6,11 @@ import {
   A,
   Row,
   Segmented,
+  tone,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -98,7 +100,7 @@ export default function Files() {
       <div className="grid gap-4 xl:grid-cols-[260px_minmax(0,1fr)]">
         {/* Sidebar */}
         <div className="min-w-0 space-y-4">
-          <Card className="min-w-0 overflow-hidden">
+          <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
             <p className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Locations
             </p>
@@ -111,7 +113,7 @@ export default function Files() {
             ))}
           </Card>
 
-          <Card className="min-w-0 overflow-hidden">
+          <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
             <p className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Tags
             </p>
@@ -127,7 +129,7 @@ export default function Files() {
             ))}
           </Card>
 
-          <Card className="min-w-0 p-5">
+          <Card className={cn("min-w-0 p-5", tone.plain)}>
             <p className="text-base font-medium text-foreground">iCloud storage</p>
             <div className="mt-4 flex items-center gap-4">
               <Donut pct={64} color={A.blue} size={92} label="64%" />
@@ -162,7 +164,7 @@ export default function Files() {
         <div className="min-w-0 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {folders.map((f) => (
-              <Card key={f.name} className="p-4 transition-colors hover:bg-muted/50">
+              <Card key={f.name} className={cn("p-4 transition-colors hover:bg-muted/50", tone.plain)}>
                 <span
                   className="flex h-10 w-10 items-center justify-center rounded-xl text-white"
                   style={{ backgroundColor: f.color }}

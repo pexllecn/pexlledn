@@ -814,7 +814,7 @@ export function Meter({
     <Progress
       value={Math.min(100, Math.max(0, pct))}
       style={{ ["--meter" as string]: color } as React.CSSProperties}
-      className={cn("h-1.5 bg-muted [&>div]:bg-[var(--meter)]", className)}
+      className={cn("h-1.5 bg-foreground/10 [&>div]:bg-[var(--meter)]", className)}
     />
   );
 }

@@ -7,9 +7,11 @@ import {
   Row,
   Segmented,
   initials,
+  tone,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -148,7 +150,7 @@ export default function Photos() {
 
           {/* Rail */}
           <div className="min-w-0 space-y-4">
-            <Card className="min-w-0 p-5">
+            <Card className={cn("min-w-0 p-5", tone.plain)}>
               <p className="text-base font-medium text-foreground">People</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 {people.map((p) => (
@@ -165,7 +167,7 @@ export default function Photos() {
               </div>
             </Card>
 
-            <Card className="min-w-0 overflow-hidden">
+            <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
               <p className="px-5 py-4 text-base font-medium text-foreground">Albums</p>
               <Separator />
               {albums.map((a, i) => (
@@ -191,7 +193,7 @@ export default function Photos() {
               ))}
             </Card>
 
-            <Card className="min-w-0 overflow-hidden">
+            <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
               <p className="px-5 py-4 text-base font-medium text-foreground">
                 Media types
               </p>
@@ -214,7 +216,7 @@ export default function Photos() {
               ))}
             </Card>
 
-            <Card className="min-w-0 p-5">
+            <Card className={cn("min-w-0 p-5", tone.plain)}>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-primary" />
                 <p className="text-base font-medium text-foreground">Places</p>
