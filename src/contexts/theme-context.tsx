@@ -20,6 +20,7 @@ type Color =
   | "cyan"
   | "lime"
   | "violet";
+type Preset = "default" | "shadcn";
 type MenuPlacement = "horizontal" | "vertical";
 type MenuBehavior = "pinned" | "unpinned";
 type Layout = "fluid" | "boxed";
@@ -27,11 +28,13 @@ type Layout = "fluid" | "boxed";
 interface ThemeContextType {
   radius: string;
   color: Color;
+  preset: Preset;
   menuPlacement: MenuPlacement;
   menuBehavior: MenuBehavior;
   layout: Layout;
   setRadius: (radius: string) => void;
   setColor: (color: Color) => void;
+  setPreset: (preset: Preset) => void;
   setMenuPlacement: (placement: MenuPlacement) => void;
   setMenuBehavior: (behavior: MenuBehavior) => void;
   setLayout: (layout: Layout) => void;
@@ -84,6 +87,10 @@ export function ThemeProvider({ children, ...props }: any) {
     "theme-layout",
     "fluid"
   );
+  const [preset, setPreset] = usePersistentState<Preset>(
+    "theme-preset",
+    "default"
+  );
   const [sidebarOpen, setSidebarOpen] = usePersistentState<boolean>(
     "theme-sidebar-open",
     true
@@ -97,6 +104,7 @@ export function ThemeProvider({ children, ...props }: any) {
     if (typeof window !== "undefined") {
       document.documentElement.style.setProperty("--radius", `${radius}rem`);
       document.documentElement.setAttribute("data-color", color);
+      document.documentElement.setAttribute("data-preset", preset);
       document.documentElement.setAttribute("data-layout", layout);
       document.documentElement.setAttribute(
         "data-menu-placement",
@@ -104,7 +112,7 @@ export function ThemeProvider({ children, ...props }: any) {
       );
       document.documentElement.setAttribute("data-menu-behavior", menuBehavior);
     }
-  }, [radius, color, layout, menuPlacement, menuBehavior]);
+  }, [radius, color, preset, layout, menuPlacement, menuBehavior]);
 
   useEffect(() => {
     updateDocumentStyles();
@@ -121,11 +129,13 @@ export function ThemeProvider({ children, ...props }: any) {
         value={{
           radius,
           color,
+          preset,
           menuPlacement,
           menuBehavior,
           layout,
           setRadius,
           setColor,
+          setPreset,
           setMenuPlacement,
           setMenuBehavior,
           setLayout,

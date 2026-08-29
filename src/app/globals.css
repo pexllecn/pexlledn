@@ -74,6 +74,86 @@
     --font-weight: 350;
   }
 
+  /* --------------------------------------------------------------------
+     Theme preset: "shadcn" (shadcn preset b2pl2RYYK).
+
+     Supplied as oklch upstream; converted to this project's HSL triplet
+     form because every Tailwind token here is written hsl(var(--x)) --
+     a raw oklch() value would produce hsl(oklch(...)) and break every
+     colour in the app. The two alpha borders in dark are composited over
+     the card they sit on, since a triplet carries no alpha.
+
+     Placed BEFORE the data-color rules on purpose: the accent picker still
+     wins for --primary, so preset and accent remain independent controls.
+     -------------------------------------------------------------------- */
+  :root[data-preset="shadcn"] {
+    --background: 0.0 0.0% 100.0%;
+    --foreground: 200.0 14.1% 4.1%;
+    --card: 0.0 0.0% 100.0%;
+    --card-foreground: 200.0 14.1% 4.1%;
+    --popover: 0.0 0.0% 100.0%;
+    --popover-foreground: 200.0 14.1% 4.1%;
+    --primary: 225.3 84.1% 49.0%;
+    --primary-foreground: 213.8 96.5% 96.8%;
+    --secondary: 240.0 3.5% 95.8%;
+    --secondary-foreground: 240.0 6.0% 10.0%;
+    --muted: 180.0 7.3% 95.0%;
+    --muted-foreground: 191.4 9.2% 44.5%;
+    --accent: 180.0 7.3% 95.0%;
+    --accent-foreground: 197.2 12.9% 10.0%;
+    --destructive: 357.2 100.0% 45.3%;
+    --border: 192.0 10.8% 89.9%;
+    --input: 192.0 10.8% 89.9%;
+    --ring: 192.0 8.0% 64.1%;
+    --chart-1: 142.7 81.2% 71.4%;
+    --chart-2: 144.1 100.0% 39.4%;
+    --chart-3: 142.3 100.0% 32.6%;
+    --chart-4: 144.7 100.0% 25.5%;
+    --chart-5: 147.7 97.2% 20.4%;
+    --sidebar-background: 180.0 19.5% 98.1%;
+    --sidebar-foreground: 200.0 14.1% 4.1%;
+    --sidebar-primary: 221.3 97.1% 53.5%;
+    --sidebar-primary-foreground: 213.8 96.5% 96.8%;
+    --sidebar-accent: 180.0 7.3% 95.0%;
+    --sidebar-accent-foreground: 197.2 12.9% 10.0%;
+    --sidebar-border: 192.0 10.8% 89.9%;
+    --sidebar-ring: 192.0 8.0% 64.1%;
+  }
+
+  .dark[data-preset="shadcn"] {
+    --background: 200.0 14.1% 4.1%;
+    --foreground: 180.0 19.5% 98.1%;
+    --card: 197.2 12.9% 10.0%;
+    --card-foreground: 180.0 19.5% 98.1%;
+    --popover: 197.2 12.9% 10.0%;
+    --popover-foreground: 180.0 19.5% 98.1%;
+    --primary: 227.1 75.7% 41.1%;
+    --primary-foreground: 213.8 96.5% 96.8%;
+    --secondary: 240.0 4.0% 15.9%;
+    --secondary-foreground: 180.0 0.0% 98.0%;
+    --muted: 193.4 12.2% 15.1%;
+    --muted-foreground: 192.0 8.0% 64.1%;
+    --accent: 193.4 12.2% 15.1%;
+    --accent-foreground: 180.0 19.5% 98.1%;
+    --destructive: 358.7 100.0% 69.6%;
+    --border: 197.2 6.1% 19.0%;
+    --input: 197.2 4.7% 23.5%;
+    --ring: 191.4 9.2% 44.5%;
+    --chart-1: 142.7 81.2% 71.4%;
+    --chart-2: 144.1 100.0% 39.4%;
+    --chart-3: 142.3 100.0% 32.6%;
+    --chart-4: 144.7 100.0% 25.5%;
+    --chart-5: 147.7 97.2% 20.4%;
+    --sidebar-background: 197.2 12.9% 10.0%;
+    --sidebar-foreground: 180.0 19.5% 98.1%;
+    --sidebar-primary: 216.3 100.0% 58.5%;
+    --sidebar-primary-foreground: 213.8 96.5% 96.8%;
+    --sidebar-accent: 193.4 12.2% 15.1%;
+    --sidebar-accent-foreground: 180.0 19.5% 98.1%;
+    --sidebar-border: 197.2 6.1% 19.0%;
+    --sidebar-ring: 191.4 9.2% 44.5%;
+  }
+
   :root[data-color="black"] {
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 98%;
