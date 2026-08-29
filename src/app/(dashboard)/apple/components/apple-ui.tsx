@@ -3,30 +3,36 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
   Bell,
   CalendarDays,
-  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Plus,
   SlidersHorizontal,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ *
- * Apple Design — one shared visual language for the whole app.
+ * Apple Design — composition layer.
  *
- * The rules the screens are built from:
- *   • soft, deeply rounded surfaces on a quiet neutral ground
- *   • hairline borders instead of shadows
- *   • one tight type scale, tabular numerals for every figure
- *   • a small saturated palette used only inside data, never as chrome
+ * Everything here is built FROM the repo's own primitives (Card, Button,
+ * Badge, Tabs, Switch, Progress, Separator, Table, Input, Avatar). Nothing
+ * in this file re-implements a component that already exists in
+ * `src/components/ui`. Radius comes from --radius via rounded-lg/md/full,
+ * and chrome uses the semantic tokens (border, card, muted, primary) so
+ * the app follows the active theme and accent colour.
  * ------------------------------------------------------------------ */
 
-/** The system font stack — SF on Apple hardware, graceful elsewhere. */
-export const SF =
-  '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Inter", system-ui, sans-serif';
-
-/** Data palette. Chrome stays neutral; colour lives in the charts. */
+/**
+ * Categorical palette for data series only — never for chrome.
+ * Charts need stable, distinguishable hues that survive a theme swap;
+ * every border, surface and label around them uses the semantic tokens.
+ */
 export const A = {
   blue: "#0A6CFF",
   lime: "#A3E635",
@@ -40,45 +46,6 @@ export const A = {
   gray: "#8E8E93",
 };
 
-/* -------------------------------- surfaces ------------------------------- */
-
-// min-w-0: grid and flex items default to min-width:auto, which lets wide
-// content (tables, the heatmap) stretch its track past the viewport.
-export const surface =
-  "min-w-0 rounded-[22px] border border-black/[0.06] bg-white dark:border-white/[0.07] dark:bg-white/[0.03]";
-
-export function Surface({
-  className,
-  children,
-  ...rest
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn(surface, className)} {...rest}>
-      {children}
-    </div>
-  );
-}
-
-/** Inset panel — used for tiles nested inside a Surface. */
-export function Inset({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-2xl bg-black/[0.035] p-4 dark:bg-white/[0.04]",
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
 /* ---------------------------------- shell -------------------------------- */
 
 const shellVariants = {
@@ -87,9 +54,9 @@ const shellVariants = {
 };
 
 /**
- * Every Apple Design page sits in this shell: a large tracking-tight title
- * on the left, and the notification / filter / primary-action cluster on
- * the right.
+ * The page shell: title on the left, notification / filter / primary-action
+ * cluster on the right. The action is a plain `Button`, so it follows the
+ * user's accent colour rather than a hard-coded blue.
  */
 export function AppleShell({
   title,
@@ -117,49 +84,45 @@ export function AppleShell({
         animate="visible"
         variants={shellVariants}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        style={{ fontFamily: SF }}
         className="pb-8"
       >
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-[26px] font-semibold leading-none tracking-[-0.02em] text-foreground">
+          <h1 className="text-2xl font-semibold leading-none tracking-tight text-foreground">
             {title}
           </h1>
 
           <div className="flex flex-wrap items-center justify-end gap-2">
             {aside}
-            <button
-              type="button"
+
+            <Button
+              variant="outline"
+              size="icon"
               aria-label={`${notifications} notifications`}
-              className="relative flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.07] bg-white transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:bg-white/[0.04] dark:hover:bg-white/[0.07]"
+              className="relative h-9 w-9 rounded-full"
             >
-              <Bell className="h-4 w-4 text-foreground/70" />
+              <Bell className="h-4 w-4 text-muted-foreground" />
               {notifications > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#FF3B30] px-1 text-[10px] font-semibold leading-none text-white">
+                <Badge
+                  variant="destructive"
+                  className="absolute -right-1 -top-1 h-[17px] min-w-[17px] px-1 text-[10px]"
+                >
                   {notifications}
-                </span>
+                </Badge>
               )}
-            </button>
+            </Button>
 
             {showFilters && (
-              <button
-                type="button"
-                className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] bg-white px-3.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:bg-white/[0.04] dark:hover:bg-white/[0.07]"
-              >
+              <Button variant="outline" className="h-9 gap-2 rounded-full">
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 Filters
-              </button>
+              </Button>
             )}
 
             {action && (
-              <button
-                type="button"
-                onClick={onAction}
-                style={{ backgroundColor: A.blue }}
-                className="flex h-9 items-center gap-1.5 rounded-full px-4 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
-              >
+              <Button onClick={onAction} className="h-9 gap-1.5 rounded-full">
                 {actionIcon ?? <Plus className="h-4 w-4" />}
                 {action}
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -172,26 +135,20 @@ export function AppleShell({
 
 /* --------------------------------- pieces -------------------------------- */
 
-/** Green / red change pill that sits beside a figure. */
+/** Change pill — the repo's Badge in its success / decline variants. */
 export function Delta({ value, className }: { value: number; className?: string }) {
-  const up = value >= 0;
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md px-1.5 py-0.5 text-[12px] font-medium tabular-nums",
-        up
-          ? "bg-[#34C759]/12 text-[#248A3D] dark:bg-[#34C759]/15 dark:text-[#5CE07E]"
-          : "bg-[#FF3B30]/12 text-[#C6362E] dark:bg-[#FF3B30]/15 dark:text-[#FF7A72]",
-        className
-      )}
+    <Badge
+      variant={value >= 0 ? "success" : "decline"}
+      className={cn("tabular-nums", className)}
     >
-      {up ? "+" : ""}
+      {value >= 0 ? "+" : ""}
       {value}%
-    </span>
+    </Badge>
   );
 }
 
-/** Icon-square + label + figure + delta. The KPI card of the system. */
+/** Icon tile + label + figure + delta. The KPI card of the app. */
 export function Stat({
   icon,
   label,
@@ -208,19 +165,19 @@ export function Stat({
   className?: string;
 }) {
   return (
-    <Surface className={cn("p-5", className)}>
-      <div className="mb-6 flex h-9 w-9 items-center justify-center rounded-xl bg-black/[0.05] text-foreground/70 dark:bg-white/[0.07]">
+    <Card className={cn("p-5", className)}>
+      <div className="mb-6 flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
         {icon}
       </div>
-      <p className="text-[13px] text-muted-foreground">{label}</p>
+      <p className="text-sm text-muted-foreground">{label}</p>
       <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+        <span className="text-2xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
           {value}
         </span>
         {delta !== undefined && <Delta value={delta} />}
       </div>
-      {hint && <p className="mt-2 text-[12px] text-muted-foreground">{hint}</p>}
-    </Surface>
+      {hint && <p className="mt-2 text-xs text-muted-foreground">{hint}</p>}
+    </Card>
   );
 }
 
@@ -235,21 +192,16 @@ export function MiniStat({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "rounded-2xl border border-black/[0.06] px-4 py-3 dark:border-white/[0.07]",
-        className
-      )}
-    >
-      <p className="text-[15px] font-semibold tracking-[-0.01em] tabular-nums text-foreground">
+    <Card className={cn("rounded-md px-4 py-3", className)}>
+      <p className="text-base font-semibold tracking-tight tabular-nums text-foreground">
         {value}
       </p>
-      <p className="mt-0.5 text-[12px] text-muted-foreground">{label}</p>
-    </div>
+      <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
+    </Card>
   );
 }
 
-/** Section header inside a Surface. */
+/** Section header inside a Card. */
 export function CardHead({
   title,
   value,
@@ -271,10 +223,10 @@ export function CardHead({
       )}
     >
       <div>
-        <p className="text-[13px] text-muted-foreground">{title}</p>
+        <p className="text-sm text-muted-foreground">{title}</p>
         {value && (
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+            <span className="text-xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
               {value}
             </span>
             {delta !== undefined && <Delta value={delta} />}
@@ -286,7 +238,10 @@ export function CardHead({
   );
 }
 
-/** Weekly / Monthly / Yearly segmented control. */
+/**
+ * Weekly / Monthly / Yearly control — the repo's Tabs, which already renders
+ * a pill track with an animated active background. Not a new control.
+ */
 export function Segmented({
   options,
   value,
@@ -298,38 +253,20 @@ export function Segmented({
   onChange?: (v: string) => void;
   className?: string;
 }) {
-  const [internal, setInternal] = React.useState(value ?? options[0]);
-  const active = value ?? internal;
   return (
-    <div
-      className={cn(
-        "inline-flex max-w-full flex-wrap items-center gap-0.5 rounded-full bg-black/[0.045] p-0.5 dark:bg-white/[0.06]",
-        className
-      )}
-    >
-      {options.map((o) => (
-        <button
-          key={o}
-          type="button"
-          onClick={() => {
-            setInternal(o);
-            onChange?.(o);
-          }}
-          className={cn(
-            "rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors",
-            active === o
-              ? "bg-white text-foreground shadow-sm dark:bg-white/[0.14]"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {o}
-        </button>
-      ))}
-    </div>
+    <Tabs defaultValue={value ?? options[0]} onValueChange={onChange}>
+      <TabsList className={cn("h-9", className)}>
+        {options.map((o) => (
+          <TabsTrigger key={o} value={o} className="text-xs">
+            {o}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   );
 }
 
-/** "Last 30 days" date-range pill. */
+/** "Last 30 days" range control. */
 export function RangePill({
   label = "Last 30 days",
   icon = <CalendarDays className="h-3.5 w-3.5" />,
@@ -340,17 +277,13 @@ export function RangePill({
   className?: string;
 }) {
   return (
-    <button
-      type="button"
-      className={cn(
-        "flex h-8 items-center gap-2 rounded-full border border-black/[0.07] px-3 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]",
-        className
-      )}
+    <Button
+      variant="outline"
+      className={cn("h-9 gap-2 rounded-full text-xs", className)}
     >
       <span className="text-muted-foreground">{icon}</span>
       {label}
-      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-    </button>
+    </Button>
   );
 }
 
@@ -365,72 +298,27 @@ export function Stepper({
   return (
     <div
       className={cn(
-        "flex h-8 items-center gap-1 rounded-full border border-black/[0.07] px-1.5 dark:border-white/[0.08]",
+        "flex h-9 items-center gap-1 rounded-full border border-input px-1.5",
         className
       )}
     >
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="icon"
         aria-label="Previous"
-        className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
+        className="h-6 w-6 rounded-full"
       >
-        <ChevronDown className="h-3.5 w-3.5 rotate-90" />
-      </button>
-      <span className="px-1 text-[13px] font-medium text-foreground">{label}</span>
-      <button
-        type="button"
+        <ChevronLeft className="h-3.5 w-3.5 text-muted-foreground" />
+      </Button>
+      <span className="px-1 text-xs font-medium text-foreground">{label}</span>
+      <Button
+        variant="ghost"
+        size="icon"
         aria-label="Next"
-        className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
+        className="h-6 w-6 rounded-full"
       >
-        <ChevronDown className="h-3.5 w-3.5 -rotate-90" />
-      </button>
-    </div>
-  );
-}
-
-/** Underlined tab row with an optional trailing label. */
-export function UnderlineTabs({
-  tabs,
-  right,
-  onChange,
-  children,
-}: {
-  tabs: string[];
-  right?: React.ReactNode;
-  onChange?: (v: string) => void;
-  children?: (active: string) => React.ReactNode;
-}) {
-  const [active, setActive] = React.useState(tabs[0]);
-  return (
-    <div>
-      <div className="flex items-center justify-between gap-3 border-b border-black/[0.07] px-1 dark:border-white/[0.07]">
-        <div className="flex items-center gap-5">
-          {tabs.map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => {
-                setActive(t);
-                onChange?.(t);
-              }}
-              className={cn(
-                "relative -mb-px border-b-2 pb-2.5 pt-1 text-[13px] font-medium transition-colors",
-                active === t
-                  ? "border-[#0A6CFF] text-[#0A6CFF]"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-        {right && (
-          <span className="pb-2.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            {right}
-          </span>
-        )}
-      </div>
-      {children?.(active)}
+        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+      </Button>
     </div>
   );
 }
@@ -451,9 +339,9 @@ export function ChannelRow({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="relative h-9 flex-1 overflow-hidden rounded-lg">
+      <div className="relative h-9 flex-1 overflow-hidden rounded-xl">
         <div
-          className="absolute inset-y-0 left-0 rounded-lg"
+          className="absolute inset-y-0 left-0 rounded-xl"
           style={{
             width: `${pct}%`,
             backgroundColor: color,
@@ -466,7 +354,7 @@ export function ChannelRow({
           )}
           <span
             className={cn(
-              "truncate text-[13px] font-medium text-foreground",
+              "truncate text-xs font-medium text-foreground",
               muted && "text-muted-foreground"
             )}
           >
@@ -474,14 +362,14 @@ export function ChannelRow({
           </span>
         </div>
       </div>
-      <span className="w-10 shrink-0 text-right text-[13px] font-medium tabular-nums text-muted-foreground">
+      <span className="w-10 shrink-0 text-right text-xs font-medium tabular-nums text-muted-foreground">
         {pct}%
       </span>
     </div>
   );
 }
 
-/** Small colour key used under the charts. */
+/** Colour key shown under a chart. */
 export function Legend({
   items,
   className,
@@ -492,7 +380,7 @@ export function Legend({
   return (
     <div className={cn("flex flex-wrap items-center gap-x-5 gap-y-2", className)}>
       {items.map((i) => (
-        <span key={i.label} className="flex items-center gap-1.5 text-[13px]">
+        <span key={i.label} className="flex items-center gap-1.5 text-xs">
           <span
             className="h-2 w-2 rounded-full"
             style={{ backgroundColor: i.color }}
@@ -509,43 +397,7 @@ export function Legend({
   );
 }
 
-/** iOS settings toggle. */
-export function Toggle({
-  checked: controlled,
-  onChange,
-}: {
-  checked?: boolean;
-  onChange?: (v: boolean) => void;
-}) {
-  const [internal, setInternal] = React.useState(controlled ?? false);
-  const on = controlled ?? internal;
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={on}
-      onClick={() => {
-        setInternal(!on);
-        onChange?.(!on);
-      }}
-      className={cn(
-        "relative h-[26px] w-[44px] shrink-0 rounded-full transition-colors duration-200",
-        on ? "bg-[#34C759]" : "bg-black/15 dark:bg-white/20"
-      )}
-    >
-      {/* left is pinned: an absolutely positioned span inside a button would
-          otherwise take its static position from the button's centred text. */}
-      <span
-        className={cn(
-          "absolute left-[2px] top-[2px] h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-transform duration-200",
-          on ? "translate-x-[18px]" : "translate-x-0"
-        )}
-      />
-    </button>
-  );
-}
-
-/** Grouped-list row, the backbone of the Settings-style screens. */
+/** Grouped-list row — the backbone of the settings-style screens. */
 export function Row({
   icon,
   tint,
@@ -564,33 +416,26 @@ export function Row({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.03]",
+        "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50",
         className
       )}
     >
       {icon && (
         <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-white"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl text-white"
           style={{ backgroundColor: tint ?? A.gray }}
         >
           {icon}
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[14px] font-medium text-foreground">{title}</p>
+        <p className="truncate text-sm font-medium text-foreground">{title}</p>
         {subtitle && (
-          <p className="truncate text-[12px] text-muted-foreground">{subtitle}</p>
+          <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
         )}
       </div>
       {right && <div className="shrink-0">{right}</div>}
     </div>
-  );
-}
-
-/** Hairline divider matched to the list rows. */
-export function Hair({ className }: { className?: string }) {
-  return (
-    <div className={cn("h-px bg-black/[0.06] dark:bg-white/[0.07]", className)} />
   );
 }
 
@@ -639,4 +484,13 @@ export function arcPath(
   const b = polar(cx, cy, r, to);
   const large = Math.abs(to - from) > 180 ? 1 : 0;
   return `M ${a.x} ${a.y} A ${r} ${r} 0 ${large} 1 ${b.x} ${b.y}`;
+}
+
+/** Two-letter initials for an Avatar fallback when the image can't load. */
+export function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
 }

@@ -4,11 +4,22 @@ import * as React from "react";
 import {
   AppleShell,
   A,
-  Hair,
   Stepper,
-  Surface,
   seeded,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { MiniRings, Rings, ScoreRing, WeekBars } from "../components/apple-charts";
 import {
   Activity,
@@ -108,17 +119,17 @@ export default function Health() {
       <div className="min-w-0 space-y-4">
         <div className="grid gap-4 xl:grid-cols-3">
           {/* Identity */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex flex-col items-center pt-2">
               <div className="relative">
-                <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-black/[0.06] text-[24px] font-medium text-foreground/60 dark:bg-white/[0.08]">
+                <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-muted text-2xl font-medium text-foreground/60">
                   M
                 </div>
-                <span className="absolute -right-0.5 -top-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-black/[0.06] text-foreground/70 dark:border-[#151517] dark:bg-white/[0.12]">
+                <span className="absolute -right-0.5 -top-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-muted text-foreground/70 dark:border-[#151517]">
                   <Plus className="h-3 w-3" />
                 </span>
               </div>
-              <p className="mt-3 text-[19px] font-semibold tracking-[-0.02em] text-foreground">
+              <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
                 Mertcan Esmergül
               </p>
             </div>
@@ -127,43 +138,43 @@ export default function Health() {
               {vitals.map((v) => (
                 <div
                   key={v.label}
-                  className="flex items-center justify-between rounded-xl bg-black/[0.035] px-3.5 py-3 dark:bg-white/[0.04]"
+                  className="flex items-center justify-between rounded-md bg-muted px-3.5 py-3"
                 >
-                  <span className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                  <span className="flex items-center gap-2 text-sm text-muted-foreground">
                     {v.icon}
                     {v.label}
                   </span>
-                  <span className="text-[13px] font-medium text-foreground">
+                  <span className="text-sm font-medium text-foreground">
                     {v.value}
                   </span>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
           {/* Steps */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[13px] text-muted-foreground">Steps</p>
+                <p className="text-sm text-muted-foreground">Steps</p>
                 <p className="mt-1 flex items-baseline gap-1.5">
-                  <span className="text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+                  <span className="text-3xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                     31,600
                   </span>
-                  <span className="text-[13px] text-muted-foreground">total steps</span>
+                  <span className="text-sm text-muted-foreground">total steps</span>
                 </p>
               </div>
               <Stepper label="29 Jun – 5 Jul" />
             </div>
             <WeekBars className="mt-6" data={steps} height={230} />
-          </Surface>
+          </Card>
 
           {/* Sleep score */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[13px] text-muted-foreground">Sleep score</p>
-                <p className="mt-1 text-[26px] font-semibold leading-none tracking-[-0.02em] text-foreground">
+                <p className="text-sm text-muted-foreground">Sleep score</p>
+                <p className="mt-1 text-3xl font-semibold leading-none tracking-tight text-foreground">
                   Excellent
                 </p>
               </div>
@@ -178,53 +189,53 @@ export default function Health() {
               {sleep.map((s) => (
                 <div
                   key={s.label}
-                  className="flex items-center justify-between rounded-xl bg-black/[0.035] px-3.5 py-2.5 dark:bg-white/[0.04]"
+                  className="flex items-center justify-between rounded-md bg-muted px-3.5 py-2.5"
                 >
-                  <span className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                  <span className="flex items-center gap-2 text-sm text-muted-foreground">
                     <span
                       className="h-2 w-2 rounded-full"
                       style={{ backgroundColor: s.color }}
                     />
                     {s.label}
                   </span>
-                  <span className="text-[13px] font-medium tabular-nums text-foreground">
+                  <span className="text-sm font-medium tabular-nums text-foreground">
                     {s.score}
                   </span>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
           {/* Most active days */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[13px] text-muted-foreground">Most active days</p>
+                <p className="text-sm text-muted-foreground">Most active days</p>
                 <p className="mt-1 flex items-baseline gap-1.5">
-                  <span className="text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+                  <span className="text-3xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                     32,459
                   </span>
-                  <span className="text-[13px] text-muted-foreground">total steps</span>
+                  <span className="text-sm text-muted-foreground">total steps</span>
                 </p>
               </div>
               <Stepper label="July" />
             </div>
 
-            <div className="mt-5 rounded-2xl border border-black/[0.06] p-4 dark:border-white/[0.07]">
-              <p className="mb-3 text-[15px] font-semibold text-foreground">Jul</p>
+            <div className="mt-5 rounded-lg border border-border p-4">
+              <p className="mb-3 text-base font-semibold text-foreground">Jul</p>
               <div className="grid grid-cols-7 gap-y-3">
                 {calendar.map((c) => (
                   <div
                     key={c.day}
-                    className={`flex flex-col items-center gap-1.5 rounded-xl py-1.5 ${
+                    className={`flex flex-col items-center gap-1.5 rounded-md py-1.5 ${
                       c.day === 5
-                        ? "ring-1 ring-black/[0.12] dark:ring-white/20"
+                        ? "ring-1 ring-border"
                         : ""
                     }`}
                   >
-                    <span className="text-[12px] tabular-nums text-muted-foreground">
+                    <span className="text-xs tabular-nums text-muted-foreground">
                       {c.day}
                     </span>
                     <MiniRings values={c.values} dim={c.dim} size={30} />
@@ -232,11 +243,11 @@ export default function Health() {
                 ))}
               </div>
             </div>
-          </Surface>
+          </Card>
 
           {/* Activity rings */}
-          <Surface className="p-5">
-            <p className="text-[13px] text-muted-foreground">Activity for July 5, 2026</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-sm text-muted-foreground">Activity for July 5, 2026</p>
             <div className="mt-4 grid grid-cols-3 gap-2">
               {[
                 { label: "Move", value: "1,228 kcal", color: A.pink },
@@ -245,16 +256,16 @@ export default function Health() {
               ].map((m) => (
                 <div
                   key={m.label}
-                  className="rounded-xl border border-black/[0.06] px-3 py-2.5 dark:border-white/[0.07]"
+                  className="rounded-md border border-border px-3 py-2.5"
                 >
-                  <span className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <span
                       className="h-2 w-2 rounded-full"
                       style={{ backgroundColor: m.color }}
                     />
                     {m.label}
                   </span>
-                  <p className="mt-1 text-[14px] font-semibold tabular-nums text-foreground">
+                  <p className="mt-1 text-base font-semibold tabular-nums text-foreground">
                     {m.value}
                   </p>
                 </div>
@@ -263,18 +274,18 @@ export default function Health() {
             <div className="mt-6 flex justify-center">
               <Rings values={[88, 74, 62]} size={210} />
             </div>
-          </Surface>
+          </Card>
 
           {/* Alerts */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[13px] text-muted-foreground">Important alerts</p>
+                <p className="text-sm text-muted-foreground">Important alerts</p>
                 <p className="mt-1 flex items-baseline gap-1.5">
-                  <span className="text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+                  <span className="text-3xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                     12
                   </span>
-                  <span className="text-[13px] text-muted-foreground">this week</span>
+                  <span className="text-sm text-muted-foreground">this week</span>
                 </p>
               </div>
               <Stepper label="29 Jun – 5 Jul" />
@@ -284,7 +295,7 @@ export default function Health() {
               {alerts.map((a) => (
                 <div
                   key={a.title}
-                  className="rounded-2xl border border-black/[0.06] p-4 dark:border-white/[0.07]"
+                  className="rounded-lg border border-border p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <span
@@ -293,75 +304,66 @@ export default function Health() {
                     >
                       {a.icon}
                     </span>
-                    <span className="text-[12px] text-muted-foreground">{a.date}</span>
+                    <span className="text-xs text-muted-foreground">{a.date}</span>
                   </div>
-                  <p className="mt-3 text-[14px] font-semibold text-foreground">
+                  <p className="mt-3 text-base font-semibold text-foreground">
                     {a.title}
                   </p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                     {a.body}
                   </p>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
         </div>
 
         {/* Results table */}
-        <Surface className="overflow-hidden">
+        <Card className="min-w-0 overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-3 p-5">
             <div>
-              <p className="text-[13px] text-muted-foreground">Total Results</p>
+              <p className="text-sm text-muted-foreground">Total Results</p>
               <p className="mt-1 flex items-baseline gap-1.5">
-                <span className="text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+                <span className="text-2xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                   540
                 </span>
-                <span className="text-[13px] text-muted-foreground">patients</span>
+                <span className="text-sm text-muted-foreground">patients</span>
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {["All statuses", "All conditions"].map((f) => (
-                <button
-                  key={f}
-                  className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]"
-                >
+                <Button variant="outline" className="h-9 gap-2 rounded-full px-3.5" key={f}>
                   {f}
                   <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                </button>
+                </Button>
               ))}
-              <label className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 dark:border-white/[0.08]">
-                <Search className="h-3.5 w-3.5 text-muted-foreground" />
-                <input
-                  placeholder="Search"
-                  className="w-28 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
-                />
-              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input placeholder="Search" className="rounded-full pl-8" />
+              </div>
             </div>
           </div>
-          <Hair />
+          <Separator />
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left">
-              <thead>
-                <tr className="text-[12px] text-muted-foreground">
+            <Table className="min-w-[640px]">
+              <TableHeader>
+                <TableRow>
                   {["Patient", "Record", "Condition", "Status", "Last visit"].map((h) => (
-                    <th key={h} className="px-5 py-3 font-medium">
+                    <TableHead key={h}>
                       {h}
-                    </th>
+                    </TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {patients.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="border-t border-black/[0.06] text-[13px] transition-colors hover:bg-black/[0.02] dark:border-white/[0.07] dark:hover:bg-white/[0.03]"
-                  >
-                    <td className="px-5 py-3 font-medium text-foreground">{p.name}</td>
-                    <td className="px-5 py-3 tabular-nums text-muted-foreground">{p.id}</td>
-                    <td className="px-5 py-3 text-muted-foreground">{p.condition}</td>
-                    <td className="px-5 py-3">
+                  <TableRow key={p.id}>
+                    <TableCell className="font-medium text-foreground">{p.name}</TableCell>
+                    <TableCell className="tabular-nums text-muted-foreground">{p.id}</TableCell>
+                    <TableCell className="text-muted-foreground">{p.condition}</TableCell>
+                    <TableCell>
                       <span
-                        className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[12px] font-medium"
+                        className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium"
                         style={{
                           color: statusTint[p.status],
                           backgroundColor: `${statusTint[p.status]}1F`,
@@ -369,14 +371,14 @@ export default function Health() {
                       >
                         {p.status}
                       </span>
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">{p.when}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{p.when}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
-        </Surface>
+        </Card>
       </div>
     </AppleShell>
   );

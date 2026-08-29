@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { AppleShell, A, Hair, Surface } from "../components/apple-ui";
+import {
+  AppleShell,
+  A,
+  initials,
+} from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Check,
   CheckCheck,
@@ -60,87 +69,76 @@ export default function Messages() {
     <AppleShell title="Messages" showFilters={false} action="New message" notifications={7}>
       <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
         {/* Conversation list */}
-        <Surface className="overflow-hidden">
+        <Card className="min-w-0 overflow-hidden">
           <div className="p-4">
-            <label className="flex h-9 items-center gap-2 rounded-full bg-black/[0.045] px-3.5 dark:bg-white/[0.06]">
-              <Search className="h-3.5 w-3.5 text-muted-foreground" />
-              <input
-                placeholder="Search"
-                className="w-full bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
-              />
-            </label>
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input placeholder="Search" className="rounded-full pl-8" />
+              </div>
           </div>
-          <Hair />
+          <Separator />
           <div className="max-h-[620px] overflow-y-auto">
             {threads.map((t, i) => (
               <React.Fragment key={t.id}>
-                {i > 0 && <Hair className="ml-[68px]" />}
-                <button
-                  onClick={() => setActive(t.id)}
+                {i > 0 && <Separator className="ml-[68px]" />}
+                <Button variant="ghost" onClick={() => setActive(t.id)}
                   className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
                     active === t.id
-                      ? "bg-[#0A6CFF]/[0.08]"
-                      : "hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
+                      ? "bg-primary/10"
+                      : "hover:bg-muted/50"
                   }`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://i.pravatar.cc/80?img=${t.img}`}
-                    alt=""
-                    className="h-10 w-10 shrink-0 rounded-full object-cover"
-                  />
+                  <Avatar className="h-10 w-10 shrink-0">
+                    <AvatarImage src={`https://i.pravatar.cc/80?img=${t.img}`} alt="" />
+                    <AvatarFallback>{initials(t.name)}</AvatarFallback>
+                  </Avatar>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="truncate text-[14px] font-medium text-foreground">
+                      <span className="truncate text-base font-medium text-foreground">
                         {t.name}
                       </span>
-                      <span className="shrink-0 text-[11px] text-muted-foreground">
+                      <span className="shrink-0 text-xs text-muted-foreground">
                         {t.when}
                       </span>
                     </div>
-                    <p className="mt-0.5 truncate text-[13px] text-muted-foreground">
+                    <p className="mt-0.5 truncate text-sm text-muted-foreground">
                       {t.preview}
                     </p>
                   </div>
                   {t.unread && (
-                    <span className="mt-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#0A6CFF] px-1 text-[11px] font-semibold text-white">
+                    <span className="mt-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-white">
                       {t.unread}
                     </span>
                   )}
-                </button>
+                </Button>
               </React.Fragment>
             ))}
           </div>
-        </Surface>
+        </Card>
 
         {/* Thread */}
-        <Surface className="flex min-h-[680px] flex-col overflow-hidden">
+        <Card className="min-w-0 flex min-h-[680px] flex-col overflow-hidden">
           <div className="flex items-center gap-3 px-5 py-3.5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://i.pravatar.cc/80?img=${current.img}`}
-              alt=""
-              className="h-9 w-9 rounded-full object-cover"
-            />
+            <Avatar className="h-9 w-9 shrink-0">
+                    <AvatarImage src={`https://i.pravatar.cc/80?img=${current.img}`} alt="" />
+                    <AvatarFallback>{initials(current.name)}</AvatarFallback>
+                  </Avatar>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[15px] font-semibold text-foreground">
+              <p className="truncate text-base font-semibold text-foreground">
                 {current.name}
               </p>
-              <p className="text-[12px] text-muted-foreground">Active now</p>
+              <p className="text-xs text-muted-foreground">Active now</p>
             </div>
             {[Phone, Video, Info].map((Icon, i) => (
-              <button
-                key={i}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]"
-              >
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" key={i}>
                 <Icon className="h-4 w-4" />
-              </button>
+              </Button>
             ))}
           </div>
-          <Hair />
+          <Separator />
 
           <div className="flex-1 space-y-3 overflow-y-auto p-5">
-            <p className="text-center text-[11px] text-muted-foreground">
+            <p className="text-center text-xs text-muted-foreground">
               Today 09:21
             </p>
             {conversation.map((b, i) => (
@@ -150,21 +148,21 @@ export default function Messages() {
               >
                 <div className="relative max-w-[76%]">
                   <div
-                    className={`rounded-[20px] px-3.5 py-2 text-[14px] leading-snug ${
+                    className={`rounded-lg px-3.5 py-2 text-base leading-snug ${
                       b.from === "me"
-                        ? "bg-[#0A6CFF] text-white"
-                        : "bg-black/[0.05] text-foreground dark:bg-white/[0.08]"
+                        ? "bg-primary text-white"
+                        : "bg-muted text-foreground"
                     }`}
                   >
                     {b.text}
                   </div>
                   {b.reaction && (
-                    <span className="absolute -top-3 left-2 rounded-full border border-black/[0.06] bg-white px-1.5 py-0.5 text-[11px] shadow-sm dark:border-white/10 dark:bg-[#26262A]">
+                    <span className="absolute -top-3 left-2 rounded-full border border-border bg-white px-1.5 py-0.5 text-xs shadow-sm">
                       {b.reaction}
                     </span>
                   )}
                   <p
-                    className={`mt-1 flex items-center gap-1 text-[11px] text-muted-foreground ${
+                    className={`mt-1 flex items-center gap-1 text-xs text-muted-foreground ${
                       b.from === "me" ? "justify-end" : ""
                     }`}
                   >
@@ -181,7 +179,7 @@ export default function Messages() {
             ))}
 
             <div className="flex justify-start">
-              <div className="flex items-center gap-1 rounded-[20px] bg-black/[0.05] px-4 py-3 dark:bg-white/[0.08]">
+              <div className="flex items-center gap-1 rounded-lg bg-muted px-4 py-3">
                 {[0, 1, 2].map((d) => (
                   <span
                     key={d}
@@ -193,30 +191,26 @@ export default function Messages() {
             </div>
           </div>
 
-          <Hair />
+          <Separator />
           <div className="flex items-center gap-2 p-3">
-            <button className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.05] text-foreground/70 transition-colors hover:bg-black/[0.08] dark:bg-white/[0.07] dark:hover:bg-white/[0.1]">
-              <Plus className="h-4 w-4" />
-            </button>
-            <div className="flex h-10 flex-1 items-center gap-2 rounded-full border border-black/[0.08] px-4 dark:border-white/[0.1]">
-              <input
-                placeholder="iMessage"
-                className="w-full bg-transparent text-[14px] text-foreground outline-none placeholder:text-muted-foreground"
-              />
-              <ImageIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <Smile className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full bg-muted">
+              <Plus className="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <div className="relative flex-1">
+              <Input placeholder="iMessage" className="rounded-full pr-16" />
+              <span className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2">
+                <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                <Smile className="h-4 w-4 text-muted-foreground" />
+              </span>
             </div>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.07]">
-              <Mic className="h-4 w-4" />
-            </button>
-            <button
-              style={{ backgroundColor: A.blue }}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90"
-            >
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+              <Mic className="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button size="icon" className="h-9 w-9 rounded-full">
               <Send className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
-        </Surface>
+        </Card>
       </div>
     </AppleShell>
   );

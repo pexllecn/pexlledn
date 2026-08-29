@@ -4,11 +4,20 @@ import * as React from "react";
 import {
   AppleShell,
   A,
-  Hair,
   Row,
   Segmented,
-  Surface,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { Donut, Meter } from "../components/apple-charts";
 import {
   Clock,
@@ -89,50 +98,50 @@ export default function Files() {
       <div className="grid gap-4 xl:grid-cols-[260px_minmax(0,1fr)]">
         {/* Sidebar */}
         <div className="min-w-0 space-y-4">
-          <Surface className="overflow-hidden">
-            <p className="px-4 py-3 text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+          <Card className="min-w-0 overflow-hidden">
+            <p className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Locations
             </p>
-            <Hair />
+            <Separator />
             {places.map((p, i) => (
               <React.Fragment key={p.label}>
-                {i > 0 && <Hair className="ml-14" />}
+                {i > 0 && <Separator className="ml-14 w-auto" />}
                 <Row icon={p.icon} tint={p.tint} title={p.label} subtitle={p.meta} />
               </React.Fragment>
             ))}
-          </Surface>
+          </Card>
 
-          <Surface className="overflow-hidden">
-            <p className="px-4 py-3 text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+          <Card className="min-w-0 overflow-hidden">
+            <p className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Tags
             </p>
-            <Hair />
+            <Separator />
             {tags.map((t, i) => (
               <React.Fragment key={t.label}>
-                {i > 0 && <Hair className="ml-4" />}
+                {i > 0 && <Separator className="ml-4 w-auto" />}
                 <div className="flex items-center gap-2.5 px-4 py-2.5">
                   <Tag className="h-3.5 w-3.5" style={{ color: t.color }} />
-                  <span className="text-[13px] text-foreground">{t.label}</span>
+                  <span className="text-sm text-foreground">{t.label}</span>
                 </div>
               </React.Fragment>
             ))}
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
-            <p className="text-[14px] font-medium text-foreground">iCloud storage</p>
+          <Card className="min-w-0 p-5">
+            <p className="text-base font-medium text-foreground">iCloud storage</p>
             <div className="mt-4 flex items-center gap-4">
               <Donut pct={64} color={A.blue} size={92} label="64%" />
               <div className="min-w-0">
-                <p className="text-[18px] font-semibold tabular-nums text-foreground">
+                <p className="text-xl font-semibold tabular-nums text-foreground">
                   184 GB
                 </p>
-                <p className="text-[12px] text-muted-foreground">used of 2 TB</p>
+                <p className="text-xs text-muted-foreground">used of 2 TB</p>
               </div>
             </div>
             <div className="mt-5 space-y-2.5">
               {storage.map((s) => (
                 <div key={s.label}>
-                  <div className="mb-1 flex items-center justify-between text-[12px]">
+                  <div className="mb-1 flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1.5 text-muted-foreground">
                       <span
                         className="h-2 w-2 rounded-full"
@@ -146,82 +155,79 @@ export default function Files() {
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
         </div>
 
         {/* Browser */}
         <div className="min-w-0 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {folders.map((f) => (
-              <Surface key={f.name} className="p-4 transition-colors hover:bg-black/[0.015] dark:hover:bg-white/[0.05]">
+              <Card key={f.name} className="p-4 transition-colors hover:bg-muted/50">
                 <span
                   className="flex h-10 w-10 items-center justify-center rounded-xl text-white"
                   style={{ backgroundColor: f.color }}
                 >
                   <Folder className="h-5 w-5" />
                 </span>
-                <p className="mt-3 truncate text-[14px] font-medium text-foreground">
+                <p className="mt-3 truncate text-base font-medium text-foreground">
                   {f.name}
                 </p>
-                <p className="mt-0.5 text-[12px] tabular-nums text-muted-foreground">
+                <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
                   {f.items} items · {f.size}
                 </p>
-              </Surface>
+              </Card>
             ))}
           </div>
 
-          <Surface className="overflow-hidden">
+          <Card className="min-w-0 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4">
               <div>
-                <p className="text-[13px] text-muted-foreground">iCloud Drive</p>
-                <p className="mt-0.5 text-[18px] font-semibold tracking-[-0.02em] text-foreground">
+                <p className="text-sm text-muted-foreground">iCloud Drive</p>
+                <p className="mt-0.5 text-xl font-semibold tracking-tight text-foreground">
                   Recents
                 </p>
               </div>
-              <span className="text-[13px] tabular-nums text-muted-foreground">
+              <span className="text-sm tabular-nums text-muted-foreground">
                 {files.length} items
               </span>
             </div>
-            <Hair />
+            <Separator />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-left">
-                <thead>
-                  <tr className="text-[12px] text-muted-foreground">
+              <Table className="min-w-[620px]">
+                <TableHeader>
+                  <TableRow>
                     {["Name", "Kind", "Size", "Date modified"].map((h) => (
-                      <th key={h} className="px-5 py-2.5 font-medium">
+                      <TableHead key={h}>
                         {h}
-                      </th>
+                      </TableHead>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {files.map((f) => (
-                    <tr
-                      key={f.name}
-                      className="border-t border-black/[0.06] text-[13px] transition-colors hover:bg-black/[0.02] dark:border-white/[0.07] dark:hover:bg-white/[0.03]"
-                    >
-                      <td className="px-5 py-2.5">
+                    <TableRow key={f.name}>
+                      <TableCell>
                         <span className="flex items-center gap-2.5">
                           <span
-                            className="flex h-7 w-7 items-center justify-center rounded-[8px] text-white"
+                            className="flex h-7 w-7 items-center justify-center rounded-xl text-white"
                             style={{ backgroundColor: f.tint }}
                           >
                             {f.icon}
                           </span>
                           <span className="font-medium text-foreground">{f.name}</span>
                         </span>
-                      </td>
-                      <td className="px-5 py-2.5 text-muted-foreground">{f.kind}</td>
-                      <td className="px-5 py-2.5 tabular-nums text-muted-foreground">
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{f.kind}</TableCell>
+                      <TableCell className="tabular-nums text-muted-foreground">
                         {f.size}
-                      </td>
-                      <td className="px-5 py-2.5 text-muted-foreground">{f.when}</td>
-                    </tr>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{f.when}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
-          </Surface>
+          </Card>
         </div>
       </div>
     </AppleShell>

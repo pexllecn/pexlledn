@@ -5,14 +5,15 @@ import {
   AppleShell,
   A,
   Delta,
-  Hair,
   MiniStat,
   Row,
   Segmented,
   Stepper,
-  Surface,
   seeded,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Columns, Heatmap, Spark } from "../components/apple-charts";
 import {
   Bot,
@@ -48,7 +49,7 @@ export default function Profile() {
   return (
     <AppleShell title="Profile" showFilters={false} notifications={3}>
       <div className="mx-auto max-w-[840px] space-y-4">
-        <Surface className="overflow-hidden">
+        <Card className="min-w-0 overflow-hidden">
           <div className="relative h-[190px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -57,33 +58,33 @@ export default function Profile() {
               className="h-full w-full object-cover"
             />
             <div className="absolute -bottom-9 left-5">
-              <div className="flex h-[84px] w-[84px] items-center justify-center rounded-full border-4 border-white bg-black/[0.06] text-[30px] font-medium text-foreground/60 dark:border-[#151517] dark:bg-white/[0.1]">
+              <div className="flex h-[84px] w-[84px] items-center justify-center rounded-full border-4 border-white bg-muted text-3xl font-medium text-foreground/60 dark:border-[#151517]">
                 M
               </div>
             </div>
           </div>
 
           <div className="flex justify-end gap-2 px-5 pt-3">
-            <button className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]">
+            <Button variant="outline" className="h-9 gap-2 rounded-full px-3.5">
               <Share className="h-3.5 w-3.5" /> Share
-            </button>
-            <button className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]">
+            </Button>
+            <Button variant="outline" className="h-9 gap-2 rounded-full px-3.5">
               <PencilLine className="h-3.5 w-3.5" /> Edit
-            </button>
+            </Button>
           </div>
 
           <div className="px-5 pb-5 pt-4">
-            <h2 className="text-[24px] font-semibold tracking-[-0.02em] text-foreground">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
               Mertcan Esmergül
             </h2>
-            <p className="mt-1 flex items-center gap-2 text-[14px] text-muted-foreground">
+            <p className="mt-1 flex items-center gap-2 text-base text-muted-foreground">
               @sitenley
-              <span className="rounded-md bg-black/[0.06] px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-foreground/70 dark:bg-white/[0.1]">
+              <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-foreground/70">
                 Pro
               </span>
             </p>
 
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-muted-foreground">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MapPin className="h-3.5 w-3.5" /> Istanbul, Türkiye
               </span>
@@ -95,14 +96,14 @@ export default function Profile() {
               </span>
             </div>
 
-            <p className="mt-6 text-[13px] text-muted-foreground">
+            <p className="mt-6 text-sm text-muted-foreground">
               Contributions this year
             </p>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+              <span className="text-3xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                 $7,462
               </span>
-              <span className="rounded-md bg-[#8E5BF6]/12 px-1.5 py-0.5 text-[12px] font-medium tabular-nums text-[#7C3AED] dark:text-[#B99AFB]">
+              <span className="rounded-md bg-[#8E5BF6]/12 px-1.5 py-0.5 text-xs font-medium tabular-nums text-[#7C3AED] dark:text-[#B99AFB]">
                 +14.8%
               </span>
             </div>
@@ -115,18 +116,18 @@ export default function Profile() {
             </div>
 
             <div className="mt-6 flex items-center justify-between">
-              <p className="text-[13px] text-muted-foreground">Activity</p>
+              <p className="text-sm text-muted-foreground">Activity</p>
               <Segmented options={["Weekly", "Monthly", "Yearly"]} />
             </div>
             <Heatmap className="mt-4" weeks={52} seed={5} />
           </div>
-        </Surface>
+        </Card>
 
-        <Surface className="p-5">
+        <Card className="min-w-0 p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[13px] text-muted-foreground">Agents</p>
-              <p className="mt-1 text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+              <p className="text-sm text-muted-foreground">Agents</p>
+              <p className="mt-1 text-2xl font-semibold leading-none tracking-tight tabular-nums text-foreground">
                 32 agents
               </p>
             </div>
@@ -138,17 +139,17 @@ export default function Profile() {
             color="#C9A7FB"
             height={220}
           />
-        </Surface>
+        </Card>
 
-        <Surface className="overflow-hidden">
+        <Card className="min-w-0 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4">
-            <p className="text-[14px] font-medium text-foreground">Pinned</p>
-            <span className="text-[13px] text-muted-foreground">Last 7 days</span>
+            <p className="text-base font-medium text-foreground">Pinned</p>
+            <span className="text-sm text-muted-foreground">Last 7 days</span>
           </div>
-          <Hair />
+          <Separator />
           {pinned.map((p, i) => (
             <React.Fragment key={p.name}>
-              {i > 0 && <Hair className="ml-14" />}
+              {i > 0 && <Separator className="ml-14 w-auto" />}
               <Row
                 icon={p.icon}
                 tint={A.blue}
@@ -158,7 +159,7 @@ export default function Profile() {
               />
             </React.Fragment>
           ))}
-        </Surface>
+        </Card>
       </div>
     </AppleShell>
   );

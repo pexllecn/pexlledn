@@ -4,12 +4,12 @@ import * as React from "react";
 import {
   AppleShell,
   A,
-  Hair,
   Row,
   Stat,
-  Surface,
-  Toggle,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { Donut, Meter, Spark } from "../components/apple-charts";
 import {
   Battery,
@@ -119,23 +119,23 @@ export default function Devices() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid gap-4 sm:grid-cols-2">
             {devices.map((d) => (
-              <Surface key={d.name} className="p-5">
+              <Card key={d.name} className="p-5">
                 <div className="flex items-start gap-3">
                   <span
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-white"
                     style={{ backgroundColor: d.tint }}
                   >
                     {d.icon}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[15px] font-semibold text-foreground">
+                    <p className="truncate text-base font-semibold text-foreground">
                       {d.name}
                     </p>
-                    <p className="truncate text-[12px] text-muted-foreground">
+                    <p className="truncate text-xs text-muted-foreground">
                       {d.model}
                     </p>
                   </div>
-                  <span className="shrink-0 rounded-md bg-[#34C759]/12 px-2 py-0.5 text-[11px] font-medium text-[#248A3D] dark:text-[#5CE07E]">
+                  <span className="shrink-0 rounded-md bg-[#34C759]/12 px-2 py-0.5 text-xs font-medium text-[#248A3D] dark:text-[#5CE07E]">
                     {d.status}
                   </span>
                 </div>
@@ -149,7 +149,7 @@ export default function Devices() {
                   />
                   <div className="min-w-0 flex-1 space-y-3">
                     <div>
-                      <div className="mb-1 flex items-center justify-between text-[12px]">
+                      <div className="mb-1 flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">Storage</span>
                         <span className="tabular-nums text-muted-foreground">
                           {d.storage}%
@@ -157,23 +157,23 @@ export default function Devices() {
                       </div>
                       <Meter pct={d.storage} color={d.tint} />
                     </div>
-                    <p className="flex items-center gap-1.5 truncate text-[12px] text-muted-foreground">
+                    <p className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
                       <MapPin className="h-3 w-3 shrink-0" /> {d.where}
                     </p>
                   </div>
                   <Spark data={d.trend} color={d.tint} className="hidden sm:block" />
                 </div>
-              </Surface>
+              </Card>
             ))}
           </div>
 
           <div className="min-w-0 space-y-4">
-            <Surface className="overflow-hidden">
+            <Card className="min-w-0 overflow-hidden">
               <div className="flex items-center gap-2 px-5 py-4">
                 <MapPin className="h-4 w-4 text-[#34C759]" />
-                <p className="text-[14px] font-medium text-foreground">Find My</p>
+                <p className="text-base font-medium text-foreground">Find My</p>
               </div>
-              <Hair />
+              <Separator />
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -193,30 +193,30 @@ export default function Devices() {
                   />
                 ))}
               </div>
-              <Hair />
-              <p className="px-5 py-3 text-[12px] text-muted-foreground">
+              <Separator />
+              <p className="px-5 py-3 text-xs text-muted-foreground">
                 3 devices near Istanbul · updated 2 min ago
               </p>
-            </Surface>
+            </Card>
 
-            <Surface className="overflow-hidden">
-              <p className="px-5 py-4 text-[14px] font-medium text-foreground">
+            <Card className="min-w-0 overflow-hidden">
+              <p className="px-5 py-4 text-base font-medium text-foreground">
                 Connectivity
               </p>
-              <Hair />
+              <Separator />
               {network.map((n, i) => (
                 <React.Fragment key={n.label}>
-                  {i > 0 && <Hair className="ml-14" />}
+                  {i > 0 && <Separator className="ml-14 w-auto" />}
                   <Row
                     icon={n.icon}
                     tint={n.tint}
                     title={n.label}
                     subtitle={n.meta}
-                    right={<Toggle checked={n.on} />}
+                    right={<Switch defaultChecked={n.on} />}
                   />
                 </React.Fragment>
               ))}
-            </Surface>
+            </Card>
           </div>
         </div>
       </div>

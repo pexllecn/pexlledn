@@ -9,9 +9,10 @@ import {
   Legend,
   RangePill,
   Stat,
-  Surface,
-  UnderlineTabs,
 } from "../components/apple-ui";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ColumnsWithLine,
   Funnel,
@@ -64,8 +65,8 @@ const spend = [
 
 const channels = [
   { icon: <Search className="h-3.5 w-3.5" />, label: "Google Ads", pct: 39, color: A.blue },
-  { icon: <span className="text-[13px] font-semibold">∞</span>, label: "Meta", pct: 25, color: A.blue },
-  { icon: <span className="text-[13px] font-semibold">X</span>, label: "X Ads", pct: 14, color: A.blue },
+  { icon: <span className="text-sm font-semibold">∞</span>, label: "Meta", pct: 25, color: A.blue },
+  { icon: <span className="text-sm font-semibold">X</span>, label: "X Ads", pct: 14, color: A.blue },
   { icon: <Linkedin className="h-3.5 w-3.5" />, label: "LinkedIn", pct: 8, color: A.blue },
   { icon: <Mail className="h-3.5 w-3.5" />, label: "Email", pct: 7, color: A.blue, muted: true },
 ];
@@ -119,7 +120,7 @@ export default function Analytics() {
 
         <div className="grid gap-4 xl:grid-cols-3">
           {/* Funnel */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="Acquisition funnel"
               value="96.4K"
@@ -131,27 +132,27 @@ export default function Analytics() {
               {funnelTotals.map((f) => (
                 <div
                   key={f.label}
-                  className="rounded-xl border border-black/[0.06] px-3 py-2.5 dark:border-white/[0.07]"
+                  className="rounded-md border border-border px-3 py-2.5"
                 >
                   <span className="flex items-center gap-1.5">
                     <span
                       className="h-2 w-2 shrink-0 rounded-full"
                       style={{ backgroundColor: f.color }}
                     />
-                    <span className="truncate text-[12px] text-muted-foreground">
+                    <span className="truncate text-xs text-muted-foreground">
                       {f.label}
                     </span>
                   </span>
-                  <p className="mt-1 text-[14px] font-semibold tabular-nums text-foreground">
+                  <p className="mt-1 text-base font-semibold tabular-nums text-foreground">
                     {f.value}
                   </p>
                 </div>
               ))}
             </div>
-          </Surface>
+          </Card>
 
           {/* Gauge */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="Spend by channel"
               value="$24,880"
@@ -172,43 +173,50 @@ export default function Analytics() {
                 color: s.color,
               }))}
             />
-          </Surface>
+          </Card>
 
           {/* Ranked tabs */}
-          <Surface className="p-5">
-            <UnderlineTabs
-              tabs={["Channels", "Campaigns", "Landing pages"]}
-              right="Sessions"
-            >
-              {(active) => {
-                const rows =
-                  active === "Channels"
-                    ? channels
-                    : active === "Campaigns"
-                    ? campaigns
-                    : landing;
-                return (
-                  <div className="mt-4 space-y-1.5">
-                    {rows.map((r) => (
-                      <ChannelRow key={r.label} {...r} />
-                    ))}
-                    <div className="flex justify-center pt-2">
-                      <button
-                        aria-label={`Show more ${active.toLowerCase()}`}
-                        className="flex h-7 w-9 items-center justify-center rounded-full bg-black/[0.05] text-muted-foreground transition-colors hover:bg-black/[0.09] dark:bg-white/[0.07] dark:hover:bg-white/[0.12]"
-                      >
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
+          <Card className="min-w-0 p-5">
+            <Tabs defaultValue="Channels">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <TabsList className="h-9">
+                  {["Channels", "Campaigns", "Landing pages"].map((t) => (
+                    <TabsTrigger key={t} value={t} className="text-xs">
+                      {t}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                <span className="text-1xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Sessions
+                </span>
+              </div>
+              {[
+                { tab: "Channels", rows: channels },
+                { tab: "Campaigns", rows: campaigns },
+                { tab: "Landing pages", rows: landing },
+              ].map(({ tab, rows }) => (
+                <TabsContent key={tab} value={tab} className="space-y-1.5">
+                  {rows.map((r) => (
+                    <ChannelRow key={r.label} {...r} />
+                  ))}
+                  <div className="flex justify-center pt-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Show more ${tab.toLowerCase()}`}
+                      className="h-7 w-9 rounded-full bg-muted"
+                    >
+                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    </Button>
                   </div>
-                );
-              }}
-            </UnderlineTabs>
-          </Surface>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </Card>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-2">
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="Ad spend · ROAS 3.6x"
               value="$217.7K"
@@ -221,9 +229,9 @@ export default function Analytics() {
               leftTicks={["25.5K", "17K", "8.5K", "0"]}
               rightTicks={["6.0x", "4.0x", "2.0x", "0.0x"]}
             />
-          </Surface>
+          </Card>
 
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <CardHead
               title="Visitors"
               value="134,400"
@@ -241,7 +249,7 @@ export default function Analytics() {
               className="mt-3"
               items={visitors.map((v) => ({ label: v.name, color: v.color }))}
             />
-          </Surface>
+          </Card>
         </div>
       </div>
     </AppleShell>

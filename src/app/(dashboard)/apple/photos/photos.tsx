@@ -4,11 +4,14 @@ import * as React from "react";
 import {
   AppleShell,
   A,
-  Hair,
   Row,
   Segmented,
-  Surface,
+  initials,
 } from "../components/apple-ui";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Camera,
   Heart,
@@ -72,7 +75,7 @@ export default function Photos() {
           {memories.map((m, i) => (
             <div
               key={m.seed}
-              className="group relative overflow-hidden rounded-[22px]"
+              className="group relative overflow-hidden rounded-lg"
               style={{ aspectRatio: i === 0 ? "16/10" : "16/10" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -83,32 +86,32 @@ export default function Photos() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4">
-                <p className="text-[16px] font-semibold tracking-[-0.01em] text-white">
+                <p className="text-lg font-semibold tracking-tight text-white">
                   {m.title}
                 </p>
-                <p className="text-[12px] text-white/70">{m.sub}</p>
+                <p className="text-xs text-white/70">{m.sub}</p>
               </div>
-              <button className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/35 text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
+              <Button size="icon" className="absolute right-3 top-3 h-8 w-8 rounded-full text-white opacity-0 backdrop-blur group-hover:opacity-100">
                 <Play className="ml-0.5 h-3.5 w-3.5 fill-current" />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_300px]">
           {/* Library grid */}
-          <Surface className="p-5">
+          <Card className="min-w-0 p-5">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-muted-foreground">Library</p>
-                <p className="mt-0.5 text-[20px] font-semibold tracking-[-0.02em] tabular-nums text-foreground">
+                <p className="text-sm text-muted-foreground">Library</p>
+                <p className="mt-0.5 text-2xl font-semibold tracking-tight tabular-nums text-foreground">
                   3,204 items
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="flex h-9 items-center gap-2 rounded-full border border-black/[0.07] px-3.5 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]">
+                <Button variant="outline" className="h-9 gap-2 rounded-full px-3.5">
                   <Share className="h-3.5 w-3.5" /> Share
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -116,7 +119,7 @@ export default function Photos() {
               {grid.map((g) => (
                 <div
                   key={g.seed}
-                  className={`group relative overflow-hidden rounded-xl ${g.span}`}
+                  className={`group relative overflow-hidden rounded-md ${g.span}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -128,7 +131,7 @@ export default function Photos() {
                     <Heart className="absolute bottom-1.5 left-1.5 h-3.5 w-3.5 fill-white text-white drop-shadow" />
                   )}
                   {g.video && (
-                    <span className="absolute bottom-1.5 right-1.5 rounded bg-black/45 px-1 text-[10px] font-medium text-white backdrop-blur">
+                    <span className="absolute bottom-1.5 right-1.5 rounded bg-black/45 px-1 text-1xs font-medium text-white backdrop-blur">
                       0:24
                     </span>
                   )}
@@ -137,40 +140,38 @@ export default function Photos() {
             </div>
 
             <div className="mt-4 flex items-center justify-center">
-              <button className="rounded-full border border-black/[0.07] px-4 py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:bg-black/[0.03] dark:border-white/[0.08] dark:hover:bg-white/[0.06]">
+              <Button variant="outline" className="rounded-full px-4 py-2">
                 Load more
-              </button>
+              </Button>
             </div>
-          </Surface>
+          </Card>
 
           {/* Rail */}
           <div className="min-w-0 space-y-4">
-            <Surface className="p-5">
-              <p className="text-[14px] font-medium text-foreground">People</p>
+            <Card className="min-w-0 p-5">
+              <p className="text-base font-medium text-foreground">People</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 {people.map((p) => (
                   <div key={p.name} className="flex w-[56px] flex-col items-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`https://i.pravatar.cc/100?img=${p.img}`}
-                      alt=""
-                      className="h-12 w-12 rounded-full object-cover"
-                    />
-                    <span className="mt-1.5 truncate text-[11px] text-muted-foreground">
+                    <Avatar className="h-12 w-12 shrink-0">
+                    <AvatarImage src={`https://i.pravatar.cc/80?img=${p.img}`} alt="" />
+                    <AvatarFallback>{initials(p.name)}</AvatarFallback>
+                  </Avatar>
+                    <span className="mt-1.5 truncate text-xs text-muted-foreground">
                       {p.name}
                     </span>
                   </div>
                 ))}
               </div>
-            </Surface>
+            </Card>
 
-            <Surface className="overflow-hidden">
-              <p className="px-5 py-4 text-[14px] font-medium text-foreground">Albums</p>
-              <Hair />
+            <Card className="min-w-0 overflow-hidden">
+              <p className="px-5 py-4 text-base font-medium text-foreground">Albums</p>
+              <Separator />
               {albums.map((a, i) => (
                 <React.Fragment key={a.name}>
-                  {i > 0 && <Hair className="ml-[68px]" />}
-                  <div className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.03]">
+                  {i > 0 && <Separator className="ml-[68px]" />}
+                  <div className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-muted/50">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`https://picsum.photos/seed/${a.seed}/120/120`}
@@ -178,46 +179,46 @@ export default function Photos() {
                       className="h-10 w-10 rounded-lg object-cover"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[14px] font-medium text-foreground">
+                      <p className="truncate text-base font-medium text-foreground">
                         {a.name}
                       </p>
-                      <p className="text-[12px] tabular-nums text-muted-foreground">
+                      <p className="text-xs tabular-nums text-muted-foreground">
                         {a.count.toLocaleString()} items
                       </p>
                     </div>
                   </div>
                 </React.Fragment>
               ))}
-            </Surface>
+            </Card>
 
-            <Surface className="overflow-hidden">
-              <p className="px-5 py-4 text-[14px] font-medium text-foreground">
+            <Card className="min-w-0 overflow-hidden">
+              <p className="px-5 py-4 text-base font-medium text-foreground">
                 Media types
               </p>
-              <Hair />
+              <Separator />
               {mediaTypes.map((m, i) => (
                 <React.Fragment key={m.label}>
-                  {i > 0 && <Hair className="ml-14" />}
+                  {i > 0 && <Separator className="ml-14 w-auto" />}
                   <Row
                     icon={m.icon}
                     tint={m.tint}
                     title={m.label}
                     right={
-                      <span className="text-[13px] tabular-nums text-muted-foreground">
+                      <span className="text-sm tabular-nums text-muted-foreground">
                         {m.count}
                       </span>
                     }
                   />
                 </React.Fragment>
               ))}
-            </Surface>
+            </Card>
 
-            <Surface className="p-5">
+            <Card className="min-w-0 p-5">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#0A6CFF]" />
-                <p className="text-[14px] font-medium text-foreground">Places</p>
+                <MapPin className="h-4 w-4 text-primary" />
+                <p className="text-base font-medium text-foreground">Places</p>
               </div>
-              <div className="mt-3 overflow-hidden rounded-2xl">
+              <div className="mt-3 overflow-hidden rounded-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://picsum.photos/seed/ap-map/600/360"
@@ -225,10 +226,10 @@ export default function Photos() {
                   className="h-[150px] w-full object-cover"
                 />
               </div>
-              <p className="mt-2 flex items-center gap-1.5 text-[12px] text-muted-foreground">
+              <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                 <ImageIcon className="h-3 w-3" /> 1,842 photos across 34 places
               </p>
-            </Surface>
+            </Card>
           </div>
         </div>
       </div>
