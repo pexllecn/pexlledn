@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
@@ -10,9 +11,11 @@ import {
   Segmented,
   Stat,
   initials,
+  stagger,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -25,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Columns, Gauge, Heatmap, Meter } from "../components/apple-charts";
+import { Area, Gauge, Heatmap, Meter } from "../components/apple-charts";
 import {
   Building2,
   CalendarDays,
@@ -89,21 +92,26 @@ const timeOff = [
   { name: "Tomas Berg", img: 60, reason: "Conference", when: "Jul 22 – Jul 24", pct: 12 },
 ];
 
-const statusTint: Record<string, string> = {
-  Active: A.green,
-  "On leave": A.orange,
+const statusVariant: Record<string, "success" | "yellow" | "decline"> = {
+  Active: "success",
+  "On leave": "yellow",
 };
 
 export default function Team() {
   return (
     <AppleShell title="HR Team" action="Invite" actionIcon={<UserPlus className="h-4 w-4" />}>
       <div className="min-w-0 space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           <Stat icon={<Users className="h-4 w-4" />} label="Headcount" value="56" delta={7.7} />
           <Stat icon={<UserPlus className="h-4 w-4" />} label="New hires" value="12" hint="last 90 days" delta={22.4} />
           <Stat icon={<Plane className="h-4 w-4" />} label="On leave" value="3" hint="this week" delta={-12.5} />
           <Stat icon={<Building2 className="h-4 w-4" />} label="Offices" value="4" hint="plus 9 remote" />
-        </div>
+        </motion.div>
 
         <div className="grid gap-4 xl:grid-cols-3">
           <Card className="min-w-0 p-5">
@@ -113,10 +121,12 @@ export default function Team() {
               delta={7.7}
               right={<Segmented options={["Monthly", "Yearly"]} />}
             />
-            <Columns
+            {/* A 38 -> 56 climb reads as a trend; columns from zero would make
+                every month look the same height. */}
+            <Area
               className="mt-6"
-              data={headcount}
-              ticks={["60", "40", "20", "0"]}
+              data={headcount.map((h) => h.value)}
+              labels={headcount.map((h) => h.label)}
               height={230}
             />
           </Card>
@@ -191,9 +201,9 @@ export default function Team() {
                   </Button>
                 ))}
                 <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search" className="rounded-full pl-8" />
-              </div>
+                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input placeholder="Search" className="rounded-full pl-8" />
+                </div>
               </div>
             </div>
             <Separator />
@@ -239,15 +249,7 @@ export default function Team() {
                       </TableCell>
                       <TableCell className="text-muted-foreground">{p.loc}</TableCell>
                       <TableCell>
-                        <span
-                          className="inline-flex rounded-md px-2 py-0.5 text-xs font-medium"
-                          style={{
-                            color: statusTint[p.status],
-                            backgroundColor: `${statusTint[p.status]}1F`,
-                          }}
-                        >
-                          {p.status}
-                        </span>
+                        <Badge variant={statusVariant[p.status]}>{p.status}</Badge>
                       </TableCell>
                       <TableCell>
                         <span className="flex items-center gap-1">

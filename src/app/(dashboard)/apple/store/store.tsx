@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
   Segmented,
   Stat,
+  stagger,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -13,13 +15,18 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Meter } from "../components/apple-charts";
 import {
+  Activity,
+  Camera,
   Download,
   Gamepad2,
   Layers,
+  NotebookPen,
   Pencil,
-  Star,
   Sparkles,
+  Star,
   TrendingUp,
+  Wand2,
+  Waves,
   Wrench,
 } from "lucide-react";
 
@@ -40,12 +47,12 @@ const apps = [
 ];
 
 const charts = [
-  { n: 1, name: "Rings", cat: "Health & Fitness", price: "Get", inApp: true, tint: A.pink },
-  { n: 2, name: "Motion Kit", cat: "Developer Tools", price: "$14.99", tint: A.purple },
-  { n: 3, name: "Tokens", cat: "Design", price: "Get", inApp: true, tint: A.blue },
-  { n: 4, name: "Field Notes", cat: "Productivity", price: "$4.99", tint: A.orange },
-  { n: 5, name: "Tide", cat: "Weather", price: "Get", tint: A.teal },
-  { n: 6, name: "Grain", cat: "Photo & Video", price: "$7.99", tint: A.lime },
+  { n: 1, name: "Rings", cat: "Health & Fitness", price: "Get", inApp: true, tint: A.pink, icon: Activity },
+  { n: 2, name: "Motion Kit", cat: "Developer Tools", price: "$14.99", tint: A.purple, icon: Wand2 },
+  { n: 3, name: "Tokens", cat: "Design", price: "Get", inApp: true, tint: A.blue, icon: Layers },
+  { n: 4, name: "Field Notes", cat: "Productivity", price: "$4.99", tint: A.orange, icon: NotebookPen },
+  { n: 5, name: "Tide", cat: "Weather", price: "Get", tint: A.teal, icon: Waves },
+  { n: 6, name: "Grain", cat: "Photo & Video", price: "$7.99", tint: A.lime, icon: Camera },
 ];
 
 const categories = [
@@ -115,12 +122,17 @@ export default function Store() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           <Stat icon={<Download className="h-4 w-4" />} label="Installs" value="128" delta={9.6} />
           <Stat icon={<Star className="h-4 w-4" />} label="Average rating" value="4.7" delta={1.4} />
           <Stat icon={<Layers className="h-4 w-4" />} label="Subscriptions" value="6" hint="$38.94 / month" />
           <Stat icon={<TrendingUp className="h-4 w-4" />} label="Updates ready" value="3" hint="82.9 MB total" />
-        </div>
+        </motion.div>
 
         {/* Categories */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -202,7 +214,7 @@ export default function Store() {
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white"
                             style={{ backgroundColor: c.tint }}
                           >
-                            <Sparkles className="h-4 w-4" />
+                            <c.icon className="h-4 w-4" />
                           </span>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-base font-medium text-foreground">

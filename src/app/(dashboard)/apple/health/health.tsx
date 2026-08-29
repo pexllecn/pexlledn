@@ -9,6 +9,7 @@ import {
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -89,10 +90,10 @@ const patients = [
   { name: "Aisha Rahman", id: "PX-40925", condition: "Migraine", status: "Stable", when: "2 days ago" },
 ];
 
-const statusTint: Record<string, string> = {
-  Stable: A.green,
-  "Follow-up": A.orange,
-  Critical: A.red,
+const statusVariant: Record<string, "success" | "yellow" | "decline"> = {
+  Stable: "success",
+  "Follow-up": "yellow",
+  Critical: "decline",
 };
 
 /** Three weeks of ring summaries — later days fade out, like the Fitness app. */
@@ -362,15 +363,7 @@ export default function Health() {
                     <TableCell className="tabular-nums text-muted-foreground">{p.id}</TableCell>
                     <TableCell className="text-muted-foreground">{p.condition}</TableCell>
                     <TableCell>
-                      <span
-                        className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium"
-                        style={{
-                          color: statusTint[p.status],
-                          backgroundColor: `${statusTint[p.status]}1F`,
-                        }}
-                      >
-                        {p.status}
-                      </span>
+                      <Badge variant={statusVariant[p.status]}>{p.status}</Badge>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{p.when}</TableCell>
                   </TableRow>

@@ -8,8 +8,11 @@ import {
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Check,
@@ -66,27 +69,27 @@ export default function Messages() {
   const current = threads.find((t) => t.id === active) ?? threads[0];
 
   return (
-    <AppleShell title="Messages" showFilters={false} action="New message" notifications={7}>
+    <AppleShell title="Messages" showFilters={false} action="New message">
       <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
         {/* Conversation list */}
         <Card className="min-w-0 overflow-hidden">
           <div className="p-4">
             <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search" className="rounded-full pl-8" />
-              </div>
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder="Search" className="rounded-full pl-8" />
+            </div>
           </div>
           <Separator />
-          <div className="max-h-[620px] overflow-y-auto">
+          <ScrollArea className="h-[620px]">
             {threads.map((t, i) => (
               <React.Fragment key={t.id}>
-                {i > 0 && <Separator className="ml-[68px]" />}
-                <Button variant="ghost" onClick={() => setActive(t.id)}
-                  className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
-                    active === t.id
-                      ? "bg-primary/10"
-                      : "hover:bg-muted/50"
-                  }`}
+                {i > 0 && <Separator className="ml-[68px] w-auto" />}
+                <button
+                  onClick={() => setActive(t.id)}
+                  className={cn(
+                    "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors",
+                    active === t.id ? "bg-primary/10" : "hover:bg-muted/50"
+                  )}
                 >
                   <Avatar className="h-10 w-10 shrink-0">
                     <AvatarImage src={`https://i.pravatar.cc/80?img=${t.img}`} alt="" />
@@ -106,14 +109,14 @@ export default function Messages() {
                     </p>
                   </div>
                   {t.unread && (
-                    <span className="mt-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-white">
+                    <Badge className="mt-1 h-[18px] min-w-[18px] px-1">
                       {t.unread}
-                    </span>
+                    </Badge>
                   )}
-                </Button>
+                </button>
               </React.Fragment>
             ))}
-          </div>
+          </ScrollArea>
         </Card>
 
         {/* Thread */}
@@ -150,7 +153,7 @@ export default function Messages() {
                   <div
                     className={`rounded-lg px-3.5 py-2 text-base leading-snug ${
                       b.from === "me"
-                        ? "bg-primary text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-muted text-foreground"
                     }`}
                   >

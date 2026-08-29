@@ -47,7 +47,7 @@ const pinned = [
 
 export default function Profile() {
   return (
-    <AppleShell title="Profile" showFilters={false} notifications={3}>
+    <AppleShell title="Profile" showFilters={false}>
       <div className="mx-auto max-w-[840px] space-y-4">
         <Card className="min-w-0 overflow-hidden">
           <div className="relative h-[190px]">

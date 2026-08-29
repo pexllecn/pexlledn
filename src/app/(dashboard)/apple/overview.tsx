@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   AppleShell,
@@ -12,6 +13,7 @@ import {
   Segmented,
   Stat,
   initials,
+  stagger,
 } from "./components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -121,7 +123,7 @@ export default function Overview() {
               className="mt-6"
               data={earnings}
               highlight={0}
-              ticks={["$10K", "$5K", "$3K", "$0"]}
+              format={(v) => `$${v / 1000}K`}
               height={250}
             />
           </Card>
@@ -140,7 +142,7 @@ export default function Overview() {
               className="mt-6"
               data={revenue}
               labels={MONTHS}
-              ticks={["$6K", "$4K", "$2K", "$0"]}
+              format={(v) => `$${v / 1000}K`}
               height={250}
             />
           </Card>
@@ -164,11 +166,16 @@ export default function Overview() {
         </div>
 
         {/* Bottom KPI row */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           {tiles.map((t) => (
             <Stat key={t.label} {...t} />
           ))}
-        </div>
+        </motion.div>
 
         {/* Cross-links into the rest of the app */}
         <Card className="min-w-0 overflow-hidden">

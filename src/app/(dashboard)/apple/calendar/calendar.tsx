@@ -89,7 +89,7 @@ export default function CalendarPage() {
                     key={n}
                     className={`flex h-8 items-center justify-center rounded-full text-xs tabular-nums ${
                       n === 5
-                        ? "bg-primary font-semibold text-white"
+                        ? "bg-primary font-semibold text-primary-foreground"
                         : valid
                         ? "text-foreground"
                         : "text-muted-foreground/40"
@@ -183,7 +183,7 @@ export default function CalendarPage() {
                     <p
                       className={`mx-auto mt-1 flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold tabular-nums ${
                         i === 6
-                          ? "bg-primary text-white"
+                          ? "bg-primary text-primary-foreground"
                           : "text-foreground"
                       }`}
                     >

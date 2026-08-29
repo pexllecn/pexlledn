@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
@@ -10,6 +11,7 @@ import {
   Row,
   Segmented,
   Stat,
+  stagger,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -104,12 +106,17 @@ export default function Finance() {
   return (
     <AppleShell title="Wallet" action="Add card" actionIcon={<CreditCard className="h-4 w-4" />}>
       <div className="min-w-0 space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           <Stat icon={<Wallet className="h-4 w-4" />} label="Total balance" value="$20,866" delta={11.2} />
           <Stat icon={<ArrowDownLeft className="h-4 w-4" />} label="Income" value="$6,200" delta={3.4} />
           <Stat icon={<ArrowUpRight className="h-4 w-4" />} label="Spending" value="$3,354" delta={-6.1} />
           <Stat icon={<PiggyBank className="h-4 w-4" />} label="Saved" value="$2,846" delta={18.9} />
-        </div>
+        </motion.div>
 
         <div className="grid gap-4 xl:grid-cols-3">
           <Card className="min-w-0 p-5">
@@ -140,7 +147,11 @@ export default function Finance() {
 
             <div className="mt-4 grid grid-cols-4 gap-2">
               {actions.map((a) => (
-                <Button variant="ghost" className="flex-col gap-1.5 rounded-lg py-3" key={a.label}>
+                <Button
+                  key={a.label}
+                  variant="ghost"
+                  className="h-auto flex-col gap-1.5 rounded-lg border border-border py-3"
+                >
                   <span className="text-foreground/70">{a.icon}</span>
                   <span className="text-xs text-muted-foreground">{a.label}</span>
                 </Button>
@@ -160,7 +171,7 @@ export default function Finance() {
               data={balance}
               color={A.green}
               labels={MONTHS}
-              ticks={["$12K", "$8K", "$4K", "$0"]}
+              format={(v) => `$${v / 1000}K`}
               height={260}
             />
           </Card>
