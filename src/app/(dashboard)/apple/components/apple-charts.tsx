@@ -1,16 +1,36 @@
 "use client";
 
 import * as React from "react";
+import {
+  Area as RcArea,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ComposedChart,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Progress } from "@/components/ui/progress";
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
-import { A, arcPath, polar, seeded, smoothPath } from "./apple-ui";
+import { A, arcPath, polar, seeded } from "./apple-ui";
 
 /* ------------------------------------------------------------------ *
- * Charts, drawn by hand in SVG.
+ * Charts.
  *
- * Everything here is deliberately not a charting library: the shapes in
- * this design language (the spilled funnel, the capsule gauge, the
- * activity rings) need exact control over caps, gaps and easing.
+ * The funnel, gauge and heatmap stay hand-drawn: they are shapes the
+ * reference design calls for that no charting library produces. Everything
+ * else is Recharts through the repo's ChartContainer, so bars, areas and
+ * lines carry real axes, cursors and tooltips.
  * ------------------------------------------------------------------ */
 
 /* --------------------------------- funnel -------------------------------- */
@@ -86,7 +106,7 @@ export function Funnel({
 /* --------------------------------- gauge --------------------------------- */
 
 /**
- * Half-donut with rounded caps and a gap between segments — the
+ * Half-donut. Segments meet flush, rounded only at the two outer ends — the
  * "spend by channel" dial.
  */
 export function Gauge({
@@ -105,22 +125,24 @@ export function Gauge({
   const cy = size / 2 + 26;
   const r = 92;
   const stroke = 34;
-  const gap = 5; // degrees
 
   const total = segments.reduce((s, x) => s + x.pct, 0) || 1;
   let cursor = 172;
   const arcs = segments.map((s) => {
     const sweep = (s.pct / total) * 196;
-    const from = cursor + gap / 2;
-    const to = cursor + sweep - gap / 2;
-    cursor += sweep;
-    return { ...s, from, to: Math.max(to, from + 0.1) };
+    const from = cursor;
+    const to = cursor + sweep;
+    cursor = to;
+    return { ...s, from, to };
   });
 
   return (
     <div className={cn("relative", className)}>
       <svg viewBox={`0 0 ${size} ${size * 0.72}`} className="w-full" role="img">
-        {arcs.map((a) => (
+        {/* Painted last-to-first: each segment covers the next one's start cap,
+            so the band reads as continuous and only the two outer ends stay
+            rounded. Drawing them in order would leave a gap at every join. */}
+        {[...arcs].reverse().map((a) => (
           <path
             key={a.label}
             d={arcPath(cx, cy, r, a.from, a.to)}
@@ -147,364 +169,274 @@ export function Gauge({
  * Rounded columns on a ghost track. `highlight` frames one column the way
  * the monthly earnings card does.
  */
+/* ------------------------------------------------------------------ *
+ * From here down the charts are Recharts, wrapped in the repo's own
+ * ChartContainer/ChartTooltip (src/components/ui/chart.tsx). They carry
+ * real axes, hover cursors and tooltips; the palette stays the one the
+ * reference design uses.
+ * ------------------------------------------------------------------ */
+
+/** Build a one-series ChartConfig. */
+function cfg(key: string, label: string, color: string): ChartConfig {
+  return { [key]: { label, color } };
+}
+
+const axis = {
+  tickLine: false,
+  axisLine: false,
+  tickMargin: 8,
+} as const;
+
+/** Rounded columns on a muted track. `highlight` tints one bar. */
 export function Columns({
   data,
-  max,
   color = A.lime,
   highlight,
   height = 240,
-  ticks,
+  label = "Value",
+  format,
   className,
 }: {
   data: { label: string; value: number }[];
-  max?: number;
   color?: string;
   highlight?: number;
   height?: number;
-  ticks?: string[];
+  label?: string;
+  format?: (v: number) => string;
   className?: string;
 }) {
-  const peak = max ?? Math.max(...data.map((d) => d.value)) * 1.12;
-
   return (
-    <div className={cn("flex gap-3", className)}>
-      {ticks && (
-        <div
-          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
-          style={{ height }}
+    <ChartContainer
+      config={cfg("value", label, color)}
+      className={cn("aspect-auto w-full", className)}
+      style={{ height }}
+    >
+      <BarChart accessibilityLayer data={data} margin={{ left: 4, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
+        <YAxis {...axis} width={44} tickFormatter={format} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="value"
+          radius={8}
+          background={{ fill: "hsl(var(--muted))", radius: 8 }}
         >
-          {ticks.map((t) => (
-            <span key={t}>{t}</span>
+          {data.map((d, i) => (
+            <Cell
+              key={d.label}
+              fill={color}
+              fillOpacity={highlight === undefined || highlight === i ? 1 : 0.55}
+            />
           ))}
-        </div>
-      )}
-      <div className="flex min-w-0 flex-1 items-end gap-1.5" style={{ height }}>
-        {data.map((d, i) => (
-          <div
-            key={d.label + i}
-            className={cn(
-              "flex h-full min-w-0 flex-1 flex-col rounded-lg",
-              highlight === i && "bg-muted p-1"
-            )}
-          >
-            <div className="relative min-h-0 flex-1">
-              <div className="absolute inset-0 rounded-xl bg-muted" />
-              <div
-                className="absolute inset-x-0 bottom-0 rounded-xl transition-[height] duration-500"
-                style={{
-                  height: `${Math.min(100, (d.value / peak) * 100)}%`,
-                  backgroundColor: color,
-                }}
-              />
-            </div>
-            <span className="truncate pt-2 text-center text-xs text-muted-foreground">
-              {d.label}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
+        </Bar>
+      </BarChart>
+    </ChartContainer>
   );
 }
 
-/* --------------------------- columns + trend line ------------------------ */
-
-/** Columns with a line riding over them — spend against ROAS. */
+/** Columns with a trend line on a second axis — spend against ROAS. */
 export function ColumnsWithLine({
   data,
   barColor = A.lime,
   lineColor = A.blue,
-  leftTicks,
-  rightTicks,
-  height = 230,
+  barLabel = "Spend",
+  lineLabel = "ROAS",
+  height = 240,
+  formatBar,
+  formatLine,
   className,
 }: {
   data: { label: string; bar: number; line: number }[];
   barColor?: string;
   lineColor?: string;
-  leftTicks?: string[];
-  rightTicks?: string[];
+  barLabel?: string;
+  lineLabel?: string;
   height?: number;
+  formatBar?: (v: number) => string;
+  formatLine?: (v: number) => string;
   className?: string;
 }) {
-  const barMax = Math.max(...data.map((d) => d.bar)) * 1.15;
-  const lineMax = Math.max(...data.map((d) => d.line)) * 1.5;
-  const lineMin = Math.min(...data.map((d) => d.line)) * 0.4;
-
-  const W = 600;
-  const H = 200;
-  const step = W / data.length;
-  const points = data.map((d, i) => ({
-    x: step * i + step / 2,
-    y: H - ((d.line - lineMin) / (lineMax - lineMin)) * H,
-  }));
-
   return (
-    <div className={cn("flex gap-3", className)}>
-      {leftTicks && (
-        <div
-          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
-          style={{ height }}
-        >
-          {leftTicks.map((t) => (
-            <span key={t}>{t}</span>
-          ))}
-        </div>
-      )}
-
-      <div className="relative min-w-0 flex-1">
-        <div className="flex items-end gap-1.5" style={{ height }}>
-          {data.map((d) => (
-            <div key={d.label} className="flex h-full min-w-0 flex-1 flex-col">
-              <div className="relative min-h-0 flex-1">
-                <div
-                  className="absolute inset-x-0 bottom-0 rounded-xl"
-                  style={{
-                    height: `${(d.bar / barMax) * 100}%`,
-                    backgroundColor: barColor,
-                  }}
-                />
-              </div>
-              <span className="pt-2 text-center text-xs text-muted-foreground">
-                {d.label}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-x-0 top-0 w-full"
-          style={{ height: height - 24 }}
-        >
-          <path
-            d={smoothPath(points)}
-            fill="none"
-            stroke={lineColor}
-            strokeWidth={5}
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-x-0 top-0 w-full"
-          style={{ height: height - 24 }}
-        >
-          {points.map((p, i) => (
-            <circle
-              key={i}
-              cx={p.x}
-              cy={p.y}
-              r={3}
-              fill="hsl(var(--background))"
-              stroke={lineColor}
-              strokeWidth={2}
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </svg>
-      </div>
-
-      {rightTicks && (
-        <div
-          className="flex flex-col justify-between pb-6 text-xs tabular-nums text-muted-foreground"
-          style={{ height }}
-        >
-          {rightTicks.map((t) => (
-            <span key={t}>{t}</span>
-          ))}
-        </div>
-      )}
-    </div>
+    <ChartContainer
+      config={{
+        bar: { label: barLabel, color: barColor },
+        line: { label: lineLabel, color: lineColor },
+      }}
+      className={cn("aspect-auto w-full", className)}
+      style={{ height }}
+    >
+      <ComposedChart accessibilityLayer data={data} margin={{ left: 4, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
+        <YAxis yAxisId="left" {...axis} width={48} tickFormatter={formatBar} />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          {...axis}
+          width={44}
+          tickFormatter={formatLine}
+        />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar yAxisId="left" dataKey="bar" fill={barColor} radius={6} />
+        <Line
+          yAxisId="right"
+          dataKey="line"
+          type="monotone"
+          stroke={lineColor}
+          strokeWidth={2.5}
+          dot={{ r: 3, fill: "hsl(var(--background))", strokeWidth: 2 }}
+          activeDot={{ r: 5 }}
+        />
+      </ComposedChart>
+    </ChartContainer>
   );
 }
 
-/* --------------------------------- areas --------------------------------- */
-
-/** Single smooth area with a fading gradient — the revenue curve. */
+/** Single smooth area with a fading gradient. */
 export function Area({
   data,
-  color = A.lime,
-  height = 220,
   labels,
-  ticks,
+  color = A.lime,
+  height = 240,
+  label = "Value",
+  format,
   className,
 }: {
   data: number[];
+  labels?: string[];
   color?: string;
   height?: number;
-  labels?: string[];
-  ticks?: string[];
+  label?: string;
+  format?: (v: number) => string;
   className?: string;
 }) {
   const id = React.useId().replace(/:/g, "");
-  const W = 600;
-  const H = 200;
-  const max = Math.max(...data) * 1.25;
-  const min = Math.min(...data) * 0.6;
-  const step = W / (data.length - 1 || 1);
-  const points = data.map((v, i) => ({
-    x: i * step,
-    y: H - ((v - min) / (max - min)) * H,
-  }));
-  const line = smoothPath(points);
-
+  const rows = data.map((value, i) => ({ label: labels?.[i] ?? `${i + 1}`, value }));
   return (
-    <div className={cn("flex gap-3", className)}>
-      {ticks && (
-        <div
-          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
-          style={{ height }}
-        >
-          {ticks.map((t) => (
-            <span key={t}>{t}</span>
-          ))}
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="none"
-          style={{ height: height - 24 }}
-          className="w-full"
-          role="img"
-        >
-          <defs>
-            <linearGradient id={`ar-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.35} />
-              <stop offset="100%" stopColor={color} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <path d={`${line} L ${W} ${H} L 0 ${H} Z`} fill={`url(#ar-${id})`} />
-          <path
-            d={line}
-            fill="none"
-            stroke={color}
-            strokeWidth={2.5}
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-        {labels && (
-          <div className="flex justify-between pt-2 text-xs text-muted-foreground">
-            {labels.map((l) => (
-              <span key={l}>{l}</span>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <ChartContainer
+      config={cfg("value", label, color)}
+      className={cn("aspect-auto w-full", className)}
+      style={{ height }}
+    >
+      <AreaChart accessibilityLayer data={rows} margin={{ left: 4, right: 12 }}>
+        <defs>
+          <linearGradient id={`ar-${id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+            <stop offset="100%" stopColor={color} stopOpacity={0.04} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
+        <YAxis {...axis} width={48} tickFormatter={format} domain={["auto", "auto"]} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <RcArea
+          dataKey="value"
+          type="monotone"
+          stroke={color}
+          strokeWidth={2.5}
+          fill={`url(#ar-${id})`}
+          activeDot={{ r: 4 }}
+        />
+      </AreaChart>
+    </ChartContainer>
   );
 }
 
-/** Stacked smooth areas — the visitors chart. */
+/** Stacked smooth areas — traffic split by source. */
 export function StackedArea({
   series,
-  height = 220,
   labels,
-  ticks,
+  height = 240,
+  format,
   className,
 }: {
   series: { name: string; color: string; data: number[] }[];
-  height?: number;
   labels?: string[];
-  ticks?: string[];
+  height?: number;
+  format?: (v: number) => string;
   className?: string;
 }) {
   const id = React.useId().replace(/:/g, "");
-  const W = 600;
-  const H = 200;
-  const len = series[0]?.data.length ?? 0;
-  const step = W / (len - 1 || 1);
-
-  // Cumulative totals so the bands stack instead of overlapping.
-  const cumulative: number[][] = [];
-  for (let s = 0; s < series.length; s++) {
-    cumulative.push(
-      series[s].data.map(
-        (v, i) => v + (s === 0 ? 0 : cumulative[s - 1][i])
-      )
-    );
-  }
-  const max = Math.max(...cumulative[cumulative.length - 1]) * 1.18;
-  const toPts = (arr: number[]) =>
-    arr.map((v, i) => ({ x: i * step, y: H - (v / max) * H }));
-
+  const rows = (series[0]?.data ?? []).map((_, i) => {
+    const row: Record<string, string | number> = {
+      label: labels?.[i] ?? `${i + 1}`,
+    };
+    series.forEach((s) => (row[s.name] = s.data[i]));
+    return row;
+  });
+  const config: ChartConfig = Object.fromEntries(
+    series.map((s) => [s.name, { label: s.name, color: s.color }])
+  );
   return (
-    <div className={cn("flex gap-3", className)}>
-      {ticks && (
-        <div
-          className="flex flex-col justify-between pb-6 text-right text-xs tabular-nums text-muted-foreground"
-          style={{ height }}
-        >
-          {ticks.map((t) => (
-            <span key={t}>{t}</span>
+    <ChartContainer
+      config={config}
+      className={cn("aspect-auto w-full", className)}
+      style={{ height }}
+    >
+      <AreaChart accessibilityLayer data={rows} margin={{ left: 4, right: 12 }}>
+        <defs>
+          {series.map((s, i) => (
+            <linearGradient key={s.name} id={`sa-${id}-${i}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={s.color} stopOpacity={0.55} />
+              <stop offset="100%" stopColor={s.color} stopOpacity={0.08} />
+            </linearGradient>
           ))}
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="none"
-          style={{ height: height - 24 }}
-          className="w-full"
-          role="img"
-        >
-          <defs>
-            {series.map((s, i) => (
-              <linearGradient
-                key={s.name}
-                id={`sa-${id}-${i}`}
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="0%" stopColor={s.color} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={s.color} stopOpacity={0.08} />
-              </linearGradient>
-            ))}
-          </defs>
-          {/* draw top band first so lower bands paint over its skirt */}
-          {series
-            .map((s, i) => ({ s, i }))
-            .reverse()
-            .map(({ s, i }) => {
-              const pts = toPts(cumulative[i]);
-              const line = smoothPath(pts);
-              return (
-                <g key={s.name}>
-                  <path
-                    d={`${line} L ${W} ${H} L 0 ${H} Z`}
-                    fill={`url(#sa-${id}-${i})`}
-                  />
-                  <path
-                    d={line}
-                    fill="none"
-                    stroke={s.color}
-                    strokeWidth={2}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </g>
-              );
-            })}
-        </svg>
-        {labels && (
-          <div className="flex justify-between pt-2 text-xs text-muted-foreground">
-            {labels.map((l) => (
-              <span key={l}>{l}</span>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+        </defs>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" {...axis} interval="preserveStartEnd" />
+        <YAxis {...axis} width={48} tickFormatter={format} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        {series.map((s, i) => (
+          <RcArea
+            key={s.name}
+            dataKey={s.name}
+            type="monotone"
+            stackId="a"
+            stroke={s.color}
+            strokeWidth={2}
+            fill={`url(#sa-${id}-${i})`}
+          />
+        ))}
+      </AreaChart>
+    </ChartContainer>
   );
 }
 
-/** Tiny inline trend line for list rows. */
+/** Weekly columns on a muted track — step counts and similar. */
+export function WeekBars({
+  data,
+  color = A.teal,
+  height = 200,
+  label = "Steps",
+  className,
+}: {
+  data: { label: string; value: number }[];
+  color?: string;
+  height?: number;
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <ChartContainer
+      config={cfg("value", label, color)}
+      className={cn("aspect-auto w-full", className)}
+      style={{ height }}
+    >
+      <BarChart accessibilityLayer data={data} margin={{ left: 4, right: 12 }}>
+        <XAxis dataKey="label" {...axis} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="value"
+          fill={color}
+          radius={10}
+          background={{ fill: "hsl(var(--muted))", radius: 10 }}
+        />
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+/** Inline trend line for list rows. */
 export function Spark({
   data,
   color = A.green,
@@ -514,27 +446,26 @@ export function Spark({
   color?: string;
   className?: string;
 }) {
-  const W = 100;
-  const H = 32;
-  const max = Math.max(...data);
-  const min = Math.min(...data);
-  const step = W / (data.length - 1 || 1);
-  const pts = data.map((v, i) => ({
-    x: i * step,
-    y: H - ((v - min) / (max - min || 1)) * (H - 4) - 2,
-  }));
+  const rows = data.map((value, i) => ({ i, value }));
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className={cn("h-8 w-24", className)} role="img">
-      <path
-        d={smoothPath(pts)}
-        fill="none"
-        stroke={color}
-        strokeWidth={2}
-        strokeLinecap="round"
-      />
-    </svg>
+    <ChartContainer
+      config={cfg("value", "Value", color)}
+      className={cn("aspect-auto h-8 w-24", className)}
+    >
+      <LineChart data={rows} margin={{ top: 4, bottom: 4, left: 2, right: 2 }}>
+        <Line
+          dataKey="value"
+          type="monotone"
+          stroke={color}
+          strokeWidth={2}
+          dot={false}
+          isAnimationActive={false}
+        />
+      </LineChart>
+    </ChartContainer>
   );
 }
+
 
 /* -------------------------------- heatmap -------------------------------- */
 
@@ -861,40 +792,5 @@ export function Meter({
   );
 }
 
-/** Vertical bars used for the weekly step counts. */
-export function WeekBars({
-  data,
-  color = A.teal,
-  height = 200,
-  className,
-}: {
-  data: { label: string; value: number }[];
-  color?: string;
-  height?: number;
-  className?: string;
-}) {
-  const max = Math.max(...data.map((d) => d.value)) * 1.1;
-  return (
-    <div className={cn("flex items-end gap-2", className)} style={{ height }}>
-      {data.map((d) => (
-        <div key={d.label} className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="relative min-h-0 flex-1">
-            <div className="absolute inset-0 rounded-xl bg-muted" />
-            <div
-              className="absolute inset-x-0 bottom-0 rounded-xl"
-              style={{
-                height: `${(d.value / max) * 100}%`,
-                backgroundColor: color,
-              }}
-            />
-          </div>
-          <span className="pt-2 text-center text-xs text-muted-foreground">
-            {d.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 export { polar };

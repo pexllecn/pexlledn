@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
@@ -10,6 +11,7 @@ import {
   Row,
   Segmented,
   Stat,
+  stagger,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -67,12 +69,17 @@ export default function Fitness() {
   return (
     <AppleShell title="Activity" action="Log workout">
       <div className="min-w-0 space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           <Stat icon={<Flame className="h-4 w-4" />} label="Move" value="512" hint="kcal of 580 goal" delta={12.4} />
           <Stat icon={<Timer className="h-4 w-4" />} label="Exercise" value="22m" hint="of 30 min goal" delta={4.8} />
           <Stat icon={<Footprints className="h-4 w-4" />} label="Steps" value="8,412" hint="6.1 km walked" delta={-2.6} />
           <Stat icon={<Heart className="h-4 w-4" />} label="Avg heart rate" value="72" hint="BPM today" delta={1.2} />
-        </div>
+        </motion.div>
 
         <div className="grid gap-4 xl:grid-cols-3">
           <Card className="min-w-0 p-5">
@@ -111,7 +118,6 @@ export default function Fitness() {
             <Columns
               className="mt-6"
               data={week}
-              ticks={["900", "600", "300", "0"]}
               height={260}
             />
             <Legend

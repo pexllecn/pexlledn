@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
   Row,
   Stat,
+  stagger,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -107,14 +109,19 @@ const network = [
 
 export default function Devices() {
   return (
-    <AppleShell title="Devices" action="Add device" notifications={2}>
+    <AppleShell title="Devices" action="Add device">
       <div className="min-w-0 space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           <Stat icon={<Laptop className="h-4 w-4" />} label="Signed in" value="6" hint="devices on this Apple Account" />
           <Stat icon={<Battery className="h-4 w-4" />} label="Average battery" value="73%" delta={-4.2} />
           <Stat icon={<Wifi className="h-4 w-4" />} label="Network" value="867" hint="Mbps on Studio 5G" delta={2.8} />
           <Stat icon={<Shield className="h-4 w-4" />} label="Security" value="All clear" hint="2FA on · no alerts" />
-        </div>
+        </motion.div>
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid gap-4 sm:grid-cols-2">

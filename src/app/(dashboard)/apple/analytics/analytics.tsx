@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
@@ -9,6 +10,7 @@ import {
   Legend,
   RangePill,
   Stat,
+  stagger,
 } from "../components/apple-ui";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,11 +114,16 @@ export default function Analytics() {
   return (
     <AppleShell title="Marketing" action="New campaign">
       <div className="min-w-0 space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           {kpis.map((k) => (
             <Stat key={k.label} {...k} />
           ))}
-        </div>
+        </motion.div>
 
         <div className="grid gap-4 xl:grid-cols-3">
           {/* Funnel */}
@@ -226,8 +233,8 @@ export default function Analytics() {
             <ColumnsWithLine
               className="mt-6"
               data={adSpend}
-              leftTicks={["25.5K", "17K", "8.5K", "0"]}
-              rightTicks={["6.0x", "4.0x", "2.0x", "0.0x"]}
+              formatBar={(v) => `${(v / 1000).toFixed(0)}K`}
+              formatLine={(v) => `${v.toFixed(1)}x`}
             />
           </Card>
 
@@ -242,7 +249,7 @@ export default function Analytics() {
               className="mt-6"
               series={visitors}
               labels={MONTHS}
-              ticks={["16.5K", "11K", "5.5K", "0"]}
+              format={(v) => `${(v / 1000).toFixed(0)}K`}
               height={230}
             />
             <Legend

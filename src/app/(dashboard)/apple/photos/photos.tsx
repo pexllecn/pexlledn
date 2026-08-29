@@ -170,7 +170,7 @@ export default function Photos() {
               <Separator />
               {albums.map((a, i) => (
                 <React.Fragment key={a.name}>
-                  {i > 0 && <Separator className="ml-[68px]" />}
+                  {i > 0 && <Separator className="ml-[68px] w-auto" />}
                   <div className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-muted/50">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img

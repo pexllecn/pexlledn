@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import {
   AppleShell,
   A,
@@ -13,6 +14,7 @@ import {
   Segmented,
   Stat,
   Stepper,
+  stagger,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -80,7 +82,7 @@ const demoColumns = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
 
 export default function Design() {
   return (
-    <AppleShell title="Design" showFilters={false} notifications={0}>
+    <AppleShell title="Design" showFilters={false}>
       <div className="min-w-0 space-y-4">
         {/* Intro */}
         <Card className="min-w-0 p-6">
@@ -225,7 +227,7 @@ export default function Design() {
                   Buttons
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Button className="h-9 rounded-full px-4 text-white">
+                  <Button className="h-9 rounded-full px-4">
                     Primary
                   </Button>
                   <Button variant="outline" className="h-9 rounded-full px-4">
@@ -323,12 +325,17 @@ export default function Design() {
         </Card>
 
         {/* Stat cards */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
           <Stat icon={<Sparkles className="h-4 w-4" />} label="Positive delta" value="$24,380" delta={8.4} />
           <Stat icon={<Layers className="h-4 w-4" />} label="Negative delta" value="$1.24" delta={-3.1} />
           <Stat icon={<Type className="h-4 w-4" />} label="With a hint" value="4.7" hint="average across 128 apps" />
           <Stat icon={<Ruler className="h-4 w-4" />} label="Plain figure" value="56" />
-        </div>
+        </motion.div>
 
         {/* Charts */}
         <div className="grid gap-4 xl:grid-cols-3">

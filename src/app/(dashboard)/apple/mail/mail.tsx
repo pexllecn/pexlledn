@@ -8,7 +8,9 @@ import {
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import {
@@ -119,13 +121,19 @@ export default function Mail() {
   const open = mails.find((m) => m.id === active) ?? mails[0];
 
   return (
-    <AppleShell title="Mail" action="Compose" actionIcon={<PenSquare className="h-4 w-4" />} notifications={91}>
+    <AppleShell title="Mail" action="Compose" actionIcon={<PenSquare className="h-4 w-4" />}>
       <div className="grid gap-4 xl:grid-cols-[220px_320px_minmax(0,1fr)]">
         {/* Mailboxes */}
         <div className="min-w-0 space-y-4">
           <Card className="min-w-0 overflow-hidden py-2">
             {boxes.map((b) => (
-              <Button variant="ghost" className="w-full gap-3 px-4 py-2.5" key={b.label}>
+              <button
+                key={b.label}
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "h-auto w-full justify-start gap-3 rounded-none px-4 py-2.5 text-left"
+                )}
+              >
                 <span
                   className="flex h-6 w-6 items-center justify-center rounded-xl text-white"
                   style={{ backgroundColor: b.tint }}
@@ -138,7 +146,7 @@ export default function Mail() {
                     {b.count}
                   </span>
                 )}
-              </Button>
+              </button>
             ))}
           </Card>
 
@@ -163,21 +171,21 @@ export default function Mail() {
         <Card className="min-w-0 overflow-hidden">
           <div className="p-4">
             <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search mailbox" className="rounded-full pl-8" />
-              </div>
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder="Search mailbox" className="rounded-full pl-8" />
+            </div>
           </div>
           <Separator />
-          <div className="max-h-[640px] overflow-y-auto">
+          <ScrollArea className="h-[640px]">
             {mails.map((m, i) => (
               <React.Fragment key={m.id}>
                 {i > 0 && <Separator className="ml-4 w-auto" />}
-                <Button variant="ghost" onClick={() => setActive(m.id)}
-                  className={`flex w-full gap-3 px-4 py-3 text-left transition-colors ${
-                    active === m.id
-                      ? "bg-primary/10"
-                      : "hover:bg-muted/50"
-                  }`}
+                <button
+                  onClick={() => setActive(m.id)}
+                  className={cn(
+                    "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors",
+                    active === m.id ? "bg-primary/10" : "hover:bg-muted/50"
+                  )}
                 >
                   <span
                     className={`mt-2 h-2 w-2 shrink-0 rounded-full ${
@@ -212,10 +220,10 @@ export default function Mail() {
                       </p>
                     )}
                   </div>
-                </Button>
+                </button>
               </React.Fragment>
             ))}
-          </div>
+          </ScrollArea>
         </Card>
 
         {/* Reading pane */}
@@ -296,7 +304,7 @@ export default function Mail() {
 
           <Separator />
           <div className="flex gap-2 p-4">
-            <Button className="h-9 gap-2 rounded-full px-4 text-white">
+            <Button className="h-9 gap-2 rounded-full px-4">
               <CornerUpLeft className="h-3.5 w-3.5" /> Reply
             </Button>
             <Button variant="outline" className="h-9 gap-2 rounded-full px-4">

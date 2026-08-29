@@ -9,7 +9,6 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
-  Bell,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
@@ -63,7 +62,6 @@ export function AppleShell({
   action,
   actionIcon,
   onAction,
-  notifications = 5,
   showFilters = true,
   aside,
   children,
@@ -72,7 +70,6 @@ export function AppleShell({
   action?: string;
   actionIcon?: React.ReactNode;
   onAction?: () => void;
-  notifications?: number;
   showFilters?: boolean;
   aside?: React.ReactNode;
   children: React.ReactNode;
@@ -93,23 +90,6 @@ export function AppleShell({
 
           <div className="flex flex-wrap items-center justify-end gap-2">
             {aside}
-
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label={`${notifications} notifications`}
-              className="relative h-9 w-9 rounded-full"
-            >
-              <Bell className="h-4 w-4 text-muted-foreground" />
-              {notifications > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -right-1 -top-1 h-[17px] min-w-[17px] px-1 text-[10px]"
-                >
-                  {notifications}
-                </Badge>
-              )}
-            </Button>
 
             {showFilters && (
               <Button variant="outline" className="h-9 gap-2 rounded-full">
@@ -132,6 +112,43 @@ export function AppleShell({
     </ContentLayout>
   );
 }
+
+
+/* --------------------------------- motion --------------------------------- */
+
+/**
+ * The same springs the Dynamic Island uses, so motion feels consistent
+ * across the app. `snappy` moves shells and surfaces; `quick` is a touch
+ * faster and carries content.
+ */
+export const snappy = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 30,
+  mass: 1.1,
+};
+
+export const quick = {
+  type: "spring" as const,
+  stiffness: 500,
+  damping: 34,
+  mass: 0.7,
+};
+
+/** Blur-and-scale entrance — the island's content transition. */
+export const pop = {
+  hidden: { opacity: 0, filter: "blur(6px)", scale: 0.96 },
+  visible: { opacity: 1, filter: "blur(0px)", scale: 1 },
+};
+
+/** Parent that releases its children in sequence. */
+export const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.045 } },
+};
+
+/** Press feedback for anything tappable. */
+export const press = { scale: 0.97 };
 
 /* --------------------------------- pieces -------------------------------- */
 
@@ -165,7 +182,8 @@ export function Stat({
   className?: string;
 }) {
   return (
-    <Card className={cn("p-5", className)}>
+    <motion.div variants={pop} transition={snappy} whileHover={{ y: -2 }}>
+      <Card className={cn("h-full p-5", className)}>
       <div className="mb-6 flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
         {icon}
       </div>
@@ -177,7 +195,8 @@ export function Stat({
         {delta !== undefined && <Delta value={delta} />}
       </div>
       {hint && <p className="mt-2 text-xs text-muted-foreground">{hint}</p>}
-    </Card>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -192,12 +211,14 @@ export function MiniStat({
   className?: string;
 }) {
   return (
-    <Card className={cn("rounded-md px-4 py-3", className)}>
+    <motion.div variants={pop} transition={snappy}>
+      <Card className={cn("rounded-md px-4 py-3", className)}>
       <p className="text-base font-semibold tracking-tight tabular-nums text-foreground">
         {value}
       </p>
       <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
-    </Card>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -414,7 +435,9 @@ export function Row({
   className?: string;
 }) {
   return (
-    <div
+    <motion.div
+      whileTap={press}
+      transition={quick}
       className={cn(
         "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50",
         className
@@ -435,7 +458,7 @@ export function Row({
         )}
       </div>
       {right && <div className="shrink-0">{right}</div>}
-    </div>
+    </motion.div>
   );
 }
 

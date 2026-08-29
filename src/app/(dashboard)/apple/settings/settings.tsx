@@ -98,7 +98,7 @@ export default function Settings() {
   const [accent, setAccent] = React.useState("Blue");
 
   return (
-    <AppleShell title="Settings" showFilters={false} notifications={1}>
+    <AppleShell title="Settings" showFilters={false}>
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="min-w-0 space-y-4">
           {/* Account */}
@@ -182,7 +182,8 @@ export default function Settings() {
             <p className="mt-5 text-sm text-muted-foreground">Accent colour</p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {accents.map((a) => (
-                <Button variant="ghost" key={a.name}
+                <button
+                  key={a.name}
                   onClick={() => setAccent(a.name)}
                   aria-label={a.name}
                   className={`h-7 w-7 rounded-full transition-transform ${
