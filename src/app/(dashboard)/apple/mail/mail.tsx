@@ -5,6 +5,7 @@ import {
   AppleShell,
   A,
   initials,
+  tone,
 } from "../components/apple-ui";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
@@ -125,7 +126,7 @@ export default function Mail() {
       <div className="grid gap-4 xl:grid-cols-[220px_320px_minmax(0,1fr)]">
         {/* Mailboxes */}
         <div className="min-w-0 space-y-4">
-          <Card className="min-w-0 overflow-hidden py-2">
+          <Card className={cn("min-w-0 overflow-hidden py-2", tone.plain)}>
             {boxes.map((b) => (
               <button
                 key={b.label}
@@ -150,7 +151,7 @@ export default function Mail() {
             ))}
           </Card>
 
-          <Card className="min-w-0 overflow-hidden">
+          <Card className={cn("min-w-0 overflow-hidden", tone.plain)}>
             <p className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Labels
             </p>

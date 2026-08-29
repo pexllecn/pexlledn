@@ -123,7 +123,11 @@ export default function Overview() {
               className="mt-6"
               data={earnings}
               highlight={0}
-              format={(v) => `$${v / 1000}K`}
+              format={(v) =>
+                `$${(v / 1000).toLocaleString(undefined, {
+                  maximumFractionDigits: 1,
+                })}K`
+              }
               height={250}
             />
           </Card>
@@ -142,7 +146,11 @@ export default function Overview() {
               className="mt-6"
               data={revenue}
               labels={MONTHS}
-              format={(v) => `$${v / 1000}K`}
+              format={(v) =>
+                `$${(v / 1000).toLocaleString(undefined, {
+                  maximumFractionDigits: 1,
+                })}K`
+              }
               height={250}
             />
           </Card>

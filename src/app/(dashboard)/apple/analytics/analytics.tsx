@@ -249,7 +249,7 @@ export default function Analytics() {
               className="mt-6"
               series={visitors}
               labels={MONTHS}
-              format={(v) => `${(v / 1000).toFixed(0)}K`}
+              format={(v) => `${v}K`}
               height={230}
             />
             <Legend
