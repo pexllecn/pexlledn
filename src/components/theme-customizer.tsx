@@ -35,13 +35,13 @@ const presets = [
     name: "Default",
     value: "default",
     swatch: ["#ffffff", "#f5f5f5", "#e5e5e5"],
-    hint: "The project palette",
+    hint: "Project palette and component shapes",
   },
   {
     name: "Shadcn",
     value: "shadcn",
     swatch: ["#0b63f6", "#00c950", "#e8edee"],
-    hint: "Blue primary, green charts",
+    hint: "Blue accent, iOS switch, bordered fields",
   },
 ] as const;
 
