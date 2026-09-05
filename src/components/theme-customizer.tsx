@@ -28,10 +28,28 @@ const colors = [
   { name: "Lime", value: "lime", hex: "#a3e635" },
 ] as const;
 
+// Full-palette presets. Unlike Color (which tunes --primary only), a preset
+// replaces background, card, muted, border, ring, charts and sidebar too.
+const presets = [
+  {
+    name: "Default",
+    value: "default",
+    swatch: ["#ffffff", "#f5f5f5", "#e5e5e5"],
+    hint: "Project palette and component shapes",
+  },
+  {
+    name: "Shadcn",
+    value: "shadcn",
+    swatch: ["#0b63f6", "#00c950", "#e8edee"],
+    hint: "Blue accent, iOS switch, bordered fields",
+  },
+] as const;
+
 const radiusOptions = [
   { label: "0", value: "0" },
   { label: "0.5", value: "0.5" },
   { label: "0.75", value: "0.75" },
+  { label: "0.875", value: "0.875" },
   { label: "1", value: "1" },
   { label: "1.5", value: "1.5" },
   { label: "2.5", value: "2.5" },
@@ -43,8 +61,16 @@ interface ThemeCustomizerProps {
 }
 
 export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
-  const { radius, color, setRadius, setColor, hideBottomNav, setHideBottomNav } =
-    useTheme();
+  const {
+    radius,
+    color,
+    preset,
+    setRadius,
+    setColor,
+    setPreset,
+    hideBottomNav,
+    setHideBottomNav,
+  } = useTheme();
   const { theme, setTheme } = useNextTheme();
 
   return (
@@ -73,6 +99,44 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
                 <Moon className="h-4 w-4" />
                 Dark
               </Button>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Preset</Label>
+            <div className="grid gap-2">
+              {presets.map((p) => (
+                <Button
+                  key={p.value}
+                  variant={preset === p.value ? "outline2" : "outline"}
+                  className="h-auto justify-start gap-3 px-4 py-3"
+                  onClick={() => {
+                    setPreset(p.value);
+                    // A preset ships its own primary and radius; apply them so
+                    // choosing it lands the intended look, while leaving both
+                    // controls free to change afterwards.
+                    if (p.value === "shadcn") {
+                      setColor("blue");
+                      setRadius("0.875");
+                    }
+                  }}
+                >
+                  <span className="flex shrink-0 gap-1" aria-hidden="true">
+                    {p.swatch.map((hex) => (
+                      <span
+                        key={hex}
+                        className="h-4 w-4 rounded-md border border-muted"
+                        style={{ backgroundColor: hex }}
+                      />
+                    ))}
+                  </span>
+                  <span className="flex flex-col items-start">
+                    <span>{p.name}</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {p.hint}
+                    </span>
+                  </span>
+                </Button>
+              ))}
             </div>
           </div>
           <div className="space-y-2">

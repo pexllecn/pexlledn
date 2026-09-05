@@ -83,6 +83,7 @@ const TabsList = React.forwardRef<
   return (
     <TabsPrimitive.List
       ref={combinedRef}
+      data-slot="tabs-list"
       className={cn(
         "inline-flex h-10 items-center justify-center rounded-[calc(var(--radius)-0.05rem)] bg-muted p-1 text-muted-foreground relative",
         className
