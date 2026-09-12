@@ -33,12 +33,12 @@ export function Menu({ isOpen }: MenuProps) {
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
-      <nav className="mt-5 px-2 h-full w-full">
+      <nav className="mt-3 px-2 h-full w-full">
         <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1">
           {menuList.map(({ groupLabel, menus }, index) => (
             <li className={cn("w-full", groupLabel ? "" : "")} key={index}>
               {(isOpen && groupLabel) || isOpen === undefined ? (
-                <p className="text-sm font-normal px-3 pb-2 max-w-[248px] truncate transition-none">
+                <p className="text-[11px] uppercase tracking-[.08em] font-semibold text-muted-foreground px-3 pb-2 max-w-[248px] truncate transition-none">
                   {groupLabel}
                 </p>
               ) : !isOpen && groupLabel ? (

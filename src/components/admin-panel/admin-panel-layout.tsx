@@ -3,7 +3,6 @@
 import { MotionConfig } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/hooks/use-store";
-import { Footer } from "@/components/admin-panel/footer";
 import { Sidebar } from "@/components/admin-panel/sidebar";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 
@@ -22,26 +21,18 @@ export default function AdminPanelLayout({
         Skip to main content
       </a>
       <Sidebar />
-      <div className="p-2 bg-muted ">
+      <div className="apple-workspace">
         <main
           id="main-content"
           tabIndex={-1}
           className={cn(
-            "pt-4 px-1 shadow-md shadow-black/5 rounded-lg border-r dark:border dark:border-muted-background min-h-[calc(100vh_-_52px)] bg-background transition-[margin-left] ease-in-out duration-300 outline-none",
+            "min-h-screen transition-[margin-left] ease-out duration-300 outline-none",
             sidebar?.isOpen === false ? "lg:ml-[52px]" : "lg:ml-56"
           )}
         >
           {children}
         </main>
       </div>
-      <footer
-        className={cn(
-          "transition-[margin-left] ease-in-out duration-300",
-          sidebar?.isOpen === false ? "lg:ml-[52px]" : "lg:ml-56"
-        )}
-      >
-        <Footer />
-      </footer>
     </MotionConfig>
   );
 }

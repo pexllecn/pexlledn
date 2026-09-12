@@ -1,10 +1,3 @@
-import { Metadata } from "next";
 import Dashboard from "./dashboard";
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-};
-
-export default function SignInPage() {
-  return <Dashboard />;
-}
+export const metadata = { title: "Dashboard" };
+export default function Page(){ return <Dashboard/>; }

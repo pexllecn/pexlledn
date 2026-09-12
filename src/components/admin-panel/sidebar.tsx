@@ -61,12 +61,12 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 z-20 h-screen transition-all duration-300 ease-in-out",
+        "apple-sidebar fixed top-0 left-0 z-20 h-screen transition-all duration-300 ease-out",
         sidebar.isOpen ? "w-56" : "w-[56px]",
         "hidden lg:block"
       )}
     >
-      <div className="relative bg-muted h-full flex flex-col overflow-hidden pt-4">
+      <div className="relative h-full flex flex-col overflow-hidden pt-3">
         <Button
           className={cn(
             "transition-all ease-in-out duration-300 mb-1",
