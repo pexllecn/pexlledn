@@ -26,30 +26,29 @@ import {
   messageActivity,
 } from "@/components/ui/island-activities";
 import {
-  ScanFace,
-  LockKeyhole,
-  BellOff,
-  Zap,
-  Headphones,
-  Timer,
-  Music,
-  CornerUpRight,
-  Mic,
-  Phone,
-  MessageSquare,
-  Car,
-  Plane,
-  Trophy,
-  Sparkles,
-  Hand,
-  Wifi,
   BatteryFull,
+  BellOff,
+  Car,
+  ChevronRight,
+  CornerUpRight,
+  Headphones,
+  Hand,
+  LockKeyhole,
+  MessageSquare,
+  Mic,
+  Music,
+  Phone,
+  Plane,
+  ScanFace,
   SignalHigh,
+  Sparkles,
+  Timer,
+  Trophy,
+  Wifi,
+  Zap,
 } from "lucide-react";
 
-/* -------------------------------------------------------------------------- */
-/*  Example registry                                                           */
-/* -------------------------------------------------------------------------- */
+const ease = [0.22, 1, 0.36, 1] as const;
 
 type Example = {
   label: string;
@@ -59,164 +58,228 @@ type Example = {
   build: () => IslandActivity;
 };
 
-const GROUPS: { title: string; blurb: string; examples: Example[] }[] = [
+type Group = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  examples: Example[];
+};
+
+const GROUPS: Group[] = [
   {
-    title: "System",
-    blurb: "The quick, glanceable states iOS shows for hardware events.",
+    eyebrow: "System moments",
+    title: "Instant. Familiar. Clear.",
+    description:
+      "Small acknowledgements for the things your device is doing right now.",
     examples: [
-      { label: "Face ID", hint: "Authenticating", icon: ScanFace, accent: iOS.green, build: faceIdActivity },
-      { label: "Unlocked", hint: "iPhone unlocked", icon: LockKeyhole, accent: iOS.green, build: unlockActivity },
-      { label: "Silent Mode", hint: "Ringer toggle", icon: BellOff, accent: iOS.orange, build: () => silentActivity(true) },
-      { label: "Charging", hint: "Battery status", icon: Zap, accent: iOS.green, build: () => chargingActivity(82) },
-      { label: "AirPods Pro", hint: "Device connected", icon: Headphones, accent: iOS.blue, build: airpodsActivity },
+      {
+        label: "Face ID",
+        hint: "Authenticating",
+        icon: ScanFace,
+        accent: iOS.green,
+        build: faceIdActivity,
+      },
+      {
+        label: "Unlocked",
+        hint: "Securely opened",
+        icon: LockKeyhole,
+        accent: iOS.green,
+        build: unlockActivity,
+      },
+      {
+        label: "Silent Mode",
+        hint: "Ringer off",
+        icon: BellOff,
+        accent: iOS.orange,
+        build: () => silentActivity(true),
+      },
+      {
+        label: "Charging",
+        hint: "82% charged",
+        icon: Zap,
+        accent: iOS.green,
+        build: () => chargingActivity(82),
+      },
+      {
+        label: "AirPods Pro",
+        hint: "Connected",
+        icon: Headphones,
+        accent: iOS.blue,
+        build: airpodsActivity,
+      },
     ],
   },
   {
-    title: "Live Activities",
-    blurb: "Persistent, animated states that keep updating in real time.",
+    eyebrow: "Live Activities",
+    title: "The moment keeps moving.",
+    description: "Follow progress without leaving what you are doing.",
     examples: [
-      { label: "Timer", hint: "Countdown ring", icon: Timer, accent: iOS.orange, build: timerActivity },
-      { label: "Now Playing", hint: "Music player", icon: Music, accent: iOS.pink, build: () => musicActivity() },
-      { label: "Directions", hint: "Maps navigation", icon: CornerUpRight, accent: iOS.green, build: mapsActivity },
-      { label: "Voice Memo", hint: "Live waveform", icon: Mic, accent: iOS.red, build: recordingActivity },
+      {
+        label: "Timer",
+        hint: "Countdown",
+        icon: Timer,
+        accent: iOS.orange,
+        build: timerActivity,
+      },
+      {
+        label: "Now Playing",
+        hint: "Music controls",
+        icon: Music,
+        accent: iOS.pink,
+        build: musicActivity,
+      },
+      {
+        label: "Directions",
+        hint: "Next turn",
+        icon: CornerUpRight,
+        accent: iOS.green,
+        build: mapsActivity,
+      },
+      {
+        label: "Voice Memo",
+        hint: "Recording",
+        icon: Mic,
+        accent: iOS.red,
+        build: recordingActivity,
+      },
     ],
   },
   {
-    title: "Rich & Expandable",
-    blurb: "Tap the island once it appears to expand into a full card.",
+    eyebrow: "Expanded experiences",
+    title: "More detail. Right on cue.",
+    description:
+      "Tap to reveal controls and context, then tap outside to collapse and dismiss.",
     examples: [
-      { label: "Incoming Call", hint: "Tap to expand", icon: Phone, accent: iOS.green, build: () => callActivity() },
-      { label: "Message", hint: "Tap to expand", icon: MessageSquare, accent: iOS.green, build: () => messageActivity() },
-      { label: "Ride Share", hint: "Arriving soon", icon: Car, accent: "#A3E635", build: rideActivity },
-      { label: "Flight", hint: "Boarding pass", icon: Plane, accent: iOS.teal, build: flightActivity },
-      { label: "Live Score", hint: "NBA game", icon: Trophy, accent: iOS.yellow, build: sportsActivity },
+      {
+        label: "Incoming Call",
+        hint: "Tap to answer",
+        icon: Phone,
+        accent: iOS.green,
+        build: callActivity,
+      },
+      {
+        label: "Message",
+        hint: "Quick reply",
+        icon: MessageSquare,
+        accent: iOS.green,
+        build: messageActivity,
+      },
+      {
+        label: "Ride Share",
+        hint: "Arriving soon",
+        icon: Car,
+        accent: "#A3E635",
+        build: rideActivity,
+      },
+      {
+        label: "Flight",
+        hint: "Boarding pass",
+        icon: Plane,
+        accent: iOS.teal,
+        build: flightActivity,
+      },
+      {
+        label: "Live Score",
+        hint: "Game update",
+        icon: Trophy,
+        accent: iOS.yellow,
+        build: sportsActivity,
+      },
     ],
   },
 ];
 
-/* -------------------------------------------------------------------------- */
-/*  Hero — a live iPhone mock that loops the morph                             */
-/* -------------------------------------------------------------------------- */
-
 const PHONE_STATES = [
-  { key: "idle", w: 116, h: 33, r: 17 },
-  { key: "ring", w: 168, h: 35, r: 18 },
-  { key: "music", w: 240, h: 132, r: 32 },
+  { key: "idle", width: 112, height: 32, radius: 17 },
+  { key: "status", width: 174, height: 36, radius: 19 },
+  { key: "playing", width: 232, height: 116, radius: 30 },
 ] as const;
 
-function PhoneMock() {
-  const [i, setI] = useState(0);
+function PhonePreview() {
+  const [index, setIndex] = useState(0);
+
   useEffect(() => {
-    const id = setInterval(
-      () => setI((v) => (v + 1) % PHONE_STATES.length),
-      2600
+    const timer = setInterval(
+      () => setIndex((current) => (current + 1) % PHONE_STATES.length),
+      2500,
     );
-    return () => clearInterval(id);
+    return () => clearInterval(timer);
   }, []);
-  const s = PHONE_STATES[i];
+
+  const state = PHONE_STATES[index];
 
   return (
-    <div className="relative mx-auto w-[280px]">
-      {/* glow */}
-      <div
-        className="absolute -inset-8 -z-10 rounded-[60px] opacity-60 blur-3xl"
-        style={{
-          background:
-            "conic-gradient(from 120deg, #FF375F55, #0A84FF55, #30D15855, #FF375F55)",
-        }}
-      />
-      {/* device */}
-      <div className="relative rounded-[52px] bg-black p-[10px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
-        <div className="relative h-[560px] overflow-hidden rounded-[44px]">
-          {/* wallpaper */}
-          <div className="absolute inset-0 bg-gradient-to-b from-indigo-600 via-fuchsia-600 to-orange-500" />
-          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,rgba(255,255,255,0.28),transparent_55%)]" />
-
-          {/* status bar */}
-          <div className="relative z-10 flex items-center justify-between px-8 pt-4 text-white">
-            <span className="text-[15px] font-semibold">9:41</span>
-            <div className="flex items-center gap-1.5">
-              <SignalHigh className="h-4 w-4" />
-              <Wifi className="h-4 w-4" />
-              <BatteryFull className="h-5 w-5" />
-            </div>
+    <div className="relative mx-auto w-[286px]">
+      <div className="absolute inset-x-4 -bottom-7 h-28 rounded-full bg-blue-500/25 blur-3xl" />
+      <div className="relative rounded-[54px] bg-[#171719] p-[9px] shadow-[0_40px_90px_rgba(0,0,0,.45)] ring-1 ring-black/40 dark:ring-white/15">
+        <div className="relative h-[568px] overflow-hidden rounded-[46px] bg-[#d9e8ff]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,#f3c6ff_0,transparent_34%),radial-gradient(circle_at_20%_62%,#75baff_0,transparent_40%),linear-gradient(160deg,#e7f2ff,#b5a9f7_52%,#ffb68c)]" />
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
+          <div className="relative z-10 flex items-center justify-between px-8 pt-4 text-[13px] font-semibold text-black">
+            <span>9:41</span>
+            <span className="flex items-center gap-1">
+              <SignalHigh className="size-3.5" />
+              <Wifi className="size-3.5" />
+              <BatteryFull className="h-4 w-5" />
+            </span>
           </div>
 
-          {/* the island */}
           <div className="absolute inset-x-0 top-3 z-20 flex justify-center">
             <motion.div
-              className="flex items-center justify-center overflow-hidden bg-black text-white ring-1 ring-white/10"
-              animate={{ width: s.w, height: s.h, borderRadius: s.r }}
-              transition={{ type: "spring", stiffness: 380, damping: 30, mass: 1 }}
+              animate={{
+                width: state.width,
+                height: state.height,
+                borderRadius: state.radius,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 430,
+                damping: 34,
+                mass: 0.8,
+              }}
+              className="overflow-hidden bg-black text-white shadow-xl"
             >
-              <AnimatePresence mode="popLayout" initial={false}>
-                {s.key === "idle" && (
+              <AnimatePresence mode="sync" initial={false}>
+                {state.key === "status" && (
                   <motion.div
-                    key="i"
-                    initial={{ opacity: 0, filter: "blur(6px)" }}
+                    key="status"
+                    initial={{ opacity: 0, filter: "blur(7px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, filter: "blur(6px)" }}
-                    className="h-full w-full"
-                  />
-                )}
-                {s.key === "ring" && (
-                  <motion.div
-                    key="r"
-                    initial={{ opacity: 0, filter: "blur(6px)", scale: 0.9 }}
-                    animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                    exit={{ opacity: 0, filter: "blur(6px)", scale: 0.9 }}
-                    className="flex w-full items-center justify-between px-3"
+                    exit={{ opacity: 0, filter: "blur(7px)" }}
+                    className="flex h-full items-center justify-between px-3 text-[11px] font-medium"
                   >
-                    <BellOff className="h-4 w-4" style={{ color: iOS.orange }} />
-                    <span className="text-[12px] font-medium">Silent</span>
-                    <span
-                      className="text-[12px] font-semibold"
-                      style={{ color: iOS.orange }}
-                    >
-                      On
-                    </span>
+                    <BellOff className="size-4 text-[#FF9F0A]" />
+                    <span>Silent Mode</span>
+                    <span className="text-[#FF9F0A]">On</span>
                   </motion.div>
                 )}
-                {s.key === "music" && (
+                {state.key === "playing" && (
                   <motion.div
-                    key="m"
-                    initial={{ opacity: 0, filter: "blur(6px)", scale: 0.94 }}
+                    key="playing"
+                    initial={{ opacity: 0, filter: "blur(8px)", scale: 0.96 }}
                     animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                    exit={{ opacity: 0, filter: "blur(6px)", scale: 0.94 }}
-                    className="flex h-full w-full flex-col justify-between p-3.5"
+                    exit={{ opacity: 0, filter: "blur(8px)", scale: 0.98 }}
+                    className="flex h-full flex-col justify-between p-3.5"
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className="h-10 w-10 rounded-[9px] bg-gradient-to-br from-fuchsia-500 to-indigo-600" />
+                      <div className="size-10 rounded-[9px] bg-gradient-to-br from-pink-500 to-violet-600" />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] font-semibold">
+                        <p className="truncate text-xs font-semibold">
                           Midnight Drive
                         </p>
-                        <p className="truncate text-[11px] text-white/55">
-                          Neon Coast
-                        </p>
+                        <p className="text-[10px] text-white/50">Neon Coast</p>
                       </div>
-                      <div className="flex items-end gap-[3px]" style={{ height: 16 }}>
-                        {[0.5, 1, 0.4, 0.8].map((h, k) => (
-                          <motion.span
-                            key={k}
-                            className="w-[3px] rounded-full"
-                            style={{ backgroundColor: iOS.pink }}
-                            animate={{ height: ["25%", `${h * 100}%`, "40%", "85%", "30%"] }}
-                            transition={{
-                              duration: 0.9,
-                              repeat: Infinity,
-                              repeatType: "mirror",
-                              delay: k * 0.13,
-                            }}
-                          />
-                        ))}
-                      </div>
+                      <Music className="size-4 text-pink-400" />
                     </div>
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-white/15">
+                    <div className="h-1 overflow-hidden rounded-full bg-white/15">
                       <motion.div
+                        animate={{ width: ["24%", "76%"] }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          repeatType: "reverse",
+                        }}
                         className="h-full rounded-full bg-white"
-                        animate={{ width: ["30%", "70%"] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                       />
                     </div>
                   </motion.div>
@@ -225,12 +288,11 @@ function PhoneMock() {
             </motion.div>
           </div>
 
-          {/* app dots */}
-          <div className="absolute bottom-8 left-0 right-0 grid grid-cols-4 gap-5 px-10">
-            {Array.from({ length: 8 }).map((_, k) => (
+          <div className="absolute inset-x-0 bottom-8 grid grid-cols-4 gap-5 px-9">
+            {Array.from({ length: 8 }).map((_, item) => (
               <div
-                key={k}
-                className="aspect-square rounded-[14px] bg-white/20 backdrop-blur-sm"
+                key={item}
+                className="aspect-square rounded-[14px] bg-white/35 shadow-sm backdrop-blur-md"
               />
             ))}
           </div>
@@ -240,15 +302,43 @@ function PhoneMock() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                       */
-/* -------------------------------------------------------------------------- */
-
-const FEATURES = [
-  { icon: Sparkles, label: "Spring physics" },
-  { icon: Hand, label: "Tap to expand" },
-  { icon: Music, label: "Live Activities" },
-];
+function ActivityCard({
+  example,
+  show,
+}: {
+  example: Example;
+  show: (activity: IslandActivity) => void;
+}) {
+  return (
+    <motion.button
+      onClick={() => show(example.build())}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.975 }}
+      className="group flex min-h-36 flex-col justify-between rounded-[24px] border border-black/[0.06] bg-white p-5 text-left shadow-[0_1px_2px_rgba(0,0,0,.03)] transition-shadow hover:shadow-[0_16px_40px_rgba(0,0,0,.08)] dark:border-white/10 dark:bg-[#171719] dark:hover:shadow-black/40"
+    >
+      <div className="flex items-start justify-between">
+        <span
+          className="grid size-11 place-items-center rounded-[13px]"
+          style={{
+            color: example.accent,
+            backgroundColor: `${example.accent}16`,
+          }}
+        >
+          <example.icon className="size-5" strokeWidth={2} />
+        </span>
+        <ChevronRight className="size-4 text-black/20 transition-transform group-hover:translate-x-0.5 dark:text-white/20" />
+      </div>
+      <div>
+        <p className="text-[15px] font-semibold tracking-tight">
+          {example.label}
+        </p>
+        <p className="mt-0.5 text-xs text-black/45 dark:text-white/45">
+          {example.hint}
+        </p>
+      </div>
+    </motion.button>
+  );
+}
 
 function Playground() {
   const { show } = useDynamicIsland();
@@ -280,127 +370,100 @@ function Playground() {
 
         <div className="relative grid items-center gap-10 lg:grid-cols-2">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.75, ease }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] font-medium text-white/80 backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              iOS · Dynamic Island
-            </span>
-            <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              The Dynamic Island,{" "}
-              <span className="bg-gradient-to-r from-fuchsia-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">
-                on the web.
+            <p className="flex items-center gap-2 text-sm font-semibold text-[#0071e3]">
+              <Sparkles className="size-4" /> Dynamic Island
+            </p>
+            <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-7xl">
+              A little space.
+              <br />
+              <span className="bg-gradient-to-r from-[#007aff] via-[#af52de] to-[#ff2d55] bg-clip-text text-transparent">
+                A lot of magic.
               </span>
             </h1>
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
-              A pixel-faithful replica of Apple&apos;s Dynamic Island — fluid
-              spring morphing, blur cross-fades and real Live Activities. Tap any
-              card below and watch the top of your screen. Tap outside to dismiss.
+            <p className="mt-7 max-w-xl text-lg leading-relaxed text-black/50 dark:text-white/50">
+              Explore fluid, glanceable activities that expand when you need
+              more and disappear when you are done.
             </p>
-
-            <div className="mt-6 flex flex-wrap gap-2">
-              {FEATURES.map((f) => (
-                <span
-                  key={f.label}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1.5 text-[12px] font-medium text-white/80 ring-1 ring-white/10"
-                >
-                  <f.icon className="h-3.5 w-3.5" />
-                  {f.label}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap gap-3">
               <button
                 onClick={() => show(musicActivity())}
-                className="rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-black transition hover:bg-white/90 active:scale-95"
+                className="rounded-full bg-[#0071e3] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#0077ed] active:scale-95"
               >
-                Play a demo
+                Play a Live Activity
               </button>
               <button
                 onClick={() => show(callActivity())}
-                className="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-[14px] font-semibold text-white backdrop-blur transition hover:bg-white/10 active:scale-95"
+                className="rounded-full bg-black/[0.06] px-6 py-3 text-sm font-medium transition hover:bg-black/10 active:scale-95 dark:bg-white/10 dark:hover:bg-white/15"
               >
-                Try a call
+                Try an incoming call
               </button>
             </div>
+            <div className="mt-8 flex flex-wrap gap-5 text-xs font-medium text-black/40 dark:text-white/40">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Spring physics
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Hand className="size-3.5" /> Tap to expand
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Music className="size-3.5" /> Live updates
+              </span>
+            </div>
           </motion.div>
-
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="hidden justify-center lg:flex"
+            initial={{ opacity: 0, y: 30, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.85, delay: 0.1, ease }}
+            className="hidden lg:block"
           >
-            <PhoneMock />
+            <PhonePreview />
           </motion.div>
         </div>
       </section>
 
-      {/* ---------------------------- EXAMPLES ------------------------------ */}
-      <div className="mt-14 space-y-12">
-        {GROUPS.map((group, gi) => (
+      <div className="mx-auto max-w-6xl space-y-28 px-5 py-24 sm:py-32">
+        {GROUPS.map((group, groupIndex) => (
           <motion.section
             key={group.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.45, delay: gi * 0.05 }}
+            transition={{ duration: 0.65, delay: groupIndex * 0.04, ease }}
           >
-            <div className="mb-5 flex items-end justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-bold tracking-tight">{group.title}</h2>
-                <p className="mt-1 text-sm text-muted-foreground">{group.blurb}</p>
-              </div>
-              <span className="hidden shrink-0 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground sm:block">
-                {group.examples.length} examples
-              </span>
+            <div className="mb-10 max-w-2xl">
+              <p className="text-sm font-semibold text-[#0071e3]">
+                {group.eyebrow}
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+                {group.title}
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-black/50 dark:text-white/50">
+                {group.description}
+              </p>
             </div>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {group.examples.map((ex) => (
-                <motion.button
-                  key={ex.label}
-                  onClick={() => show(ex.build())}
-                  whileHover={{ y: -4 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-3xl border border-border bg-card p-5 text-left transition-colors hover:border-foreground/15"
-                >
-                  {/* accent glow on hover */}
-                  <span
-                    className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-40"
-                    style={{ backgroundColor: ex.accent }}
-                  />
-                  <span
-                    className="flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ring-inset ring-white/10 transition-transform duration-300 group-hover:scale-110"
-                    style={{
-                      backgroundColor: `${ex.accent}1f`,
-                      color: ex.accent,
-                    }}
-                  >
-                    <ex.icon className="h-5 w-5" />
-                  </span>
-                  <span className="leading-tight">
-                    <span className="block text-[15px] font-semibold">
-                      {ex.label}
-                    </span>
-                    <span className="mt-0.5 block text-xs text-muted-foreground">
-                      {ex.hint}
-                    </span>
-                  </span>
-                </motion.button>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+              {group.examples.map((example) => (
+                <ActivityCard
+                  key={example.label}
+                  example={example}
+                  show={show}
+                />
               ))}
             </div>
           </motion.section>
         ))}
       </div>
 
-      <p className="mt-14 text-center text-xs text-muted-foreground">
-        Built with Framer Motion · spring-morphing shell, blur cross-fade content,
-        tap-to-expand and tap-outside-to-dismiss.
-      </p>
+      <section className="border-t border-black/[0.06] bg-white px-5 py-16 text-center dark:border-white/10 dark:bg-[#0a0a0a]">
+        <p className="text-xs text-black/40 dark:text-white/40">
+          Select an activity · Tap to expand · Tap anywhere outside to collapse
+          and dismiss
+        </p>
+      </section>
     </div>
   );
 }

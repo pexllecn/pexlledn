@@ -17,23 +17,15 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-/* -------------------------------------------------------------------------- */
-/*  Size presets                                                              */
-/*                                                                            */
-/*  The real Dynamic Island morphs between a handful of discrete shapes.      */
-/*  We model each shape as a fixed width / height / corner radius and let     */
-/*  Framer Motion spring between them, exactly like iOS.                      */
-/* -------------------------------------------------------------------------- */
-
 export type IslandSize =
-  | "idle" // the resting pill (mimics the notch)
-  | "minimal" // tiny circle-ish pill (single glyph)
-  | "compact" // leading + trailing blobs with a gap
-  | "long" // a wider single line
-  | "default" // one-line notification
-  | "expanded" // rich card
-  | "tall" // taller rich card
-  | "ultra"; // full live-activity card
+  | "idle"
+  | "minimal"
+  | "compact"
+  | "long"
+  | "default"
+  | "expanded"
+  | "tall"
+  | "ultra";
 
 interface SizeSpec {
   width: number;
@@ -52,11 +44,6 @@ export const ISLAND_SIZES: Record<IslandSize, SizeSpec> = {
   ultra: { width: 372, height: 252, radius: 44 },
 };
 
-/* -------------------------------------------------------------------------- */
-/*  Springs                                                                    */
-/* -------------------------------------------------------------------------- */
-
-// The signature "gooey" morph of the shell.
 const SHELL_SPRING = {
   type: "spring" as const,
   stiffness: 510,
@@ -212,10 +199,6 @@ const contentMotion = {
   }),
 };
 
-/* -------------------------------------------------------------------------- */
-/*  The island shell                                                          */
-/* -------------------------------------------------------------------------- */
-
 interface DynamicIslandProps {
   activity: IslandActivity | null;
   onDismiss: () => void;
@@ -234,6 +217,8 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
   // Reset and arm the dismissal timer whenever a new activity arrives.
   useEffect(() => {
+    clearTimers();
+    setDefocusing(false);
     if (!activity) return;
 
     setExpanded(Boolean(activity.autoExpand));
@@ -245,7 +230,13 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
     const duration = activity.duration ?? 4200;
 
     if (duration > 0) {
-      timer.current = setTimeout(onDismiss, duration);
+      dismissTimer.current = setTimeout(() => {
+        setDefocusing(true);
+        actionTimer.current = setTimeout(
+          onDismiss,
+          reduceMotion ? 0 : BLUR_LEAD_MS,
+        );
+      }, duration);
     }
 
     return () => {
@@ -283,8 +274,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
       clearTimeout(listenerTimer);
       document.removeEventListener("pointerdown", handlePointer);
     };
-  }, [activity, onDismiss]);
+  }, [activity, blurThen, expanded, onDismiss, reduceMotion]);
 
+  const canExpand = Boolean(activity?.expanded);
+  const showExpanded = expanded && canExpand;
   const collapsedSize = activity?.size ?? "compact";
   const openSize = activity?.expandedSize ?? "expanded";
   const canExpand = Boolean(activity?.expanded);
@@ -328,9 +321,9 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 opacity: 0,
               }}
               animate={{
-                width: spec.width,
-                height: spec.height,
-                borderRadius: spec.radius,
+                width: size.width,
+                height: size.height,
+                borderRadius: size.radius,
                 scale: 1,
                 y: 0,
                 opacity: 1,
@@ -383,7 +376,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                   : undefined
               }
               onClick={toggle}
-              role="alert"
+              role="status"
               aria-live="polite"
               aria-expanded={canExpand ? expanded : undefined}
               className={cn(
