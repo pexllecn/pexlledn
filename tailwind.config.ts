@@ -74,10 +74,25 @@ const config = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      /* Every step derives from --radius, which the theme customiser sets on
+         the document. That is what makes the radius control authoritative:
+         any `rounded-*` utility anywhere in the app follows it without the
+         component having to know, so there is nothing to keep in sync by
+         hand. `full` is the deliberate exception — avatars, status dots,
+         spinners and progress bars are circles, not rounded rectangles, and
+         squaring them reads as broken rather than as a squarer theme.
+         max() guards the subtractive steps, which would otherwise compute
+         negative and drop out at radius 0. */
       borderRadius: {
+        none: "0px",
+        sm: "max(0px, calc(var(--radius) - 4px))",
+        DEFAULT: "max(0px, calc(var(--radius) - 2px))",
+        md: "max(0px, calc(var(--radius) - 2px))",
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) * 1.25)",
+        "2xl": "calc(var(--radius) * 1.5)",
+        "3xl": "calc(var(--radius) * 2)",
+        full: "9999px",
       },
       keyframes: {
         "accordion-down": {

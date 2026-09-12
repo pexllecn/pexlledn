@@ -17,23 +17,15 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-/* -------------------------------------------------------------------------- */
-/*  Size presets                                                              */
-/*                                                                            */
-/*  The real Dynamic Island morphs between a handful of discrete shapes.      */
-/*  We model each shape as a fixed width / height / corner radius and let     */
-/*  Framer Motion spring between them, exactly like iOS.                      */
-/* -------------------------------------------------------------------------- */
-
 export type IslandSize =
-  | "idle" // the resting pill (mimics the notch)
-  | "minimal" // tiny circle-ish pill (single glyph)
-  | "compact" // leading + trailing blobs with a gap
-  | "long" // a wider single line
-  | "default" // one-line notification
-  | "expanded" // rich card
-  | "tall" // taller rich card
-  | "ultra"; // full live-activity card
+  | "idle"
+  | "minimal"
+  | "compact"
+  | "long"
+  | "default"
+  | "expanded"
+  | "tall"
+  | "ultra";
 
 interface SizeSpec {
   width: number;
@@ -52,11 +44,6 @@ export const ISLAND_SIZES: Record<IslandSize, SizeSpec> = {
   ultra: { width: 372, height: 252, radius: 44 },
 };
 
-/* -------------------------------------------------------------------------- */
-/*  Springs                                                                    */
-/* -------------------------------------------------------------------------- */
-
-// The signature "gooey" morph of the shell.
 const SHELL_SPRING = {
   type: "spring" as const,
   stiffness: 510,
@@ -77,34 +64,56 @@ const EXPAND_SPRING = {
   restSpeed: 0.08,
 };
 
+// Keep the physical black shell perfectly sharp. Blurring the shell itself
+// expands its painted bounds and can make the pill look horizontally stretched
+// while its width is springing. Only the pixels inside use a focus envelope.
+const CONTENT_FOCUS_IN = [
+  "blur(8px)",
+  "blur(1.25px)",
+  "blur(0px)",
+  "blur(0.6px)",
+  "blur(0px)",
+];
+
+const CONTENT_FOCUS_OUT = ["blur(0px)", "blur(0.8px)", "blur(7px)"];
+
 /* -------------------------------------------------------------------------- */
 /*  Presentation of a single activity                                         */
 /* -------------------------------------------------------------------------- */
 
 export interface IslandActivity {
   id: string;
+
   /** Collapsed shape. */
   size?: IslandSize;
+
   /** Shape when the island is tapped open. */
   expandedSize?: IslandSize;
+
   /** Left blob of the compact presentation. */
   leading?: React.ReactNode;
+
   /** Right blob of the compact presentation. */
   trailing?: React.ReactNode;
+
   /** Center strip of the compact presentation. */
   center?: React.ReactNode;
+
   /** Full collapsed content (overrides leading/center/trailing layout). */
   collapsed?: React.ReactNode;
+
   /** Rich content revealed when expanded. */
   expanded?: React.ReactNode;
+
   /** Auto-open on arrival. */
   autoExpand?: boolean;
+
   /** ms before the island retracts. 0 keeps it until dismissed. */
   duration?: number;
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Content transition helper                                                  */
+/*  Content transition helper                                                 */
 /* -------------------------------------------------------------------------- */
 
 const contentMotion = {
@@ -116,7 +125,11 @@ const contentMotion = {
   }),
   animate: {
     opacity: 1,
-    filter: "blur(0px)",
+
+    // Focus quickly, soften once during the spring overshoot, then finish
+    // completely sharp. The outer black shell itself is never blurred.
+    filter: CONTENT_FOCUS_IN,
+
     scale: 1,
     y: 0,
     transition: {
@@ -140,9 +153,36 @@ const contentMotion = {
   }),
 };
 
-/* -------------------------------------------------------------------------- */
-/*  The island shell                                                          */
-/* -------------------------------------------------------------------------- */
+    // Defocus outgoing pixels immediately before the content disappears.
+    filter: CONTENT_FOCUS_OUT,
+
+    scale: opening ? 1.018 : 0.98,
+    y: opening ? 1 : -1,
+
+    transition: {
+      opacity: {
+        duration: 0.075,
+        ease: "easeOut" as const,
+      },
+
+      filter: {
+        duration: 0.105,
+        times: [0, 0.24, 1],
+        ease: [0.4, 0, 1, 1],
+      },
+
+      scale: {
+        duration: 0.09,
+        ease: "easeOut" as const,
+      },
+
+      y: {
+        duration: 0.09,
+        ease: "easeOut" as const,
+      },
+    },
+  }),
+};
 
 interface DynamicIslandProps {
   activity: IslandActivity | null;
@@ -158,18 +198,34 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const islandRef = useRef<HTMLDivElement>(null);
 
-  // Reset / arm whenever a new activity arrives.
+  // Reset and arm the dismissal timer whenever a new activity arrives.
   useEffect(() => {
+    clearTimers();
+    setDefocusing(false);
     if (!activity) return;
-    setExpanded(!!activity.autoExpand);
 
-    if (timer.current) clearTimeout(timer.current);
-    const duration = activity.duration ?? 4200;
-    if (duration > 0) {
-      timer.current = setTimeout(onDismiss, duration);
+    setExpanded(Boolean(activity.autoExpand));
+
+    if (timer.current) {
+      clearTimeout(timer.current);
     }
+
+    const duration = activity.duration ?? 4200;
+
+    if (duration > 0) {
+      dismissTimer.current = setTimeout(() => {
+        setDefocusing(true);
+        actionTimer.current = setTimeout(
+          onDismiss,
+          reduceMotion ? 0 : BLUR_LEAD_MS,
+        );
+      }, duration);
+    }
+
     return () => {
-      if (timer.current) clearTimeout(timer.current);
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
     };
   }, [activity, onDismiss]);
 
@@ -189,6 +245,8 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
         onDismiss();
       }
+
+      onDismiss();
     };
     // Defer so the click that opened the island doesn't immediately close it.
     const id = setTimeout(
@@ -196,11 +254,13 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
       0,
     );
     return () => {
-      clearTimeout(id);
+      clearTimeout(listenerTimer);
       document.removeEventListener("pointerdown", handlePointer);
     };
   }, [activity, expanded, onDismiss]);
 
+  const canExpand = Boolean(activity?.expanded);
+  const showExpanded = expanded && canExpand;
   const collapsedSize = activity?.size ?? "compact";
   const openSize = activity?.expandedSize ?? "expanded";
   const canExpand = Boolean(activity?.expanded);
@@ -209,15 +269,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
   const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
 
-  const buzz = () => window.navigator?.vibrate?.(8);
+  const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
 
   const toggle = useCallback(() => {
     if (!canExpand) return;
-    buzz();
-    // Tapping keeps the island alive a bit longer.
-    if (timer.current) clearTimeout(timer.current);
-    setExpanded((v) => !v);
-  }, [canExpand]);
 
   return (
     <MotionConfig
@@ -228,8 +283,8 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
         <AnimatePresence initial={false}>
           {activity && (
             <motion.div
+              ref={islandRef}
               key="island"
-              layout
               initial={{
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
@@ -271,12 +326,13 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                   : undefined
               }
               onClick={toggle}
-              role="alert"
+              role="status"
               aria-live="polite"
-              aria-expanded={expanded}
+              aria-expanded={canExpand ? expanded : undefined}
               className={cn(
                 "pointer-events-auto relative overflow-hidden bg-black text-white",
-                "shadow-[0_8px_30px_rgba(0,0,0,0.35)] ring-1 ring-white/[0.06]",
+                "shadow-[0_8px_30px_rgba(0,0,0,0.35)]",
+                "ring-1 ring-white/[0.06]",
                 "select-none",
                 canExpand && "cursor-pointer",
               )}
@@ -287,7 +343,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 transform: "translateZ(0)",
               }}
             >
-              {/* subtle top gloss, like the real hardware */}
+              {/* Subtle top gloss, like the physical hardware surface. */}
               <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.05] to-transparent" />
 
               <AnimatePresence
@@ -310,11 +366,13 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                         <div className="flex min-w-0 items-center">
                           {activity.leading}
                         </div>
+
                         {activity.center && (
                           <div className="flex min-w-0 flex-1 items-center justify-center">
                             {activity.center}
                           </div>
                         )}
+
                         <div className="flex min-w-0 items-center justify-end">
                           {activity.trailing}
                         </div>
@@ -344,7 +402,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Manager + context                                                          */
+/*  Manager and context                                                       */
 /* -------------------------------------------------------------------------- */
 
 interface IslandContextValue {
@@ -363,9 +421,9 @@ export const useDynamicIsland = () => {
   return ctx;
 };
 
-export const DynamicIslandProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const DynamicIslandProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [activity, setActivity] = useState<IslandActivity | null>(null);
 
   const show = useCallback((next: IslandActivity) => {
@@ -374,13 +432,22 @@ export const DynamicIslandProvider: React.FC<{ children: React.ReactNode }> = ({
     setActivity({ ...next, id: `${next.id}-${Date.now()}` });
   }, []);
 
-  const dismiss = useCallback(() => setActivity(null), []);
+  const dismiss = useCallback(() => {
+    setActivity(null);
+  }, []);
 
-  const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
+  const value = useMemo(
+    () => ({
+      show,
+      dismiss,
+    }),
+    [show, dismiss],
+  );
 
   return (
     <IslandContext.Provider value={value}>
       {children}
+
       <DynamicIsland activity={activity} onDismiss={dismiss} />
     </IslandContext.Provider>
   );
