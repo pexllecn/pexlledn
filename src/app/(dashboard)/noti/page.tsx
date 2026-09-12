@@ -3,6 +3,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Button } from "@/components/ui/button";
+import AnimatedBackground from "@/components/ui/animated-tabs";
+import { cn } from "@/lib/utils";
 import {
   DynamicIslandProvider,
   useDynamicIsland,
@@ -45,15 +48,6 @@ import {
   Zap,
 } from "lucide-react";
 
-/* -------------------------------------------------------------------------- */
-/*  Design tokens                                                             */
-/* -------------------------------------------------------------------------- */
-
-// Apple sets type in SF Pro and falls back through the platform stack. Naming
-// the faces here keeps every heading on the same optical rhythm.
-const DISPLAY =
-  '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif';
-
 const EASE = [0.28, 0.9, 0.22, 1] as const;
 
 /* -------------------------------------------------------------------------- */
@@ -64,6 +58,9 @@ type Example = {
   label: string;
   hint: string;
   icon: React.ElementType;
+
+  /* The activity's own iOS system colour, mirrored from island-activities so
+     the tile and the island it presents read as the same object. */
   accent: string;
   build: () => IslandActivity;
 };
@@ -180,7 +177,7 @@ const CHAPTERS: Chapter[] = [
         label: "Ride Share",
         hint: "Arriving soon",
         icon: Car,
-        accent: "#A3E635",
+        accent: iOS.indigo,
         build: rideActivity,
       },
       {
@@ -205,8 +202,10 @@ const CHAPTERS: Chapter[] = [
 /*  Hero device                                                               */
 /* -------------------------------------------------------------------------- */
 
-// The preview runs its own miniature version of the same choreography: shell
-// geometry on a spring, content pulling in and out of focus around it.
+/* The device mock keeps literal pixel geometry rather than theme radii: it is
+   a depiction of hardware, and its corners are a physical fact of the object,
+   the same way ISLAND_SIZES are literal in the island itself. Every piece of
+   app UI on this page follows --radius through the rounded-* scale. */
 const REEL = [
   { key: "idle", width: 118, height: 33, radius: 18, hold: 1500 },
   { key: "silent", width: 178, height: 37, radius: 19, hold: 2400 },
@@ -241,19 +240,17 @@ function DeviceReel() {
 
   return (
     <div className="relative mx-auto w-[300px]">
-      {/* Coloured bloom behind the glass, the way Apple lights its devices. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-x-10 -bottom-10 top-16 rounded-[120px] bg-[radial-gradient(ellipse_at_50%_60%,rgba(10,132,255,.38),transparent_68%)] blur-3xl"
+        className="pointer-events-none absolute -inset-x-10 -bottom-10 top-16 rounded-full bg-primary/25 blur-3xl"
       />
 
-      <div className="relative rounded-[58px] bg-gradient-to-b from-[#3a3a3c] to-[#1c1c1e] p-[10px] shadow-[0_60px_120px_-20px_rgba(0,0,0,.55)]">
+      <div className="relative rounded-[58px] bg-gradient-to-b from-zinc-700 to-zinc-900 p-[10px] shadow-2xl">
         <div className="relative h-[596px] overflow-hidden rounded-[48px] bg-black">
-          {/* Wallpaper */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_16%,#ff9ff3_0,transparent_38%),radial-gradient(circle_at_18%_64%,#54a0ff_0,transparent_44%),linear-gradient(165deg,#e8f1ff_0%,#b6a8f5_48%,#ffb489_100%)]" />
 
-          <div className="relative z-10 flex items-center justify-between px-9 pt-5 text-[14px] font-semibold text-black/85">
-            <span style={{ fontFamily: DISPLAY }}>9:41</span>
+          <div className="relative z-10 flex items-center justify-between px-9 pt-5 text-lg font-semibold text-black/85">
+            <span>9:41</span>
 
             <span className="flex items-center gap-1.5">
               <SignalHigh className="size-4" />
@@ -262,7 +259,6 @@ function DeviceReel() {
             </span>
           </div>
 
-          {/* The island */}
           <div className="absolute inset-x-0 top-3.5 z-20 flex justify-center">
             <motion.div
               animate={{
@@ -271,7 +267,7 @@ function DeviceReel() {
                 borderRadius: state.radius,
               }}
               transition={reduceMotion ? { duration: 0.15 } : PREVIEW_SPRING}
-              className="overflow-hidden bg-black text-white shadow-[0_8px_24px_rgba(0,0,0,.45)]"
+              className="overflow-hidden bg-black text-white shadow-xl"
               style={{ willChange: "width, height", contain: "layout paint" }}
             >
               <AnimatePresence mode="sync" initial={false}>
@@ -282,11 +278,14 @@ function DeviceReel() {
                     animate={{ opacity: 1, filter: PREVIEW_FOCUS_IN }}
                     exit={{ opacity: 0, filter: PREVIEW_FOCUS_OUT }}
                     transition={{ duration: 0.34, ease: EASE }}
-                    className="flex h-full items-center justify-between px-3.5 text-[11px] font-medium"
+                    className="flex h-full items-center justify-between px-3.5 text-xs font-medium"
                   >
-                    <BellOff className="size-4 text-[#FF9F0A]" />
+                    <BellOff
+                      className="size-4"
+                      style={{ color: iOS.orange }}
+                    />
                     <span>Silent Mode</span>
-                    <span className="text-[#FF9F0A]">On</span>
+                    <span style={{ color: iOS.orange }}>On</span>
                   </motion.div>
                 )}
 
@@ -298,11 +297,7 @@ function DeviceReel() {
                       filter: PREVIEW_FOCUS_IN[0],
                       scale: 0.92,
                     }}
-                    animate={{
-                      opacity: 1,
-                      filter: PREVIEW_FOCUS_IN,
-                      scale: 1,
-                    }}
+                    animate={{ opacity: 1, filter: PREVIEW_FOCUS_IN, scale: 1 }}
                     exit={{
                       opacity: 0,
                       filter: PREVIEW_FOCUS_OUT,
@@ -312,16 +307,21 @@ function DeviceReel() {
                     className="flex h-full flex-col justify-between p-3.5"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="size-11 rounded-[10px] bg-gradient-to-br from-[#ff375f] to-[#bf5af2]" />
+                      <div
+                        className="size-11 rounded-md"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${iOS.pink}, ${iOS.purple})`,
+                        }}
+                      />
 
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] font-semibold">
+                        <p className="truncate text-base font-semibold">
                           Midnight Drive
                         </p>
-                        <p className="text-[11px] text-white/55">Neon Coast</p>
+                        <p className="text-xs text-white/55">Neon Coast</p>
                       </div>
 
-                      <Music className="size-4 text-[#ff375f]" />
+                      <Music className="size-4" style={{ color: iOS.pink }} />
                     </div>
 
                     <div className="h-[3px] overflow-hidden rounded-full bg-white/20">
@@ -342,12 +342,11 @@ function DeviceReel() {
             </motion.div>
           </div>
 
-          {/* Home screen */}
           <div className="absolute inset-x-0 bottom-24 grid grid-cols-4 gap-x-6 gap-y-5 px-10">
             {Array.from({ length: 12 }).map((_, item) => (
               <div
                 key={item}
-                className="aspect-square rounded-[15px] bg-white/30 shadow-[0_2px_8px_rgba(0,0,0,.08)] backdrop-blur-md"
+                className="aspect-square rounded-xl bg-white/30 shadow-sm backdrop-blur-md"
               />
             ))}
           </div>
@@ -379,84 +378,28 @@ function Tile({
       whileHover={{ y: -4 }}
       whileTap={{ scale: 0.97 }}
       transition={{ type: "spring", stiffness: 420, damping: 26 }}
-      className="group flex min-h-[170px] w-full flex-col items-center justify-center gap-3.5 rounded-[22px] bg-white p-5 text-center shadow-[0_4px_16px_rgba(0,0,0,.06)] ring-1 ring-black/[0.06] transition-shadow duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,.13)] dark:bg-[#1c1c1e] dark:shadow-none dark:ring-white/[0.09] dark:hover:ring-white/25"
+      className="group flex min-h-[170px] w-full flex-col items-center justify-center gap-3.5 rounded-lg border bg-card p-5 text-center text-card-foreground shadow-sm transition-shadow duration-300 hover:shadow-xl"
     >
       <span
-        className="grid size-[58px] place-items-center rounded-[19px] transition-transform duration-300 group-hover:scale-[1.07]"
+        className="grid size-[58px] place-items-center rounded-md transition-transform duration-300 group-hover:scale-[1.07]"
         style={{
           color: example.accent,
           backgroundColor: `${example.accent}1a`,
         }}
       >
-        <example.icon className="size-[28px]" strokeWidth={1.9} />
+        <example.icon className="size-7" strokeWidth={1.9} />
       </span>
 
       <span>
-        <span
-          className="block text-[15px] font-semibold tracking-[-0.01em] text-[#1d1d1f] dark:text-[#f5f5f7]"
-          style={{ fontFamily: DISPLAY }}
-        >
+        <span className="block text-lg font-semibold tracking-tight">
           {example.label}
         </span>
 
-        <span className="mt-0.5 block text-[12px] text-[#6e6e73] dark:text-[#a1a1a6]">
+        <span className="mt-0.5 block text-xs text-muted-foreground">
           {example.hint}
         </span>
       </span>
     </motion.button>
-  );
-}
-
-function Segmented({
-  chapters,
-  active,
-  onChange,
-}: {
-  chapters: Chapter[];
-  active: string;
-  onChange: (id: string) => void;
-}) {
-  return (
-    <div className="flex justify-center">
-      <div className="inline-flex gap-1 rounded-full bg-black/[0.05] p-1 backdrop-blur-xl dark:bg-white/10">
-        {chapters.map((chapter) => {
-          const selected = chapter.id === active;
-
-          return (
-            <button
-              key={chapter.id}
-              type="button"
-              onClick={() => onChange(chapter.id)}
-              className="relative rounded-full px-4 py-2 text-[13px] font-medium transition-colors sm:px-6 sm:text-[15px]"
-              style={{ fontFamily: DISPLAY }}
-            >
-              {selected && (
-                <motion.span
-                  layoutId="segment"
-                  transition={{
-                    type: "spring",
-                    stiffness: 420,
-                    damping: 34,
-                    mass: 0.9,
-                  }}
-                  className="absolute inset-0 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,.12)] dark:bg-[#2c2c2e]"
-                />
-              )}
-
-              <span
-                className={
-                  selected
-                    ? "relative text-[#1d1d1f] dark:text-white"
-                    : "relative text-[#6e6e73] dark:text-[#a1a1a6]"
-                }
-              >
-                {chapter.tab}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
   );
 }
 
@@ -474,52 +417,48 @@ function Stage() {
   );
 
   return (
-    <div
-      className="-mx-2 bg-[#f5f5f7] text-[#1d1d1f] dark:bg-black dark:text-[#f5f5f7]"
-      style={{ fontFamily: DISPLAY }}
-    >
+    <div className="-mx-2 bg-background text-foreground">
       {/* ------------------------------- Hero ------------------------------- */}
 
-      <section className="overflow-hidden bg-white px-6 pt-20 dark:bg-black sm:pt-28">
+      <section className="overflow-hidden border-b px-6 pt-20 sm:pt-28">
         <motion.div
           initial={{ opacity: 0, y: 24, filter: "blur(10px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 0.9, ease: EASE }}
           className="mx-auto max-w-[780px] text-center"
         >
-          <p className="text-[19px] font-semibold text-[#0071e3]">
-            Dynamic Island
-          </p>
+          <p className="text-xl font-semibold text-primary">Dynamic Island</p>
 
-          <h1 className="mt-3 text-[44px] font-semibold leading-[1.04] tracking-[-0.025em] sm:text-[76px]">
+          <h1 className="mt-3 text-5xl font-semibold leading-[1.04] tracking-tight sm:text-7xl">
             A little space.
             <br />
-            <span className="bg-gradient-to-r from-[#0a84ff] via-[#bf5af2] to-[#ff375f] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-fuchsia-500 to-rose-500 bg-clip-text text-transparent">
               A lot of magic.
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-[620px] text-[19px] leading-[1.42] text-[#6e6e73] dark:text-[#a1a1a6] sm:text-[21px]">
+          <p className="mx-auto mt-6 max-w-[620px] text-xl leading-relaxed text-muted-foreground sm:text-2xl">
             Alerts, activities and controls take shape at the top of the screen,
             then fold away when you are done.
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-            <button
-              type="button"
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+            <Button
+              size="lg"
+              className="rounded-full"
               onClick={() => show(musicActivity())}
-              className="rounded-full bg-[#0071e3] px-[24px] py-[12px] text-[17px] font-normal text-white transition-colors duration-200 hover:bg-[#0077ed]"
             >
               See a Live Activity
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
+              variant="link"
+              size="lg"
+              className="px-0"
               onClick={() => show(callActivity())}
-              className="text-[17px] text-[#0071e3] transition-opacity hover:opacity-70"
             >
               Try an incoming call &rsaquo;
-            </button>
+            </Button>
           </div>
         </motion.div>
 
@@ -535,12 +474,34 @@ function Stage() {
 
       {/* ----------------------------- Catalogue ---------------------------- */}
 
-      <section className="px-6 py-20 sm:py-28">
-        <Segmented
-          chapters={CHAPTERS}
-          active={active}
-          onChange={setActive}
-        />
+      <section className="bg-muted/40 px-6 py-20 sm:py-28">
+        <div className="flex justify-center">
+          <div className="inline-flex gap-1 rounded-full bg-muted p-1">
+            <AnimatedBackground
+              defaultValue={CHAPTERS[0].id}
+              onValueChange={(id) => id && setActive(id)}
+              className="rounded-full bg-background shadow-sm"
+              transition={{ type: "spring", stiffness: 420, damping: 34 }}
+            >
+              {CHAPTERS.map((entry) => (
+                <button
+                  key={entry.id}
+                  data-id={entry.id}
+                  type="button"
+                  aria-label={entry.tab}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-base font-medium transition-colors sm:px-6",
+                    entry.id === active
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {entry.tab}
+                </button>
+              ))}
+            </AnimatedBackground>
+          </div>
+        </div>
 
         <div className="mx-auto mt-12 max-w-[1060px]">
           <AnimatePresence mode="wait" initial={false}>
@@ -552,11 +513,11 @@ function Stage() {
               transition={{ duration: 0.42, ease: EASE }}
             >
               <div className="mx-auto max-w-[640px] text-center">
-                <h2 className="text-[32px] font-semibold leading-[1.08] tracking-[-0.02em] sm:text-[48px]">
+                <h2 className="text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
                   {chapter.title}
                 </h2>
 
-                <p className="mt-4 text-[17px] leading-[1.47] text-[#6e6e73] dark:text-[#a1a1a6] sm:text-[19px]">
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
                   {chapter.copy}
                 </p>
               </div>
@@ -584,29 +545,27 @@ function Stage() {
 
       {/* ------------------------------ Craft ------------------------------- */}
 
-      <section className="bg-white px-6 py-20 dark:bg-[#0a0a0a] sm:py-28">
+      <section className="border-t px-6 py-20 sm:py-28">
         <div className="mx-auto max-w-[980px]">
-          <h2 className="max-w-[720px] text-[32px] font-semibold leading-[1.08] tracking-[-0.02em] sm:text-[48px]">
+          <h2 className="max-w-[720px] text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
             Every frame does
             <br />
-            <span className="text-[#6e6e73] dark:text-[#a1a1a6]">
-              something physical.
-            </span>
+            <span className="text-muted-foreground">something physical.</span>
           </h2>
 
           <div className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-3">
             {[
               {
                 title: "Real springs",
-                copy: "Geometry travels on a spring tuned by response and bounce, so it overshoots and settles like an object with weight.",
+                copy: "Geometry travels on a spring rather than a curve, so it overshoots and settles like an object with weight.",
               },
               {
                 title: "Focus pull",
-                copy: "Content arrives out of focus and resolves sharp, then softens again on the way out. The shell itself stays perfectly crisp.",
+                copy: "Content arrives out of focus and resolves sharp, then softens again on the way out. The shell itself stays crisp.",
               },
               {
-                title: "Two directions",
-                copy: "Growing carries more bounce than shrinking. Opening feels generous, closing feels decisive.",
+                title: "One tap deeper",
+                copy: "Compact by default, expanded on tap, and folded away by a tap anywhere outside it.",
               },
             ].map((item) => (
               <motion.div
@@ -616,13 +575,13 @@ function Stage() {
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, ease: EASE }}
               >
-                <div className="h-px w-full bg-black/10 dark:bg-white/15" />
+                <div className="h-px w-full bg-border" />
 
-                <h3 className="mt-5 text-[21px] font-semibold tracking-[-0.01em]">
+                <h3 className="mt-5 text-2xl font-semibold tracking-tight">
                   {item.title}
                 </h3>
 
-                <p className="mt-2.5 text-[15px] leading-[1.47] text-[#6e6e73] dark:text-[#a1a1a6]">
+                <p className="mt-2.5 text-base leading-relaxed text-muted-foreground">
                   {item.copy}
                 </p>
               </motion.div>
@@ -633,8 +592,8 @@ function Stage() {
 
       {/* ------------------------------ Footer ------------------------------ */}
 
-      <section className="px-6 py-14 text-center">
-        <p className="text-[12px] leading-[1.5] text-[#86868b]">
+      <section className="border-t px-6 py-14 text-center">
+        <p className="text-xs text-muted-foreground">
           Select an activity to present it. Tap the island to expand, tap
           anywhere outside to fold it away.
         </p>

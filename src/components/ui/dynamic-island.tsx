@@ -44,95 +44,38 @@ export const ISLAND_SIZES: Record<IslandSize, SizeSpec> = {
   ultra: { width: 372, height: 252, radius: 44 },
 };
 
-/* -------------------------------------------------------------------------- */
-/*  Physics                                                                   */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Apple describes its springs as `response` (how long one oscillation takes)
- * and `bounce` (0 = critically damped, higher = more overshoot), which is a far
- * more physical way to tune motion than raw stiffness/damping. This converts
- * that notation into the coefficients framer-motion wants:
- *
- *   stiffness = (2pi / response)^2 * mass
- *   damping   = 4pi * dampingFraction * mass / response     (dampingFraction = 1 - bounce)
- */
-const spring = (
-  response: number,
-  bounce: number,
-  { mass = 1, restDelta = 0.008, restSpeed = 0.04 } = {},
-) => ({
+const SHELL_SPRING = {
   type: "spring" as const,
-  stiffness: ((2 * Math.PI) / response) ** 2 * mass,
-  damping: (4 * Math.PI * (1 - bounce) * mass) / response,
-  mass,
-  restDelta,
-  restSpeed,
-});
+  stiffness: 510,
+  damping: 34,
+  mass: 0.82,
+  restDelta: 0.08,
+  restSpeed: 0.08,
+};
 
-// Geometry is measured in pixels, so it needs a far coarser rest threshold than
-// a 0..1 transform. Settling at a twentieth of a pixel is invisible, and not
-// waiting for it is the difference between a crisp stop and a lingering crawl.
-const PX_REST = { restDelta: 0.05, restSpeed: 0.2 };
+// Expansion has a fraction more travel than retraction. This is what gives the
+// shell its soft, rubber-like overshoot without making every interaction slow.
+const EXPAND_SPRING = {
+  type: "spring" as const,
+  stiffness: 430,
+  damping: 31,
+  mass: 0.88,
+  restDelta: 0.08,
+  restSpeed: 0.08,
+};
 
-// Growing has more travel and more bounce than shrinking, exactly like the real
-// island: it springs open and snaps closed.
-const EXPAND_SPRING = spring(0.38, 0.28, { mass: 1, ...PX_REST });
-const COLLAPSE_SPRING = spring(0.34, 0.18, { mass: 1, ...PX_REST });
-
-// Swapping between two compact activities is a shorter, tighter move.
-const MORPH_SPRING = spring(0.36, 0.24, { mass: 1, ...PX_REST });
-
-// The squash applied to the shell itself while it travels.
-const SQUASH_SPRING = spring(0.34, 0.26);
-
-/* -------------------------------------------------------------------------- */
-/*  Focus envelopes                                                           */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Every envelope below is a keyframe list plus its own timing curve, so the
- * shape of the motion lives entirely in these numbers. That means the easing
- * BETWEEN keyframes has to stay gentle: a sharp ease-out re-times each segment
- * to finish almost as soon as it starts, which silently flattens the whole
- * envelope into a single snap. Shape in the keyframes, smoothing in the ease.
- */
-const SEGMENT_EASE = "easeInOut" as const;
-
-// Content arrives out of focus and pulls sharp, overshooting a touch into a
-// second micro-defocus while the shell is still springing. Reading the two
-// arrays top to bottom is reading exactly what the eye sees.
-const FOCUS_IN = [
-  "blur(16px)",
-  "blur(9px)",
-  "blur(3.5px)",
-  "blur(0.6px)",
+// Keep the physical black shell perfectly sharp. Blurring the shell itself
+// expands its painted bounds and can make the pill look horizontally stretched
+// while its width is springing. Only the pixels inside use a focus envelope.
+const CONTENT_FOCUS_IN = [
+  "blur(8px)",
+  "blur(1.25px)",
   "blur(0px)",
-  "blur(0.45px)",
+  "blur(0.6px)",
   "blur(0px)",
 ];
 
-const FOCUS_IN_TIMES = [0, 0.18, 0.36, 0.55, 0.7, 0.85, 1];
-
-// Leaving is the same move reversed and compressed. It has to bite early:
-// pixels that are already transparent cannot be seen going soft, so the blur
-// leads the fade rather than trailing it.
-const FOCUS_OUT = ["blur(0px)", "blur(4px)", "blur(9px)", "blur(15px)"];
-
-const FOCUS_OUT_TIMES = [0, 0.32, 0.66, 1];
-
-// The shell materialises out of, and dissolves back into, the notch. The
-// midpoint is held deliberately high: an exponential decay straight to sharp
-// reads as a rendering glitch, a held defocus reads as depth of field.
-const SHELL_FOCUS_IN = ["blur(10px)", "blur(6px)", "blur(1.5px)", "blur(0px)"];
-const SHELL_FOCUS_TIMES = [0, 0.3, 0.62, 1];
-
-const SHELL_FOCUS_OUT = ["blur(0px)", "blur(2px)", "blur(6px)", "blur(12px)"];
-const SHELL_FOCUS_OUT_TIMES = [0, 0.28, 0.6, 1];
-
-// Apple's own focus-pull easing: leave fast, arrive slow.
-const FOCUS_EASE = [0.16, 1, 0.3, 1] as const;
-const DEFOCUS_EASE = [0.55, 0, 1, 0.45] as const;
+const CONTENT_FOCUS_OUT = ["blur(0px)", "blur(0.8px)", "blur(7px)"];
 
 /* -------------------------------------------------------------------------- */
 /*  Presentation of a single activity                                         */
@@ -170,66 +113,67 @@ export interface IslandActivity {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Content transition                                                        */
+/*  Content transition helper                                                 */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Outgoing and incoming content overlap deliberately, but not symmetrically.
- * The incoming layer is held back a couple of frames so the old pixels get to
- * go soft before the new ones start resolving underneath them. Without that
- * offset both layers sit sharp on top of each other mid-swap and the island
- * looks like it is double-printing rather than exchanging its contents.
- */
 const contentMotion = {
   initial: (opening: boolean) => ({
     opacity: 0,
-    filter: FOCUS_IN[0],
-    scale: opening ? 0.9 : 1.06,
-    y: opening ? -5 : 3,
+    filter: "blur(2.5px)",
+    scale: opening ? 0.965 : 1.025,
+    y: opening ? -2 : 1,
   }),
-
   animate: {
     opacity: 1,
-    filter: FOCUS_IN,
+
+    // Focus quickly, soften once during the spring overshoot, then finish
+    // completely sharp. The outer black shell itself is never blurred.
+    filter: CONTENT_FOCUS_IN,
+
     scale: 1,
     y: 0,
-
     transition: {
-      // Deliberately slower than the blur so the content is still visible
-      // while it is resolving. Fading in faster than it focuses would hide
-      // the entire focus pull behind a transparent layer.
-      opacity: { duration: 0.3, delay: 0.05, ease: "easeOut" as const },
-
-      filter: {
-        duration: 0.46,
-        delay: 0.04,
-        times: FOCUS_IN_TIMES,
-        ease: SEGMENT_EASE,
+      opacity: { duration: 0.11, delay: 0.035 },
+      filter: { duration: 0.14, delay: 0.02, ease: [0.2, 0.8, 0.2, 1] },
+      scale: {
+        type: "spring" as const,
+        stiffness: 650,
+        damping: 38,
+        mass: 0.55,
       },
-
-      scale: { ...spring(0.4, 0.24), delay: 0.03 },
-      y: { ...spring(0.4, 0.24), delay: 0.03 },
+      y: { type: "spring" as const, stiffness: 650, damping: 38, mass: 0.55 },
     },
   },
-
   exit: (opening: boolean) => ({
     opacity: 0,
-    filter: FOCUS_OUT,
-    scale: opening ? 1.07 : 0.92,
-    y: opening ? 4 : -4,
+
+    // Defocus outgoing pixels immediately before the content disappears.
+    filter: CONTENT_FOCUS_OUT,
+
+    scale: opening ? 1.018 : 0.98,
+    y: opening ? 1 : -1,
 
     transition: {
-      // Hold opacity up through the first half of the defocus, then drop.
-      opacity: { duration: 0.26, ease: [0.7, 0, 0.84, 0.35] as const },
-
-      filter: {
-        duration: 0.28,
-        times: FOCUS_OUT_TIMES,
-        ease: SEGMENT_EASE,
+      opacity: {
+        duration: 0.075,
+        ease: "easeOut" as const,
       },
 
-      scale: { duration: 0.26, ease: DEFOCUS_EASE },
-      y: { duration: 0.26, ease: DEFOCUS_EASE },
+      filter: {
+        duration: 0.105,
+        times: [0, 0.24, 1],
+        ease: [0.4, 0, 1, 1],
+      },
+
+      scale: {
+        duration: 0.09,
+        ease: "easeOut" as const,
+      },
+
+      y: {
+        duration: 0.09,
+        ease: "easeOut" as const,
+      },
     },
   }),
 };
@@ -313,44 +257,6 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
   const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
 
-  // Growing and shrinking are different physical events and get different
-  // springs. Comparing against the previous frame's area is what tells them
-  // apart, including when one activity morphs straight into another.
-  const previousArea = useRef(spec.width * spec.height);
-  const area = spec.width * spec.height;
-  const growing = area >= previousArea.current;
-
-  useEffect(() => {
-    previousArea.current = area;
-  }, [area]);
-
-  const geometrySpring = showExpanded
-    ? EXPAND_SPRING
-    : growing
-      ? MORPH_SPRING
-      : COLLAPSE_SPRING;
-
-  const shellTransition = reduceMotion
-    ? { duration: 0.12 }
-    : {
-        width: geometrySpring,
-        height: geometrySpring,
-        borderRadius: geometrySpring,
-        scaleX: SQUASH_SPRING,
-        scaleY: SQUASH_SPRING,
-        y: SQUASH_SPRING,
-        opacity: { duration: 0.18, ease: FOCUS_EASE },
-
-        // Spread across the same window the geometry spring takes to settle,
-        // and hold the midpoint so the defocus is actually legible instead of
-        // collapsing to sharp inside the first two frames.
-        filter: {
-          duration: 0.4,
-          times: SHELL_FOCUS_TIMES,
-          ease: SEGMENT_EASE,
-        },
-      };
-
   const toggle = useCallback(() => {
     if (!canExpand) return;
 
@@ -360,7 +266,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   }, [canExpand, clearDismissTimer]);
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig
+      reducedMotion="user"
+      transition={reduceMotion ? { duration: 0.12 } : SHELL_SPRING}
+    >
       <div className="pointer-events-none fixed inset-x-0 top-3 z-[100000] flex justify-center">
         <AnimatePresence initial={false}>
           {activity && (
@@ -371,14 +280,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
                 borderRadius: ISLAND_SIZES.idle.radius,
-
-                // Squashed flat and out of focus, as if it were still part of
-                // the notch and had not resolved into an object yet.
-                scaleX: 0.7,
-                scaleY: 0.52,
-                y: -12,
+                scaleX: 0.82,
+                scaleY: 0.68,
+                y: -9,
                 opacity: 0,
-                filter: reduceMotion ? "blur(0px)" : SHELL_FOCUS_IN[0],
               }}
               animate={{
                 width: spec.width,
@@ -388,33 +293,27 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 scaleY: 1,
                 y: 0,
                 opacity: 1,
-                filter: reduceMotion ? "blur(0px)" : SHELL_FOCUS_IN,
+                transition: reduceMotion
+                  ? { duration: 0.12 }
+                  : showExpanded
+                    ? EXPAND_SPRING
+                    : SHELL_SPRING,
               }}
               exit={{
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
                 borderRadius: ISLAND_SIZES.idle.radius,
-                scaleX: 0.76,
-                scaleY: 0.58,
-                y: -11,
+                scaleX: 0.86,
+                scaleY: 0.72,
+                y: -8,
                 opacity: 0,
-                filter: reduceMotion ? "blur(0px)" : SHELL_FOCUS_OUT,
                 transition: reduceMotion
                   ? { duration: 0.1 }
-                  : {
-                      ...COLLAPSE_SPRING,
-                      opacity: { duration: 0.19, ease: DEFOCUS_EASE },
-                      filter: {
-                        duration: 0.26,
-                        times: SHELL_FOCUS_OUT_TIMES,
-                        ease: SEGMENT_EASE,
-                      },
-                    },
+                  : { ...SHELL_SPRING, opacity: { duration: 0.1 } },
               }}
-              transition={shellTransition}
               whileTap={
                 canExpand && !reduceMotion
-                  ? { scaleX: 0.975, scaleY: 0.945 }
+                  ? { scaleX: 0.985, scaleY: 0.965 }
                   : undefined
               }
               onClick={toggle}
@@ -423,32 +322,26 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
               aria-expanded={canExpand ? expanded : undefined}
               className={cn(
                 "pointer-events-auto relative overflow-hidden bg-black text-white",
-                "shadow-[0_10px_34px_rgba(0,0,0,0.42)]",
+                "shadow-[0_8px_30px_rgba(0,0,0,0.35)]",
                 "ring-1 ring-white/[0.06]",
                 "select-none",
                 canExpand && "cursor-pointer",
               )}
               style={{
-                willChange: "width, height, transform, filter",
+                willChange: "width, height, transform",
                 transformOrigin: "50% 0%",
                 WebkitFontSmoothing: "antialiased",
-
-                // The shell resizes every frame. Containment keeps that work
-                // from escaping into the rest of the page's layout.
-                contain: "layout paint",
-                backfaceVisibility: "hidden",
                 transform: "translateZ(0)",
               }}
             >
               {/* Subtle top gloss, like the physical hardware surface. */}
               <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.05] to-transparent" />
 
-              {/*
-                No `initial={false}` here. This presence mounts at the same
-                moment as the shell, so suppressing its first render would skip
-                the focus pull on the very appearance it matters most for.
-              */}
-              <AnimatePresence mode="sync" custom={showExpanded}>
+              <AnimatePresence
+                mode="sync"
+                initial={false}
+                custom={showExpanded}
+              >
                 {showCompact ? (
                   <motion.div
                     key={`${activity.id}-compact`}
@@ -457,9 +350,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    data-island-content="compact"
                     className="absolute inset-0"
-                    style={{ willChange: "filter, transform, opacity" }}
                   >
                     {activity.collapsed ?? (
                       <div className="flex h-full w-full items-center justify-between gap-2 px-3.5">
@@ -487,9 +378,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    data-island-content="expanded"
                     className="absolute inset-0 p-4"
-                    style={{ willChange: "filter, transform, opacity" }}
                   >
                     {activity.expanded}
                   </motion.div>
