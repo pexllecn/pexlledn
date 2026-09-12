@@ -410,7 +410,7 @@ body {
 }
 
 ::selection {
-  background-color: hsl(var(--primary) / 0.3);
+  background-color: hsl(var(--primary) / 0.19);
   color: hsl(var(--foreground) / 1);
 }
 
@@ -737,4 +737,369 @@ body {
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   border-color: transparent;
+}
+
+/* ======================================================================
+   Drifting cloud field
+   ----------------------------------------------------------------------
+   An ambient, slowly morphing cloud background. Three ideas make it work:
+
+   1. No `filter: blur()`. Softness comes from radial masks, which the
+      compositor resolves for free. Blurring six large layers on every
+      frame is what makes this kind of effect stutter.
+   2. Motion is transform and opacity only, so every frame stays on the
+      GPU. Each mass gets its own long, mutually prime period, so the
+      composite never visibly loops.
+   3. Cloud *shape* comes from a static fractal-noise mask on the wrapper
+      while the coloured masses drift underneath it. The wisps therefore
+      morph — thickening and thinning — without animating the mask itself,
+      which would force a repaint each frame.
+
+   Colour is derived from --primary, so the field follows the accent picker,
+   the preset and light/dark automatically, and cross-fades when they change.
+   ====================================================================== */
+
+.cloudfield {
+  --wisp-a: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.009' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='luminanceToAlpha'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.8' intercept='0.32'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23w)'/%3E%3C/svg%3E");
+  --wisp-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.009 0.005' numOctaves='4' seed='47' stitchTiles='stitch'/%3E%3CfeColorMatrix type='luminanceToAlpha'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.7' intercept='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23w)'/%3E%3C/svg%3E");
+
+  /* Base tints — the accent alone, at four densities. The @supports block
+     below refines these where color-mix is available. */
+  --cloud-a: hsl(var(--primary) / 0.36);
+  --cloud-b: hsl(var(--primary) / 0.26);
+  --cloud-c: hsl(var(--primary) / 0.19);
+  --cloud-d: hsl(var(--primary) / 0.14);
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+/* A single hue reads flat. Bending the accent a little toward sky and
+   violet gives the field depth without letting it drift off-brand. */
+@supports (color: color-mix(in oklab, red, blue)) {
+  .cloudfield {
+    /* Each tint is built in two steps: bend the accent toward a companion
+       hue so the field has depth, then pull it a fraction toward the
+       foreground. That second step is what stops a pale accent — yellow,
+       lime, cyan — from vanishing into a white page, and equally what
+       stops a dark accent from sinking into a dark one. It is
+       self-correcting, because --foreground already flips with the theme. */
+    --cloud-a: color-mix(
+      in oklab,
+      color-mix(in oklab, hsl(var(--primary) / 0.36) 78%, hsl(214 96% 60% / 0.36)) 80%,
+      hsl(var(--foreground) / 0.36)
+    );
+    --cloud-b: color-mix(
+      in oklab,
+      color-mix(in oklab, hsl(var(--primary) / 0.26) 58%, hsl(224 92% 62% / 0.26)) 83%,
+      hsl(var(--foreground) / 0.26)
+    );
+    --cloud-c: color-mix(
+      in oklab,
+      color-mix(in oklab, hsl(var(--primary) / 0.19) 50%, hsl(268 88% 66% / 0.19)) 86%,
+      hsl(var(--foreground) / 0.19)
+    );
+    --cloud-d: color-mix(
+      in oklab,
+      color-mix(in oklab, hsl(var(--primary) / 0.14) 66%, hsl(190 92% 60% / 0.14)) 88%,
+      hsl(var(--foreground) / 0.14)
+    );
+  }
+}
+
+/* Dark mode: the same sky, dimmed to a nebula so text keeps its contrast. */
+.dark .cloudfield {
+  --cloud-a: hsl(var(--primary) / 0.4);
+  --cloud-b: hsl(var(--primary) / 0.3);
+  --cloud-c: hsl(var(--primary) / 0.22);
+  --cloud-d: hsl(var(--primary) / 0.16);
+}
+
+@supports (color: color-mix(in oklab, red, blue)) {
+  .dark .cloudfield {
+    --cloud-a: color-mix(
+      in oklab,
+      color-mix(in oklab, hsl(var(--primary) / 0.4) 74%, hsl(216 96% 58% / 0.4)) 88%,
+      hsl(var(--foreground) / 0.4)
+    );
+    --cloud-b: color-mix(
+      in oklab,
+      color-mix(in oklab, hsl(var(--primary) / 0.3) 54%, hsl(228 92% 60% / 0.3)) 91%,
+      hsl(var(--foreground) / 0.3)
+    );
+    --cloud-c: color-mix(in oklab, hsl(var(--primary) / 0.22) 48%, hsl(270 86% 62% / 0.22));
+    --cloud-d: color-mix(in oklab, hsl(var(--primary) / 0.16) 62%, hsl(192 90% 56% / 0.16));
+  }
+}
+
+/* The ground the clouds sit on — a faint wash pooling under the hero. */
+.cloudfield__wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 120% 70% at 50% -10%,
+      var(--cloud-d),
+      transparent 65%
+    ),
+    linear-gradient(to bottom, hsl(var(--primary) / 0.04), transparent 60%);
+}
+
+/* The shader canvas. DeepSeek fades its own cloud canvas out toward the
+   bottom of the frame; the same mask here keeps the densest cloud up behind
+   the headline and hands the lower page a clean surface to sit on. */
+.cloudfield__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.96) 12%,
+    rgb(0 0 0 / 0.78) 62%,
+    rgb(0 0 0 / 0.3) 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.96) 12%,
+    rgb(0 0 0 / 0.78) 62%,
+    rgb(0 0 0 / 0.3) 88%,
+    transparent 100%
+  );
+}
+
+/* Mask wrappers. The noise stays put; the clouds slide beneath it. */
+.cloudfield__mask {
+  position: absolute;
+  inset: -25%;
+  -webkit-mask-image: var(--wisp-a);
+  mask-image: var(--wisp-a);
+  -webkit-mask-size: 190% 190%;
+  mask-size: 190% 190%;
+  -webkit-mask-position: 20% 30%;
+  mask-position: 20% 30%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: cloud-breathe 41s ease-in-out infinite alternate;
+}
+
+.cloudfield__mask--b {
+  -webkit-mask-image: var(--wisp-b);
+  mask-image: var(--wisp-b);
+  -webkit-mask-size: 240% 220%;
+  mask-size: 240% 220%;
+  -webkit-mask-position: 70% 60%;
+  mask-position: 70% 60%;
+  animation: cloud-breathe 67s ease-in-out infinite alternate;
+  animation-delay: -23s;
+}
+
+/* The tint sits in background-color rather than inside the gradient, and
+   the soft falloff moves into a radial mask. Visually identical — but a
+   standard property like background-color re-transitions when the accent
+   behind it changes, which a custom property does not, so switching accent
+   dissolves from one sky to the next instead of snapping. */
+.cloud {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  transition: background-color 700ms ease;
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 74%);
+  mask-image: radial-gradient(closest-side, #000, transparent 74%);
+}
+
+/* Each mass is a closest-side gradient with a long tail, which is what
+   reads as "out of focus" without costing a blur pass. Positions are a
+   percentage of the mask wrapper, whose -25% inset means the visible
+   viewport runs from roughly 17% to 83% on both axes — masses are placed
+   to straddle those edges so no cloud ever shows a seam. */
+.cloud--1 {
+  left: 8%;
+  top: 0%;
+  width: 86vmax;
+  height: 58vmax;
+  background-color: var(--cloud-a);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 78%);
+  mask-image: radial-gradient(closest-side, #000, transparent 78%);
+  animation-name: cloud-drift-a;
+  animation-duration: 73s;
+}
+
+.cloud--2 {
+  right: 2%;
+  top: 8%;
+  width: 70vmax;
+  height: 62vmax;
+  background-color: var(--cloud-b);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 80%);
+  mask-image: radial-gradient(closest-side, #000, transparent 80%);
+  animation-name: cloud-drift-b;
+  animation-duration: 97s;
+  animation-delay: -31s;
+}
+
+.cloud--3 {
+  left: 0%;
+  top: 34%;
+  width: 76vmax;
+  height: 52vmax;
+  background-color: var(--cloud-c);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 76%);
+  mask-image: radial-gradient(closest-side, #000, transparent 76%);
+  animation-name: cloud-drift-c;
+  animation-duration: 113s;
+  animation-delay: -57s;
+}
+
+.cloud--4 {
+  left: 26%;
+  top: 20%;
+  width: 58vmax;
+  height: 46vmax;
+  background-color: var(--cloud-a);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 72%);
+  mask-image: radial-gradient(closest-side, #000, transparent 72%);
+  animation-name: cloud-drift-b;
+  animation-duration: 83s;
+  animation-delay: -13s;
+}
+
+.cloud--5 {
+  right: 6%;
+  top: 44%;
+  width: 64vmax;
+  height: 50vmax;
+  background-color: var(--cloud-d);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 78%);
+  mask-image: radial-gradient(closest-side, #000, transparent 78%);
+  animation-name: cloud-drift-a;
+  animation-duration: 131s;
+  animation-delay: -71s;
+}
+
+.cloud--6 {
+  left: 34%;
+  top: 2%;
+  width: 48vmax;
+  height: 38vmax;
+  background-color: var(--cloud-b);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 70%);
+  mask-image: radial-gradient(closest-side, #000, transparent 70%);
+  animation-name: cloud-drift-c;
+  animation-duration: 59s;
+  animation-delay: -29s;
+}
+
+/* The faint plotting grid, held to the top of the frame. */
+.cloudfield__grid {
+  position: absolute;
+  inset: 0;
+  /* Ruled in the accent, not in the foreground. Foreground is near-black on
+     a light page, and a grid drawn in it greys the whole field down. */
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.09) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 52% at 50% 8%,
+    black,
+    transparent 72%
+  );
+  mask-image: radial-gradient(
+    ellipse 78% 52% at 50% 8%,
+    black,
+    transparent 72%
+  );
+}
+
+/* Settles the field back into the page background near the fold, so
+   whatever sits over it always has a clean surface to read against. */
+.cloudfield__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 58%,
+    hsl(var(--background) / 0.42) 84%,
+    hsl(var(--background) / 0.82) 100%
+  );
+}
+
+@keyframes cloud-drift-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(5%, -3.5%, 0) scale(1.09) rotate(2deg);
+  }
+  50% {
+    transform: translate3d(1.5%, 4%, 0) scale(0.95) rotate(-1.5deg);
+  }
+  75% {
+    transform: translate3d(-4.5%, 1%, 0) scale(1.05) rotate(1deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes cloud-drift-b {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.02) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(-6%, 3%, 0) scale(0.93) rotate(-3deg);
+  }
+  66% {
+    transform: translate3d(4%, 5.5%, 0) scale(1.11) rotate(2.5deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.02) rotate(0deg);
+  }
+}
+
+@keyframes cloud-drift-c {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.98) rotate(0deg);
+  }
+  20% {
+    transform: translate3d(7%, 2%, 0) scale(1.06) rotate(1.5deg);
+  }
+  45% {
+    transform: translate3d(2%, -4.5%, 0) scale(1.12) rotate(-2deg);
+  }
+  70% {
+    transform: translate3d(-5.5%, -1%, 0) scale(0.94) rotate(2deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.98) rotate(0deg);
+  }
+}
+
+@keyframes cloud-breathe {
+  from {
+    opacity: 0.78;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Some people get motion sick. Keep the sky, drop the drift. */
+@media (prefers-reduced-motion: reduce) {
+  .cloudfield__mask,
+  .cloud {
+    animation: none;
+  }
 }
