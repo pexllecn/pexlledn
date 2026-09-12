@@ -344,31 +344,10 @@ function Playground() {
   const { show } = useDynamicIsland();
 
   return (
-    <div className="mx-auto max-w-6xl px-3 pb-24 pt-20 md:pt-24">
-      {/* ------------------------------- HERO ------------------------------- */}
-      <section className="relative overflow-hidden rounded-3xl bg-[#08080a] px-6 py-12 text-white md:px-12 md:py-16">
-        {/* aurora */}
-        <motion.div
-          className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full blur-[90px]"
-          style={{ background: "#FF375F" }}
-          animate={{ x: [0, 40, 0], y: [0, 30, 0], opacity: [0.35, 0.55, 0.35] }}
-          transition={{ duration: 9, repeat: Infinity }}
-        />
-        <motion.div
-          className="pointer-events-none absolute -right-16 top-10 h-72 w-72 rounded-full blur-[90px]"
-          style={{ background: "#0A84FF" }}
-          animate={{ x: [0, -30, 0], y: [0, 40, 0], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 11, repeat: Infinity }}
-        />
-        <motion.div
-          className="pointer-events-none absolute -bottom-20 left-1/3 h-72 w-72 rounded-full blur-[100px]"
-          style={{ background: "#30D158" }}
-          animate={{ x: [0, 30, 0], opacity: [0.25, 0.45, 0.25] }}
-          transition={{ duration: 13, repeat: Infinity }}
-        />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(8,8,10,0.6))]" />
-
-        <div className="relative grid items-center gap-10 lg:grid-cols-2">
+    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] dark:bg-black dark:text-[#f5f5f7]">
+      <section className="relative overflow-hidden border-b border-black/[0.06] bg-white px-5 py-20 dark:border-white/10 dark:bg-[#0a0a0a] sm:py-28">
+        <div className="pointer-events-none absolute left-1/2 top-12 h-96 w-[680px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[110px]" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-[1fr_360px]">
           <motion.div
             initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}

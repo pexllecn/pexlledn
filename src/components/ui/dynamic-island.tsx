@@ -119,14 +119,10 @@ export interface IslandActivity {
 const contentMotion = {
   initial: (opening: boolean) => ({
     opacity: 0,
-
-    // Incoming content begins defocused while the shell is changing shape.
-    filter: `blur(${opening ? 8 : 6}px)`,
-
+    filter: "blur(2.5px)",
     scale: opening ? 0.965 : 1.025,
     y: opening ? -2 : 1,
   }),
-
   animate: {
     opacity: 1,
 
@@ -136,37 +132,26 @@ const contentMotion = {
 
     scale: 1,
     y: 0,
-
     transition: {
-      opacity: {
-        duration: 0.11,
-        delay: 0.035,
-      },
-
-      filter: {
-        duration: 0.2,
-        times: [0, 0.46, 0.7, 0.84, 1],
-        ease: "linear" as const,
-      },
-
+      opacity: { duration: 0.11, delay: 0.035 },
+      filter: { duration: 0.14, delay: 0.02, ease: [0.2, 0.8, 0.2, 1] },
       scale: {
         type: "spring" as const,
         stiffness: 650,
         damping: 38,
         mass: 0.55,
       },
-
-      y: {
-        type: "spring" as const,
-        stiffness: 650,
-        damping: 38,
-        mass: 0.55,
-      },
+      y: { type: "spring" as const, stiffness: 650, damping: 38, mass: 0.55 },
     },
   },
-
   exit: (opening: boolean) => ({
     opacity: 0,
+    filter: "blur(2px)",
+    scale: opening ? 1.018 : 0.98,
+    y: opening ? 1 : -1,
+    transition: { duration: 0.075, ease: "easeOut" as const },
+  }),
+};
 
     // Defocus outgoing pixels immediately before the content disappears.
     filter: CONTENT_FOCUS_OUT,
@@ -209,9 +194,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   onDismiss,
 }) => {
   const [expanded, setExpanded] = useState(false);
-
   const reduceMotion = useReducedMotion();
-
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const islandRef = useRef<HTMLDivElement>(null);
 
@@ -246,60 +229,50 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
     };
   }, [activity, onDismiss]);
 
-  // Tap anywhere outside the island to dismiss it.
+  // An outside tap backs out one presentation level at a time: expanded live
+  // activities collapse first, and only a later outside tap dismisses the
+  // compact activity.
   useEffect(() => {
     if (!activity) return;
+    const handlePointer = (e: PointerEvent) => {
+      if (islandRef.current && !islandRef.current.contains(e.target as Node)) {
+        if (timer.current) clearTimeout(timer.current);
 
-    const handlePointer = (event: PointerEvent) => {
-      const clickedOutside =
-        islandRef.current &&
-        !islandRef.current.contains(event.target as Node);
+        if (expanded && activity.expanded) {
+          setExpanded(false);
+          return;
+        }
 
-      if (!clickedOutside) return;
-
-      if (timer.current) {
-        clearTimeout(timer.current);
+        onDismiss();
       }
 
       onDismiss();
     };
-
-    // Defer registration so the event which opened the island cannot
-    // immediately close it again.
-    const listenerTimer = setTimeout(() => {
-      document.addEventListener("pointerdown", handlePointer);
-    }, 0);
-
+    // Defer so the click that opened the island doesn't immediately close it.
+    const id = setTimeout(
+      () => document.addEventListener("pointerdown", handlePointer),
+      0,
+    );
     return () => {
       clearTimeout(listenerTimer);
       document.removeEventListener("pointerdown", handlePointer);
     };
-  }, [activity, blurThen, expanded, onDismiss, reduceMotion]);
+  }, [activity, expanded, onDismiss]);
 
   const canExpand = Boolean(activity?.expanded);
   const showExpanded = expanded && canExpand;
   const collapsedSize = activity?.size ?? "compact";
   const openSize = activity?.expandedSize ?? "expanded";
   const canExpand = Boolean(activity?.expanded);
-
   const showExpanded = expanded && canExpand;
   const showCompact = !showExpanded;
 
   const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
 
+  const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
+
   const toggle = useCallback(() => {
     if (!canExpand) return;
-
-    window.navigator?.vibrate?.(8);
-
-    // Tapping keeps the island alive instead of allowing its original
-    // dismissal timer to close it during interaction.
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-
-    setExpanded((current) => !current);
-  }, [canExpand]);
 
   return (
     <MotionConfig
@@ -316,63 +289,40 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
                 borderRadius: ISLAND_SIZES.idle.radius,
-                scale: 0.96,
+                scaleX: 0.82,
+                scaleY: 0.68,
                 y: -9,
                 opacity: 0,
               }}
               animate={{
-                width: size.width,
-                height: size.height,
-                borderRadius: size.radius,
-                scale: 1,
+                width: spec.width,
+                height: spec.height,
+                borderRadius: spec.radius,
+                scaleX: 1,
+                scaleY: 1,
                 y: 0,
                 opacity: 1,
-
                 transition: reduceMotion
-                  ? {
-                      duration: 0.12,
-                    }
+                  ? { duration: 0.12 }
                   : showExpanded
-                    ? {
-                        ...EXPAND_SPRING,
-
-                        opacity: {
-                          duration: 0.08,
-                        },
-                      }
-                    : {
-                        ...SHELL_SPRING,
-
-                        opacity: {
-                          duration: 0.08,
-                        },
-                      },
+                    ? EXPAND_SPRING
+                    : SHELL_SPRING,
               }}
               exit={{
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
                 borderRadius: ISLAND_SIZES.idle.radius,
-                scale: 0.96,
+                scaleX: 0.86,
+                scaleY: 0.72,
                 y: -8,
                 opacity: 0,
-
                 transition: reduceMotion
-                  ? {
-                      duration: 0.1,
-                    }
-                  : {
-                      ...SHELL_SPRING,
-
-                      opacity: {
-                        duration: 0.085,
-                      },
-                    },
+                  ? { duration: 0.1 }
+                  : { ...SHELL_SPRING, opacity: { duration: 0.1 } },
               }}
               whileTap={
                 canExpand && !reduceMotion
-                  ? {
-                      scale: 0.985,
-                    }
+                  ? { scaleX: 0.985, scaleY: 0.965 }
                   : undefined
               }
               onClick={toggle}
@@ -387,10 +337,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 canExpand && "cursor-pointer",
               )}
               style={{
-                willChange: "width, height, border-radius, transform",
+                willChange: "width, height, transform",
                 transformOrigin: "50% 0%",
                 WebkitFontSmoothing: "antialiased",
-                backfaceVisibility: "hidden",
+                transform: "translateZ(0)",
               }}
             >
               {/* Subtle top gloss, like the physical hardware surface. */}
@@ -463,15 +413,12 @@ interface IslandContextValue {
 const IslandContext = createContext<IslandContextValue | null>(null);
 
 export const useDynamicIsland = () => {
-  const context = useContext(IslandContext);
-
-  if (!context) {
+  const ctx = useContext(IslandContext);
+  if (!ctx)
     throw new Error(
       "useDynamicIsland must be used within DynamicIslandProvider",
     );
-  }
-
-  return context;
+  return ctx;
 };
 
 export const DynamicIslandProvider: React.FC<{
@@ -479,13 +426,10 @@ export const DynamicIslandProvider: React.FC<{
 }> = ({ children }) => {
   const [activity, setActivity] = useState<IslandActivity | null>(null);
 
-  const show = useCallback((nextActivity: IslandActivity) => {
+  const show = useCallback((next: IslandActivity) => {
     // Keep the physical shell mounted between activities. iOS morphs directly
-    // from its current geometry rather than blinking through the idle pill.
-    setActivity({
-      ...nextActivity,
-      id: `${nextActivity.id}-${Date.now()}`,
-    });
+    // from the current geometry instead of blinking back through the idle pill.
+    setActivity({ ...next, id: `${next.id}-${Date.now()}` });
   }, []);
 
   const dismiss = useCallback(() => {
