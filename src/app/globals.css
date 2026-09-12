@@ -859,16 +859,18 @@ body {
   height: 100%;
   -webkit-mask-image: linear-gradient(
     to bottom,
-    rgb(0 0 0 / 0.99) 0%,
-    rgb(0 0 0 / 0.91) 9%,
-    rgb(0 0 0 / 0.55) 62%,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.96) 12%,
+    rgb(0 0 0 / 0.78) 62%,
+    rgb(0 0 0 / 0.3) 88%,
     transparent 100%
   );
   mask-image: linear-gradient(
     to bottom,
-    rgb(0 0 0 / 0.99) 0%,
-    rgb(0 0 0 / 0.91) 9%,
-    rgb(0 0 0 / 0.55) 62%,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.96) 12%,
+    rgb(0 0 0 / 0.78) 62%,
+    rgb(0 0 0 / 0.3) 88%,
     transparent 100%
   );
 }

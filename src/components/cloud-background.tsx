@@ -63,9 +63,12 @@ float fbm(vec2 p) {
 }
 
 void main() {
-  /* Scale against a fixed reference height rather than the viewport, so a
-     cloud is the same size in pixels on a phone and on an ultrawide. */
-  vec2 p = (vUv * uRes / 900.0) * 1.25;
+  /* uRes is the element's size in CSS pixels, deliberately not the size of
+     the drawing buffer. Scaling off the buffer ties cloud size to render
+     resolution, so capping that buffer stretches one cloud across a whole
+     ultrawide. Against CSS pixels a cloud is the same size on a phone, a
+     laptop and a 2870px display, whatever resolution it is drawn at. */
+  vec2 p = (vUv * uRes / 900.0) * 2.1;
 
   float t = uTime * 0.007;
 
@@ -169,14 +172,14 @@ function palette(dark: boolean): Palette {
      now applies them once rather than twice. */
   return dark
     ? {
-        low: mixRgb(base, [0.06, 0.08, 0.14], 0.22),
-        high: mixRgb(mixRgb(base, violet, 0.14), [1, 1, 1], 0.3),
-        alpha: 0.46,
+        low: mixRgb(base, [0.06, 0.08, 0.14], 0.2),
+        high: mixRgb(mixRgb(base, violet, 0.14), [1, 1, 1], 0.28),
+        alpha: 0.62,
       }
     : {
-        low: mixRgb(base, [1, 1, 1], 0.62),
-        high: mixRgb(mixRgb(base, violet, 0.12), [1, 1, 1], 0.14),
-        alpha: 0.37,
+        low: mixRgb(base, [1, 1, 1], 0.44),
+        high: mixRgb(mixRgb(base, violet, 0.12), [1, 1, 1], 0.06),
+        alpha: 0.58,
       };
 }
 
@@ -189,7 +192,7 @@ const RENDER_SCALE = 0.4;
 /** And never larger than this on the long edge. Cost is entirely pixel-bound,
  *  so past this the extra pixels buy nothing visible on a field this soft but
  *  cost plenty on an ultrawide or a phone GPU. */
-const MAX_EDGE = 900;
+const MAX_EDGE = 1100;
 
 /** The drift takes minutes to turn over, so there is nothing to see in a
  *  60fps frame that a 30fps one misses — and it halves the GPU work. */
@@ -288,7 +291,8 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
       canvas.width = w;
       canvas.height = h;
       gl.viewport(0, 0, w, h);
-      gl.uniform2f(uRes, w, h);
+      // CSS pixels, not buffer pixels — see the note in the shader.
+      gl.uniform2f(uRes, rect.width, rect.height);
     };
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
