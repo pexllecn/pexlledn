@@ -51,11 +51,15 @@ float noise(vec2 p) {
   );
 }
 
+/* Three octaves, not four or five. Each added octave is finer, harder detail
+   — exactly the wispiness that reads as harsh at this scale. The domain warp
+   below supplies the organic shape, so the noise itself can stay soft. Fewer
+   octaves is also less work per pixel. */
 float fbm(vec2 p) {
   float v = 0.0;
   float a = 0.5;
   mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 3; i++) {
     v += a * noise(p);
     p = m * p;
     a *= 0.5;
@@ -71,7 +75,7 @@ void main() {
      laptop and a 2870px display, whatever resolution it is drawn at. */
   vec2 p = (vUv * uRes / 900.0) * 2.1;
 
-  float t = uTime * 0.010;
+  float t = uTime * 0.11;
 
   vec2 q = vec2(
     fbm(p + vec2(0.0, t)),
@@ -80,28 +84,36 @@ void main() {
 
   /* Breathing the warp strength, and circling the point it is sampled from,
      is what makes the field churn rather than slide. A constant warp with a
-     moving offset only ever translates the same shapes across the screen;
+     travelling offset only ever moves the same shapes across the screen;
      varying the warp itself makes the masses swell, curl and fold into one
      another. Both are trigonometry on a value already computed, so the
-     fluidity costs no extra noise. */
-  float warp = 3.0 + 0.75 * sin(t * 1.7);
-  vec2 swirl = vec2(sin(t * 1.3), cos(t * 1.1)) * 0.4;
+     fluidity costs no extra noise.
+
+     The amplitudes matter as much as the rate: a slow rate with a small
+     swirl takes half a minute to show any change at all, which reads as a
+     still image. A wide swirl at a modest rate is visibly alive within a
+     few seconds while no single part of it ever moves quickly. */
+  float warp = 2.4 + 0.9 * sin(t * 0.9);
+  vec2 swirl = vec2(sin(t * 0.7), cos(t * 0.55)) * 1.15;
 
   float f = fbm(p + warp * q + swirl);
 
-  /* A lower floor than before gives the masses more body; the ramp stays
-     wide so their edges still feather out rather than being cut out. */
-  float density = smoothstep(0.30, 0.98, f + 0.18 * q.x);
+  /* Wide ramps everywhere. A narrow one turns the noise into hard-edged
+     shapes; widening it spreads every transition over more of the field, so
+     masses fade into the page and into each other the way the reference
+     does. */
+  float density = smoothstep(0.26, 0.94, f + 0.18 * q.x);
 
   /* Fade toward the horizontal edges so the field never meets the frame. */
   float edge = smoothstep(0.0, 0.22, vUv.x) * smoothstep(0.0, 0.22, 1.0 - vUv.x);
 
   /* Three stops, which is what reads as thickness: wispy margins in a pale
-     accent, a saturated body, then white where the cloud piles up. Two stops
-     give an evenly tinted haze — it is the bright crest sitting against the
-     coloured body that makes a cloud look like it has volume. */
-  vec3 col = mix(uTintLow, uTintHigh, smoothstep(0.28, 0.60, f));
-  col = mix(col, uTintLit, smoothstep(0.60, 0.95, f));
+     accent, a body, then white where the cloud piles up. Two stops give an
+     evenly tinted haze — it is the bright crest against the coloured body
+     that makes a cloud look like it has volume. The stops overlap so the
+     crest emerges gradually rather than banding against the body. */
+  vec3 col = mix(uTintLow, uTintHigh, smoothstep(0.18, 0.66, f));
+  col = mix(col, uTintLit, smoothstep(0.48, 1.06, f));
 
   /* Straight (unpremultiplied) alpha, matching the context's
      premultipliedAlpha: false. Blending is off and this is the only draw
@@ -190,13 +202,13 @@ function palette(dark: boolean): Palette {
         low: mixRgb(base, [0.06, 0.08, 0.14], 0.24),
         high: mixRgb(mixRgb(base, violet, 0.14), [1, 1, 1], 0.2),
         lit: mixRgb(base, [1, 1, 1], 0.88),
-        alpha: 0.62,
+        alpha: 0.7,
       }
     : {
         low: mixRgb(base, [1, 1, 1], 0.62),
         high: mixRgb(mixRgb(base, violet, 0.12), [1, 1, 1], 0.26),
         lit: mixRgb(base, [1, 1, 1], 0.95),
-        alpha: 0.52,
+        alpha: 0.64,
       };
 }
 
