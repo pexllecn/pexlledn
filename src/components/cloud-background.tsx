@@ -33,6 +33,7 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform vec3 uTintLow;
 uniform vec3 uTintHigh;
+uniform vec3 uTintLit;
 uniform float uAlpha;
 
 float hash(vec2 p) {
@@ -70,23 +71,37 @@ void main() {
      laptop and a 2870px display, whatever resolution it is drawn at. */
   vec2 p = (vUv * uRes / 900.0) * 2.1;
 
-  float t = uTime * 0.007;
+  float t = uTime * 0.010;
 
   vec2 q = vec2(
     fbm(p + vec2(0.0, t)),
     fbm(p + vec2(5.2, 1.3) - t * 0.8)
   );
 
-  float f = fbm(p + 3.0 * q);
+  /* Breathing the warp strength, and circling the point it is sampled from,
+     is what makes the field churn rather than slide. A constant warp with a
+     moving offset only ever translates the same shapes across the screen;
+     varying the warp itself makes the masses swell, curl and fold into one
+     another. Both are trigonometry on a value already computed, so the
+     fluidity costs no extra noise. */
+  float warp = 3.0 + 0.75 * sin(t * 1.7);
+  vec2 swirl = vec2(sin(t * 1.3), cos(t * 1.1)) * 0.4;
 
-  /* A high floor on the ramp leaves open sky between the masses; a wide one
-     keeps their edges soft rather than cut out. */
-  float density = smoothstep(0.36, 1.02, f + 0.18 * q.x);
+  float f = fbm(p + warp * q + swirl);
+
+  /* A lower floor than before gives the masses more body; the ramp stays
+     wide so their edges still feather out rather than being cut out. */
+  float density = smoothstep(0.30, 0.98, f + 0.18 * q.x);
 
   /* Fade toward the horizontal edges so the field never meets the frame. */
   float edge = smoothstep(0.0, 0.22, vUv.x) * smoothstep(0.0, 0.22, 1.0 - vUv.x);
 
-  vec3 col = mix(uTintLow, uTintHigh, clamp(f * 1.5 - 0.2, 0.0, 1.0));
+  /* Three stops, which is what reads as thickness: wispy margins in a pale
+     accent, a saturated body, then white where the cloud piles up. Two stops
+     give an evenly tinted haze — it is the bright crest sitting against the
+     coloured body that makes a cloud look like it has volume. */
+  vec3 col = mix(uTintLow, uTintHigh, smoothstep(0.28, 0.60, f));
+  col = mix(col, uTintLit, smoothstep(0.60, 0.95, f));
 
   /* Straight (unpremultiplied) alpha, matching the context's
      premultipliedAlpha: false. Blending is off and this is the only draw
@@ -128,7 +143,7 @@ function readAccent(): Rgb {
   return hslToRgb(parseFloat(n[0]), parseFloat(n[1]), parseFloat(n[2]));
 }
 
-type Palette = { low: Rgb; high: Rgb; alpha: number };
+type Palette = { low: Rgb; high: Rgb; lit: Rgb; alpha: number };
 
 function luma([r, g, b]: Rgb) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -151,7 +166,7 @@ function legible(c: Rgb, dark: boolean): Rgb {
 }
 
 /**
- * Two tints: the body of a cloud and its lit crests.
+ * Three tints: a cloud's wispy margins, its body, and its lit crests.
  *
  * Both ends stay saturated. An earlier version ramped from a pale tint to a
  * dark one, and the midpoint of that ramp is grey — which is why it read as
@@ -172,14 +187,16 @@ function palette(dark: boolean): Palette {
      now applies them once rather than twice. */
   return dark
     ? {
-        low: mixRgb(base, [0.06, 0.08, 0.14], 0.2),
-        high: mixRgb(mixRgb(base, violet, 0.14), [1, 1, 1], 0.28),
+        low: mixRgb(base, [0.06, 0.08, 0.14], 0.24),
+        high: mixRgb(mixRgb(base, violet, 0.14), [1, 1, 1], 0.2),
+        lit: mixRgb(base, [1, 1, 1], 0.88),
         alpha: 0.62,
       }
     : {
-        low: mixRgb(base, [1, 1, 1], 0.44),
-        high: mixRgb(mixRgb(base, violet, 0.12), [1, 1, 1], 0.06),
-        alpha: 0.58,
+        low: mixRgb(base, [1, 1, 1], 0.62),
+        high: mixRgb(mixRgb(base, violet, 0.12), [1, 1, 1], 0.26),
+        lit: mixRgb(base, [1, 1, 1], 0.95),
+        alpha: 0.52,
       };
 }
 
@@ -262,6 +279,7 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
     const uTime = gl.getUniformLocation(prog, "uTime");
     const uTintLow = gl.getUniformLocation(prog, "uTintLow");
     const uTintHigh = gl.getUniformLocation(prog, "uTintHigh");
+    const uTintLit = gl.getUniformLocation(prog, "uTintLit");
     const uAlpha = gl.getUniformLocation(prog, "uAlpha");
 
     const isDark = () => document.documentElement.classList.contains("dark");
@@ -270,6 +288,7 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
     let current: Palette = {
       low: [...target.low] as Rgb,
       high: [...target.high] as Rgb,
+      lit: [...target.lit] as Rgb,
       alpha: target.alpha,
     };
 
@@ -314,6 +333,7 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
       current = {
         low: mixRgb(current.low, target.low, k),
         high: mixRgb(current.high, target.high, k),
+        lit: mixRgb(current.lit, target.lit, k),
         alpha: current.alpha + (target.alpha - current.alpha) * k,
       };
 
@@ -321,6 +341,7 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
       gl.uniform1f(uTime, t);
       gl.uniform3f(uTintLow, current.low[0], current.low[1], current.low[2]);
       gl.uniform3f(uTintHigh, current.high[0], current.high[1], current.high[2]);
+      gl.uniform3f(uTintLit, current.lit[0], current.lit[1], current.lit[2]);
       gl.uniform1f(uAlpha, current.alpha);
 
       gl.clearColor(0, 0, 0, 0);
