@@ -17,6 +17,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { SPRING_PRESS } from "@/lib/apple-motion";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   ResizableHandle,
@@ -24,6 +25,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AccountSwitcher } from "@/app/(dashboard)/mail/components/account-switcher";
 import { MailDisplay } from "@/app/(dashboard)/mail/components/mail-display";
@@ -83,7 +85,7 @@ export function Mail({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="mx-auto max-w-[1600px] px-1 py-4">
-        <div className="overflow-hidden rounded-lg border bg-card">
+        <Card className="overflow-hidden">
           <ResizablePanelGroup
             direction="horizontal"
             onLayout={(sizes: number[]) => {
@@ -164,35 +166,17 @@ export function Mail({
                     </span>
                   </div>
 
-                  {/* Segmented filter: one sliding indicator, Apple's pattern
-                      for a small mutually exclusive choice. */}
-                  <div className="mt-3 inline-flex rounded-full bg-muted p-0.5">
-                    {FILTERS.map((entry) => {
-                      const active = entry.id === filter;
-
-                      return (
-                        <button
-                          key={entry.id}
-                          type="button"
-                          onClick={() => setFilter(entry.id)}
-                          className={cn(
-                            "relative rounded-full px-3.5 py-1 text-xs font-medium transition-colors",
-                            active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          {active && (
-                            <motion.span
-                              layoutId="mail-filter"
-                              transition={SPRING_PRESS}
-                              className="absolute inset-0 rounded-full bg-background shadow-sm"
-                            />
-                          )}
-
-                          <span className="relative">{entry.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {/* The library's Tabs already ships the sliding indicator
+                      and sizes it from --radius. */}
+                  <Tabs value={filter} onValueChange={setFilter} className="mt-3">
+                    <TabsList className="h-8">
+                      {FILTERS.map((entry) => (
+                        <TabsTrigger key={entry.id} value={entry.id} className="text-xs">
+                          {entry.label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </Tabs>
 
                   <div className="relative mt-3">
                     <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -201,7 +185,7 @@ export function Mail({
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Search mail"
-                      className="h-9 rounded-full pl-9"
+                      className="h-9 pl-9"
                     />
                   </div>
                 </div>
@@ -222,7 +206,7 @@ export function Mail({
               <MailDisplay mail={selected} />
             </ResizablePanel>
           </ResizablePanelGroup>
-        </div>
+        </Card>
       </div>
     </TooltipProvider>
   );

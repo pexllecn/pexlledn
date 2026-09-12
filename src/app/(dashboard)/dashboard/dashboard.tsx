@@ -32,16 +32,18 @@ import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { EASE_OUT, SPRING_PRESS, rise, stagger } from "@/lib/apple-motion";
-import {
-  Cascade,
-  CascadeItem,
-  PageHead,
-  SectionHead,
-  Surface,
-} from "./_components/primitives";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -66,7 +68,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 
 /* -------------------------------------------------------------------------- */
@@ -253,7 +258,11 @@ const recentSales = [
 /*  Small marks                                                               */
 /* -------------------------------------------------------------------------- */
 
-/** A KPI's trend line. No axes, no labels - it qualifies the number beside it. */
+/**
+ * A KPI's trend line. There is no sparkline in the component library and this
+ * is a data mark rather than a control, so it is drawn here - everything that
+ * does exist as a component (Card, Badge, Progress, Tabs) is used as-is.
+ */
 function Sparkline({ data }: { data: number[] }) {
   const max = Math.max(...data);
   const min = Math.min(...data);
@@ -290,24 +299,18 @@ function Sparkline({ data }: { data: number[] }) {
 }
 
 /**
- * Change against the previous period. Direction is carried by the arrow and the
- * sign in the text, so the colour is reinforcement rather than the only signal.
+ * Change against the previous period, as a Badge in the library's own success
+ * and decline variants. Direction is carried by the arrow and the sign as well
+ * as the colour, so it never rests on colour alone.
  */
 function Delta({ value, up }: { value: string; up: boolean }) {
   const Icon = up ? ArrowUpRight : ArrowDownRight;
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium tabular-nums",
-        up
-          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-          : "bg-rose-500/10 text-rose-600 dark:text-rose-400",
-      )}
-    >
+    <Badge variant={up ? "success" : "decline"} className="gap-0.5 py-0.5 tabular-nums">
       <Icon className="size-3" aria-hidden />
       {value}
-    </span>
+    </Badge>
   );
 }
 
@@ -317,7 +320,12 @@ function Ring({ value, label }: { value: number; label: string }) {
   const c = 2 * Math.PI * r;
 
   return (
-    <svg viewBox="0 0 64 64" className="size-16 -rotate-90" role="img" aria-label={`${label}: ${value}%`}>
+    <svg
+      viewBox="0 0 64 64"
+      className="size-16 -rotate-90"
+      role="img"
+      aria-label={`${label}: ${value}%`}
+    >
       <circle cx="32" cy="32" r={r} className="fill-none stroke-muted" strokeWidth="6" />
 
       <motion.circle
@@ -338,8 +346,9 @@ function Ring({ value, label }: { value: number; label: string }) {
 }
 
 /**
- * Ranked magnitude. Bar length is the encoding and the value is written at the
- * end of every row, so this stays readable with no colour vision at all.
+ * Ranked magnitude, drawn with the library's Progress. Bar length is the
+ * encoding and the value is written at the end of every row, so this stays
+ * readable with no colour vision at all.
  */
 function RankedBars({
   rows,
@@ -366,15 +375,7 @@ function RankedBars({
             </span>
           </div>
 
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-            <motion.div
-              className="h-full rounded-full"
-              style={{ backgroundColor: MAGNITUDE }}
-              initial={{ width: 0 }}
-              animate={{ width: `${(row.value / max) * 100}%` }}
-              transition={{ duration: 0.75, ease: EASE_OUT, delay: 0.1 }}
-            />
-          </div>
+          <Progress value={(row.value / max) * 100} className="mt-1.5 h-1.5" />
         </motion.li>
       ))}
     </motion.ul>
@@ -403,15 +404,7 @@ function Legend() {
 /*  Page                                                                      */
 /* -------------------------------------------------------------------------- */
 
-const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "analytics", label: "Analytics" },
-  { id: "reports", label: "Reports", disabled: true },
-  { id: "summary", label: "Summary", disabled: true },
-] as const;
-
 export default function DashboardPage() {
-  const [tab, setTab] = useState<string>("overview");
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -442,7 +435,7 @@ export default function DashboardPage() {
     isDesktop ? (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" className="rounded-full">
+          <Button variant="outline">
             <Download className="mr-2 size-4" />
             New todo
           </Button>
@@ -462,7 +455,7 @@ export default function DashboardPage() {
     ) : (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
-          <Button variant="outline" size="sm" className="rounded-full">
+          <Button variant="outline" size="sm">
             <Download className="mr-2 size-4" />
             New todo
           </Button>
@@ -491,450 +484,474 @@ export default function DashboardPage() {
     <ContentLayout title="Dashboard">
       <Toaster position="top-center" />
 
-      <div className="mx-auto max-w-[1400px] space-y-8 px-1 pb-16 pt-6">
-        <PageHead
-          eyebrow="Reporting"
-          title="Good morning, Kay"
-          actions={
-            <>
-              <CalendarDateRangePicker />
+      <div className="mx-auto max-w-[1400px] space-y-6 px-1 pb-16 pt-6">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: EASE_OUT }}
+          className="flex flex-wrap items-end justify-between gap-4"
+        >
+          <Heading
+            title="Good morning, Kay"
+            description="Here is how the store is doing today."
+          />
 
-              <Button
-                variant="outline"
-                className="rounded-full"
-                onClick={() =>
-                  toast.custom((t) => <ToastContent dismiss={() => toast.dismiss(t)} />)
-                }
-              >
-                Export
-              </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <CalendarDateRangePicker />
 
-              <ComposeAction />
-            </>
-          }
-        />
+            <Button
+              variant="outline"
+              onClick={() =>
+                toast.custom((t) => <ToastContent dismiss={() => toast.dismiss(t)} />)
+              }
+            >
+              Export
+            </Button>
 
-        {/* Segmented control. Apple uses one pill with a sliding indicator
-            rather than a row of separate buttons. */}
-        <div className="inline-flex rounded-full bg-muted p-1">
-          {TABS.map((entry) => {
-            const selected = entry.id === tab;
+            <ComposeAction />
+          </div>
+        </motion.div>
 
-            return (
-              <button
-                key={entry.id}
-                type="button"
-                disabled={"disabled" in entry && entry.disabled}
-                onClick={() => setTab(entry.id)}
-                className={cn(
-                  "relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-                  "disabled:pointer-events-none disabled:opacity-40",
-                  selected ? "text-foreground" : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {selected && (
-                  <motion.span
-                    layoutId="dashboard-tab"
-                    transition={SPRING_PRESS}
-                    className="absolute inset-0 rounded-full bg-background shadow-sm"
-                  />
-                )}
+        {/* The library's Tabs already ships the sliding indicator, and sizes it
+            from --radius, so there is nothing to hand-roll here. */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="reports" disabled>
+              Reports
+            </TabsTrigger>
+            <TabsTrigger value="summary" disabled>
+              Summary
+            </TabsTrigger>
+          </TabsList>
 
-                <span className="relative">{entry.label}</span>
-              </button>
-            );
-          })}
-        </div>
+          <TabsContent value="overview" className="mt-6 space-y-6">
+            <motion.div variants={stagger()} initial="hidden" animate="show" className="space-y-6">
+              {/* ---------------------------- KPIs ---------------------- */}
 
-        {tab === "overview" ? (
-          <Cascade className="space-y-6">
-            {/* ------------------------------ KPIs ------------------------ */}
-
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {kpis.map((kpi) => (
-                <CascadeItem key={kpi.label}>
-                  <Surface className="h-full">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <kpi.icon className="size-4" aria-hidden />
-                        {kpi.label}
-                      </span>
-
-                      <Delta value={kpi.delta} up={kpi.up} />
-                    </div>
-
-                    {/* The number is the point of the tile, so it is set at
-                        display size and everything else recedes from it. */}
-                    <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums">
-                      {kpi.value}
-                    </p>
-
-                    <div className="mt-3">
-                      <Sparkline data={kpi.spark} />
-                    </div>
-                  </Surface>
-                </CascadeItem>
-              ))}
-            </div>
-
-            {/* ------------------------- Hero + sales --------------------- */}
-
-            <div className="grid gap-4 lg:grid-cols-3">
-              <CascadeItem className="lg:col-span-2">
-                <Surface className="h-full">
-                  <SectionHead
-                    title="Visitors"
-                    hint="Last six months"
-                    action={<Legend />}
-                  />
-
-                  <div className="mt-4 flex flex-wrap gap-6">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Desktop</p>
-                      <p className="text-2xl font-semibold tabular-nums">
-                        {totals.desktop.toLocaleString()}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-muted-foreground">Mobile</p>
-                      <p className="text-2xl font-semibold tabular-nums">
-                        {totals.mobile.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  <ChartContainer config={chartConfig} className="mt-4 h-[260px] w-full">
-                    <AreaChart data={monthly} margin={{ left: 4, right: 12, top: 8 }}>
-                      <defs>
-                        {(["desktop", "mobile"] as const).map((key) => (
-                          <linearGradient
-                            key={key}
-                            id={`fill-${key}`}
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop offset="0%" stopColor={chartConfig[key].color} stopOpacity={0.28} />
-                            <stop offset="100%" stopColor={chartConfig[key].color} stopOpacity={0.02} />
-                          </linearGradient>
-                        ))}
-                      </defs>
-
-                      {/* Recessive grid: horizontal only, hairline, no vertical
-                          rules competing with the marks. */}
-                      <CartesianGrid vertical={false} strokeOpacity={0.25} />
-
-                      <XAxis
-                        dataKey="month"
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={10}
-                        className="text-xs"
-                      />
-
-                      <YAxis
-                        tickLine={false}
-                        axisLine={false}
-                        width={34}
-                        className="text-xs"
-                      />
-
-                      <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-
-                      <Area
-                        dataKey="mobile"
-                        type="monotone"
-                        stroke={SERIES_2}
-                        strokeWidth={2}
-                        fill="url(#fill-mobile)"
-                      />
-
-                      <Area
-                        dataKey="desktop"
-                        type="monotone"
-                        stroke={SERIES_1}
-                        strokeWidth={2}
-                        fill="url(#fill-desktop)"
-                      />
-                    </AreaChart>
-                  </ChartContainer>
-                </Surface>
-              </CascadeItem>
-
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Recent sales" hint="265 this month" />
-
-                  <ul className="mt-5 space-y-4">
-                    {recentSales.map((sale) => (
-                      <li key={sale.email} className="flex items-center gap-3">
-                        <Avatar className="size-9">
-                          <AvatarImage src={sale.avatar} alt="" />
-                          <AvatarFallback>{sale.name.slice(0, 2)}</AvatarFallback>
-                        </Avatar>
-
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium">{sale.name}</p>
-                          <p className="truncate text-xs text-muted-foreground">{sale.email}</p>
-                        </div>
-
-                        <span className="shrink-0 text-sm font-medium tabular-nums">
-                          {sale.amount}
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {kpis.map((kpi) => (
+                  <motion.div key={kpi.label} variants={rise}>
+                    <Card className="h-full p-5">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <kpi.icon className="size-4" aria-hidden />
+                          {kpi.label}
                         </span>
-                      </li>
-                    ))}
-                  </ul>
-                </Surface>
-              </CascadeItem>
-            </div>
 
-            {/* --------------------------- Breakdowns --------------------- */}
-
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Sales by category" hint="Share of revenue" />
-                  <div className="mt-5">
-                    <RankedBars rows={categories} />
-                  </div>
-                </Surface>
-              </CascadeItem>
-
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Traffic sources" hint="Share of sessions" />
-                  <div className="mt-5">
-                    <RankedBars rows={traffic} />
-                  </div>
-                </Surface>
-              </CascadeItem>
-
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Top regions" hint="Share of orders" />
-                  <div className="mt-5">
-                    <RankedBars rows={regions} />
-                  </div>
-                </Surface>
-              </CascadeItem>
-
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Goals" hint="This quarter" />
-
-                  <div className="mt-5 flex justify-between gap-2">
-                    {goals.map((goal) => (
-                      <div key={goal.label} className="flex flex-col items-center gap-2 text-center">
-                        <div className="relative">
-                          <Ring value={goal.value} label={goal.label} />
-                          <span className="absolute inset-0 grid place-items-center text-sm font-semibold tabular-nums">
-                            {goal.value}
-                          </span>
-                        </div>
-
-                        <div>
-                          <p className="text-xs font-medium">{goal.label}</p>
-                          <p className="text-[11px] text-muted-foreground">{goal.text}</p>
-                        </div>
+                        <Delta value={kpi.delta} up={kpi.up} />
                       </div>
-                    ))}
-                  </div>
-                </Surface>
-              </CascadeItem>
 
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Top products" hint="By units sold" />
+                      <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums">
+                        {kpi.value}
+                      </p>
 
-                  <ul className="mt-5 space-y-4">
-                    {topProducts.map((product) => (
-                      <li key={product.name} className="flex items-center gap-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium">{product.name}</p>
-                          <p className="text-xs text-muted-foreground tabular-nums">
-                            {product.sold.toLocaleString()} sold
+                      <div className="mt-3">
+                        <Sparkline data={kpi.spark} />
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* ---------------------- Hero + sales -------------------- */}
+
+              <div className="grid gap-4 lg:grid-cols-3">
+                <motion.div variants={rise} className="lg:col-span-2">
+                  <Card className="h-full">
+                    <CardHeader className="flex-row items-start justify-between space-y-0">
+                      <div>
+                        <CardTitle>Visitors</CardTitle>
+                        <CardDescription>Last six months</CardDescription>
+                      </div>
+
+                      <Legend />
+                    </CardHeader>
+
+                    <CardContent>
+                      <div className="flex flex-wrap gap-6">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Desktop</p>
+                          <p className="text-2xl font-semibold tabular-nums">
+                            {totals.desktop.toLocaleString()}
                           </p>
                         </div>
 
-                        <div className="shrink-0 text-right">
-                          <p className="text-sm font-medium tabular-nums">{product.revenue}</p>
-                          <Delta
-                            value={`${product.trend > 0 ? "+" : ""}${product.trend}%`}
-                            up={product.trend > 0}
+                        <div>
+                          <p className="text-xs text-muted-foreground">Mobile</p>
+                          <p className="text-2xl font-semibold tabular-nums">
+                            {totals.mobile.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <ChartContainer config={chartConfig} className="mt-4 h-[260px] w-full">
+                        <AreaChart data={monthly} margin={{ left: 4, right: 12, top: 8 }}>
+                          <defs>
+                            {(["desktop", "mobile"] as const).map((key) => (
+                              <linearGradient
+                                key={key}
+                                id={`fill-${key}`}
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                              >
+                                <stop offset="0%" stopColor={chartConfig[key].color} stopOpacity={0.28} />
+                                <stop offset="100%" stopColor={chartConfig[key].color} stopOpacity={0.02} />
+                              </linearGradient>
+                            ))}
+                          </defs>
+
+                          <CartesianGrid vertical={false} strokeOpacity={0.25} />
+
+                          <XAxis
+                            dataKey="month"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={10}
+                            className="text-xs"
                           />
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </Surface>
-              </CascadeItem>
 
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Top performers" hint="Revenue booked" />
+                          <YAxis tickLine={false} axisLine={false} width={34} className="text-xs" />
 
-                  <ul className="mt-5 space-y-4">
-                    {team.map((person) => (
-                      <li key={person.name} className="flex items-center gap-3">
-                        <Avatar className="size-9">
-                          <AvatarImage src={person.avatar} alt="" />
-                          <AvatarFallback>{person.name.slice(0, 2)}</AvatarFallback>
-                        </Avatar>
+                          <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
 
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium">{person.name}</p>
+                          <Area
+                            dataKey="mobile"
+                            type="monotone"
+                            stroke={SERIES_2}
+                            strokeWidth={2}
+                            fill="url(#fill-mobile)"
+                          />
 
-                          <div className="mt-1 h-1 overflow-hidden rounded-full bg-muted">
-                            <motion.div
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: MAGNITUDE }}
-                              initial={{ width: 0 }}
-                              animate={{ width: `${person.pct}%` }}
-                              transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.1 }}
-                            />
+                          <Area
+                            dataKey="desktop"
+                            type="monotone"
+                            stroke={SERIES_1}
+                            strokeWidth={2}
+                            fill="url(#fill-desktop)"
+                          />
+                        </AreaChart>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Recent sales</CardTitle>
+                      <CardDescription>265 this month</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <ul className="space-y-4">
+                        {recentSales.map((sale) => (
+                          <li key={sale.email} className="flex items-center gap-3">
+                            <Avatar className="size-9">
+                              <AvatarImage src={sale.avatar} alt="" />
+                              <AvatarFallback>{sale.name.slice(0, 2)}</AvatarFallback>
+                            </Avatar>
+
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">{sale.name}</p>
+                              <p className="truncate text-xs text-muted-foreground">{sale.email}</p>
+                            </div>
+
+                            <span className="shrink-0 text-sm font-medium tabular-nums">
+                              {sale.amount}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
+
+              {/* ------------------------ Breakdowns -------------------- */}
+
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Sales by category</CardTitle>
+                      <CardDescription>Share of revenue</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <RankedBars rows={categories} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Traffic sources</CardTitle>
+                      <CardDescription>Share of sessions</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <RankedBars rows={traffic} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Top regions</CardTitle>
+                      <CardDescription>Share of orders</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <RankedBars rows={regions} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Goals</CardTitle>
+                      <CardDescription>This quarter</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <div className="flex justify-between gap-2">
+                        {goals.map((goal) => (
+                          <div key={goal.label} className="flex flex-col items-center gap-2 text-center">
+                            <div className="relative">
+                              <Ring value={goal.value} label={goal.label} />
+                              <span className="absolute inset-0 grid place-items-center text-sm font-semibold tabular-nums">
+                                {goal.value}
+                              </span>
+                            </div>
+
+                            <div>
+                              <p className="text-xs font-medium">{goal.label}</p>
+                              <p className="text-1xs text-muted-foreground">{goal.text}</p>
+                            </div>
                           </div>
-                        </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-                        <span className="shrink-0 text-sm font-medium tabular-nums">
-                          {person.value}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </Surface>
-              </CascadeItem>
-            </div>
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Top products</CardTitle>
+                      <CardDescription>By units sold</CardDescription>
+                    </CardHeader>
 
-            {/* --------------------------- Feed + tasks ------------------- */}
+                    <CardContent>
+                      <ul className="space-y-4">
+                        {topProducts.map((product) => (
+                          <li key={product.name} className="flex items-center gap-3">
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">{product.name}</p>
+                              <p className="text-xs tabular-nums text-muted-foreground">
+                                {product.sold.toLocaleString()} sold
+                              </p>
+                            </div>
 
-            <div className="grid gap-4 lg:grid-cols-2">
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Recent activity" hint="Across the workspace" />
+                            <div className="shrink-0 text-right">
+                              <p className="text-sm font-medium tabular-nums">{product.revenue}</p>
+                              <Delta
+                                value={`${product.trend > 0 ? "+" : ""}${product.trend}%`}
+                                up={product.trend > 0}
+                              />
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-                  <ul className="mt-5 space-y-1">
-                    {activityFeed.map((item) => (
-                      <li
-                        key={item.title}
-                        className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-muted/60"
-                      >
-                        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
-                          <item.icon className="size-4" aria-hidden />
-                        </span>
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Top performers</CardTitle>
+                      <CardDescription>Revenue booked</CardDescription>
+                    </CardHeader>
 
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium">{item.title}</p>
-                          <p className="truncate text-xs text-muted-foreground">{item.desc}</p>
-                        </div>
+                    <CardContent>
+                      <ul className="space-y-4">
+                        {team.map((person) => (
+                          <li key={person.name} className="flex items-center gap-3">
+                            <Avatar className="size-9">
+                              <AvatarImage src={person.avatar} alt="" />
+                              <AvatarFallback>{person.name.slice(0, 2)}</AvatarFallback>
+                            </Avatar>
 
-                        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                          {item.time}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </Surface>
-              </CascadeItem>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">{person.name}</p>
+                              <Progress value={person.pct} className="mt-1 h-1" />
+                            </div>
 
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Your tasks" hint="3 open" />
+                            <span className="shrink-0 text-sm font-medium tabular-nums">
+                              {person.value}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
 
-                  <ul className="mt-5 space-y-1">
-                    {tasks.map((task) => (
-                      <li
-                        key={task.title}
-                        className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-muted/60"
-                      >
-                        <span
-                          className={cn(
-                            "grid size-5 shrink-0 place-items-center rounded-full border",
-                            task.done
-                              ? "border-transparent bg-primary text-primary-foreground"
-                              : "border-muted-foreground/40",
-                          )}
-                          aria-hidden
-                        >
-                          {task.done && <CircleCheck className="size-3.5" />}
-                        </span>
+              {/* ------------------------ Feed + tasks ------------------ */}
 
-                        <span
-                          className={cn(
-                            "min-w-0 flex-1 truncate text-sm",
-                            task.done && "text-muted-foreground line-through",
-                          )}
-                        >
-                          {task.title}
-                        </span>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Recent activity</CardTitle>
+                      <CardDescription>Across the workspace</CardDescription>
+                    </CardHeader>
 
-                        <span className="shrink-0 text-xs text-muted-foreground">
-                          {task.due}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </Surface>
-              </CascadeItem>
-            </div>
-          </Cascade>
-        ) : (
-          <Cascade className="space-y-6">
-            <CascadeItem>
-              <Surface>
-                <SectionHead
-                  title="This week"
-                  hint="Visitors by device"
-                  action={<Legend />}
-                />
+                    <CardContent>
+                      <ul className="space-y-1">
+                        {activityFeed.map((item) => (
+                          <li
+                            key={item.title}
+                            className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-muted/60"
+                          >
+                            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
+                              <item.icon className="size-4" aria-hidden />
+                            </span>
 
-                <ChartContainer config={chartConfig} className="mt-5 h-[320px] w-full">
-                  <BarChart data={daily} margin={{ left: 4, right: 12, top: 8 }}>
-                    <CartesianGrid vertical={false} strokeOpacity={0.25} />
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">{item.title}</p>
+                              <p className="truncate text-xs text-muted-foreground">{item.desc}</p>
+                            </div>
 
-                    <XAxis
-                      dataKey="day"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={10}
-                      className="text-xs"
-                    />
+                            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                              {item.time}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-                    <YAxis tickLine={false} axisLine={false} width={34} className="text-xs" />
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Your tasks</CardTitle>
+                      <CardDescription>3 open</CardDescription>
+                    </CardHeader>
 
-                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                    <CardContent>
+                      <ul className="space-y-1">
+                        {tasks.map((task) => (
+                          <li
+                            key={task.title}
+                            className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-muted/60"
+                          >
+                            <Checkbox
+                              checked={task.done}
+                              aria-label={task.title}
+                              className="shrink-0"
+                            />
 
-                    {/* 4px rounded data-ends, anchored to the baseline, with a
-                        2px gap between the paired bars. */}
-                    <Bar dataKey="desktop" fill={SERIES_1} radius={[4, 4, 0, 0]} barSize={18} />
-                    <Bar dataKey="mobile" fill={SERIES_2} radius={[4, 4, 0, 0]} barSize={18} />
-                  </BarChart>
-                </ChartContainer>
-              </Surface>
-            </CascadeItem>
+                            <span
+                              className={cn(
+                                "min-w-0 flex-1 truncate text-sm",
+                                task.done && "text-muted-foreground line-through",
+                              )}
+                            >
+                              {task.title}
+                            </span>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Sales by category" hint="Share of revenue" />
-                  <div className="mt-5">
-                    <RankedBars rows={categories} />
-                  </div>
-                </Surface>
-              </CascadeItem>
+                            <span className="shrink-0 text-xs text-muted-foreground">
+                              {task.due}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
+            </motion.div>
+          </TabsContent>
 
-              <CascadeItem>
-                <Surface className="h-full">
-                  <SectionHead title="Traffic sources" hint="Share of sessions" />
-                  <div className="mt-5">
-                    <RankedBars rows={traffic} />
-                  </div>
-                </Surface>
-              </CascadeItem>
-            </div>
-          </Cascade>
-        )}
+          <TabsContent value="analytics" className="mt-6 space-y-6">
+            <motion.div variants={stagger()} initial="hidden" animate="show" className="space-y-6">
+              <motion.div variants={rise}>
+                <Card>
+                  <CardHeader className="flex-row items-start justify-between space-y-0">
+                    <div>
+                      <CardTitle>This week</CardTitle>
+                      <CardDescription>Visitors by device</CardDescription>
+                    </div>
+
+                    <Legend />
+                  </CardHeader>
+
+                  <CardContent>
+                    <ChartContainer config={chartConfig} className="h-[320px] w-full">
+                      <BarChart data={daily} margin={{ left: 4, right: 12, top: 8 }}>
+                        <CartesianGrid vertical={false} strokeOpacity={0.25} />
+
+                        <XAxis
+                          dataKey="day"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={10}
+                          className="text-xs"
+                        />
+
+                        <YAxis tickLine={false} axisLine={false} width={34} className="text-xs" />
+
+                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+
+                        <Bar dataKey="desktop" fill={SERIES_1} radius={[4, 4, 0, 0]} barSize={18} />
+                        <Bar dataKey="mobile" fill={SERIES_2} radius={[4, 4, 0, 0]} barSize={18} />
+                      </BarChart>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Sales by category</CardTitle>
+                      <CardDescription>Share of revenue</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <RankedBars rows={categories} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={rise}>
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Traffic sources</CardTitle>
+                      <CardDescription>Share of sessions</CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <RankedBars rows={traffic} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
+            </motion.div>
+          </TabsContent>
+        </Tabs>
       </div>
     </ContentLayout>
   );
@@ -950,20 +967,20 @@ function ToastContent({ dismiss }: { dismiss: () => void }) {
       initial={{ opacity: 0, y: -12, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.3, ease: EASE_OUT }}
-      className="flex items-center gap-3 rounded-full bg-foreground py-2.5 pl-4 pr-2.5 text-background shadow-lg"
+      className="flex items-center gap-3 rounded-lg bg-foreground py-2.5 pl-4 pr-2.5 text-background shadow-lg"
     >
       <CircleCheck className="size-4 shrink-0 text-emerald-400" aria-hidden />
 
       <p className="text-sm">Export started</p>
 
-      <button
-        type="button"
+      <Button
+        variant="ghost"
         onClick={dismiss}
-        className="ml-2 grid size-7 shrink-0 place-items-center rounded-full opacity-60 transition-opacity hover:opacity-100"
         aria-label="Dismiss"
+        className="ml-2 size-7 shrink-0 p-0 text-background opacity-60 hover:bg-transparent hover:opacity-100"
       >
         <X className="size-4" />
-      </button>
+      </Button>
     </motion.div>
   );
 }

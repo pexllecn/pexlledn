@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { EASE_OUT, SPRING_PRESS } from "@/lib/apple-motion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { type Mail } from "@/app/(dashboard)/mail/data";
 import { useMail } from "@/app/(dashboard)/mail/use-mail";
@@ -15,17 +16,12 @@ interface MailListProps {
   items: Mail[];
 }
 
-/** Labels are metadata, so they stay in text tokens rather than taking colour. */
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
-      {children}
-    </span>
-  );
-}
-
 export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
+
+  /* The hovered row, so a second shared-layout chip can follow the pointer the
+     same way the selection chip follows the selection. */
+  const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
   if (items.length === 0) {
     return (
@@ -37,7 +33,7 @@ export function MailList({ items }: MailListProps) {
 
   return (
     <ScrollArea className="h-full">
-      <ul className="space-y-0.5 p-2">
+      <ul className="space-y-0.5 p-2" onMouseLeave={() => setHoveredId(null)}>
         {items.map((item, index) => {
           const active = mail.selected === item.id;
 
@@ -55,14 +51,31 @@ export function MailList({ items }: MailListProps) {
               <button
                 type="button"
                 onClick={() => setMail({ ...mail, selected: item.id })}
+                onMouseEnter={() => setHoveredId(item.id)}
+                onMouseLeave={() =>
+                  setHoveredId((current) => (current === item.id ? null : current))
+                }
+                onFocus={() => setHoveredId(item.id)}
+                onBlur={() =>
+                  setHoveredId((current) => (current === item.id ? null : current))
+                }
                 aria-current={active}
-                className={cn(
-                  "relative flex w-full flex-col gap-1.5 rounded-md px-3 py-3 text-left transition-colors",
-                  !active && "hover:bg-muted/60",
-                )}
+                className="relative flex w-full flex-col gap-1.5 rounded-md px-3 py-3 text-left transition-colors"
               >
-                {/* One selection chip slides between rows instead of each row
-                    toggling its own background. */}
+                {/* Two shared elements rather than per-row background classes:
+                    the selection chip slides to the chosen row, a lighter one
+                    slides under the pointer. Only one of each is mounted at a
+                    time, which is what lets Framer tween them between rows. The
+                    hover chip stands down on the selected row so the two never
+                    stack into a double highlight. */}
+                {!active && hoveredId === item.id && (
+                  <motion.span
+                    layoutId="mail-hover"
+                    transition={SPRING_PRESS}
+                    className="absolute inset-0 rounded-md bg-muted/60"
+                  />
+                )}
+
                 {active && (
                   <motion.span
                     layoutId="mail-selection"
@@ -83,7 +96,7 @@ export function MailList({ items }: MailListProps) {
                   />
 
                   <Avatar className="size-7 shrink-0">
-                    <AvatarFallback className="text-[11px]">
+                    <AvatarFallback className="text-1xs">
                       {item.name
                         .split(" ")
                         .map((w) => w[0])
@@ -101,7 +114,7 @@ export function MailList({ items }: MailListProps) {
                     {item.name}
                   </span>
 
-                  <span className="ml-auto shrink-0 text-[11px] tabular-nums text-muted-foreground">
+                  <span className="ml-auto shrink-0 text-1xs tabular-nums text-muted-foreground">
                     {formatDistanceToNow(new Date(item.date), { addSuffix: true })}
                   </span>
                 </span>
@@ -117,7 +130,7 @@ export function MailList({ items }: MailListProps) {
                 {item.labels.length > 0 && (
                   <span className="relative flex flex-wrap gap-1 pl-4">
                     {item.labels.map((label) => (
-                      <Label key={label}>{label}</Label>
+                      <Badge key={label} variant="secondary">{label}</Badge>
                     ))}
                   </span>
                 )}

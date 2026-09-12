@@ -144,7 +144,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           />
 
           <div className="mt-3 flex items-center justify-end">
-            <Button size="sm" className="rounded-full">
+            <Button size="sm">
               Send
             </Button>
           </div>

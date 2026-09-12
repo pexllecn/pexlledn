@@ -27,28 +27,24 @@ import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { EASE_OUT, rise, stagger } from "@/lib/apple-motion";
-import { PageHead, Surface } from "../dashboard/_components/primitives";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarGroup } from "@/components/ui/avatar-group";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
+import { Progress } from "@/components/ui/progress";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+  ResponsiveDialog,
+  ResponsiveDialogBody,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/ui/responsive-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -124,60 +120,44 @@ const STATUS_META: Record<Task["status"], { label: string; Icon: React.ElementTy
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Responsive dialog                                                         */
+/*  Board                                                                     */
 /* -------------------------------------------------------------------------- */
 
-const ResponsiveDialog: React.FC<{
+/**
+ * Thin adapter over the library's ResponsiveDialog (Dialog on desktop, Drawer
+ * on mobile) so the three call sites below stay declarative. No dialog
+ * behaviour is reimplemented here - it all comes from the component.
+ */
+function TaskSheet({
+  isOpen,
+  onOpenChange,
+  title,
+  description,
+  content,
+  footer,
+}: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description: string;
   content: React.ReactNode;
   footer: React.ReactNode;
-}> = ({ isOpen, onOpenChange, title, description, content, footer }) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  if (isDesktop) {
-    return (
-      <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
-          </DialogHeader>
-
-          {content}
-
-          <DialogFooter>{footer}</DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
+}) {
   return (
-    <Drawer open={isOpen} onOpenChange={onOpenChange}>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
-        </DrawerHeader>
+    <ResponsiveDialog open={isOpen} onOpenChange={onOpenChange}>
+      <ResponsiveDialogContent className="sm:max-w-[480px]">
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>{title}</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>{description}</ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
 
-        <div className="px-4">{content}</div>
+        <ResponsiveDialogBody>{content}</ResponsiveDialogBody>
 
-        <DrawerFooter className="pt-2">
-          {footer}
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        <ResponsiveDialogFooter>{footer}</ResponsiveDialogFooter>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
-};
-
-/* -------------------------------------------------------------------------- */
-/*  Board                                                                     */
-/* -------------------------------------------------------------------------- */
+}
 
 export default function KanbanBoard() {
   const [boards, setBoards] = useState<Board[]>([
@@ -491,7 +471,7 @@ export default function KanbanBoard() {
                   })
                 }
                 className={cn(
-                  "flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm transition-colors",
+                  "flex items-center gap-2 rounded-lg border py-1 pl-1 pr-3 text-sm transition-colors",
                   on ? "border-transparent bg-foreground text-background" : "hover:bg-muted",
                 )}
               >
@@ -523,26 +503,29 @@ export default function KanbanBoard() {
   return (
     <ContentLayout title="Kanban">
       <div className="mx-auto max-w-[1600px] space-y-8 px-1 pb-16 pt-6">
-        <PageHead
-          eyebrow="Workspace"
-          title="Board"
-          actions={
-            <div className="flex items-center gap-2">
-              <Input
-                value={newBoardTitle}
-                onChange={(e) => setNewBoardTitle(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && addBoard()}
-                placeholder="New list name"
-                className="h-9 w-44 rounded-full"
-              />
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: EASE_OUT }}
+          className="flex flex-wrap items-end justify-between gap-4"
+        >
+          <Heading title="Board" description="Plan, track and move work across your lists." />
 
-              <Button onClick={addBoard} className="rounded-full">
-                <PlusIcon className="mr-1.5 size-4" />
-                Add list
-              </Button>
-            </div>
-          }
-        />
+          <div className="flex items-center gap-2">
+            <Input
+              value={newBoardTitle}
+              onChange={(e) => setNewBoardTitle(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addBoard()}
+              placeholder="New list name"
+              className="h-9 w-44"
+            />
+
+            <Button onClick={addBoard}>
+              <PlusIcon className="mr-1.5 size-4" />
+              Add list
+            </Button>
+          </div>
+        </motion.div>
 
         <motion.div
           variants={stagger()}
@@ -552,7 +535,7 @@ export default function KanbanBoard() {
         >
           {stats.map((stat) => (
             <motion.div key={stat.label} variants={rise}>
-              <Surface className="flex items-center gap-3">
+              <Card className="flex items-center gap-3 p-5">
                 <span className="grid size-10 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
                   <stat.icon className="size-5" aria-hidden />
                 </span>
@@ -563,7 +546,7 @@ export default function KanbanBoard() {
                     {stat.value}
                   </p>
                 </div>
-              </Surface>
+              </Card>
             </motion.div>
           ))}
         </motion.div>
@@ -626,9 +609,9 @@ export default function KanbanBoard() {
                             </button>
                           )}
 
-                          <span className="rounded-full bg-background px-2 py-0.5 text-xs font-medium tabular-nums text-muted-foreground">
+                          <Badge variant="secondary" className="tabular-nums">
                             {board.tasks.length}
-                          </span>
+                          </Badge>
 
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -719,42 +702,30 @@ export default function KanbanBoard() {
                                           {task.tags.filter(Boolean).length > 0 && (
                                             <div className="flex flex-wrap gap-1">
                                               {task.tags.filter(Boolean).map((tag) => (
-                                                <span
-                                                  key={tag}
-                                                  className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
-                                                >
+                                                <Badge key={tag} variant="secondary">
                                                   {tag}
-                                                </span>
+                                                </Badge>
                                               ))}
                                             </div>
                                           )}
 
                                           {task.progress > 0 && (
-                                            <div className="h-1 overflow-hidden rounded-full bg-muted">
-                                              <div
-                                                className="h-full rounded-full bg-foreground/70 transition-[width] duration-500"
-                                                style={{ width: `${task.progress}%` }}
-                                              />
-                                            </div>
+                                            <Progress value={task.progress} className="h-1" />
                                           )}
 
                                           <div className="flex items-center justify-between gap-2">
-                                            <div className="flex -space-x-1.5">
-                                              {task.assignees.map((user) => (
-                                                <Avatar
-                                                  key={user.id}
-                                                  className="size-6 ring-2 ring-card"
-                                                >
-                                                  <AvatarImage src={user.avatar} alt={user.name} />
-                                                  <AvatarFallback>{user.name[0]}</AvatarFallback>
-                                                </Avatar>
-                                              ))}
-                                            </div>
+                                            <AvatarGroup
+                                              className="-space-x-2 [&_span]:text-1xs [&>span]:size-6"
+                                              avatars={task.assignees.map((user) => ({
+                                                src: user.avatar,
+                                                fallback: user.name[0],
+                                              }))}
+                                            />
 
                                             {task.dueDate && (
                                               <span
                                                 className={cn(
-                                                  "flex items-center gap-1 text-[11px] tabular-nums",
+                                                  "flex items-center gap-1 text-1xs tabular-nums",
                                                   overdue
                                                     ? "text-destructive"
                                                     : dueToday
@@ -807,7 +778,7 @@ export default function KanbanBoard() {
 
       {/* --------------------------- new task ----------------------------- */}
 
-      <ResponsiveDialog
+      <TaskSheet
         isOpen={isNewTaskDialogOpen}
         onOpenChange={setIsNewTaskDialogOpen}
         title="New card"
@@ -818,7 +789,7 @@ export default function KanbanBoard() {
 
       {/* --------------------------- edit task ---------------------------- */}
 
-      <ResponsiveDialog
+      <TaskSheet
         isOpen={isEditTaskDialogOpen}
         onOpenChange={setIsEditTaskDialogOpen}
         title="Edit card"
@@ -835,7 +806,7 @@ export default function KanbanBoard() {
 
       {/* -------------------------- task detail --------------------------- */}
 
-      <ResponsiveDialog
+      <TaskSheet
         isOpen={isTaskDetailDialogOpen}
         onOpenChange={setIsTaskDetailDialogOpen}
         title={selectedTask?.title ?? ""}
@@ -885,7 +856,7 @@ export default function KanbanBoard() {
                     {selectedTask.assignees.map((user) => (
                       <span
                         key={user.id}
-                        className="flex items-center gap-2 rounded-full bg-muted py-1 pl-1 pr-3 text-sm"
+                        className="flex items-center gap-2 rounded-lg bg-muted py-1 pl-1 pr-3 text-sm"
                       >
                         <Avatar className="size-6">
                           <AvatarImage src={user.avatar} alt="" />

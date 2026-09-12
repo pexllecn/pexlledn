@@ -19,7 +19,9 @@ import { cn } from "@/lib/utils";
 import { EASE_OUT, SPRING_PANEL, SPRING_PRESS } from "@/lib/apple-motion";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -95,14 +97,14 @@ function Bubble({ message, index }: { message: Message; index: number }) {
           className={cn(
             "px-3.5 py-2 text-sm leading-relaxed",
             message.isSent
-              ? "rounded-[18px] rounded-br-[5px] bg-primary text-primary-foreground"
-              : "rounded-[18px] rounded-bl-[5px] bg-muted text-foreground",
+              ? "rounded-lg rounded-br-none bg-primary text-primary-foreground"
+              : "rounded-lg rounded-bl-none bg-muted text-foreground",
           )}
         >
           {message.content}
         </div>
 
-        <span className="px-1 text-[11px] tabular-nums text-muted-foreground">
+        <span className="px-1 text-1xs tabular-nums text-muted-foreground">
           {message.time}
         </span>
       </div>
@@ -122,6 +124,10 @@ export default function MessagesPage() {
   const [draft, setDraft] = useState("");
   const [thread, setThread] = useState<Message[]>(THREAD);
   const [showInfo, setShowInfo] = useState(false);
+
+  /* The hovered row, tracked so a second shared-layout chip can follow the
+     pointer the same way the selection chip follows the selection. */
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -176,7 +182,7 @@ export default function MessagesPage() {
   return (
     <ContentLayout title="Messages">
       <div className="mx-auto h-[calc(100vh-9rem)] max-w-[1500px] px-1 pb-4 pt-4">
-        <div className="flex h-full overflow-hidden rounded-lg border bg-card">
+        <Card className="flex h-full overflow-hidden">
           {/* ------------------------------ list ------------------------- */}
 
           <AnimatePresence initial={false}>
@@ -202,13 +208,16 @@ export default function MessagesPage() {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Search"
-                      className="h-9 rounded-full pl-9"
+                      className="h-9 pl-9"
                     />
                   </div>
                 </div>
 
                 <ScrollArea className="min-h-0 flex-1">
-                  <ul className="space-y-0.5 px-2 pb-3">
+                  <ul
+                    className="space-y-0.5 px-2 pb-3"
+                    onMouseLeave={() => setHoveredId(null)}
+                  >
                     {filtered.map((chat, index) => {
                       const active = chat.id === selectedId;
 
@@ -226,13 +235,34 @@ export default function MessagesPage() {
                           <button
                             type="button"
                             onClick={() => setSelectedId(chat.id)}
+                            onMouseEnter={() => setHoveredId(chat.id)}
+                            onMouseLeave={() =>
+                              setHoveredId((current) => (current === chat.id ? null : current))
+                            }
+                            onFocus={() => setHoveredId(chat.id)}
+                            onBlur={() =>
+                              setHoveredId((current) => (current === chat.id ? null : current))
+                            }
                             className={cn(
                               "relative flex w-full items-center gap-3 rounded-md px-2.5 py-2.5 text-left transition-colors",
-                              active ? "text-foreground" : "hover:bg-muted/70",
+                              active ? "text-foreground" : "hover:text-foreground",
                             )}
                           >
-                            {/* The selection chip is one shared element that
-                                slides between rows, not a class toggle. */}
+                            {/* Two shared elements, not a class toggle: the
+                                selection chip slides to the chosen row, and a
+                                lighter one slides under the pointer. Only one
+                                of each is ever mounted, which is what lets
+                                Framer tween them between rows. The hover chip
+                                stands down on the selected row so the two never
+                                stack into a double highlight. */}
+                            {!active && hoveredId === chat.id && (
+                              <motion.span
+                                layoutId="chat-hover"
+                                transition={SPRING_PRESS}
+                                className="absolute inset-0 rounded-md bg-muted/60"
+                              />
+                            )}
+
                             {active && (
                               <motion.span
                                 layoutId="chat-selection"
@@ -261,7 +291,7 @@ export default function MessagesPage() {
                                   {chat.name}
                                 </span>
 
-                                <span className="shrink-0 text-[11px] text-muted-foreground">
+                                <span className="shrink-0 text-1xs text-muted-foreground">
                                   {chat.time}
                                 </span>
                               </span>
@@ -272,9 +302,9 @@ export default function MessagesPage() {
                                 </span>
 
                                 {chat.unread > 0 && (
-                                  <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[11px] font-medium tabular-nums text-primary-foreground">
+                                  <Badge className="shrink-0 rounded-full tabular-nums">
                                     {chat.unread}
-                                  </span>
+                                  </Badge>
                                 )}
                               </span>
                             </span>
@@ -421,7 +451,7 @@ export default function MessagesPage() {
                         }
                       }}
                       placeholder={`Message ${selected.name.split(" ")[0]}`}
-                      className="h-10 rounded-full pl-4 pr-10"
+                      className="h-10 pl-4 pr-10"
                     />
 
                     <Smile className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -431,19 +461,22 @@ export default function MessagesPage() {
                       send - an always-present disabled control is noise. */}
                   <AnimatePresence initial={false}>
                     {draft.trim() && (
-                      <motion.button
-                        type="button"
-                        onClick={send}
+                      <motion.div
                         initial={{ scale: 0.6, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.6, opacity: 0 }}
                         whileTap={{ scale: 0.9 }}
                         transition={SPRING_PRESS}
-                        className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"
-                        aria-label="Send message"
+                        className="shrink-0"
                       >
-                        <Send className="size-4" />
-                      </motion.button>
+                        <Button
+                          onClick={send}
+                          aria-label="Send message"
+                          className="size-10 p-0"
+                        >
+                          <Send className="size-4" />
+                        </Button>
+                      </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
@@ -456,7 +489,7 @@ export default function MessagesPage() {
               Select a conversation to start reading.
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </ContentLayout>
   );
