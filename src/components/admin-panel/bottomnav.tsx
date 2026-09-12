@@ -1,5 +1,6 @@
 "use client";
 
+import { isWorkspaceRoute } from "@/components/workspace/shell";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,6 +44,8 @@ export function BottomNav() {
   ];
 
   const isPathInNavItems = navItems.some((item) => item.href === pathname);
+
+  if (isWorkspaceRoute(pathname)) return null;
 
   if (mounted && hideBottomNav) return null;
 

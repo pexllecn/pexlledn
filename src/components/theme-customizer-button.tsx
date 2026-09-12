@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { isWorkspaceRoute } from "@/components/workspace/shell";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
@@ -7,6 +9,9 @@ import { ThemeCustomizer } from "@/components/theme-customizer";
 
 export function ThemeCustomizerButton() {
   const [customizeOpen, setCustomizeOpen] = useState(false);
+
+  const pathname = usePathname();
+  if (isWorkspaceRoute(pathname)) return null;
 
   return (
     <>

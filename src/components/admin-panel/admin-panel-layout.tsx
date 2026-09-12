@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { WorkspaceShell, isWorkspaceRoute } from "@/components/workspace/shell";
 import { MotionConfig } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/hooks/use-store";
@@ -13,6 +15,9 @@ export default function AdminPanelLayout({
   children: React.ReactNode;
 }) {
   const sidebar = useStore(useSidebarToggle, (state) => state);
+
+  const pathname = usePathname();
+  if (isWorkspaceRoute(pathname)) return <WorkspaceShell>{children}</WorkspaceShell>;
 
   if (!sidebar) return null;
 

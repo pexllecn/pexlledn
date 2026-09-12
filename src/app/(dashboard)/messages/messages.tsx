@@ -1,635 +1,413 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useEffect, useRef, useState } from "react";
 import {
-  MoreHorizontal,
-  Send,
-  User,
-  Search,
-  Paperclip,
-  Smile,
-  Mic,
-  Image,
-  FileText,
-  Calendar,
-  Star,
-  Archive,
-  Trash2,
-  Sun,
-  Moon,
+  ArrowUp,
   ChevronLeft,
   Info,
+  MessageCircle,
+  SquarePen,
 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+  Avatar,
+  EmptyState,
+  IconButton,
+  Modal,
+  SearchField,
+  Segments,
+  useSavedState,
+} from "@/components/workspace/primitives";
 
-interface Chat {
-  id: number;
+type Chat = {
+  id: string;
   name: string;
-  lastMessage: string;
+  preview: string;
   time: string;
-  unread: number;
   online: boolean;
-  avatar: string;
-}
-
-interface Message {
-  id: number;
-  sender: string;
-  content: string;
-  time: string;
-  isSent: boolean;
-  avatar: string;
-}
-
-export default function EnhancedChatApp() {
-  const [message, setMessage] = useState("");
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isUserInfoVisible, setIsUserInfoVisible] = useState(false);
-  const { theme, setTheme } = useTheme();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
+  unread: boolean;
+  tone: number;
+};
+type Message = { id: string; text: string; sent: boolean; time: string };
+const initialChats: Chat[] = [
+  {
+    id: "alice",
+    name: "Alice Johnson",
+    preview: "Hey, how are you?",
+    time: "10:38",
+    online: true,
+    unread: true,
+    tone: 1,
+  },
+  {
+    id: "bob",
+    name: "Bob Smith",
+    preview: "Can we meet tomorrow?",
+    time: "Yesterday",
+    online: false,
+    unread: true,
+    tone: 0,
+  },
+  {
+    id: "charlie",
+    name: "Charlie Brown",
+    preview: "Thanks for your help!",
+    time: "Tuesday",
+    online: true,
+    unread: false,
+    tone: 3,
+  },
+  {
+    id: "diana",
+    name: "Diana Prince",
+    preview: "The project is looking great.",
+    time: "Monday",
+    online: false,
+    unread: false,
+    tone: 2,
+  },
+  {
+    id: "eve",
+    name: "Eve Wilson",
+    preview: "Let’s catch up soon.",
+    time: "Monday",
+    online: false,
+    unread: false,
+    tone: 4,
+  },
+];
+const initialMessages: Record<string, Message[]> = {
+  alice: [
+    {
+      id: "a1",
+      text: "Hey there! How’s it going?",
+      sent: false,
+      time: "10:30",
+    },
+    {
+      id: "a2",
+      text: "Hi Alice! I’m doing well, thanks for asking. How about you?",
+      sent: true,
+      time: "10:32",
+    },
+    {
+      id: "a3",
+      text: "I’m great! Just working on some new projects. Have you heard about the latest tech conference?",
+      sent: false,
+      time: "10:35",
+    },
+    {
+      id: "a4",
+      text: "No, I haven’t. Tell me more about it!",
+      sent: true,
+      time: "10:36",
+    },
+    {
+      id: "a5",
+      text: "There are some amazing speakers lined up. I’ll share the details when we catch up!",
+      sent: false,
+      time: "10:38",
+    },
+  ],
+  bob: [
+    { id: "b1", text: "Can we meet tomorrow?", sent: false, time: "Yesterday" },
+  ],
+  charlie: [
+    { id: "c1", text: "Thanks for your help!", sent: false, time: "Tuesday" },
+  ],
+  diana: [
+    {
+      id: "d1",
+      text: "The project is looking great.",
+      sent: false,
+      time: "Monday",
+    },
+  ],
+  eve: [
+    { id: "e1", text: "Let’s catch up soon.", sent: false, time: "Monday" },
+  ],
+};
+export default function Messages() {
+  const [chats, setChats] = useSavedState<Chat[]>(
+    "pexlle:messages:chats:v1",
+    initialChats,
+  );
+  const [messages, setMessages] = useSavedState<Record<string, Message[]>>(
+    "pexlle:messages:threads:v1",
+    initialMessages,
+  );
+  const [drafts, setDrafts] = useSavedState<Record<string, string>>(
+    "pexlle:messages:drafts:v1",
+    {},
+  );
+  const [selected, setSelected] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"All" | "Unread">("All");
+  const [info, setInfo] = useState(false);
+  const [compose, setCompose] = useState(false);
+  const [recipient, setRecipient] = useState("");
+  const bottom = useRef<HTMLDivElement>(null);
+  const active = chats.find((c) => c.id === selected);
+  const thread = selected ? messages[selected] || [] : [];
   useEffect(() => {
-    const handleResize = () => {
-      const isMobileView = window.innerWidth < 768;
-      setIsMobile(isMobileView);
-      setIsUserInfoVisible(!isMobileView);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const toggleUserInfo = () => {
-    setIsUserInfoVisible(!isUserInfoVisible);
-  };
-
-  const chats: Chat[] = [
-    {
-      id: 1,
-      name: "Alice Johnson",
-      lastMessage: "Hey, how are you?",
-      time: "10:30 AM",
-      unread: 2,
-      online: true,
-      avatar: `https://i.pravatar.cc/48?img=1`,
-    },
-    {
-      id: 2,
-      name: "Bob Smith",
-      lastMessage: "Can we meet tomorrow?",
-      time: "Yesterday",
-      unread: 54,
-      online: false,
-      avatar: `https://i.pravatar.cc/48?img=2`,
-    },
-    {
-      id: 3,
-      name: "Charlie Brown",
-      lastMessage: "Thanks for your help!",
-      time: "Tuesday",
-      unread: 1,
-      online: true,
-      avatar: `https://i.pravatar.cc/48?img=3`,
-    },
-    {
-      id: 4,
-      name: "Diana Prince",
-      lastMessage: "The project is done!",
-      time: "2 days ago",
-      unread: 0,
-      online: true,
-      avatar: `https://i.pravatar.cc/48?img=4`,
-    },
-    {
-      id: 5,
-      name: "Ethan Hunt",
-      lastMessage: "Mission accomplished",
-      time: "Last week",
-      unread: 0,
-      online: false,
-      avatar: `https://i.pravatar.cc/48?img=5`,
-    },
-  ];
-
-  const messages: Message[] = [
-    {
-      id: 1,
-      sender: "Alice Johnson",
-      content: "Hey there! How's it going?",
-      time: "10:30 AM",
-      isSent: false,
-      avatar: `https://i.pravatar.cc/48?img=1`,
-    },
-    {
-      id: 2,
-      sender: "You",
-      content: "Hi Alice! I'm doing well, thanks for asking. How about you?",
-      time: "10:32 AM",
-      isSent: true,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
-    {
-      id: 3,
-      sender: "Alice Johnson",
-      content:
-        "I'm great! Just working on some new projects. Have you heard about the latest tech conference?",
-      time: "10:35 AM",
-      isSent: false,
-      avatar: `https://i.pravatar.cc/48?img=1`,
-    },
-    {
-      id: 4,
-      sender: "You",
-      content: "No, I haven't. Tell me more about it!",
-      time: "10:36 AM",
-      isSent: true,
-      avatar: `https://i.pravatar.cc/48?img=0`,
-    },
-    {
-      id: 5,
-      sender: "Alice Johnson",
-      content:
-        "It's called TechXpo 2023. It's happening next month and features some amazing speakers from top tech companies.",
-      time: "10:38 AM",
-      isSent: false,
-      avatar: `https://i.pravatar.cc/48?img=1`,
-    },
-  ];
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      // Add logic to send message
-      console.log("Sending message:", message);
-      setMessage("");
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const variants = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
-  };
-
+    bottom.current?.scrollIntoView({ behavior: "instant" });
+  }, [selected, thread.length]);
+  function select(chat: Chat) {
+    setSelected(chat.id);
+    setInfo(false);
+    setChats((prev) =>
+      prev.map((c) => (c.id === chat.id ? { ...c, unread: false } : c)),
+    );
+  }
+  function send() {
+    if (!selected || !drafts[selected]?.trim()) return;
+    const text = drafts[selected].trim();
+    const time = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    setMessages((prev) => ({
+      ...prev,
+      [selected]: [
+        ...(prev[selected] || []),
+        { id: crypto.randomUUID(), text, sent: true, time },
+      ],
+    }));
+    setChats((prev) =>
+      prev.map((c) =>
+        c.id === selected ? { ...c, preview: text, time: "Now" } : c,
+      ),
+    );
+    setDrafts((prev) => ({ ...prev, [selected]: "" }));
+  }
+  const filtered = chats.filter(
+    (c) =>
+      c.name.toLowerCase().includes(query.toLowerCase()) &&
+      (filter === "All" || c.unread),
+  );
   return (
-    <ContentLayout title="Chat">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.3 }}
-        variants={variants}
-      >
-        <div className="lg:p-3">
-          <div className="flex h-[calc(100vh-4rem)] bg-background">
-            {/* Chat List */}
-            <div
-              className={`w-full md:w-80  ${
-                selectedChat && isMobile ? "hidden" : "block"
-              }`}
-            >
-              <ChatList
-                chats={chats}
-                onSelectChat={setSelectedChat}
-                selectedChat={selectedChat}
-              />
-            </div>
-
-            {/* Main Chat Area */}
-            <div
-              className={`bg-muted rounded-t-3xl flex-1 flex flex-col relative ${
-                !selectedChat && isMobile ? "hidden" : "block"
-              }`}
-            >
-              {selectedChat ? (
-                <>
-                  {/* Chat Header */}
-                  <div className="p-4 flex items-center justify-between">
-                    {isMobile && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setSelectedChat(null)}
-                      >
-                        <ChevronLeft className="h-5 w-5" />
-                      </Button>
-                    )}
-                    <div className="flex items-center space-x-4">
-                      <div className="relative">
-                        <Avatar>
-                          <AvatarImage
-                            src={selectedChat.avatar}
-                            alt={selectedChat.name}
-                          />
-                          <AvatarFallback>
-                            {selectedChat.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span
-                          className={cn(
-                            "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
-                            selectedChat.online ? "bg-green-500" : "bg-gray-400"
-                          )}
-                        />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-normal">
-                          {selectedChat.name}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          {selectedChat.online ? "Active now" : "Offline"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-5 w-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() =>
-                              setTheme(theme === "light" ? "dark" : "light")
-                            }
-                            className="cursor-pointer"
-                          >
-                            {theme === "dark" ? (
-                              <Sun className="mr-2 h-4 w-4" />
-                            ) : (
-                              <Moon className="mr-2 h-4 w-4" />
-                            )}
-                            <span>
-                              {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <User className="mr-2 h-4 w-4" />
-                            <span>View Profile</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Star className="mr-2 h-4 w-4" />
-                            <span>Add to Favorites</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Archive className="mr-2 h-4 w-4" />
-                            <span>Archive Chat</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            <span>Delete Chat</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-
-                      {/* Toggle User Info Button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={toggleUserInfo}
-                        className="relative z-10"
-                      >
-                        <Info className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Messages */}
-                  <ScrollArea className="flex-1 p-4">
-                    {messages.map((msg) => (
-                      <div
-                        key={msg.id}
-                        className={`flex ${
-                          msg.isSent ? "justify-end" : "justify-start"
-                        } mb-4`}
-                      >
-                        <div
-                          className={`flex ${
-                            msg.isSent ? "flex-row-reverse" : "flex-row"
-                          } items-end`}
-                        >
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage src={msg.avatar} alt={msg.sender} />
-                            <AvatarFallback>
-                              {msg.sender
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div
-                            className={`flex flex-col ${
-                              msg.isSent ? "items-end mr-2" : "items-start ml-2"
-                            } max-w-[70%]`}
-                          >
-                            <div
-                              className={cn(
-                                "rounded-lg p-3",
-                                msg.isSent
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-background text-foreground"
-                              )}
-                            >
-                              <p className="text-sm">{msg.content}</p>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {msg.time}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </ScrollArea>
-
-                  {/* Message Input - Only show on desktop */}
-                  {!isMobile && (
-                    <div className="p-4 sticky bottom-0 bg-background">
-                      <MessageInput
-                        message={message}
-                        setMessage={setMessage}
-                        handleSendMessage={handleSendMessage}
-                        handleKeyPress={handleKeyPress}
-                      />
-                    </div>
+    <div className="ws-inbox-page">
+      <header className="ws-inbox-title">
+        <div>
+          <h1>Conversations, connected.</h1>
+          <p>A familiar place to keep in touch.</p>
+        </div>
+        <IconButton label="New conversation" onClick={() => setCompose(true)}>
+          <SquarePen size={20} />
+        </IconButton>
+      </header>
+      <div className={`ws-inbox-layout ${active ? "has-selection" : ""}`}>
+        <aside className="ws-conversation-list" aria-label="Conversations">
+          <div className="ws-list-controls">
+            <SearchField
+              value={query}
+              onChange={setQuery}
+              placeholder="Search conversations…"
+            />
+            <Segments
+              options={["All", "Unread"] as const}
+              value={filter}
+              onChange={setFilter}
+              label="Conversation filter"
+            />
+          </div>
+          <div className="ws-list-scroll">
+            {filtered.map((chat) => (
+              <button
+                key={chat.id}
+                className={`ws-conversation ${selected === chat.id ? "selected" : ""}`}
+                onClick={() => select(chat)}
+                aria-current={selected === chat.id ? "true" : undefined}
+              >
+                <Avatar name={chat.name} tone={chat.tone} />
+                <span className="ws-conversation-text">
+                  <span className="ws-conversation-top">
+                    <strong>{chat.name}</strong>
+                    <time>{chat.time}</time>
+                  </span>
+                  <p>{chat.preview}</p>
+                  {chat.unread && (
+                    <span className="ws-unread" aria-label="Unread" />
                   )}
-                </>
-              ) : (
-                <div className="flex-1 flex items-center justify-center">
-                  <p className="text-muted-foreground">
-                    Select a chat to start messaging
+                </span>
+              </button>
+            ))}
+            {!filtered.length && (
+              <EmptyState
+                icon={<MessageCircle />}
+                title="All clear."
+                detail="No conversations match this view."
+              />
+            )}
+          </div>
+        </aside>
+        <section
+          className="ws-thread"
+          aria-label={
+            active ? `Conversation with ${active.name}` : "Conversation"
+          }
+        >
+          {active ? (
+            <>
+              <header className="ws-thread-header">
+                <button
+                  className="ws-icon-button ws-back"
+                  aria-label="Back to conversations"
+                  onClick={() => setSelected(null)}
+                >
+                  <ChevronLeft size={21} />
+                </button>
+                <Avatar name={active.name} tone={active.tone} />
+                <div>
+                  <strong>{active.name}</strong>
+                  <small>
+                    {active.online && <i className="ws-online" />}
+                    {active.online
+                      ? "Available in sample workspace"
+                      : "Sample contact"}
+                  </small>
+                </div>
+                <IconButton
+                  label="Conversation information"
+                  onClick={() => setInfo((v) => !v)}
+                >
+                  <Info size={19} />
+                </IconButton>
+              </header>
+              {info && (
+                <div className="ws-thread-info">
+                  <strong>{active.name}</strong>
+                  <p>
+                    This is a local sample conversation. Messages and drafts
+                    stay in this browser and are not delivered to a recipient.
                   </p>
                 </div>
               )}
-            </div>
-
-            {/* Right Sidebar - User Info */}
-            <AnimatePresence>
-              {!isMobile && selectedChat && isUserInfoVisible && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: "20rem", opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-80 p-6 overflow-hidden"
+              <div className="ws-message-history">
+                <p className="ws-day-label">Sample conversation</p>
+                {thread.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`ws-message ${message.sent ? "sent" : ""}`}
+                  >
+                    <div className="ws-bubble">{message.text}</div>
+                    <small>
+                      {message.time}
+                      {message.sent ? " · Saved locally" : ""}
+                    </small>
+                  </div>
+                ))}
+                <div ref={bottom} />
+              </div>
+              <div className="ws-composer-wrap">
+                <form
+                  className="ws-composer"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    send();
+                  }}
                 >
-                  <UserInfoPanel user={selectedChat} />
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <textarea
+                    rows={1}
+                    aria-label={`Message ${active.name}`}
+                    placeholder="Write a message…"
+                    value={drafts[active.id] || ""}
+                    onChange={(e) =>
+                      setDrafts((prev) => ({
+                        ...prev,
+                        [active.id]: e.target.value,
+                      }))
+                    }
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "Enter" &&
+                        !e.shiftKey &&
+                        !e.nativeEvent.isComposing
+                      ) {
+                        e.preventDefault();
+                        send();
+                      }
+                    }}
+                  />
+                  <button
+                    className="ws-send"
+                    type="submit"
+                    disabled={!drafts[active.id]?.trim()}
+                    aria-label="Save message to conversation"
+                  >
+                    <ArrowUp size={18} />
+                  </button>
+                </form>
+                <p className="ws-local-note">
+                  Sample conversation · Messages are saved on this device
+                </p>
+              </div>
+            </>
+          ) : (
+            <EmptyState
+              icon={<MessageCircle />}
+              title="Good conversations start here."
+              detail="Choose a conversation, or start a new one. A little connection goes a long way."
+            />
+          )}
+        </section>
+      </div>
+      <Modal
+        open={compose}
+        onOpenChange={setCompose}
+        title="Say a little hello."
+        description="Start a sample conversation, saved on this device."
+      >
+        <form
+          className="ws-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!recipient.trim()) return;
+            const existing = chats.find(
+              (c) => c.name.toLowerCase() === recipient.trim().toLowerCase(),
+            );
+            if (existing) {
+              select(existing);
+            } else {
+              const chat = {
+                id: crypto.randomUUID(),
+                name: recipient.trim(),
+                preview: "Start the conversation",
+                time: "Now",
+                online: false,
+                unread: false,
+                tone: chats.length % 5,
+              };
+              setChats((prev) => [chat, ...prev]);
+              setSelected(chat.id);
+            }
+            setRecipient("");
+            setCompose(false);
+          }}
+        >
+          <label>
+            Contact name
+            <input
+              autoFocus
+              required
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              maxLength={80}
+              placeholder="Who’s on your mind?"
+            />
+          </label>
+          <div className="ws-form-footer">
+            <button
+              type="button"
+              className="ws-button"
+              onClick={() => setCompose(false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="ws-button primary">
+              Start conversation
+            </button>
           </div>
-        </div>
-      </motion.div>
-
-      {/* Mobile Bottom Bar */}
-      {isMobile && selectedChat && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm dark:bg-background/80 dark:backdrop-blur-sm dark:shadow-secondary z-[60]">
-          <MessageInput
-            message={message}
-            setMessage={setMessage}
-            handleSendMessage={handleSendMessage}
-            handleKeyPress={handleKeyPress}
-          />
-        </div>
-      )}
-    </ContentLayout>
-  );
-}
-
-function ChatList({
-  chats,
-  onSelectChat,
-  selectedChat,
-}: {
-  chats: Chat[];
-  onSelectChat: (chat: Chat) => void;
-  selectedChat: Chat | null;
-}) {
-  return (
-    <div className="p-2 lg:pr-4">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-normal text-foreground">Messages</h2>
-      </div>
-      <div className="relative mb-4">
-        <Search className="absolute w-4 h-4 left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder="Search messages..."
-          className="pl-10 border-none bg-muted shadow-none"
-        />
-      </div>
-
-      <div>
-        {chats.map((chat) => (
-          <div
-            key={chat.id}
-            className={cn(
-              "flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition duration-150 ease-in-out",
-              selectedChat && selectedChat.id === chat.id
-                ? "bg-primary/10 text-spcolor"
-                : "hover:bg-accent/50"
-            )}
-            onClick={() => onSelectChat(chat)}
-          >
-            <div className="relative">
-              <Avatar>
-                <AvatarImage src={chat.avatar} alt={chat.name} />
-                <AvatarFallback>
-                  {chat.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
-              <span
-                className={cn(
-                  "absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background",
-                  chat.online ? "bg-green-500" : "bg-gray-400"
-                )}
-              />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-normal truncate">{chat.name}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {chat.lastMessage}
-              </p>
-            </div>
-            <div className="flex flex-col items-end">
-              <p className="text-xs text-muted-foreground">{chat.time}</p>
-              {chat.unread > 0 && (
-                <Badge
-                  variant="decline"
-                  className="ml-auto px-1.5 min-w-[20px] flex items-center justify-center"
-                >
-                  {chat.unread}
-                </Badge>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MessageInput({
-  message,
-  setMessage,
-  handleSendMessage,
-  handleKeyPress,
-}: {
-  message: string;
-  setMessage: (message: string) => void;
-  handleSendMessage: () => void;
-  handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <div className="flex items-center space-x-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <Paperclip className="h-5 w-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem>
-            <Image className="mr-2 h-4 w-4" />
-            <span>Send Image</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <FileText className="mr-2 h-4 w-4" />
-            <span>Send Document</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>Schedule Meeting</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Input
-        type="text"
-        placeholder="Type a message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleKeyPress}
-        className="flex-1"
-      />
-
-      <Button onClick={handleSendMessage}>
-        <Send className="h-4 w-4 mr-2" />
-        Send
-      </Button>
-    </div>
-  );
-}
-
-interface User {
-  name: string;
-  avatar: string;
-  online: boolean;
-}
-
-function UserInfoPanel({ user }: { user: User }) {
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col items-center mb-6">
-        <div className="relative">
-          <Avatar className="w-24 h-24 mb-4">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
-          <span
-            className={cn(
-              "absolute bottom-4 right-2 block h-4 w-4 rounded-full border-2 border-background",
-              user.online ? "bg-green-500" : "bg-gray-400"
-            )}
-          />
-        </div>
-        <h2 className="text-xl font-normal">{user.name}</h2>
-        <p className="text-sm text-muted-foreground">
-          {user.online ? "Active now" : "Offline"}
-        </p>
-      </div>
-      <Separator className="my-4" />
-      <div className="space-y-4">
-        <div>
-          <h4 className="font-normal text-base text-foreground mb-2">Bio</h4>
-          <p className="text-sm text-muted-foreground">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-        </div>
-        <div>
-          <h4 className="font-normal text-base text-foreground mb-2">Email</h4>
-          <p className="text-sm text-muted-foreground">
-            {user.name.toLowerCase().replace(" ", "")}@example.com
-          </p>
-        </div>
-        <div>
-          <h4 className="font-normal text-base text-foreground mb-2">Phone</h4>
-          <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
-        </div>
-        <div>
-          <h4 className="font-normal text-base text-foreground mb-2">
-            Location
-          </h4>
-          <p className="text-sm text-muted-foreground">San Francisco, CA</p>
-        </div>
-      </div>
-      <Separator className="my-4" />
-      <div>
-        <h4 className="font-normal text-base text-foreground mb-2">
-          Shared Files
-        </h4>
-        <ul className="space-y-2">
-          <li className="flex items-center justify-between">
-            <span className="text-sm">project_proposal.pdf</span>
-            <Button variant="ghost" size="sm">
-              Download
-            </Button>
-          </li>
-          <li className="flex items-center justify-between">
-            <span className="text-sm">meeting_notes.docx</span>
-            <Button variant="ghost" size="sm">
-              Download
-            </Button>
-          </li>
-          <li className="flex items-center justify-between">
-            <span className="text-sm">budget_2023.xlsx</span>
-            <Button variant="ghost" size="sm">
-              Download
-            </Button>
-          </li>
-        </ul>
-      </div>
+        </form>
+      </Modal>
     </div>
   );
 }

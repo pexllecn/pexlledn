@@ -5,7 +5,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
-import { ZoomPreventer } from "@/components/ZoomPreventer";
 import { ThemeCustomizerButton } from "@/components/theme-customizer-button";
 
 export const metadata: Metadata = {
@@ -30,7 +29,6 @@ export default function RootLayout({
         <ThemeProvider>
           <BreadcrumbProvider>
             {children}
-            <ZoomPreventer />
             <Toaster richColors position="top-center" />
             <ThemeCustomizerButton />
           </BreadcrumbProvider>
