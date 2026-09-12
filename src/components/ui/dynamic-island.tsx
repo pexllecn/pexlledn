@@ -77,12 +77,9 @@ const EXPAND_SPRING = {
   restSpeed: 0.08,
 };
 
-// A fast focus envelope at each edge of a transition. The tiny second pulse
-// happens as the spring reaches its destination, imitating the way iOS hides
-// the last sub-pixel of spring settling before the pixels become fully sharp.
-const SHELL_FOCUS_IN = ["blur(3px)", "blur(0px)", "blur(0.55px)", "blur(0px)"];
-const SHELL_FOCUS_OUT = ["blur(0px)", "blur(0.65px)", "blur(3.5px)"];
-
+// Keep the physical black shell perfectly sharp. Blurring the shell itself
+// expands its painted bounds and can make the pill look horizontally stretched
+// while its width is springing. Only the pixels inside use a focus envelope.
 const CONTENT_FOCUS_IN = [
   "blur(8px)",
   "blur(1.25px)",
@@ -136,9 +133,7 @@ const contentMotion = {
   initial: (opening: boolean) => ({
     opacity: 0,
 
-    // iOS briefly defocuses incoming pixels while the black shell is moving.
-    // The blur clears before the spring settles, so it reads as velocity rather
-    // than a soft or sluggish UI.
+    // Incoming content begins defocused while the shell is changing shape.
     filter: `blur(${opening ? 8 : 6}px)`,
 
     scale: opening ? 0.965 : 1.025,
@@ -148,8 +143,8 @@ const contentMotion = {
   animate: {
     opacity: 1,
 
-    // Focus quickly, soften once at the spring's overshoot, then finish crisp.
-    // This keeps the effect perceptible without leaving text looking smeared.
+    // Focus quickly, soften once during the spring overshoot, then finish
+    // completely sharp. The outer black shell itself is never blurred.
     filter: CONTENT_FOCUS_IN,
 
     scale: 1,
@@ -186,7 +181,7 @@ const contentMotion = {
   exit: (opening: boolean) => ({
     opacity: 0,
 
-    // Defocus outgoing pixels just before they disappear under the new shape.
+    // Defocus outgoing pixels immediately before the content disappears.
     filter: CONTENT_FOCUS_OUT,
 
     scale: opening ? 1.018 : 0.98,
@@ -324,26 +319,21 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
             <motion.div
               ref={islandRef}
               key="island"
-              layout
               initial={{
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
                 borderRadius: ISLAND_SIZES.idle.radius,
-                scaleX: 0.82,
-                scaleY: 0.68,
+                scale: 0.96,
                 y: -9,
                 opacity: 0,
-                filter: reduceMotion ? "blur(0px)" : SHELL_FOCUS_IN[0],
               }}
               animate={{
                 width: spec.width,
                 height: spec.height,
                 borderRadius: spec.radius,
-                scaleX: 1,
-                scaleY: 1,
+                scale: 1,
                 y: 0,
                 opacity: 1,
-                filter: reduceMotion ? "blur(0px)" : SHELL_FOCUS_IN,
 
                 transition: reduceMotion
                   ? {
@@ -353,24 +343,12 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                     ? {
                         ...EXPAND_SPRING,
 
-                        filter: {
-                          duration: 0.19,
-                          times: [0, 0.5, 0.82, 1],
-                          ease: "linear",
-                        },
-
                         opacity: {
                           duration: 0.08,
                         },
                       }
                     : {
                         ...SHELL_SPRING,
-
-                        filter: {
-                          duration: 0.17,
-                          times: [0, 0.52, 0.82, 1],
-                          ease: "linear",
-                        },
 
                         opacity: {
                           duration: 0.08,
@@ -381,11 +359,9 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 width: ISLAND_SIZES.idle.width,
                 height: ISLAND_SIZES.idle.height,
                 borderRadius: ISLAND_SIZES.idle.radius,
-                scaleX: 0.86,
-                scaleY: 0.72,
+                scale: 0.96,
                 y: -8,
                 opacity: 0,
-                filter: reduceMotion ? "blur(0px)" : SHELL_FOCUS_OUT,
 
                 transition: reduceMotion
                   ? {
@@ -397,19 +373,12 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                       opacity: {
                         duration: 0.085,
                       },
-
-                      filter: {
-                        duration: 0.12,
-                        times: [0, 0.25, 1],
-                        ease: [0.4, 0, 1, 1],
-                      },
                     },
               }}
               whileTap={
                 canExpand && !reduceMotion
                   ? {
-                      scaleX: 0.985,
-                      scaleY: 0.965,
+                      scale: 0.985,
                     }
                   : undefined
               }
@@ -425,10 +394,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 canExpand && "cursor-pointer",
               )}
               style={{
-                willChange: "width, height, transform",
+                willChange: "width, height, border-radius, transform",
                 transformOrigin: "50% 0%",
                 WebkitFontSmoothing: "antialiased",
-                transform: "translateZ(0)",
+                backfaceVisibility: "hidden",
               }}
             >
               {/* Subtle top gloss, like the physical hardware surface. */}
