@@ -42,7 +42,7 @@ export function Cinema({
         variants={pageVariants}
         className="pb-4"
       >
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-b from-neutral-50 to-neutral-100 text-foreground ring-1 ring-border dark:from-[#101014] dark:to-[#08080b] dark:text-neutral-200 dark:ring-white/5">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-neutral-50 to-neutral-100 text-foreground ring-1 ring-border dark:from-[#101014] dark:to-[#08080b] dark:text-neutral-200 dark:ring-white/5">
           {/* ambient glows */}
           <div className="pointer-events-none absolute -top-24 right-1/4 h-72 w-72 rounded-full bg-orange-500/10 blur-[130px] dark:bg-orange-600/10" />
           <div className="pointer-events-none absolute top-1/2 -left-24 h-72 w-72 rounded-full bg-violet-500/10 blur-[130px] dark:bg-violet-600/10" />

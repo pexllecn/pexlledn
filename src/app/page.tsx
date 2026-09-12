@@ -15,7 +15,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
-import { cn } from "@/lib/utils";
+import { CloudBackground } from "@/components/cloud-background";
 import {
   ArrowRight,
   Play,
@@ -194,26 +194,15 @@ export default function Landing() {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+    <div className="relative min-h-screen overflow-x-hidden text-foreground">
       {/* ---------------- background ---------------- */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {/* dotted pattern */}
-        <div
-          className={cn(
-            "absolute inset-0 [background-size:16px_16px] [mask-image:linear-gradient(to_bottom,black,black_35%,transparent_75%)]",
-            resolvedTheme === "dark"
-              ? "bg-[radial-gradient(#26262c_1px,transparent_1px)]"
-              : "bg-[radial-gradient(#c7c9cf_1px,transparent_1px)]"
-          )}
-        />
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px]" />
-        <div className="absolute top-[40%] -left-40 h-96 w-96 rounded-full bg-sky-500/15 blur-[120px]" />
-        <div className="absolute top-[70%] -right-40 h-96 w-96 rounded-full bg-orange-500/15 blur-[120px]" />
+        <CloudBackground />
       </div>
 
       {/* ---------------- nav ---------------- */}
       <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
-        <div className="flex w-full max-w-3xl items-center justify-between gap-4 rounded-full border border-border/60 bg-background/60 px-4 py-2 shadow-lg shadow-black/5 backdrop-blur-xl">
+        <div className="flex w-full max-w-3xl items-center justify-between gap-4 rounded-2xl border border-border/60 bg-background/60 px-4 py-2 shadow-lg shadow-black/5 backdrop-blur-xl">
           <Link href="/" className="flex items-center pl-1">
             <Image src={logo} alt="Pexlle" width={104} height={30} className="h-6 w-auto" />
           </Link>
@@ -230,7 +219,6 @@ export default function Landing() {
               variant="expandIcon"
               Icon={ArrowRight}
               iconPlacement="right"
-              className="rounded-full"
             >
               <Link href="/dashboard">Open app</Link>
             </Button>
@@ -291,11 +279,11 @@ export default function Landing() {
             variant="expandIcon"
             Icon={ArrowRight}
             iconPlacement="right"
-            className="rounded-full px-7 text-base shadow-lg shadow-primary/20"
+            className="px-7 text-base shadow-lg shadow-primary/20"
           >
             <Link href="/dashboard">Enter the demo</Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="rounded-full border-border/70 bg-background/60 px-7 text-base backdrop-blur">
+          <Button asChild size="lg" variant="outline" className="border-border/70 bg-background/60 px-7 text-base backdrop-blur">
             <Link href="/media/music">
               <Play className="mr-2 h-4 w-4 fill-current" /> See the media app
             </Link>
@@ -407,7 +395,7 @@ export default function Landing() {
             {[...apps, ...apps].map((a, i) => (
               <span
                 key={i}
-                className="flex items-center gap-2 whitespace-nowrap rounded-full border border-border/60 bg-card/60 px-5 py-2 text-sm font-medium text-muted-foreground backdrop-blur"
+                className="flex items-center gap-2 whitespace-nowrap rounded-lg border border-border/60 bg-card/60 px-5 py-2 text-sm font-medium text-muted-foreground backdrop-blur"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-violet-500 to-orange-500" />
                 {a}
@@ -505,7 +493,7 @@ export default function Landing() {
       <section className="mx-auto mt-24 max-w-6xl px-4 sm:mt-36">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-600 dark:text-violet-400">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-600 dark:text-violet-400">
               <Palette className="h-3.5 w-3.5" /> Designed to impress
             </span>
             <h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -536,7 +524,7 @@ export default function Landing() {
               variant="expandIcon"
               Icon={ArrowRight}
               iconPlacement="right"
-              className="mt-8 rounded-full"
+              className="mt-8"
             >
               <Link href="/dashboard">Browse the apps</Link>
             </Button>
@@ -583,10 +571,10 @@ export default function Landing() {
       {/* ---------------- CTA ---------------- */}
       <section className="mx-auto mt-24 max-w-6xl px-4 sm:mt-36">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-violet-600 via-fuchsia-600 to-orange-500 p-10 text-center text-white sm:p-16">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-orange-500 p-10 text-center text-white sm:p-16">
             <div className="pointer-events-none absolute inset-0 opacity-30 [background:radial-gradient(circle_at_20%_20%,white,transparent_35%),radial-gradient(circle_at_80%_80%,white,transparent_35%)]" />
             <div className="relative">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
                 <ShieldCheck className="h-3.5 w-3.5" /> Free to explore
               </span>
               <h2 className="mx-auto mt-5 max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -602,11 +590,11 @@ export default function Landing() {
                   variant="expandIcon"
                   Icon={ArrowRight}
                   iconPlacement="right"
-                  className="rounded-full bg-white px-8 text-base text-violet-700 hover:bg-white/90"
+                  className="bg-white px-8 text-base text-violet-700 hover:bg-white/90"
                 >
                   <Link href="/dashboard">Launch the demo</Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="rounded-full border-white/40 bg-white/10 px-8 text-base text-white backdrop-blur hover:bg-white/20 hover:text-white">
+                <Button asChild size="lg" variant="outline" className="border-white/40 bg-white/10 px-8 text-base text-white backdrop-blur hover:bg-white/20 hover:text-white">
                   <Link href="/comps">View components</Link>
                 </Button>
               </div>
