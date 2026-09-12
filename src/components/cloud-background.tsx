@@ -1,12 +1,371 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
+/* ------------------------------------------------------------------ shader */
+
+const VERT = `
+attribute vec2 aPos;
+varying vec2 vUv;
+void main() {
+  vUv = aPos * 0.5 + 0.5;
+  gl_Position = vec4(aPos, 0.0, 1.0);
+}
+`;
+
 /**
- * An ambient field of slowly drifting clouds.
+ * Domain-warped fractal noise — fbm sampled through two earlier fbm passes.
+ * One pass of plain noise gives you fog; it is the warping that makes the
+ * result billow and curl like actual cloud, and that keeps the motion from
+ * reading as a texture sliding behind a window.
+ */
+const FRAG = `
+precision highp float;
+
+varying vec2 vUv;
+uniform vec2 uRes;
+uniform float uTime;
+uniform vec3 uTintLow;
+uniform vec3 uTintHigh;
+uniform float uAlpha;
+
+float hash(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+    u.y
+  );
+}
+
+float fbm(vec2 p) {
+  float v = 0.0;
+  float a = 0.5;
+  mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+  for (int i = 0; i < 5; i++) {
+    v += a * noise(p);
+    p = m * p;
+    a *= 0.5;
+  }
+  return v;
+}
+
+void main() {
+  /* Scale against a fixed reference height rather than the viewport, so a
+     cloud is the same size in pixels on a phone and on an ultrawide. */
+  vec2 p = (vUv * uRes / 900.0) * 1.25;
+
+  float t = uTime * 0.022;
+
+  vec2 q = vec2(
+    fbm(p + vec2(0.0, t)),
+    fbm(p + vec2(5.2, 1.3) - t * 0.8)
+  );
+
+  vec2 r = vec2(
+    fbm(p + 3.4 * q + vec2(1.7, 9.2) + t * 0.5),
+    fbm(p + 3.4 * q + vec2(8.3, 2.8) - t * 0.4)
+  );
+
+  float f = fbm(p + 3.2 * r);
+
+  /* A high floor on the ramp is what leaves open sky between the masses.
+     Drop it and the field closes up into an even veil over the whole page,
+     which is both less like real cloud and harder to read text through. */
+  float density = smoothstep(0.42, 0.92, f + 0.20 * r.x);
+
+  /* Fade toward the horizontal edges so the field never meets the frame. */
+  float edge = smoothstep(0.0, 0.22, vUv.x) * smoothstep(0.0, 0.22, 1.0 - vUv.x);
+
+  vec3 col = mix(uTintLow, uTintHigh, clamp(f * 1.7 - 0.25, 0.0, 1.0));
+
+  gl_FragColor = vec4(col, density * edge * uAlpha);
+}
+`;
+
+/* ------------------------------------------------------------------ colour */
+
+type Rgb = [number, number, number];
+
+function hslToRgb(h: number, s: number, l: number): Rgb {
+  const S = s / 100;
+  const L = l / 100;
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = S * Math.min(L, 1 - L);
+  const f = (n: number) =>
+    L - a * Math.max(-1, Math.min(Math.min(k(n) - 3, 9 - k(n)), 1));
+  return [f(0), f(8), f(4)];
+}
+
+function mixRgb(a: Rgb, b: Rgb, t: number): Rgb {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ];
+}
+
+/** Reads `--primary` (an "H S% L%" triple) off the document. */
+function readAccent(): Rgb {
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue("--primary")
+    .trim();
+  const n = raw.match(/-?[\d.]+/g);
+  if (!n || n.length < 3) return hslToRgb(217, 100, 50);
+  return hslToRgb(parseFloat(n[0]), parseFloat(n[1]), parseFloat(n[2]));
+}
+
+type Palette = { low: Rgb; high: Rgb; alpha: number };
+
+function luma([r, g, b]: Rgb) {
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/**
+ * Pull a tint into the band where it can actually be seen against the page,
+ * moving it along its own lightness and leaving its hue alone. A yellow
+ * accent (luma ~0.82) darkens to amber on a white page; a blue one is
+ * already dark enough and passes through untouched. The same rule run the
+ * other way keeps a deep accent from sinking into a dark page.
+ */
+function legible(c: Rgb, dark: boolean): Rgb {
+  if (dark) {
+    const deficit = Math.max(0, 0.34 - luma(c));
+    return mixRgb(c, [1, 1, 1], Math.min(0.4, deficit * 1.5));
+  }
+  const excess = Math.max(0, luma(c) - 0.6);
+  return mixRgb(c, [0, 0, 0], Math.min(0.42, excess * 1.4));
+}
+
+/**
+ * Two tints: the body of a cloud and its lit crests.
  *
- * Pure CSS — no canvas, no animation frame loop, no client-side JavaScript —
- * so it costs nothing on the main thread and keeps drifting while React is
- * busy. Its colour is derived from `--primary`, so it follows the accent
- * picker, the preset and light/dark without being told.
+ * Both ends stay saturated. An earlier version ramped from a pale tint to a
+ * dark one, and the midpoint of that ramp is grey — which is why it read as
+ * smoke rather than cloud. Depth comes from density instead, and the accent
+ * is bent slightly toward a companion sky hue so the field is not monotone.
+ */
+function palette(dark: boolean): Palette {
+  const accent = legible(readAccent(), dark);
+  const sky: Rgb = dark ? hslToRgb(216, 96, 58) : hslToRgb(214, 96, 60);
+  const violet: Rgb = dark ? hslToRgb(268, 86, 62) : hslToRgb(266, 88, 66);
+
+  const base = mixRgb(accent, sky, 0.28);
+
+  return dark
+    ? {
+        low: mixRgb(base, [0.02, 0.03, 0.06], 0.42),
+        high: mixRgb(mixRgb(base, violet, 0.16), [1, 1, 1], 0.18),
+        alpha: 0.55,
+      }
+    : {
+        low: mixRgb(base, [1, 1, 1], 0.42),
+        high: mixRgb(base, violet, 0.16),
+        alpha: 0.5,
+      };
+}
+
+/* --------------------------------------------------------------- component */
+
+/** Render the field at a fraction of device pixels. It is all soft cloud, so
+ *  half resolution is indistinguishable and roughly four times cheaper. */
+const RENDER_SCALE = 0.5;
+
+/** And never larger than this on the long edge. The shader runs 25 octaves of
+ *  noise per pixel, so cost is entirely pixel-bound; past this the extra
+ *  pixels buy nothing visible but cost plenty on an ultrawide or a phone GPU. */
+const MAX_EDGE = 1200;
+
+function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const gl = canvas.getContext("webgl", {
+      alpha: true,
+      antialias: false,
+      depth: false,
+      stencil: false,
+      premultipliedAlpha: false,
+      powerPreference: "low-power",
+    });
+    if (!gl) {
+      setFailed(true);
+      return;
+    }
+
+    const compile = (type: number, src: string) => {
+      const sh = gl.createShader(type)!;
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+        gl.deleteShader(sh);
+        return null;
+      }
+      return sh;
+    };
+
+    const vs = compile(gl.VERTEX_SHADER, VERT);
+    const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+    if (!vs || !fs) {
+      setFailed(true);
+      return;
+    }
+
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      setFailed(true);
+      return;
+    }
+    gl.useProgram(prog);
+
+    // One full-screen triangle — cheaper than a quad and has no seam.
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW
+    );
+    const aPos = gl.getAttribLocation(prog, "aPos");
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const uRes = gl.getUniformLocation(prog, "uRes");
+    const uTime = gl.getUniformLocation(prog, "uTime");
+    const uTintLow = gl.getUniformLocation(prog, "uTintLow");
+    const uTintHigh = gl.getUniformLocation(prog, "uTintHigh");
+    const uAlpha = gl.getUniformLocation(prog, "uAlpha");
+
+    gl.enable(gl.BLEND);
+    gl.blendFuncSeparate(
+      gl.SRC_ALPHA,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.ONE,
+      gl.ONE_MINUS_SRC_ALPHA
+    );
+
+    const isDark = () => document.documentElement.classList.contains("dark");
+
+    let target = palette(isDark());
+    let current: Palette = {
+      low: [...target.low] as Rgb,
+      high: [...target.high] as Rgb,
+      alpha: target.alpha,
+    };
+
+    let width = 0;
+    let height = 0;
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      let w = Math.max(1, Math.round(rect.width * dpr * RENDER_SCALE));
+      let h = Math.max(1, Math.round(rect.height * dpr * RENDER_SCALE));
+      const over = Math.max(w, h) / MAX_EDGE;
+      if (over > 1) {
+        w = Math.max(1, Math.round(w / over));
+        h = Math.max(1, Math.round(h / over));
+      }
+      if (w === width && h === height) return;
+      width = w;
+      height = h;
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
+      gl.uniform2f(uRes, w, h);
+    };
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let raf = 0;
+    let start = performance.now();
+    let running = true;
+
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      if (!running) return;
+      resize();
+
+      // Ease the palette toward its target so a theme change dissolves.
+      const k = 0.06;
+      current = {
+        low: mixRgb(current.low, target.low, k),
+        high: mixRgb(current.high, target.high, k),
+        alpha: current.alpha + (target.alpha - current.alpha) * k,
+      };
+
+      const t = reduced.matches ? 0 : (now - start) / 1000;
+      gl.uniform1f(uTime, t);
+      gl.uniform3f(uTintLow, current.low[0], current.low[1], current.low[2]);
+      gl.uniform3f(uTintHigh, current.high[0], current.high[1], current.high[2]);
+      gl.uniform1f(uAlpha, current.alpha);
+
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    raf = requestAnimationFrame(frame);
+
+    // Don't burn frames on a hidden tab.
+    const onVisibility = () => {
+      running = !document.hidden;
+      if (running) start = performance.now() - (performance.now() - start);
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // Follow the accent picker, the preset and light/dark.
+    const observer = new MutationObserver(() => {
+      target = palette(isDark());
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-color", "data-preset"],
+    });
+
+    const onResize = () => resize();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("resize", onResize);
+      gl.deleteBuffer(buf);
+      gl.deleteProgram(prog);
+      gl.deleteShader(vs);
+      gl.deleteShader(fs);
+      // Deliberately no WEBGL_lose_context here. getContext hands back the
+      // same context for the life of the canvas element, so losing it would
+      // leave a remount — StrictMode's double-invoke among them — with a
+      // dead context it can never recover. The context goes with the canvas.
+    };
+  }, [canvasRef]);
+
+  return failed;
+}
+
+/**
+ * An ambient field of slowly billowing clouds.
+ *
+ * The cloud itself is a WebGL fragment shader — domain-warped fractal noise,
+ * rendered at half resolution on a single full-screen triangle. That is what
+ * buys real cloud texture; layered CSS gradients can only ever give you a
+ * soft wash. If WebGL is unavailable the CSS field in globals.css stands in.
+ *
+ * Colour is derived from `--primary`, so the field follows the accent picker,
+ * the preset and light/dark, easing between them rather than snapping.
  *
  * Render it inside a positioned ancestor; it fills that ancestor.
  */
@@ -21,21 +380,30 @@ export function CloudBackground({
   /** Fade the field into the page background near the fold. */
   veil?: boolean;
 }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const failed = useClouds(canvasRef);
+
   return (
     <div className={cn("cloudfield", className)} aria-hidden="true">
       <div className="cloudfield__wash" />
 
-      {/* Two noise masks, so the wisps don't all share one silhouette. */}
-      <div className="cloudfield__mask">
-        <div className="cloud cloud--1" />
-        <div className="cloud cloud--2" />
-        <div className="cloud cloud--3" />
-      </div>
-      <div className="cloudfield__mask cloudfield__mask--b">
-        <div className="cloud cloud--4" />
-        <div className="cloud cloud--5" />
-        <div className="cloud cloud--6" />
-      </div>
+      <canvas ref={canvasRef} className="cloudfield__canvas" />
+
+      {/* Static stand-in wherever WebGL can't run. */}
+      {failed ? (
+        <>
+          <div className="cloudfield__mask">
+            <div className="cloud cloud--1" />
+            <div className="cloud cloud--2" />
+            <div className="cloud cloud--3" />
+          </div>
+          <div className="cloudfield__mask cloudfield__mask--b">
+            <div className="cloud cloud--4" />
+            <div className="cloud cloud--5" />
+            <div className="cloud cloud--6" />
+          </div>
+        </>
+      ) : null}
 
       {grid ? <div className="cloudfield__grid" /> : null}
       {veil ? <div className="cloudfield__veil" /> : null}

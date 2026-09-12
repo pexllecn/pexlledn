@@ -848,6 +848,31 @@ body {
     linear-gradient(to bottom, hsl(var(--primary) / 0.04), transparent 60%);
 }
 
+/* The shader canvas. DeepSeek fades its own cloud canvas out toward the
+   bottom of the frame; the same mask here keeps the densest cloud up behind
+   the headline and hands the lower page a clean surface to sit on. */
+.cloudfield__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.99) 0%,
+    rgb(0 0 0 / 0.91) 9%,
+    rgb(0 0 0 / 0.55) 62%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.99) 0%,
+    rgb(0 0 0 / 0.91) 9%,
+    rgb(0 0 0 / 0.55) 62%,
+    transparent 100%
+  );
+}
+
 /* Mask wrappers. The noise stays put; the clouds slide beneath it. */
 .cloudfield__mask {
   position: absolute;
