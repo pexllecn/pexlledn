@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { Button } from "@/components/ui/button";
+import AnimatedBackground from "@/components/ui/animated-tabs";
+import { cn } from "@/lib/utils";
 import {
   DynamicIslandProvider,
   useDynamicIsland,
@@ -29,10 +32,8 @@ import {
   BatteryFull,
   BellOff,
   Car,
-  ChevronRight,
   CornerUpRight,
   Headphones,
-  Hand,
   LockKeyhole,
   MessageSquare,
   Mic,
@@ -41,36 +42,43 @@ import {
   Plane,
   ScanFace,
   SignalHigh,
-  Sparkles,
   Timer,
   Trophy,
   Wifi,
   Zap,
 } from "lucide-react";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const EASE = [0.28, 0.9, 0.22, 1] as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Catalogue                                                                 */
+/* -------------------------------------------------------------------------- */
 
 type Example = {
   label: string;
   hint: string;
   icon: React.ElementType;
+
+  /* The activity's own iOS system colour, mirrored from island-activities so
+     the tile and the island it presents read as the same object. */
   accent: string;
   build: () => IslandActivity;
 };
 
-type Group = {
-  eyebrow: string;
+type Chapter = {
+  id: string;
+  tab: string;
   title: string;
-  description: string;
+  copy: string;
   examples: Example[];
 };
 
-const GROUPS: Group[] = [
+const CHAPTERS: Chapter[] = [
   {
-    eyebrow: "System moments",
+    id: "system",
+    tab: "System",
     title: "Instant. Familiar. Clear.",
-    description:
-      "Small acknowledgements for the things your device is doing right now.",
+    copy: "A quiet acknowledgement for the things your device is already doing.",
     examples: [
       {
         label: "Face ID",
@@ -95,7 +103,7 @@ const GROUPS: Group[] = [
       },
       {
         label: "Charging",
-        hint: "82% charged",
+        hint: "82 percent",
         icon: Zap,
         accent: iOS.green,
         build: () => chargingActivity(82),
@@ -110,13 +118,14 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    eyebrow: "Live Activities",
+    id: "live",
+    tab: "Live Activities",
     title: "The moment keeps moving.",
-    description: "Follow progress without leaving what you are doing.",
+    copy: "Follow something as it happens without leaving what you are doing.",
     examples: [
       {
         label: "Timer",
-        hint: "Countdown",
+        hint: "Counting down",
         icon: Timer,
         accent: iOS.orange,
         build: timerActivity,
@@ -145,10 +154,10 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    eyebrow: "Expanded experiences",
+    id: "expanded",
+    tab: "Expanded",
     title: "More detail. Right on cue.",
-    description:
-      "Tap to reveal controls and context, then tap outside to collapse and dismiss.",
+    copy: "Tap to reveal controls and context. Tap outside to fold it away.",
     examples: [
       {
         label: "Incoming Call",
@@ -168,7 +177,7 @@ const GROUPS: Group[] = [
         label: "Ride Share",
         hint: "Arriving soon",
         icon: Car,
-        accent: "#A3E635",
+        accent: iOS.indigo,
         build: rideActivity,
       },
       {
@@ -189,148 +198,140 @@ const GROUPS: Group[] = [
   },
 ];
 
-const PHONE_STATES = [
-  {
-    key: "idle",
-    width: 112,
-    height: 32,
-    radius: 17,
-  },
-  {
-    key: "status",
-    width: 174,
-    height: 36,
-    radius: 19,
-  },
-  {
-    key: "playing",
-    width: 232,
-    height: 116,
-    radius: 30,
-  },
+/* -------------------------------------------------------------------------- */
+/*  Hero device                                                               */
+/* -------------------------------------------------------------------------- */
+
+/* The device mock keeps literal pixel geometry rather than theme radii: it is
+   a depiction of hardware, and its corners are a physical fact of the object,
+   the same way ISLAND_SIZES are literal in the island itself. Every piece of
+   app UI on this page follows --radius through the rounded-* scale. */
+const REEL = [
+  { key: "idle", width: 118, height: 33, radius: 18, hold: 1500 },
+  { key: "silent", width: 178, height: 37, radius: 19, hold: 2400 },
+  { key: "music", width: 238, height: 118, radius: 31, hold: 3400 },
 ] as const;
 
-function PhonePreview() {
-  const [index, setIndex] = useState(0);
+const PREVIEW_SPRING = {
+  type: "spring" as const,
+  stiffness: 320,
+  damping: 27,
+  mass: 1,
+  restDelta: 0.05,
+  restSpeed: 0.2,
+};
+
+const PREVIEW_FOCUS_IN = ["blur(12px)", "blur(3px)", "blur(0px)"];
+const PREVIEW_FOCUS_OUT = ["blur(0px)", "blur(4px)", "blur(11px)"];
+
+function DeviceReel() {
+  const [step, setStep] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const state = REEL[step];
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((current) => (current + 1) % PHONE_STATES.length);
-    }, 2500);
+    const id = setTimeout(
+      () => setStep((current) => (current + 1) % REEL.length),
+      state.hold,
+    );
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  const state = PHONE_STATES[index];
+    return () => clearTimeout(id);
+  }, [step, state.hold]);
 
   return (
-    <div className="relative mx-auto w-[286px]">
-      <div className="absolute inset-x-4 -bottom-7 h-28 rounded-full bg-blue-500/25 blur-3xl" />
+    <div className="relative mx-auto w-[300px]">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-10 -bottom-10 top-16 rounded-full bg-primary/25 blur-3xl"
+      />
 
-      <div className="relative rounded-[54px] bg-[#171719] p-[9px] shadow-[0_40px_90px_rgba(0,0,0,.45)] ring-1 ring-black/40 dark:ring-white/15">
-        <div className="relative h-[568px] overflow-hidden rounded-[46px] bg-[#d9e8ff]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,#f3c6ff_0,transparent_34%),radial-gradient(circle_at_20%_62%,#75baff_0,transparent_40%),linear-gradient(160deg,#e7f2ff,#b5a9f7_52%,#ffb68c)]" />
+      <div className="relative rounded-[58px] bg-gradient-to-b from-zinc-700 to-zinc-900 p-[10px] shadow-2xl">
+        <div className="relative h-[596px] overflow-hidden rounded-[48px] bg-black">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_16%,#ff9ff3_0,transparent_38%),radial-gradient(circle_at_18%_64%,#54a0ff_0,transparent_44%),linear-gradient(165deg,#e8f1ff_0%,#b6a8f5_48%,#ffb489_100%)]" />
 
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
-
-          <div className="relative z-10 flex items-center justify-between px-8 pt-4 text-[13px] font-semibold text-black">
+          <div className="relative z-10 flex items-center justify-between px-9 pt-5 text-lg font-semibold text-black/85">
             <span>9:41</span>
 
-            <span className="flex items-center gap-1">
-              <SignalHigh className="size-3.5" />
-              <Wifi className="size-3.5" />
-              <BatteryFull className="h-4 w-5" />
+            <span className="flex items-center gap-1.5">
+              <SignalHigh className="size-4" />
+              <Wifi className="size-4" />
+              <BatteryFull className="h-4 w-6" />
             </span>
           </div>
 
-          <div className="absolute inset-x-0 top-3 z-20 flex justify-center">
+          <div className="absolute inset-x-0 top-3.5 z-20 flex justify-center">
             <motion.div
               animate={{
                 width: state.width,
                 height: state.height,
                 borderRadius: state.radius,
               }}
-              transition={{
-                type: "spring",
-                stiffness: 430,
-                damping: 34,
-                mass: 0.8,
-              }}
+              transition={reduceMotion ? { duration: 0.15 } : PREVIEW_SPRING}
               className="overflow-hidden bg-black text-white shadow-xl"
+              style={{ willChange: "width, height", contain: "layout paint" }}
             >
               <AnimatePresence mode="sync" initial={false}>
-                {state.key === "status" && (
+                {state.key === "silent" && (
                   <motion.div
-                    key="status"
-                    initial={{
-                      opacity: 0,
-                      filter: "blur(7px)",
-                    }}
-                    animate={{
-                      opacity: 1,
-                      filter: "blur(0px)",
-                    }}
-                    exit={{
-                      opacity: 0,
-                      filter: "blur(7px)",
-                    }}
-                    className="flex h-full items-center justify-between px-3 text-[11px] font-medium"
+                    key="silent"
+                    initial={{ opacity: 0, filter: PREVIEW_FOCUS_IN[0] }}
+                    animate={{ opacity: 1, filter: PREVIEW_FOCUS_IN }}
+                    exit={{ opacity: 0, filter: PREVIEW_FOCUS_OUT }}
+                    transition={{ duration: 0.34, ease: EASE }}
+                    className="flex h-full items-center justify-between px-3.5 text-xs font-medium"
                   >
-                    <BellOff className="size-4 text-[#FF9F0A]" />
-
+                    <BellOff
+                      className="size-4"
+                      style={{ color: iOS.orange }}
+                    />
                     <span>Silent Mode</span>
-
-                    <span className="text-[#FF9F0A]">On</span>
+                    <span style={{ color: iOS.orange }}>On</span>
                   </motion.div>
                 )}
 
-                {state.key === "playing" && (
+                {state.key === "music" && (
                   <motion.div
-                    key="playing"
+                    key="music"
                     initial={{
                       opacity: 0,
-                      filter: "blur(8px)",
-                      scale: 0.96,
+                      filter: PREVIEW_FOCUS_IN[0],
+                      scale: 0.92,
                     }}
-                    animate={{
-                      opacity: 1,
-                      filter: "blur(0px)",
-                      scale: 1,
-                    }}
+                    animate={{ opacity: 1, filter: PREVIEW_FOCUS_IN, scale: 1 }}
                     exit={{
                       opacity: 0,
-                      filter: "blur(8px)",
-                      scale: 0.98,
+                      filter: PREVIEW_FOCUS_OUT,
+                      scale: 0.95,
                     }}
+                    transition={{ duration: 0.38, ease: EASE }}
                     className="flex h-full flex-col justify-between p-3.5"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="size-10 rounded-[9px] bg-gradient-to-br from-pink-500 to-violet-600" />
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="size-11 rounded-md"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${iOS.pink}, ${iOS.purple})`,
+                        }}
+                      />
 
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-xs font-semibold">
+                        <p className="truncate text-base font-semibold">
                           Midnight Drive
                         </p>
-
-                        <p className="text-[10px] text-white/50">
-                          Neon Coast
-                        </p>
+                        <p className="text-xs text-white/55">Neon Coast</p>
                       </div>
 
-                      <Music className="size-4 text-pink-400" />
+                      <Music className="size-4" style={{ color: iOS.pink }} />
                     </div>
 
-                    <div className="h-1 overflow-hidden rounded-full bg-white/15">
+                    <div className="h-[3px] overflow-hidden rounded-full bg-white/20">
                       <motion.div
-                        animate={{
-                          width: ["24%", "76%"],
-                        }}
+                        animate={{ width: ["28%", "72%"] }}
                         transition={{
                           duration: 4,
                           repeat: Infinity,
                           repeatType: "reverse",
+                          ease: "easeInOut",
                         }}
                         className="h-full rounded-full bg-white"
                       />
@@ -341,13 +342,17 @@ function PhonePreview() {
             </motion.div>
           </div>
 
-          <div className="absolute inset-x-0 bottom-8 grid grid-cols-4 gap-5 px-9">
-            {Array.from({ length: 8 }).map((_, item) => (
+          <div className="absolute inset-x-0 bottom-24 grid grid-cols-4 gap-x-6 gap-y-5 px-10">
+            {Array.from({ length: 12 }).map((_, item) => (
               <div
                 key={item}
-                className="aspect-square rounded-[14px] bg-white/35 shadow-sm backdrop-blur-md"
+                className="aspect-square rounded-xl bg-white/30 shadow-sm backdrop-blur-md"
               />
             ))}
+          </div>
+
+          <div className="absolute inset-x-0 bottom-6 flex justify-center">
+            <div className="h-[5px] w-[134px] rounded-full bg-black/25" />
           </div>
         </div>
       </div>
@@ -355,7 +360,11 @@ function PhonePreview() {
   );
 }
 
-function ActivityCard({
+/* -------------------------------------------------------------------------- */
+/*  Pieces                                                                    */
+/* -------------------------------------------------------------------------- */
+
+function Tile({
   example,
   show,
 }: {
@@ -364,198 +373,229 @@ function ActivityCard({
 }) {
   return (
     <motion.button
+      type="button"
       onClick={() => show(example.build())}
-      whileHover={{
-        y: -3,
-      }}
-      whileTap={{
-        scale: 0.975,
-      }}
-      className="group flex min-h-36 flex-col justify-between rounded-[24px] border border-black/[0.06] bg-white p-5 text-left shadow-[0_1px_2px_rgba(0,0,0,.03)] transition-shadow hover:shadow-[0_16px_40px_rgba(0,0,0,.08)] dark:border-white/10 dark:bg-[#171719] dark:hover:shadow-black/40"
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 420, damping: 26 }}
+      className="group flex min-h-[170px] w-full flex-col items-center justify-center gap-3.5 rounded-lg border bg-card p-5 text-center text-card-foreground shadow-sm transition-shadow duration-300 hover:shadow-xl"
     >
-      <div className="flex items-start justify-between">
-        <span
-          className="grid size-11 place-items-center rounded-[13px]"
-          style={{
-            color: example.accent,
-            backgroundColor: `${example.accent}16`,
-          }}
-        >
-          <example.icon className="size-5" strokeWidth={2} />
+      <span
+        className="grid size-[58px] place-items-center rounded-md transition-transform duration-300 group-hover:scale-[1.07]"
+        style={{
+          color: example.accent,
+          backgroundColor: `${example.accent}1a`,
+        }}
+      >
+        <example.icon className="size-7" strokeWidth={1.9} />
+      </span>
+
+      <span>
+        <span className="block text-lg font-semibold tracking-tight">
+          {example.label}
         </span>
 
-        <ChevronRight className="size-4 text-black/20 transition-transform group-hover:translate-x-0.5 dark:text-white/20" />
-      </div>
-
-      <div>
-        <p className="text-[15px] font-semibold tracking-tight">
-          {example.label}
-        </p>
-
-        <p className="mt-0.5 text-xs text-black/45 dark:text-white/45">
+        <span className="mt-0.5 block text-xs text-muted-foreground">
           {example.hint}
-        </p>
-      </div>
+        </span>
+      </span>
     </motion.button>
   );
 }
 
-function Playground() {
+/* -------------------------------------------------------------------------- */
+/*  Page                                                                      */
+/* -------------------------------------------------------------------------- */
+
+function Stage() {
   const { show } = useDynamicIsland();
+  const [active, setActive] = useState(CHAPTERS[0].id);
+
+  const chapter = useMemo(
+    () => CHAPTERS.find((entry) => entry.id === active) ?? CHAPTERS[0],
+    [active],
+  );
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f] dark:bg-black dark:text-[#f5f5f7]">
-      <section className="relative overflow-hidden border-b border-black/[0.06] bg-white px-5 py-20 dark:border-white/10 dark:bg-[#0a0a0a] sm:py-28">
-        <div className="pointer-events-none absolute left-1/2 top-12 h-96 w-[680px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[110px]" />
+    <div className="-mx-2 bg-background text-foreground">
+      {/* ------------------------------- Hero ------------------------------- */}
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-[1fr_360px]">
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 22,
-              filter: "blur(8px)",
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
-            }}
-            transition={{
-              duration: 0.75,
-              ease,
-            }}
-          >
-            <p className="flex items-center gap-2 text-sm font-semibold text-[#0071e3]">
-              <Sparkles className="size-4" />
-              Dynamic Island
-            </p>
+      <section className="overflow-hidden border-b px-6 pt-20 sm:pt-28">
+        <motion.div
+          initial={{ opacity: 0, y: 24, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, ease: EASE }}
+          className="mx-auto max-w-[780px] text-center"
+        >
+          <p className="text-xl font-semibold text-primary">Dynamic Island</p>
 
-            <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-7xl">
-              A little space.
-              <br />
+          <h1 className="mt-3 text-5xl font-semibold leading-[1.04] tracking-tight sm:text-7xl">
+            A little space.
+            <br />
+            <span className="bg-gradient-to-r from-primary via-fuchsia-500 to-rose-500 bg-clip-text text-transparent">
+              A lot of magic.
+            </span>
+          </h1>
 
-              <span className="bg-gradient-to-r from-[#007aff] via-[#af52de] to-[#ff2d55] bg-clip-text text-transparent">
-                A lot of magic.
-              </span>
-            </h1>
+          <p className="mx-auto mt-6 max-w-[620px] text-xl leading-relaxed text-muted-foreground sm:text-2xl">
+            Alerts, activities and controls take shape at the top of the screen,
+            then fold away when you are done.
+          </p>
 
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-black/50 dark:text-white/50">
-              Explore fluid, glanceable activities that expand when you need
-              more and disappear when you are done.
-            </p>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+            <Button
+              size="lg"
+              className="rounded-full"
+              onClick={() => show(musicActivity())}
+            >
+              See a Live Activity
+            </Button>
 
-            <div className="mt-9 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => show(musicActivity())}
-                className="rounded-full bg-[#0071e3] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#0077ed] active:scale-95"
-              >
-                Play a Live Activity
-              </button>
+            <Button
+              variant="link"
+              size="lg"
+              className="px-0"
+              onClick={() => show(callActivity())}
+            >
+              Try an incoming call &rsaquo;
+            </Button>
+          </div>
+        </motion.div>
 
-              <button
-                type="button"
-                onClick={() => show(callActivity())}
-                className="rounded-full bg-black/[0.06] px-6 py-3 text-sm font-medium transition hover:bg-black/10 active:scale-95 dark:bg-white/10 dark:hover:bg-white/15"
-              >
-                Try an incoming call
-              </button>
-            </div>
+        <motion.div
+          initial={{ opacity: 0, y: 48, scale: 0.94, filter: "blur(14px)" }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 1.05, delay: 0.12, ease: EASE }}
+          className="mt-16 pb-4"
+        >
+          <DeviceReel />
+        </motion.div>
+      </section>
 
-            <div className="mt-8 flex flex-wrap gap-5 text-xs font-medium text-black/40 dark:text-white/40">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="size-3.5" />
-                Spring physics
-              </span>
+      {/* ----------------------------- Catalogue ---------------------------- */}
 
-              <span className="flex items-center gap-1.5">
-                <Hand className="size-3.5" />
-                Tap to expand
-              </span>
+      <section className="bg-muted/40 px-6 py-20 sm:py-28">
+        <div className="flex justify-center">
+          <div className="inline-flex gap-1 rounded-full bg-muted p-1">
+            <AnimatedBackground
+              defaultValue={CHAPTERS[0].id}
+              onValueChange={(id) => id && setActive(id)}
+              className="rounded-full bg-background shadow-sm"
+              transition={{ type: "spring", stiffness: 420, damping: 34 }}
+            >
+              {CHAPTERS.map((entry) => (
+                <button
+                  key={entry.id}
+                  data-id={entry.id}
+                  type="button"
+                  aria-label={entry.tab}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-base font-medium transition-colors sm:px-6",
+                    entry.id === active
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {entry.tab}
+                </button>
+              ))}
+            </AnimatedBackground>
+          </div>
+        </div>
 
-              <span className="flex items-center gap-1.5">
-                <Music className="size-3.5" />
-                Live updates
-              </span>
-            </div>
-          </motion.div>
+        <div className="mx-auto mt-12 max-w-[1060px]">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={chapter.id}
+              initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
+              transition={{ duration: 0.42, ease: EASE }}
+            >
+              <div className="mx-auto max-w-[640px] text-center">
+                <h2 className="text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
+                  {chapter.title}
+                </h2>
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-              scale: 0.96,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-            }}
-            transition={{
-              duration: 0.85,
-              delay: 0.1,
-              ease,
-            }}
-            className="hidden lg:block"
-          >
-            <PhonePreview />
-          </motion.div>
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+                  {chapter.copy}
+                </p>
+              </div>
+
+              <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {chapter.examples.map((example, index) => (
+                  <motion.div
+                    key={example.label}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.05 + index * 0.045,
+                      ease: EASE,
+                    }}
+                  >
+                    <Tile example={example} show={show} />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl space-y-28 px-5 py-24 sm:py-32">
-        {GROUPS.map((group, groupIndex) => (
-          <motion.section
-            key={group.title}
-            initial={{
-              opacity: 0,
-              y: 24,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              margin: "-80px",
-            }}
-            transition={{
-              duration: 0.65,
-              delay: groupIndex * 0.04,
-              ease,
-            }}
-          >
-            <div className="mb-10 max-w-2xl">
-              <p className="text-sm font-semibold text-[#0071e3]">
-                {group.eyebrow}
-              </p>
+      {/* ------------------------------ Craft ------------------------------- */}
 
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
-                {group.title}
-              </h2>
+      <section className="border-t px-6 py-20 sm:py-28">
+        <div className="mx-auto max-w-[980px]">
+          <h2 className="max-w-[720px] text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
+            Every frame does
+            <br />
+            <span className="text-muted-foreground">something physical.</span>
+          </h2>
 
-              <p className="mt-4 text-base leading-relaxed text-black/50 dark:text-white/50">
-                {group.description}
-              </p>
-            </div>
+          <div className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-3">
+            {[
+              {
+                title: "Real springs",
+                copy: "Geometry travels on a spring rather than a curve, so it overshoots and settles like an object with weight.",
+              },
+              {
+                title: "Focus pull",
+                copy: "Content arrives out of focus and resolves sharp, then softens again on the way out. The shell itself stays crisp.",
+              },
+              {
+                title: "One tap deeper",
+                copy: "Compact by default, expanded on tap, and folded away by a tap anywhere outside it.",
+              },
+            ].map((item) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.6, ease: EASE }}
+              >
+                <div className="h-px w-full bg-border" />
 
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
-              {group.examples.map((example) => (
-                <ActivityCard
-                  key={example.label}
-                  example={example}
-                  show={show}
-                />
-              ))}
-            </div>
-          </motion.section>
-        ))}
-      </div>
+                <h3 className="mt-5 text-2xl font-semibold tracking-tight">
+                  {item.title}
+                </h3>
 
-      <section className="border-t border-black/[0.06] bg-white px-5 py-16 text-center dark:border-white/10 dark:bg-[#0a0a0a]">
-        <p className="text-xs text-black/40 dark:text-white/40">
-          Select an activity · Tap to expand · Tap anywhere outside to collapse
-          and dismiss
+                <p className="mt-2.5 text-base leading-relaxed text-muted-foreground">
+                  {item.copy}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------ Footer ------------------------------ */}
+
+      <section className="border-t px-6 py-14 text-center">
+        <p className="text-xs text-muted-foreground">
+          Select an activity to present it. Tap the island to expand, tap
+          anywhere outside to fold it away.
         </p>
       </section>
     </div>
@@ -566,7 +606,7 @@ export default function DynamicIslandDemo() {
   return (
     <ContentLayout title="Dynamic Island">
       <DynamicIslandProvider>
-        <Playground />
+        <Stage />
       </DynamicIslandProvider>
     </ContentLayout>
   );
