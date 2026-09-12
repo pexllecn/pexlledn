@@ -15,10 +15,15 @@ void main() {
 `;
 
 /**
- * Domain-warped fractal noise — fbm sampled through two earlier fbm passes.
- * One pass of plain noise gives you fog; it is the warping that makes the
- * result billow and curl like actual cloud, and that keeps the motion from
- * reading as a texture sliding behind a window.
+ * Domain-warped fractal noise: fbm sampled through an earlier fbm pass. One
+ * pass of plain noise gives you fog; it is the warping that makes the result
+ * billow and curl like actual cloud, and that keeps the motion from reading
+ * as a texture sliding behind a window.
+ *
+ * Cost is entirely per-pixel, and the two terms that set it are octave count
+ * and warp depth. One warp level at four octaves is three fbm calls a pixel;
+ * a second level costs nearly twice that, for curl a field this soft never
+ * shows.
  */
 const FRAG = `
 precision highp float;
@@ -49,7 +54,7 @@ float fbm(vec2 p) {
   float v = 0.0;
   float a = 0.5;
   mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 4; i++) {
     v += a * noise(p);
     p = m * p;
     a *= 0.5;
@@ -62,30 +67,28 @@ void main() {
      cloud is the same size in pixels on a phone and on an ultrawide. */
   vec2 p = (vUv * uRes / 900.0) * 1.25;
 
-  float t = uTime * 0.022;
+  float t = uTime * 0.007;
 
   vec2 q = vec2(
     fbm(p + vec2(0.0, t)),
     fbm(p + vec2(5.2, 1.3) - t * 0.8)
   );
 
-  vec2 r = vec2(
-    fbm(p + 3.4 * q + vec2(1.7, 9.2) + t * 0.5),
-    fbm(p + 3.4 * q + vec2(8.3, 2.8) - t * 0.4)
-  );
+  float f = fbm(p + 3.0 * q);
 
-  float f = fbm(p + 3.2 * r);
-
-  /* A high floor on the ramp is what leaves open sky between the masses.
-     Drop it and the field closes up into an even veil over the whole page,
-     which is both less like real cloud and harder to read text through. */
-  float density = smoothstep(0.42, 0.92, f + 0.20 * r.x);
+  /* A high floor on the ramp leaves open sky between the masses; a wide one
+     keeps their edges soft rather than cut out. */
+  float density = smoothstep(0.36, 1.02, f + 0.18 * q.x);
 
   /* Fade toward the horizontal edges so the field never meets the frame. */
   float edge = smoothstep(0.0, 0.22, vUv.x) * smoothstep(0.0, 0.22, 1.0 - vUv.x);
 
-  vec3 col = mix(uTintLow, uTintHigh, clamp(f * 1.7 - 0.25, 0.0, 1.0));
+  vec3 col = mix(uTintLow, uTintHigh, clamp(f * 1.5 - 0.2, 0.0, 1.0));
 
+  /* Straight (unpremultiplied) alpha, matching the context's
+     premultipliedAlpha: false. Blending is off and this is the only draw
+     over a cleared buffer, so the compositor applies alpha exactly once.
+     Premultiplying here as well is what put a grey cast over the field. */
   gl_FragColor = vec4(col, density * edge * uAlpha);
 }
 `;
@@ -159,16 +162,21 @@ function palette(dark: boolean): Palette {
 
   const base = mixRgb(accent, sky, 0.28);
 
+  /* Both tints sit on the light side of the accent and close together. The
+     field should read as the chosen colour thinned with air, not as the
+     colour shaded with black — keeping the ramp short is what stops the
+     denser cores from going heavy. Alphas are low because the compositor
+     now applies them once rather than twice. */
   return dark
     ? {
-        low: mixRgb(base, [0.02, 0.03, 0.06], 0.42),
-        high: mixRgb(mixRgb(base, violet, 0.16), [1, 1, 1], 0.18),
-        alpha: 0.55,
+        low: mixRgb(base, [0.06, 0.08, 0.14], 0.22),
+        high: mixRgb(mixRgb(base, violet, 0.14), [1, 1, 1], 0.3),
+        alpha: 0.46,
       }
     : {
-        low: mixRgb(base, [1, 1, 1], 0.42),
-        high: mixRgb(base, violet, 0.16),
-        alpha: 0.5,
+        low: mixRgb(base, [1, 1, 1], 0.62),
+        high: mixRgb(mixRgb(base, violet, 0.12), [1, 1, 1], 0.14),
+        alpha: 0.37,
       };
 }
 
@@ -176,12 +184,16 @@ function palette(dark: boolean): Palette {
 
 /** Render the field at a fraction of device pixels. It is all soft cloud, so
  *  half resolution is indistinguishable and roughly four times cheaper. */
-const RENDER_SCALE = 0.5;
+const RENDER_SCALE = 0.4;
 
-/** And never larger than this on the long edge. The shader runs 25 octaves of
- *  noise per pixel, so cost is entirely pixel-bound; past this the extra
- *  pixels buy nothing visible but cost plenty on an ultrawide or a phone GPU. */
-const MAX_EDGE = 1200;
+/** And never larger than this on the long edge. Cost is entirely pixel-bound,
+ *  so past this the extra pixels buy nothing visible on a field this soft but
+ *  cost plenty on an ultrawide or a phone GPU. */
+const MAX_EDGE = 900;
+
+/** The drift takes minutes to turn over, so there is nothing to see in a
+ *  60fps frame that a 30fps one misses — and it halves the GPU work. */
+const MIN_FRAME_MS = 1000 / 30;
 
 function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
   const [failed, setFailed] = useState(false);
@@ -249,14 +261,6 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
     const uTintHigh = gl.getUniformLocation(prog, "uTintHigh");
     const uAlpha = gl.getUniformLocation(prog, "uAlpha");
 
-    gl.enable(gl.BLEND);
-    gl.blendFuncSeparate(
-      gl.SRC_ALPHA,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.ONE,
-      gl.ONE_MINUS_SRC_ALPHA
-    );
-
     const isDark = () => document.documentElement.classList.contains("dark");
 
     let target = palette(isDark());
@@ -292,10 +296,13 @@ function useClouds(canvasRef: React.RefObject<HTMLCanvasElement>) {
     let raf = 0;
     let start = performance.now();
     let running = true;
+    let last = -Infinity;
 
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
       if (!running) return;
+      if (now - last < MIN_FRAME_MS) return;
+      last = now;
       resize();
 
       // Ease the palette toward its target so a theme change dissolves.

@@ -1002,9 +1002,11 @@ body {
 .cloudfield__grid {
   position: absolute;
   inset: 0;
+  /* Ruled in the accent, not in the foreground. Foreground is near-black on
+     a light page, and a grid drawn in it greys the whole field down. */
   background-image:
-    linear-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    linear-gradient(hsl(var(--primary) / 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.09) 1px, transparent 1px);
   background-size: 72px 72px;
   -webkit-mask-image: radial-gradient(
     ellipse 78% 52% at 50% 8%,
