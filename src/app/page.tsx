@@ -15,7 +15,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
-import { cn } from "@/lib/utils";
+import { CloudBackground } from "@/components/cloud-background";
 import {
   ArrowRight,
   Play,
@@ -194,21 +194,10 @@ export default function Landing() {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+    <div className="relative min-h-screen overflow-x-hidden text-foreground">
       {/* ---------------- background ---------------- */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {/* dotted pattern */}
-        <div
-          className={cn(
-            "absolute inset-0 [background-size:16px_16px] [mask-image:linear-gradient(to_bottom,black,black_35%,transparent_75%)]",
-            resolvedTheme === "dark"
-              ? "bg-[radial-gradient(#26262c_1px,transparent_1px)]"
-              : "bg-[radial-gradient(#c7c9cf_1px,transparent_1px)]"
-          )}
-        />
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px]" />
-        <div className="absolute top-[40%] -left-40 h-96 w-96 rounded-full bg-sky-500/15 blur-[120px]" />
-        <div className="absolute top-[70%] -right-40 h-96 w-96 rounded-full bg-orange-500/15 blur-[120px]" />
+        <CloudBackground />
       </div>
 
       {/* ---------------- nav ---------------- */}
