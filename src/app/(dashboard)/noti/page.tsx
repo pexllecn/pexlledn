@@ -256,7 +256,7 @@ function Playground() {
   return (
     <div className="mx-auto max-w-6xl px-3 pb-24 pt-20 md:pt-24">
       {/* ------------------------------- HERO ------------------------------- */}
-      <section className="relative overflow-hidden rounded-[36px] bg-[#08080a] px-6 py-12 text-white md:px-12 md:py-16">
+      <section className="relative overflow-hidden rounded-3xl bg-[#08080a] px-6 py-12 text-white md:px-12 md:py-16">
         {/* aurora */}
         <motion.div
           className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full blur-[90px]"
