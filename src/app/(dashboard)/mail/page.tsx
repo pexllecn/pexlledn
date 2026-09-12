@@ -13,7 +13,7 @@ export default function MailPage() {
   const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined;
 
   return (
-    <ContentLayout title="Account">
+    <ContentLayout title="Mail">
       <div className=" flex-col md:flex">
         <Mail
           accounts={accounts}

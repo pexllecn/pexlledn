@@ -1,39 +1,37 @@
 "use client";
-import React, { useState, useCallback } from "react";
+
+import React, { useMemo, useState } from "react";
 import {
   DragDropContext,
-  Droppable,
   Draggable,
+  Droppable,
   DropResult,
 } from "react-beautiful-dnd";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
+import { format, isAfter, isToday } from "date-fns";
 import {
-  PlusIcon,
-  MoreHorizontal,
-  Calendar,
-  Clock,
-  AlertCircle,
+  CalendarDays,
   CheckCircle2,
-  GripHorizontal,
-  TrashIcon,
+  Circle,
+  CircleDashed,
   FilePenLine,
+  GripVertical,
   LayoutGrid,
   ListChecks,
-  Loader2,
+  MoreHorizontal,
+  PlusIcon,
+  TrashIcon,
 } from "lucide-react";
+
+import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
+import { EASE_OUT, rise, stagger } from "@/lib/apple-motion";
+import { PageHead, Surface } from "../dashboard/_components/primitives";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format, isAfter, isBefore, isToday } from "date-fns";
 import {
   Dialog,
   DialogContent,
@@ -57,16 +55,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Progress } from "@/components/ui/progress";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
 
-type User = {
-  id: string;
-  name: string;
-  avatar: string;
-};
+/* -------------------------------------------------------------------------- */
+/*  Model                                                                     */
+/* -------------------------------------------------------------------------- */
+
+type User = { id: string; name: string; avatar: string };
 
 type Task = {
   id: string;
@@ -80,16 +82,7 @@ type Task = {
   progress: number;
 };
 
-type Board = {
-  id: string;
-  title: string;
-  tasks: Task[];
-};
-
-const variants1 = {
-  hidden: { filter: "blur(10px)", opacity: 0 },
-  visible: { filter: "blur(0px)", opacity: 1 },
-};
+type Board = { id: string; title: string; tasks: Task[] };
 
 const users: User[] = [
   { id: "user1", name: "Alice", avatar: "https://i.pravatar.cc/48?img=1" },
@@ -97,13 +90,42 @@ const users: User[] = [
   { id: "user3", name: "Charlie", avatar: "https://i.pravatar.cc/48?img=3" },
 ];
 
-const unsplashImages = [
-  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8",
-  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8",
-  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+const coverImages = [
+  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?w=1200&auto=format&fit=crop&q=60",
 ];
+
+/**
+ * Covers come from a remote host, so they can fail. A broken-image box is worse
+ * than no image at all, so a failed load unmounts the element entirely and the
+ * card simply renders without a cover.
+ */
+function Cover({ src, className }: { src: string; className?: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) return null;
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      onError={() => setFailed(true)}
+      className={className}
+      loading="lazy"
+    />
+  );
+}
+
+const STATUS_META: Record<Task["status"], { label: string; Icon: React.ElementType }> = {
+  todo: { label: "To do", Icon: Circle },
+  "in-progress": { label: "In progress", Icon: CircleDashed },
+  done: { label: "Done", Icon: CheckCircle2 },
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Responsive dialog                                                         */
+/* -------------------------------------------------------------------------- */
 
 const ResponsiveDialog: React.FC<{
   isOpen: boolean;
@@ -118,12 +140,14 @@ const ResponsiveDialog: React.FC<{
   if (isDesktop) {
     return (
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
+
           {content}
+
           <DialogFooter>{footer}</DialogFooter>
         </DialogContent>
       </Dialog>
@@ -137,7 +161,9 @@ const ResponsiveDialog: React.FC<{
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
+
         <div className="px-4">{content}</div>
+
         <DrawerFooter className="pt-2">
           {footer}
           <DrawerClose asChild>
@@ -148,6 +174,10 @@ const ResponsiveDialog: React.FC<{
     </Drawer>
   );
 };
+
+/* -------------------------------------------------------------------------- */
+/*  Board                                                                     */
+/* -------------------------------------------------------------------------- */
 
 export default function KanbanBoard() {
   const [boards, setBoards] = useState<Board[]>([
@@ -160,7 +190,7 @@ export default function KanbanBoard() {
           title: "Research project requirements",
           description: "Gather all necessary information for the project",
           dueDate: new Date(2023, 5, 30),
-          image: unsplashImages[0],
+          image: coverImages[0],
           assignees: [users[0]],
           tags: ["research"],
           status: "todo",
@@ -194,7 +224,7 @@ export default function KanbanBoard() {
           title: "Set up development environment",
           description: "Install and configure all necessary tools",
           dueDate: null,
-          image: unsplashImages[1],
+          image: coverImages[1],
           assignees: [users[2]],
           tags: ["setup", "DevOps"],
           status: "done",
@@ -204,9 +234,7 @@ export default function KanbanBoard() {
     },
   ]);
 
-  const [newTask, setNewTask] = useState<
-    Omit<Task, "id" | "status" | "progress">
-  >({
+  const [newTask, setNewTask] = useState<Omit<Task, "id" | "status" | "progress">>({
     title: "",
     description: "",
     dueDate: null,
@@ -214,6 +242,7 @@ export default function KanbanBoard() {
     assignees: [],
     tags: [],
   });
+
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [editingBoard, setEditingBoard] = useState<string | null>(null);
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
@@ -222,6 +251,8 @@ export default function KanbanBoard() {
   const [newTaskBoardId, setNewTaskBoardId] = useState<string | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [newBoardTitle, setNewBoardTitle] = useState("");
+
+  /* ----------------------------- drag and drop ---------------------------- */
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, type } = result;
@@ -236,788 +267,674 @@ export default function KanbanBoard() {
 
     if (type === "BOARD") {
       const newBoards = Array.from(boards);
-      const [reorderedBoard] = newBoards.splice(source.index, 1);
-      newBoards.splice(destination.index, 0, reorderedBoard);
+      const [reordered] = newBoards.splice(source.index, 1);
+      newBoards.splice(destination.index, 0, reordered);
       setBoards(newBoards);
-    } else if (type === "TASK") {
-      const sourceBoard = boards.find(
-        (board) => board.id === source.droppableId
-      );
-      const destBoard = boards.find(
-        (board) => board.id === destination.droppableId
-      );
+      return;
+    }
 
-      if (!sourceBoard || !destBoard) return;
+    const sourceBoard = boards.find((b) => b.id === source.droppableId);
+    const destBoard = boards.find((b) => b.id === destination.droppableId);
 
-      const newBoards = boards.map((board) => {
+    if (!sourceBoard || !destBoard) return;
+
+    setBoards(
+      boards.map((board) => {
         if (board.id === sourceBoard.id) {
           const newTasks = Array.from(board.tasks);
-          const [movedTask] = newTasks.splice(source.index, 1);
+          const [moved] = newTasks.splice(source.index, 1);
+
           if (board.id === destBoard.id) {
-            newTasks.splice(destination.index, 0, movedTask);
+            newTasks.splice(destination.index, 0, moved);
           }
+
           return { ...board, tasks: newTasks };
         }
+
         if (board.id === destBoard.id && sourceBoard.id !== destBoard.id) {
           const newTasks = Array.from(board.tasks);
-          const [movedTask] = sourceBoard.tasks.slice(
-            source.index,
-            source.index + 1
-          );
-          const updatedTask = {
-            ...movedTask,
+          const [moved] = sourceBoard.tasks.slice(source.index, source.index + 1);
+
+          const updated: Task = {
+            ...moved,
             status: destBoard.title
               .toLowerCase()
               .replace(" ", "-") as Task["status"],
             progress:
-              destBoard.title === "Done"
-                ? 100
-                : destBoard.title === "In Progress"
-                ? 50
-                : 0,
+              destBoard.title === "Done" ? 100 : destBoard.title === "In Progress" ? 50 : 0,
           };
-          newTasks.splice(destination.index, 0, updatedTask);
+
+          newTasks.splice(destination.index, 0, updated);
           return { ...board, tasks: newTasks };
         }
-        return board;
-      });
 
-      setBoards(newBoards);
-    }
+        return board;
+      }),
+    );
   };
 
+  /* --------------------------------- CRUD --------------------------------- */
+
   const addBoard = () => {
-    if (newBoardTitle.trim() !== "") {
-      setBoards([
-        ...boards,
-        { id: Date.now().toString(), title: newBoardTitle, tasks: [] },
-      ]);
-      setNewBoardTitle("");
-    }
+    if (newBoardTitle.trim() === "") return;
+
+    setBoards([...boards, { id: Date.now().toString(), title: newBoardTitle, tasks: [] }]);
+    setNewBoardTitle("");
   };
 
   const addTask = () => {
-    if (newTask.title.trim() !== "" && newTaskBoardId) {
-      const boardTitle = boards
-        .find((board) => board.id === newTaskBoardId)
-        ?.title.toLowerCase()
-        .replace(" ", "-");
-      setBoards(
-        boards.map((board) =>
-          board.id === newTaskBoardId
-            ? {
-                ...board,
-                tasks: [
-                  ...board.tasks,
-                  {
-                    id: Date.now().toString(),
-                    ...newTask,
-                    image:
-                      unsplashImages[
-                        Math.floor(Math.random() * unsplashImages.length)
-                      ],
-                    status: boardTitle as Task["status"],
-                    progress:
-                      boardTitle === "done"
-                        ? 100
-                        : boardTitle === "in-progress"
-                        ? 50
-                        : 0,
-                  },
-                ],
-              }
-            : board
-        )
-      );
-      setNewTask({
-        title: "",
-        description: "",
-        dueDate: null,
-        image: null,
-        assignees: [],
-        tags: [],
-      });
-      setIsNewTaskDialogOpen(false);
-    }
+    if (newTask.title.trim() === "" || !newTaskBoardId) return;
+
+    const boardTitle = boards
+      .find((b) => b.id === newTaskBoardId)
+      ?.title.toLowerCase()
+      .replace(" ", "-");
+
+    setBoards(
+      boards.map((board) =>
+        board.id === newTaskBoardId
+          ? {
+              ...board,
+              tasks: [
+                ...board.tasks,
+                {
+                  id: Date.now().toString(),
+                  ...newTask,
+                  image: coverImages[Math.floor(Math.random() * coverImages.length)],
+                  status: boardTitle as Task["status"],
+                  progress: boardTitle === "done" ? 100 : boardTitle === "in-progress" ? 50 : 0,
+                },
+              ],
+            }
+          : board,
+      ),
+    );
+
+    setNewTask({
+      title: "",
+      description: "",
+      dueDate: null,
+      image: null,
+      assignees: [],
+      tags: [],
+    });
+    setIsNewTaskDialogOpen(false);
   };
 
   const updateTask = () => {
-    if (editingTask && editingTask.title.trim() !== "") {
-      setBoards(
-        boards.map((board) => ({
-          ...board,
-          tasks: board.tasks.map((task) =>
-            task.id === editingTask.id ? editingTask : task
-          ),
-        }))
-      );
-      setEditingTask(null);
-      setIsEditTaskDialogOpen(false);
-    }
+    if (!editingTask || editingTask.title.trim() === "") return;
+
+    setBoards(
+      boards.map((board) => ({
+        ...board,
+        tasks: board.tasks.map((task) => (task.id === editingTask.id ? editingTask : task)),
+      })),
+    );
+
+    setEditingTask(null);
+    setIsEditTaskDialogOpen(false);
   };
 
   const deleteTask = (boardId: string, taskId: string) => {
     setBoards(
       boards.map((board) =>
         board.id === boardId
-          ? {
-              ...board,
-              tasks: board.tasks.filter((task) => task.id !== taskId),
-            }
-          : board
-      )
+          ? { ...board, tasks: board.tasks.filter((t) => t.id !== taskId) }
+          : board,
+      ),
     );
   };
 
-  const deleteBoard = (boardId: string) => {
-    setBoards(boards.filter((board) => board.id !== boardId));
+  const deleteBoard = (boardId: string) =>
+    setBoards(boards.filter((b) => b.id !== boardId));
+
+  const updateBoardTitle = (boardId: string, title: string) => {
+    if (title.trim() === "") return;
+
+    setBoards(boards.map((b) => (b.id === boardId ? { ...b, title } : b)));
+    setEditingBoard(null);
   };
 
-  const updateBoardTitle = (boardId: string, newTitle: string) => {
-    if (newTitle.trim() !== "") {
-      setBoards(
-        boards.map((board) =>
-          board.id === boardId ? { ...board, title: newTitle } : board
-        )
-      );
-      setEditingBoard(null);
-    }
-  };
+  /* -------------------------------- summary ------------------------------- */
 
-  const getStatusIcon = (status: Task["status"]) => {
-    switch (status) {
-      case "todo":
-        return <Clock className="h-4 w-4 text-muted-foreground" />;
-      case "in-progress":
-        return <AlertCircle className="h-4 w-4 text-yellow-500" />;
-      case "done":
-        return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-    }
-  };
+  const stats = useMemo(() => {
+    const all = boards.flatMap((b) => b.tasks);
 
-  const getDueDateStatus = (dueDate: Date | null) => {
-    if (!dueDate) return null;
-    if (isAfter(new Date(), dueDate)) return "overdue";
-    if (isToday(dueDate)) return "due-today";
-    if (isBefore(new Date(), dueDate)) return "upcoming";
-    return null;
-  };
+    return [
+      { icon: LayoutGrid, label: "Lists", value: boards.length },
+      { icon: ListChecks, label: "Cards", value: all.length },
+      {
+        icon: CircleDashed,
+        label: "In progress",
+        value: all.filter((t) => t.status === "in-progress").length,
+      },
+      {
+        icon: CheckCircle2,
+        label: "Completed",
+        value: all.filter((t) => t.status === "done").length,
+      },
+    ];
+  }, [boards]);
+
+  /* --------------------------------- form --------------------------------- */
+
+  const taskFields = (
+    value: Omit<Task, "id" | "status" | "progress">,
+    onChange: (next: Omit<Task, "id" | "status" | "progress">) => void,
+  ) => (
+    <div className="grid gap-4 py-2">
+      <div className="grid gap-2">
+        <Label htmlFor="task-title">Title</Label>
+        <Input
+          id="task-title"
+          value={value.title}
+          onChange={(e) => onChange({ ...value, title: e.target.value })}
+          placeholder="What needs doing?"
+        />
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="task-description">Description</Label>
+        <Textarea
+          id="task-description"
+          value={value.description}
+          onChange={(e) => onChange({ ...value, description: e.target.value })}
+          placeholder="Add a little more detail"
+        />
+      </div>
+
+      <div className="grid gap-2">
+        <Label>Due date</Label>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "justify-start text-left font-normal",
+                !value.dueDate && "text-muted-foreground",
+              )}
+            >
+              <CalendarDays className="mr-2 size-4" />
+              {value.dueDate ? format(value.dueDate, "PPP") : "Pick a date"}
+            </Button>
+          </PopoverTrigger>
+
+          <PopoverContent className="w-auto p-0">
+            <CalendarComponent
+              mode="single"
+              selected={value.dueDate || undefined}
+              onSelect={(date) => onChange({ ...value, dueDate: date || null })}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      <div className="grid gap-2">
+        <Label>Assignees</Label>
+
+        <div className="flex flex-wrap gap-2">
+          {users.map((user) => {
+            const on = value.assignees.some((u) => u.id === user.id);
+
+            return (
+              <button
+                key={user.id}
+                type="button"
+                onClick={() =>
+                  onChange({
+                    ...value,
+                    assignees: on
+                      ? value.assignees.filter((u) => u.id !== user.id)
+                      : [...value.assignees, user],
+                  })
+                }
+                className={cn(
+                  "flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm transition-colors",
+                  on ? "border-transparent bg-foreground text-background" : "hover:bg-muted",
+                )}
+              >
+                <Avatar className="size-6">
+                  <AvatarImage src={user.avatar} alt="" />
+                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                </Avatar>
+                {user.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="task-tags">Tags</Label>
+        <Input
+          id="task-tags"
+          value={value.tags.join(", ")}
+          onChange={(e) =>
+            onChange({ ...value, tags: e.target.value.split(",").map((t) => t.trim()) })
+          }
+          placeholder="Separate tags with commas"
+        />
+      </div>
+    </div>
+  );
 
   return (
     <ContentLayout title="Kanban">
-      <div className="p-6 bg-background min-h-screen">
-        <div className="max-w-9xl mx-auto">
-          {(() => {
-            const allTasks = boards.flatMap((b) => b.tasks);
-            const total = allTasks.length;
-            const done = allTasks.filter((t) => t.status === "done").length;
-            const inProgress = allTasks.filter(
-              (t) => t.status === "in-progress"
-            ).length;
-            const stats = [
-              {
-                icon: LayoutGrid,
-                label: "Boards",
-                value: boards.length,
-                tint: "bg-primary/10 text-primary",
-              },
-              {
-                icon: ListChecks,
-                label: "Total tasks",
-                value: total,
-                tint: "bg-sky-500/10 text-sky-500",
-              },
-              {
-                icon: Loader2,
-                label: "In progress",
-                value: inProgress,
-                tint: "bg-amber-500/10 text-amber-500",
-              },
-              {
-                icon: CheckCircle2,
-                label: "Completed",
-                value: done,
-                tint: "bg-emerald-500/10 text-emerald-500",
-              },
-            ];
-            return (
-              <div className="mb-8 flex flex-col gap-5">
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                  <div>
-                    <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-                      Kanban Board
-                    </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Plan, track and move work across your boards.
-                    </p>
-                  </div>
+      <div className="mx-auto max-w-[1600px] space-y-8 px-1 pb-16 pt-6">
+        <PageHead
+          eyebrow="Workspace"
+          title="Board"
+          actions={
+            <div className="flex items-center gap-2">
+              <Input
+                value={newBoardTitle}
+                onChange={(e) => setNewBoardTitle(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addBoard()}
+                placeholder="New list name"
+                className="h-9 w-44 rounded-full"
+              />
+
+              <Button onClick={addBoard} className="rounded-full">
+                <PlusIcon className="mr-1.5 size-4" />
+                Add list
+              </Button>
+            </div>
+          }
+        />
+
+        <motion.div
+          variants={stagger()}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-2 gap-4 lg:grid-cols-4"
+        >
+          {stats.map((stat) => (
+            <motion.div key={stat.label} variants={rise}>
+              <Surface className="flex items-center gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
+                  <stat.icon className="size-5" aria-hidden />
+                </span>
+
+                <div>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl font-semibold leading-none tabular-nums">
+                    {stat.value}
+                  </p>
                 </div>
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-                  {stats.map((s) => (
-                    <div
-                      key={s.label}
-                      className="flex items-center gap-3 rounded-2xl bg-muted p-4"
-                    >
+              </Surface>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/*
+          Everything below sits inside react-beautiful-dnd, which positions
+          draggables by writing inline `transform` on them every frame. Framer
+          Motion drives the same property, so the two must never be applied to
+          the same element - a motion wrapper on a Draggable makes cards land in
+          the wrong place. Entrance animation therefore lives on containers
+          OUTSIDE the draggables, and the cards themselves use CSS transitions.
+        */}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="all-boards" direction="horizontal" type="BOARD">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="flex items-start gap-4 overflow-x-auto pb-4"
+              >
+                {boards.map((board, boardIndex) => (
+                  <Draggable key={board.id} draggableId={board.id} index={boardIndex}>
+                    {(boardProvided, boardSnapshot) => (
                       <div
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.tint}`}
+                        ref={boardProvided.innerRef}
+                        {...boardProvided.draggableProps}
+                        className={cn(
+                          "w-[310px] shrink-0 rounded-lg bg-muted/50 transition-shadow duration-200",
+                          boardSnapshot.isDragging && "shadow-2xl",
+                        )}
                       >
-                        <s.icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">
-                          {s.label}
-                        </p>
-                        <p className="text-2xl font-semibold leading-none tabular-nums">
-                          {s.value}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })()}
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="boards" type="BOARD" direction="horizontal">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="flex gap-6 overflow-x-auto pb-6"
-                >
-                  {boards.map((board, boardIndex) => (
-                    <Draggable
-                      key={board.id}
-                      draggableId={board.id}
-                      index={boardIndex}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] transition-shadow duration-200 ${
-                            snapshot.isDragging ? "shadow-lg" : ""
-                          }`}
-                        >
-                          <div className="flex justify-between items-center mb-4 cursor-move">
-                            {editingBoard === board.id ? (
-                              <Input
-                                value={board.title}
-                                onChange={(e) =>
-                                  updateBoardTitle(board.id, e.target.value)
-                                }
-                                onBlur={() => setEditingBoard(null)}
-                                autoFocus
-                                className="font-semibold text-lg"
-                              />
-                            ) : (
-                              <h2 className="font-semibold text-lg text-card-foreground flex items-center">
-                                <GripHorizontal className="h-5 w-5 mr-2 text-muted-foreground" />
-                                {board.title}
-                              </h2>
-                            )}
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  onClick={() => setEditingBoard(board.id)}
-                                >
-                                  <FilePenLine className="mr-2 h-4 w-4" /> Edit
-                                  Title
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  className="text-destructive"
-                                  onClick={() => deleteBoard(board.id)}
-                                >
-                                  <TrashIcon className="mr-2 h-4 w-4" /> Delete
-                                  Board
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                          <Droppable droppableId={board.id} type="TASK">
-                            {(provided, snapshot) => (
-                              <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                className={`min-h-[200px] transition-colors duration-200 ${
-                                  snapshot.isDraggingOver ? "bg-accent" : ""
-                                }`}
+                        {/* ------------------------ list header ------------- */}
+                        <div className="flex items-center gap-2 px-3 pb-2 pt-3">
+                          <span
+                            {...boardProvided.dragHandleProps}
+                            className="cursor-grab text-muted-foreground/60 transition-colors hover:text-foreground active:cursor-grabbing"
+                            aria-label="Reorder list"
+                          >
+                            <GripVertical className="size-4" />
+                          </span>
+
+                          {editingBoard === board.id ? (
+                            <Input
+                              autoFocus
+                              defaultValue={board.title}
+                              onBlur={(e) => updateBoardTitle(board.id, e.target.value)}
+                              onKeyDown={(e) =>
+                                e.key === "Enter" &&
+                                updateBoardTitle(board.id, e.currentTarget.value)
+                              }
+                              className="h-7 flex-1"
+                            />
+                          ) : (
+                            <button
+                              type="button"
+                              onDoubleClick={() => setEditingBoard(board.id)}
+                              className="flex-1 truncate text-left text-sm font-semibold tracking-tight"
+                            >
+                              {board.title}
+                            </button>
+                          )}
+
+                          <span className="rounded-full bg-background px-2 py-0.5 text-xs font-medium tabular-nums text-muted-foreground">
+                            {board.tasks.length}
+                          </span>
+
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="size-7 p-0 text-muted-foreground">
+                                <MoreHorizontal className="size-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => setEditingBoard(board.id)}>
+                                <FilePenLine className="mr-2 size-4" />
+                                Rename
+                              </DropdownMenuItem>
+
+                              <DropdownMenuItem
+                                onClick={() => deleteBoard(board.id)}
+                                className="text-destructive focus:text-destructive"
                               >
-                                {board.tasks.map((task, index) => (
-                                  <Draggable
-                                    key={task.id}
-                                    draggableId={task.id}
-                                    index={index}
-                                  >
-                                    {(provided, snapshot) => (
+                                <TrashIcon className="mr-2 size-4" />
+                                Delete list
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+
+                        {/* --------------------------- cards ---------------- */}
+                        <Droppable droppableId={board.id} type="TASK">
+                          {(taskProvided, taskSnapshot) => (
+                            <div
+                              ref={taskProvided.innerRef}
+                              {...taskProvided.droppableProps}
+                              className={cn(
+                                "min-h-[80px] space-y-2 px-2 pb-2 transition-colors duration-200",
+                                taskSnapshot.isDraggingOver && "bg-foreground/[0.04]",
+                              )}
+                            >
+                              {board.tasks.map((task, taskIndex) => {
+                                const meta = STATUS_META[task.status];
+                                const overdue =
+                                  task.dueDate &&
+                                  task.status !== "done" &&
+                                  isAfter(new Date(), task.dueDate);
+                                const dueToday = task.dueDate && isToday(task.dueDate);
+
+                                return (
+                                  <Draggable key={task.id} draggableId={task.id} index={taskIndex}>
+                                    {(cardProvided, cardSnapshot) => (
                                       <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        className={`mb-3 bg-background hover:bg-accent transition-all duration-200 cursor-move overflow-hidden rounded-md ${
-                                          snapshot.isDragging
-                                            ? "shadow-lg transform scale-105"
-                                            : ""
-                                        }`}
+                                        ref={cardProvided.innerRef}
+                                        {...cardProvided.draggableProps}
+                                        {...cardProvided.dragHandleProps}
                                         onClick={() => {
                                           setSelectedTask(task);
                                           setIsTaskDetailDialogOpen(true);
                                         }}
+                                        className={cn(
+                                          "group cursor-pointer overflow-hidden rounded-lg border bg-card",
+                                          "transition-[box-shadow,border-color] duration-200",
+                                          cardSnapshot.isDragging
+                                            ? "shadow-2xl ring-1 ring-foreground/10"
+                                            : "shadow-sm hover:border-foreground/20 hover:shadow-md",
+                                        )}
                                       >
-                                        <Card className="border-none bg-background shadow-none">
-                                          <CardContent className="p-3">
-                                            <h3 className="font-semibold text-sm text-card-foreground mb-2 flex items-center">
-                                              <GripHorizontal className="h-4 w-4 mr-2 text-muted-foreground" />
+                                        {task.image && (
+                                          <Cover
+                                            src={task.image}
+                                            className="h-24 w-full object-cover"
+                                          />
+                                        )}
+
+                                        <div className="space-y-2.5 p-3">
+                                          <div className="flex items-start gap-2">
+                                            <meta.Icon
+                                              className={cn(
+                                                "mt-0.5 size-4 shrink-0",
+                                                task.status === "done"
+                                                  ? "text-emerald-500"
+                                                  : "text-muted-foreground",
+                                              )}
+                                              aria-hidden
+                                            />
+
+                                            <p className="flex-1 text-sm font-medium leading-snug">
                                               {task.title}
-                                            </h3>
-                                            {task.image && (
-                                              <img
-                                                src={task.image}
-                                                alt="Task"
-                                                className="w-full h-32 object-cover rounded-md mb-2"
-                                              />
-                                            )}
-                                            <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                                              {task.description}
                                             </p>
-                                            <div className="flex flex-wrap gap-1 mb-2">
-                                              {task.tags.map((tag, index) => (
-                                                <Badge
-                                                  key={index}
-                                                  variant="secondary"
+                                          </div>
+
+                                          {task.tags.filter(Boolean).length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                              {task.tags.filter(Boolean).map((tag) => (
+                                                <span
+                                                  key={tag}
+                                                  className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
                                                 >
                                                   {tag}
-                                                </Badge>
+                                                </span>
                                               ))}
                                             </div>
-                                            <Progress
-                                              value={task.progress}
-                                              className="h-1 mb-2"
-                                            />
-                                            <div className="flex justify-between items-center">
-                                              <div className="flex -space-x-2">
-                                                {task.assignees.map(
-                                                  (user, index) => (
-                                                    <Avatar
-                                                      key={index}
-                                                      className="border-2 border-background w-8 h-8"
-                                                    >
-                                                      <AvatarImage
-                                                        src={user.avatar}
-                                                        alt={user.name}
-                                                      />
-                                                      <AvatarFallback>
-                                                        {user.name.charAt(0)}
-                                                      </AvatarFallback>
-                                                    </Avatar>
-                                                  )
-                                                )}
-                                              </div>
-                                              <div className="flex items-center gap-2">
-                                                {getStatusIcon(task.status)}
-                                                {task.dueDate && (
-                                                  <span
-                                                    className={`text-xs ${
-                                                      getDueDateStatus(
-                                                        task.dueDate
-                                                      ) === "overdue"
-                                                        ? "text-red-500"
-                                                        : getDueDateStatus(
-                                                            task.dueDate
-                                                          ) === "due-today"
-                                                        ? "text-yellow-500"
-                                                        : "text-muted-foreground"
-                                                    }`}
-                                                  >
-                                                    {format(
-                                                      task.dueDate,
-                                                      "MMM d"
-                                                    )}
-                                                  </span>
-                                                )}
-                                              </div>
+                                          )}
+
+                                          {task.progress > 0 && (
+                                            <div className="h-1 overflow-hidden rounded-full bg-muted">
+                                              <div
+                                                className="h-full rounded-full bg-foreground/70 transition-[width] duration-500"
+                                                style={{ width: `${task.progress}%` }}
+                                              />
                                             </div>
-                                          </CardContent>
-                                        </Card>
+                                          )}
+
+                                          <div className="flex items-center justify-between gap-2">
+                                            <div className="flex -space-x-1.5">
+                                              {task.assignees.map((user) => (
+                                                <Avatar
+                                                  key={user.id}
+                                                  className="size-6 ring-2 ring-card"
+                                                >
+                                                  <AvatarImage src={user.avatar} alt={user.name} />
+                                                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                                </Avatar>
+                                              ))}
+                                            </div>
+
+                                            {task.dueDate && (
+                                              <span
+                                                className={cn(
+                                                  "flex items-center gap-1 text-[11px] tabular-nums",
+                                                  overdue
+                                                    ? "text-destructive"
+                                                    : dueToday
+                                                      ? "text-foreground"
+                                                      : "text-muted-foreground",
+                                                )}
+                                              >
+                                                <CalendarDays className="size-3" aria-hidden />
+                                                {format(task.dueDate, "MMM d")}
+                                                {overdue && " · overdue"}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
                                       </div>
                                     )}
                                   </Draggable>
-                                ))}
-                                {provided.placeholder}
-                              </div>
-                            )}
-                          </Droppable>
-                          <Button
-                            className="w-full mt-3"
-                            variant="outline"
+                                );
+                              })}
+
+                              {taskProvided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
+
+                        <div className="px-2 pb-3">
+                          <button
+                            type="button"
                             onClick={() => {
                               setNewTaskBoardId(board.id);
                               setIsNewTaskDialogOpen(true);
                             }}
+                            className="flex w-full items-center gap-1.5 rounded-md px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
                           >
-                            <PlusIcon className="h-4 w-4 mr-2" /> Add Task
-                          </Button>
+                            <PlusIcon className="size-4" />
+                            Add a card
+                          </button>
                         </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                  <div className="bg-muted rounded-lg p-4 min-w-[300px] max-w-[300px] flex flex-col items-center justify-center">
-                    <Input
-                      placeholder="New board title"
-                      value={newBoardTitle}
-                      onChange={(e) => setNewBoardTitle(e.target.value)}
-                      className="mb-2 bg-background shadow-none"
-                    />
-                    <Button onClick={addBoard} disabled={!newBoardTitle.trim()}>
-                      <PlusIcon className="h-4 w-4 mr-2" /> Add Board
-                    </Button>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+
+      {/* --------------------------- new task ----------------------------- */}
+
+      <ResponsiveDialog
+        isOpen={isNewTaskDialogOpen}
+        onOpenChange={setIsNewTaskDialogOpen}
+        title="New card"
+        description="Add a card to this list."
+        content={taskFields(newTask, setNewTask)}
+        footer={<Button onClick={addTask}>Add card</Button>}
+      />
+
+      {/* --------------------------- edit task ---------------------------- */}
+
+      <ResponsiveDialog
+        isOpen={isEditTaskDialogOpen}
+        onOpenChange={setIsEditTaskDialogOpen}
+        title="Edit card"
+        description="Update the details of this card."
+        content={
+          editingTask
+            ? taskFields(editingTask, (next) =>
+                setEditingTask({ ...editingTask, ...next }),
+              )
+            : null
+        }
+        footer={<Button onClick={updateTask}>Save changes</Button>}
+      />
+
+      {/* -------------------------- task detail --------------------------- */}
+
+      <ResponsiveDialog
+        isOpen={isTaskDetailDialogOpen}
+        onOpenChange={setIsTaskDetailDialogOpen}
+        title={selectedTask?.title ?? ""}
+        description={selectedTask ? STATUS_META[selectedTask.status].label : ""}
+        content={
+          selectedTask && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: EASE_OUT }}
+              className="space-y-4 py-2"
+            >
+              {selectedTask.image && (
+                <Cover
+                  src={selectedTask.image}
+                  className="h-40 w-full rounded-md object-cover"
+                />
+              )}
+
+              {selectedTask.description && (
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {selectedTask.description}
+                </p>
+              )}
+
+              <dl className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <dt className="text-xs text-muted-foreground">Due</dt>
+                  <dd className="mt-0.5 font-medium">
+                    {selectedTask.dueDate ? format(selectedTask.dueDate, "PPP") : "No date"}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-muted-foreground">Progress</dt>
+                  <dd className="mt-0.5 font-medium tabular-nums">
+                    {selectedTask.progress}%
+                  </dd>
+                </div>
+              </dl>
+
+              {selectedTask.assignees.length > 0 && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Assignees</p>
+
+                  <div className="mt-1.5 flex flex-wrap gap-2">
+                    {selectedTask.assignees.map((user) => (
+                      <span
+                        key={user.id}
+                        className="flex items-center gap-2 rounded-full bg-muted py-1 pl-1 pr-3 text-sm"
+                      >
+                        <Avatar className="size-6">
+                          <AvatarImage src={user.avatar} alt="" />
+                          <AvatarFallback>{user.name[0]}</AvatarFallback>
+                        </Avatar>
+                        {user.name}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
-            </Droppable>
-          </DragDropContext>
-        </div>
+            </motion.div>
+          )
+        }
+        footer={
+          selectedTask && (
+            <div className="flex w-full gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setEditingTask(selectedTask);
+                  setIsTaskDetailDialogOpen(false);
+                  setIsEditTaskDialogOpen(true);
+                }}
+              >
+                <FilePenLine className="mr-2 size-4" />
+                Edit
+              </Button>
 
-        <ResponsiveDialog
-          isOpen={isNewTaskDialogOpen}
-          onOpenChange={setIsNewTaskDialogOpen}
-          title="Add New Task"
-          description="Create a new task for your Kanban board."
-          content={
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="taskTitle" className="text-right">
-                  Title
-                </Label>
-                <Input
-                  id="taskTitle"
-                  value={newTask.title}
-                  onChange={(e) =>
-                    setNewTask({ ...newTask, title: e.target.value })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="taskDescription" className="text-right">
-                  Description
-                </Label>
-                <Textarea
-                  id="taskDescription"
-                  value={newTask.description}
-                  onChange={(e) =>
-                    setNewTask({ ...newTask, description: e.target.value })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Due Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={`col-span-3 justify-start text-left font-normal ${
-                        !newTask.dueDate && "text-muted-foreground"
-                      }`}
-                    >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {newTask.dueDate ? (
-                        format(newTask.dueDate, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <CalendarComponent
-                      mode="single"
-                      selected={newTask.dueDate || undefined}
-                      onSelect={(date) =>
-                        setNewTask({ ...newTask, dueDate: date || null })
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Assignees</Label>
-                <div className="col-span-3">
-                  {users.map((user) => (
-                    <Button
-                      key={user.id}
-                      variant={
-                        newTask.assignees.includes(user)
-                          ? "outline2"
-                          : "outline"
-                      }
-                      className="mr-2 mb-2"
-                      onClick={() => {
-                        const updatedAssignees = newTask.assignees.includes(
-                          user
-                        )
-                          ? newTask.assignees.filter((u) => u.id !== user.id)
-                          : [...newTask.assignees, user];
-                        setNewTask({
-                          ...newTask,
-                          assignees: updatedAssignees,
-                        });
-                      }}
-                    >
-                      {user.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="taskTags" className="text-right">
-                  Tags
-                </Label>
-                <Input
-                  id="taskTags"
-                  value={newTask.tags.join(", ")}
-                  onChange={(e) =>
-                    setNewTask({
-                      ...newTask,
-                      tags: e.target.value.split(",").map((tag) => tag.trim()),
-                    })
-                  }
-                  className="col-span-3"
-                  placeholder="Enter tags separated by commas"
-                />
-              </div>
-            </div>
-          }
-          footer={<Button onClick={addTask}>Add Task</Button>}
-        />
+              <Button
+                variant="destructive"
+                className="flex-1"
+                onClick={() => {
+                  const board = boards.find((b) =>
+                    b.tasks.some((t) => t.id === selectedTask.id),
+                  );
 
-        <ResponsiveDialog
-          isOpen={isEditTaskDialogOpen}
-          onOpenChange={setIsEditTaskDialogOpen}
-          title="Edit Task"
-          description="Update the task details."
-          content={
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="editTaskTitle" className="text-right">
-                  Title
-                </Label>
-                <Input
-                  id="editTaskTitle"
-                  value={editingTask?.title || ""}
-                  onChange={(e) =>
-                    setEditingTask(
-                      editingTask
-                        ? { ...editingTask, title: e.target.value }
-                        : null
-                    )
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="editTaskDescription" className="text-right">
-                  Description
-                </Label>
-                <Textarea
-                  id="editTaskDescription"
-                  value={editingTask?.description || ""}
-                  onChange={(e) =>
-                    setEditingTask(
-                      editingTask
-                        ? { ...editingTask, description: e.target.value }
-                        : null
-                    )
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Due Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={`col-span-3 justify-start text-left font-normal ${
-                        !editingTask?.dueDate && "text-muted-foreground"
-                      }`}
-                    >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {editingTask?.dueDate ? (
-                        format(editingTask.dueDate, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <CalendarComponent
-                      mode="single"
-                      selected={editingTask?.dueDate || undefined}
-                      onSelect={(date) =>
-                        setEditingTask(
-                          editingTask
-                            ? { ...editingTask, dueDate: date || null }
-                            : null
-                        )
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Assignees</Label>
-                <div className="col-span-3">
-                  {users.map((user) => (
-                    <Button
-                      key={user.id}
-                      variant={
-                        editingTask?.assignees.includes(user)
-                          ? "outline2"
-                          : "outline"
-                      }
-                      className="mr-2 mb-2"
-                      onClick={() => {
-                        if (editingTask) {
-                          const updatedAssignees =
-                            editingTask.assignees.includes(user)
-                              ? editingTask.assignees.filter(
-                                  (u) => u.id !== user.id
-                                )
-                              : [...editingTask.assignees, user];
-                          setEditingTask({
-                            ...editingTask,
-                            assignees: updatedAssignees,
-                          });
-                        }
-                      }}
-                    >
-                      {user.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="editTaskTags" className="text-right">
-                  Tags
-                </Label>
-                <Input
-                  id="editTaskTags"
-                  value={editingTask?.tags.join(", ") || ""}
-                  onChange={(e) =>
-                    setEditingTask(
-                      editingTask
-                        ? {
-                            ...editingTask,
-                            tags: e.target.value
-                              .split(",")
-                              .map((tag) => tag.trim()),
-                          }
-                        : null
-                    )
-                  }
-                  className="col-span-3"
-                  placeholder="Enter tags separated by commas"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="editTaskProgress" className="text-right">
-                  Progress
-                </Label>
-                <Input
-                  id="editTaskProgress"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={editingTask?.progress || 0}
-                  onChange={(e) =>
-                    setEditingTask(
-                      editingTask
-                        ? {
-                            ...editingTask,
-                            progress: parseInt(e.target.value),
-                          }
-                        : null
-                    )
-                  }
-                  className="col-span-3"
-                />
-              </div>
+                  if (board) deleteTask(board.id, selectedTask.id);
+                  setIsTaskDetailDialogOpen(false);
+                }}
+              >
+                <TrashIcon className="mr-2 size-4" />
+                Delete
+              </Button>
             </div>
-          }
-          footer={<Button onClick={updateTask}>Update Task</Button>}
-        />
-
-        <ResponsiveDialog
-          isOpen={isTaskDetailDialogOpen}
-          onOpenChange={setIsTaskDetailDialogOpen}
-          title={selectedTask?.title || "Task Details"}
-          description=""
-          content={
-            <div className="grid gap-4 py-4">
-              {selectedTask?.image && (
-                <img
-                  src={selectedTask.image}
-                  alt="Task"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              )}
-              <p className="text-sm text-muted-foreground">
-                {selectedTask?.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {selectedTask?.tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <Progress value={selectedTask?.progress} className="h-2" />
-              <div className="flex justify-between items-center">
-                <div className="flex -space-x-2">
-                  {selectedTask?.assignees.map((user, index) => (
-                    <Avatar key={index} className="border-2 border-background">
-                      <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                {selectedTask?.dueDate && (
-                  <span className="text-sm text-muted-foreground">
-                    Due: {format(selectedTask.dueDate, "PPP")}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                {getStatusIcon(selectedTask?.status || "todo")}
-                <span className="text-sm font-medium">
-                  {selectedTask?.status}
-                </span>
-              </div>
-            </div>
-          }
-          footer={
-            <Button
-              onClick={() => {
-                setEditingTask(selectedTask);
-                setIsTaskDetailDialogOpen(false);
-                setIsEditTaskDialogOpen(true);
-              }}
-            >
-              Edit Task
-            </Button>
-          }
-        />
-      </div>
+          )
+        }
+      />
     </ContentLayout>
   );
 }
