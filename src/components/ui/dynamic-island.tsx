@@ -146,12 +146,6 @@ const contentMotion = {
   },
   exit: (opening: boolean) => ({
     opacity: 0,
-    filter: "blur(2px)",
-    scale: opening ? 1.018 : 0.98,
-    y: opening ? 1 : -1,
-    transition: { duration: 0.075, ease: "easeOut" as const },
-  }),
-};
 
     // Defocus outgoing pixels immediately before the content disappears.
     filter: CONTENT_FOCUS_OUT,
@@ -195,84 +189,81 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const islandRef = useRef<HTMLDivElement>(null);
+
+  const clearDismissTimer = useCallback(() => {
+    if (dismissTimer.current) {
+      clearTimeout(dismissTimer.current);
+      dismissTimer.current = null;
+    }
+  }, []);
 
   // Reset and arm the dismissal timer whenever a new activity arrives.
   useEffect(() => {
-    clearTimers();
-    setDefocusing(false);
+    clearDismissTimer();
+
     if (!activity) return;
 
     setExpanded(Boolean(activity.autoExpand));
 
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-
     const duration = activity.duration ?? 4200;
 
     if (duration > 0) {
-      dismissTimer.current = setTimeout(() => {
-        setDefocusing(true);
-        actionTimer.current = setTimeout(
-          onDismiss,
-          reduceMotion ? 0 : BLUR_LEAD_MS,
-        );
-      }, duration);
+      dismissTimer.current = setTimeout(onDismiss, duration);
     }
 
-    return () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-    };
-  }, [activity, onDismiss]);
+    return clearDismissTimer;
+  }, [activity, onDismiss, clearDismissTimer]);
 
   // An outside tap backs out one presentation level at a time: expanded live
   // activities collapse first, and only a later outside tap dismisses the
   // compact activity.
   useEffect(() => {
     if (!activity) return;
+
     const handlePointer = (e: PointerEvent) => {
-      if (islandRef.current && !islandRef.current.contains(e.target as Node)) {
-        if (timer.current) clearTimeout(timer.current);
+      if (islandRef.current && islandRef.current.contains(e.target as Node)) {
+        return;
+      }
 
-        if (expanded && activity.expanded) {
-          setExpanded(false);
-          return;
-        }
+      clearDismissTimer();
 
-        onDismiss();
+      if (expanded && activity.expanded) {
+        setExpanded(false);
+        return;
       }
 
       onDismiss();
     };
+
     // Defer so the click that opened the island doesn't immediately close it.
-    const id = setTimeout(
+    const listenerTimer = setTimeout(
       () => document.addEventListener("pointerdown", handlePointer),
       0,
     );
+
     return () => {
       clearTimeout(listenerTimer);
       document.removeEventListener("pointerdown", handlePointer);
     };
-  }, [activity, expanded, onDismiss]);
+  }, [activity, expanded, onDismiss, clearDismissTimer]);
 
-  const canExpand = Boolean(activity?.expanded);
-  const showExpanded = expanded && canExpand;
-  const collapsedSize = activity?.size ?? "compact";
-  const openSize = activity?.expandedSize ?? "expanded";
   const canExpand = Boolean(activity?.expanded);
   const showExpanded = expanded && canExpand;
   const showCompact = !showExpanded;
-
-  const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
+  const collapsedSize = activity?.size ?? "compact";
+  const openSize = activity?.expandedSize ?? "expanded";
 
   const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
 
   const toggle = useCallback(() => {
     if (!canExpand) return;
+
+    // A deliberate tap takes over from the auto-dismiss schedule.
+    clearDismissTimer();
+    setExpanded((current) => !current);
+  }, [canExpand, clearDismissTimer]);
 
   return (
     <MotionConfig
