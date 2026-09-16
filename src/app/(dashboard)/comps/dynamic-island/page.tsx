@@ -19,6 +19,14 @@ const NOTES: { title: string; body: string }[] = [
     body: "Bounce falls as the morph grows, from about 0.52 down to 0.26. That is the right way round physically — something light crossing a short distance can ring, something heavy crossing the screen should settle. It is also what the hand-tuned table did, which is a good sign the instinct behind it was sound.",
   },
   {
+    title: "Expanding is not a special case",
+    body: "Tapping the island runs the same computeMorph as switching activity — the only difference is which two footprints go in. A tall expansion gets a longer, calmer spring than a short one for exactly the reason idle→music does, and nobody tuned that separately. Springs also make it interruptible: collapse mid-expand and it reverses from wherever it actually is, rather than finishing first.",
+  },
+  {
+    title: "The activity keeps running while it grows",
+    body: "Compact and expanded are different React trees, so a tap unmounts one and mounts the other. Holding the countdown in component state would restart it at the exact moment the user is watching most closely. The live values sit outside React instead, so the timer reads the same second on both sides of the morph — a real timer does not reset because you looked at it.",
+  },
+  {
     title: "Footprints are measured, not declared",
     body: "Each view ships a rough estimate, then reports its real untransformed box the first time it renders. After one visit apiece the physics is running on actual geometry, so adding an activity takes no tuning at all — it only has to exist.",
   },
@@ -43,9 +51,9 @@ export default function Page() {
         <div className="px-4 pb-36 sm:px-6">
           <div className="mx-auto w-full max-w-4xl">
             <PageHeader title="Dynamic Island">
-              Eight activities, four motion profiles, and a morph that is
-              computed from the geometry of the two states rather than looked up
-              in a table.
+              Eight activities, five of them expandable on tap, four motion
+              profiles, and a morph computed from the geometry of the two
+              states rather than looked up in a table.
             </PageHeader>
 
             <DynamicIsland />

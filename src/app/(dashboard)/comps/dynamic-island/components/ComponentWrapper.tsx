@@ -34,7 +34,7 @@ export default function ComponentWrapper({
     <ThemeContext.Provider value={theme}>
       <div
         className={cn(
-          "relative isolate h-[380px] w-full overflow-hidden rounded-2xl border",
+          "relative isolate h-[430px] w-full overflow-hidden rounded-2xl border",
           // Not pure black. The island itself is #000, so a #09090B stage
           // leaves it legible only by its shadow — the surface has to sit a
           // few steps lighter for the shape to read at all.
@@ -43,7 +43,7 @@ export default function ComponentWrapper({
             : "border-black/10 bg-[#F4F4F5]",
           // Colour is the only thing that crossfades here: the surface itself
           // never moves, so there is nothing for a transform to describe.
-          "transition-colors duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
+          "transition-colors duration-500 ease-fluid",
           className
         )}
       >
@@ -68,7 +68,7 @@ export default function ComponentWrapper({
               "absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border",
               // Instant, on-press feedback. 160ms is inside the 100-160ms
               // window for a press; anything slower reads as unresponsive.
-              "transition-[transform,background-color,border-color] duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.94]",
+              "transition-[transform,background-color,border-color] duration-press ease-fluid active:scale-[0.94]",
               theme === "dark"
                 ? "border-white/10 bg-white/5 text-white/70 [@media(hover:hover)and(pointer:fine)]:hover:bg-white/10"
                 : "border-black/10 bg-black/5 text-black/60 [@media(hover:hover)and(pointer:fine)]:hover:bg-black/10"

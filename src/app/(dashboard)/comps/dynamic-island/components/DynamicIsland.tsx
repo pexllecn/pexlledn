@@ -14,12 +14,17 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Charging,
+  ChargingExpanded,
   FaceId,
   IncomingCall,
+  IncomingCallExpanded,
   Navigation,
+  NavigationExpanded,
   NowPlaying,
+  NowPlayingExpanded,
   Ring,
   Timer,
+  TimerExpanded,
 } from "./island-activities";
 import {
   computeMorph,
@@ -34,13 +39,26 @@ const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-interface View {
-  id: string;
-  label: string;
-  /** Nominal footprint, used only until the view has been rendered once. */
+interface Presentation {
+  /** Nominal footprint, used only until this presentation has rendered once. */
   estimate: Footprint;
   render: () => React.ReactNode;
 }
+
+interface View extends Presentation {
+  id: string;
+  label: string;
+  /**
+   * The tap-to-expand form, where the activity has one. Transient states
+   * (Face ID, a ring toggle) deliberately have none — there is nothing behind
+   * them to open, and offering the affordance anyway would be a lie.
+   */
+  expanded?: Presentation;
+}
+
+/** Footprint key for a view in a given state. */
+const keyFor = (view: string, expanded: boolean) =>
+  expanded ? `${view}:expanded` : view;
 
 const VIEWS: View[] = [
   {
@@ -55,6 +73,7 @@ const VIEWS: View[] = [
     label: "Charging",
     estimate: { w: 150, h: 32 },
     render: () => <Charging />,
+    expanded: { estimate: { w: 280, h: 104 }, render: () => <ChargingExpanded /> },
   },
   {
     id: "faceid",
@@ -62,24 +81,33 @@ const VIEWS: View[] = [
     estimate: { w: 168, h: 92 },
     render: () => <FaceId />,
   },
-  { id: "timer", label: "Timer", estimate: { w: 284, h: 64 }, render: () => <Timer /> },
+  {
+    id: "timer",
+    label: "Timer",
+    estimate: { w: 284, h: 64 },
+    render: () => <Timer />,
+    expanded: { estimate: { w: 300, h: 168 }, render: () => <TimerExpanded /> },
+  },
   {
     id: "music",
     label: "Music",
     estimate: { w: 300, h: 72 },
     render: () => <NowPlaying />,
+    expanded: { estimate: { w: 320, h: 180 }, render: () => <NowPlayingExpanded /> },
   },
   {
     id: "call",
     label: "Call",
     estimate: { w: 300, h: 76 },
     render: () => <IncomingCall />,
+    expanded: { estimate: { w: 300, h: 196 }, render: () => <IncomingCallExpanded /> },
   },
   {
     id: "maps",
     label: "Maps",
     estimate: { w: 292, h: 68 },
     render: () => <Navigation />,
+    expanded: { estimate: { w: 312, h: 172 }, render: () => <NavigationExpanded /> },
   },
 ];
 
@@ -118,6 +146,7 @@ const ghostVariants = {
 
 export default function DynamicIsland() {
   const [view, setView] = useState("idle");
+  const [expanded, setExpanded] = useState(false);
   const [profileId, setProfileId] = useState("fluid");
   const [slowMo, setSlowMo] = useState(false);
   const reduced = useReducedMotion() ?? false;
@@ -132,7 +161,16 @@ export default function DynamicIsland() {
    * it just needs to exist.
    */
   const footprints = useRef<Record<string, Footprint>>(
-    Object.fromEntries(VIEWS.map((v) => [v.id, { ...v.estimate }]))
+    Object.fromEntries(
+      VIEWS.flatMap((v) =>
+        v.expanded
+          ? [
+              [v.id, { ...v.estimate }] as const,
+              [keyFor(v.id, true), { ...v.expanded.estimate }] as const,
+            ]
+          : [[v.id, { ...v.estimate }] as const]
+      )
+    )
   );
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -145,8 +183,8 @@ export default function DynamicIsland() {
     // reports the untransformed box that the morph actually needs.
     const w = el.offsetWidth;
     const h = el.offsetHeight;
-    if (w > 0 && h > 0) footprints.current[view] = { w, h };
-  }, [view]);
+    if (w > 0 && h > 0) footprints.current[keyFor(view, expanded)] = { w, h };
+  }, [view, expanded]);
 
   const [morph, setMorph] = useState(() =>
     computeMorph(VIEW_BY_ID.idle.estimate, VIEW_BY_ID.idle.estimate, profile, reduced)
@@ -154,12 +192,25 @@ export default function DynamicIsland() {
 
   const speed = slowMo ? 0.25 : 1;
 
-  const go = useCallback(
-    (next: string) => {
-      if (next === view) return;
-      const from = footprints.current[view];
-      const to = footprints.current[next];
-      const m = computeMorph(from, to, profile, reduced);
+  /**
+   * Every change of shape goes through here — switching activity and tapping
+   * to expand alike. That is the point: expanding is not a special animation
+   * with its own tuning, it is the same morph between two measured footprints.
+   * A tall expansion gets a longer, calmer spring than a short one for exactly
+   * the same reason idle→music does, without anyone deciding that separately.
+   */
+  const transitionTo = useCallback(
+    (nextView: string, nextExpanded: boolean) => {
+      const fromKey = keyFor(view, expanded);
+      const toKey = keyFor(nextView, nextExpanded);
+      if (fromKey === toKey) return;
+
+      const m = computeMorph(
+        footprints.current[fromKey],
+        footprints.current[toKey],
+        profile,
+        reduced
+      );
       // Slow motion stretches time without touching the physics, so what you
       // see at 0.25x is the same motion, just legible.
       setMorph({
@@ -167,12 +218,33 @@ export default function DynamicIsland() {
         spring: { ...m.spring, duration: m.spring.duration / speed },
         exit: { ...m.exit, duration: m.exit.duration / speed },
       });
-      setView(next);
+      setView(nextView);
+      setExpanded(nextExpanded);
     },
-    [view, profile, reduced, speed]
+    [view, expanded, profile, reduced, speed]
   );
 
-  const content = useMemo(() => VIEW_BY_ID[view]?.render() ?? null, [view]);
+  // Switching activity always lands compact: the expanded form is something
+  // you opened, and carrying that intent onto a different activity would be
+  // deciding on the user's behalf.
+  const go = useCallback(
+    (next: string) => transitionTo(next, false),
+    [transitionTo]
+  );
+
+  const current = VIEW_BY_ID[view];
+  const canExpand = Boolean(current?.expanded);
+
+  const toggleExpand = useCallback(() => {
+    if (!canExpand) return;
+    transitionTo(view, !expanded);
+  }, [canExpand, transitionTo, view, expanded]);
+
+  const content = useMemo(() => {
+    const v = VIEW_BY_ID[view];
+    if (!v) return null;
+    return expanded && v.expanded ? v.expanded.render() : v.render();
+  }, [view, expanded]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -182,6 +254,9 @@ export default function DynamicIsland() {
             default and never respond to the light/dark switch. */}
         <Stage
           view={view}
+          expanded={expanded}
+          canExpand={canExpand}
+          onToggleExpand={toggleExpand}
           content={content}
           morph={morph}
           contentRef={contentRef}
@@ -209,6 +284,9 @@ export default function DynamicIsland() {
 
 function Stage({
   view,
+  expanded,
+  canExpand,
+  onToggleExpand,
   content,
   morph,
   contentRef,
@@ -216,6 +294,9 @@ function Stage({
   speed,
 }: {
   view: string;
+  expanded: boolean;
+  canExpand: boolean;
+  onToggleExpand: () => void;
   content: React.ReactNode;
   morph: ReturnType<typeof computeMorph>;
   contentRef: React.RefObject<HTMLDivElement>;
@@ -223,16 +304,48 @@ function Stage({
   speed: number;
 }) {
   const theme = useTheme();
+  const stateKey = keyFor(view, expanded);
 
   return (
     <div className="flex h-full w-full flex-col justify-between py-10">
           <div className="relative flex h-full w-full flex-col justify-between">
+            {/* Press feedback sits on a wrapper rather than on the element
+                that carries `layout`. Both want to write `transform`, and
+                letting them share one produces a visible stutter at the
+                moment the press lands — precisely when the user is looking. */}
+            <motion.div
+              className="mx-auto w-fit"
+              whileTap={canExpand && !reduced ? { scale: 0.97 } : undefined}
+              transition={{ duration: 0.16, ease: EASE_OUT }}
+            >
             <motion.div
               layout
               transition={morph.spring}
               style={{ borderRadius: 32 }}
+              role={canExpand ? "button" : undefined}
+              tabIndex={canExpand ? 0 : undefined}
+              aria-expanded={canExpand ? expanded : undefined}
+              aria-label={
+                canExpand
+                  ? expanded
+                    ? "Collapse activity"
+                    : "Expand activity"
+                  : undefined
+              }
+              onClick={canExpand ? onToggleExpand : undefined}
+              onKeyDown={
+                canExpand
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onToggleExpand();
+                      }
+                    }
+                  : undefined
+              }
               className={cn(
-                "mx-auto w-fit min-w-[100px] overflow-hidden rounded-full bg-black",
+                "mx-auto w-fit min-w-[100px] overflow-hidden rounded-full bg-black outline-none",
+                canExpand && "cursor-pointer focus-visible:ring-2 focus-visible:ring-white/40",
                 // A bright top edge and a deeper shadow the larger it gets:
                 // a bigger surface should read as a thicker piece of material,
                 // not a bigger sticker.
@@ -270,23 +383,24 @@ function Stage({
                     },
                   },
                 }}
-                key={view}
+                key={stateKey}
               >
                 {content}
               </motion.div>
+            </motion.div>
             </motion.div>
 
             {/* The ghost layer. Same content, absolutely positioned, mounted
                 invisible — it exists only so the outgoing view has something
                 to exit with while the container is busy morphing. */}
-            <div className="pointer-events-none absolute left-1/2 top-0 flex h-[200px] w-[340px] -translate-x-1/2 items-start justify-center">
+            <div className="pointer-events-none absolute left-1/2 top-0 flex h-[260px] w-[360px] -translate-x-1/2 items-start justify-center">
               <AnimatePresence mode="popLayout" custom={morph.exit}>
                 <motion.div
                   initial={{ opacity: 0 }}
                   exit="exit"
                   variants={ghostVariants}
                   custom={morph.exit}
-                  key={view}
+                  key={stateKey}
                 >
                   {content}
                 </motion.div>
@@ -294,7 +408,26 @@ function Stage({
             </div>
           </div>
 
-      <Readout morph={morph} view={view} reduced={reduced} />
+      <div className="flex flex-col items-center gap-2.5">
+        <AnimatePresence mode="popLayout" initial={false}>
+          {canExpand ? (
+            <motion.p
+              key={expanded ? "collapse" : "expand"}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: EASE_OUT }}
+              className={cn(
+                "text-xs",
+                theme === "dark" ? "text-white/40" : "text-black/40"
+              )}
+            >
+              {expanded ? "Tap the island to collapse" : "Tap the island to expand"}
+            </motion.p>
+          ) : null}
+        </AnimatePresence>
+        <Readout morph={morph} view={view} reduced={reduced} />
+      </div>
     </div>
   );
 }
@@ -388,7 +521,7 @@ function Controls({
               aria-pressed={view === v.id}
               // Press feedback is instant and lives on :active, not on click.
               // The commit still happens on release, which is where it belongs.
-              className="rounded-full transition-transform duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]"
+              className="rounded-full transition-transform duration-press ease-fluid active:scale-[0.97]"
             >
               {v.label}
             </Button>
@@ -408,7 +541,7 @@ function Controls({
               variant={profileId === p.id ? "default" : "outline"}
               onClick={() => onProfile(p.id)}
               aria-pressed={profileId === p.id}
-              className="rounded-full transition-transform duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]"
+              className="rounded-full transition-transform duration-press ease-fluid active:scale-[0.97]"
             >
               {p.label}
             </Button>
@@ -418,7 +551,7 @@ function Controls({
             variant={slowMo ? "default" : "outline"}
             onClick={() => onSlowMo(!slowMo)}
             aria-pressed={slowMo}
-            className="rounded-full transition-transform duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]"
+            className="rounded-full transition-transform duration-press ease-fluid active:scale-[0.97]"
           >
             Slow motion 0.25&times;
           </Button>

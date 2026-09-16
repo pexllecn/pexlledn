@@ -6,6 +6,91 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 /** Strong ease-out. The built-in CSS curves are too weak to read as intentional. */
 const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
+/**
+ * Activity state that outlives the component.
+ *
+ * Compact and expanded are two different React trees, so a tap to expand
+ * unmounts one and mounts the other. Holding the countdown in component state
+ * would restart it at exactly the moment the user is watching most closely.
+ * A real timer does not reset because you looked at it, so these live outside
+ * the tree and both presentations read the same value.
+ */
+const activityState = {
+  seconds: 60,
+  batteryPercent: 64,
+  metresToTurn: 120,
+};
+
+function useCountdown(paused?: boolean) {
+  const [seconds, setSeconds] = useState(activityState.seconds);
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      activityState.seconds = activityState.seconds === 0 ? 60 : activityState.seconds - 1;
+      setSeconds(activityState.seconds);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [paused]);
+  return seconds;
+}
+
+function useBattery() {
+  const [percent, setPercent] = useState(activityState.batteryPercent);
+  useEffect(() => {
+    const id = setInterval(() => {
+      activityState.batteryPercent =
+        activityState.batteryPercent >= 100 ? 64 : activityState.batteryPercent + 1;
+      setPercent(activityState.batteryPercent);
+    }, 1400);
+    return () => clearInterval(id);
+  }, []);
+  return percent;
+}
+
+function useNavigation() {
+  const [metres, setMetres] = useState(activityState.metresToTurn);
+  useEffect(() => {
+    const id = setInterval(() => {
+      activityState.metresToTurn =
+        activityState.metresToTurn <= 10 ? 120 : activityState.metresToTurn - 10;
+      setMetres(activityState.metresToTurn);
+    }, 900);
+    return () => clearInterval(id);
+  }, []);
+  return metres;
+}
+
+/** A round control, sized to the context. Press feedback is non-negotiable. */
+function IslandButton({
+  label,
+  onClick,
+  className,
+  size = 40,
+  children,
+}: {
+  label: string;
+  onClick?: () => void;
+  className?: string;
+  size?: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.button
+      aria-label={label}
+      onClick={onClick}
+      whileTap={{ scale: 0.9 }}
+      transition={{ duration: 0.16, ease: EASE_OUT }}
+      style={{ width: size, height: size }}
+      className={
+        "flex shrink-0 items-center justify-center rounded-full transition-colors " +
+        (className ?? "")
+      }
+    >
+      {children}
+    </motion.button>
+  );
+}
+
 //
 // --------------- Ring ---------------
 //
@@ -156,7 +241,7 @@ export function Timer() {
 
       <button
         aria-label="Exit"
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-[#3C3D3C] text-white transition-[transform,background-color] duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] [@media(hover:hover)and(pointer:fine)]:hover:bg-[#4A4B4A] active:scale-[0.9]"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-[#3C3D3C] text-white transition-[transform,background-color] duration-press ease-fluid [@media(hover:hover)and(pointer:fine)]:hover:bg-[#4A4B4A] active:scale-[0.9]"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -179,16 +264,7 @@ export function Timer() {
 }
 
 function Counter({ paused }: { paused?: boolean }) {
-  const [count, setCount] = useState(60);
-
-  useEffect(() => {
-    if (paused) return;
-    const id = setInterval(() => {
-      setCount((c) => (c === 0 ? 60 : c - 1));
-    }, 1000);
-    return () => clearInterval(id);
-  }, [paused]);
-
+  const count = useCountdown(paused);
   const countArray = count.toString().padStart(2, "0").split("");
 
   return (
@@ -217,14 +293,7 @@ function Counter({ paused }: { paused?: boolean }) {
 //
 
 export function Charging() {
-  const [percent, setPercent] = useState(64);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setPercent((p) => (p >= 100 ? 64 : p + 1));
-    }, 1400);
-    return () => clearInterval(id);
-  }, []);
+  const percent = useBattery();
 
   return (
     <div className="flex h-8 w-[150px] items-center justify-between px-3">
@@ -480,23 +549,8 @@ export function IncomingCall() {
 //
 
 export function Navigation() {
-  const [metres, setMetres] = useState(120);
-  const startRef = useRef(120);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setMetres((m) => {
-        if (m <= 10) {
-          startRef.current = 120;
-          return 120;
-        }
-        return m - 10;
-      });
-    }, 900);
-    return () => clearInterval(id);
-  }, []);
-
-  const progress = 1 - metres / startRef.current;
+  const metres = useNavigation();
+  const progress = 1 - metres / 120;
 
   return (
     <div className="flex h-[68px] w-[292px] items-center gap-3 px-3.5">
@@ -522,6 +576,268 @@ export function Navigation() {
             transition={{ duration: 0.85, ease: "linear" }}
           />
         </div>
+      </div>
+    </div>
+  );
+}
+
+//
+//
+// --------------- Expanded presentations ---------------
+//
+// Each of these is the same activity with room to breathe. They are separate
+// trees from their compact form, which is exactly why the live values above
+// sit outside React: the morph between the two has to look like one object
+// growing, and a counter that restarts mid-flight gives that away instantly.
+//
+
+export function NowPlayingExpanded() {
+  const [isPlaying, setIsPlaying] = useState(true);
+  const elapsed = 64;
+  const total = 196;
+
+  return (
+    <div className="flex w-[320px] flex-col gap-3.5 px-4 py-4">
+      <div className="flex items-center gap-3">
+        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-[12px] bg-gradient-to-br from-[#FF6A5B] via-[#E0407A] to-[#7B3FE4] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]" />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[15px] font-semibold leading-tight text-white">
+            Ordinary Things
+          </p>
+          <p className="truncate text-[13px] leading-tight text-white/55">
+            Foster the People
+          </p>
+        </div>
+        <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-white/45" aria-hidden>
+          <path d="M12 3a1 1 0 0 1 1 1v9.55a4 4 0 1 1-2-3.46V4a1 1 0 0 1 1-1Z" />
+        </svg>
+      </div>
+
+      <div>
+        <div className="h-[5px] w-full overflow-hidden rounded-full bg-white/15">
+          <div
+            className="h-full rounded-full bg-white/80"
+            style={{ width: `${(elapsed / total) * 100}%` }}
+          />
+        </div>
+        <div className="mt-1.5 flex justify-between text-[11px] tabular-nums text-white/45">
+          <span>1:04</span>
+          <span>-2:12</span>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-6">
+        <IslandButton label="Previous track" size={36} className="text-white/85 [@media(hover:hover)and(pointer:fine)]:hover:bg-white/10">
+          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+            <path d="M7 6a1 1 0 0 1 2 0v4.6l8.5-5a1 1 0 0 1 1.5.9v11a1 1 0 0 1-1.5.9L9 13.4V18a1 1 0 0 1-2 0V6Z" />
+          </svg>
+        </IslandButton>
+
+        <IslandButton
+          label={isPlaying ? "Pause" : "Play"}
+          onClick={() => setIsPlaying((p) => !p)}
+          size={48}
+          className="bg-white/10 text-white [@media(hover:hover)and(pointer:fine)]:hover:bg-white/15"
+        >
+          <AnimatePresence initial={false} mode="wait">
+            <motion.svg
+              key={isPlaying ? "pause" : "play"}
+              initial={{ opacity: 0, scale: 0.6, filter: "blur(3px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.6, filter: "blur(3px)" }}
+              transition={{ duration: 0.12, ease: EASE_OUT }}
+              viewBox="0 0 24 24"
+              className="h-6 w-6 fill-current"
+              aria-hidden
+            >
+              {isPlaying ? (
+                <path d="M8 4h3v16H8zM13 4h3v16h-3z" />
+              ) : (
+                <path d="M7 4.5a1 1 0 0 1 1.5-.87l11 7.5a1 1 0 0 1 0 1.74l-11 7.5A1 1 0 0 1 7 19.5v-15Z" />
+              )}
+            </motion.svg>
+          </AnimatePresence>
+        </IslandButton>
+
+        <IslandButton label="Next track" size={36} className="text-white/85 [@media(hover:hover)and(pointer:fine)]:hover:bg-white/10">
+          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+            <path d="M17 6a1 1 0 0 0-2 0v4.6l-8.5-5A1 1 0 0 0 5 6.5v11a1 1 0 0 0 1.5.9l8.5-5V18a1 1 0 0 0 2 0V6Z" />
+          </svg>
+        </IslandButton>
+      </div>
+    </div>
+  );
+}
+
+export function TimerExpanded() {
+  const [isPaused, setIsPaused] = useState(false);
+  const seconds = useCountdown(isPaused);
+
+  return (
+    <div className="flex w-[300px] flex-col items-center gap-3 px-4 py-4">
+      <span className="text-[13px] font-medium text-[#F7A815]">Timer</span>
+      <span className="text-5xl font-light tabular-nums leading-none text-[#F7A815]">
+        0:{seconds.toString().padStart(2, "0")}
+      </span>
+      <div className="mt-0.5 flex items-center gap-3">
+        <IslandButton
+          label={isPaused ? "Resume timer" : "Pause timer"}
+          onClick={() => setIsPaused((p) => !p)}
+          size={44}
+          className="bg-[#5A3C07] text-[#FDB000] [@media(hover:hover)and(pointer:fine)]:hover:bg-[#694608]"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+            {isPaused ? (
+              <path d="M7 4.5a1 1 0 0 1 1.5-.87l11 7.5a1 1 0 0 1 0 1.74l-11 7.5A1 1 0 0 1 7 19.5v-15Z" />
+            ) : (
+              <path d="M8 4h3v16H8zM13 4h3v16h-3z" />
+            )}
+          </svg>
+        </IslandButton>
+        <IslandButton
+          label="Cancel timer"
+          size={44}
+          className="bg-[#3C3D3C] text-white [@media(hover:hover)and(pointer:fine)]:hover:bg-[#4A4B4A]"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current" strokeWidth={2} aria-hidden>
+            <path strokeLinecap="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </IslandButton>
+      </div>
+    </div>
+  );
+}
+
+export function IncomingCallExpanded() {
+  const reduced = useReducedMotion();
+
+  return (
+    <div className="flex w-[300px] flex-col items-center gap-3 px-4 py-4">
+      <div className="relative">
+        {!reduced ? (
+          <motion.span
+            className="absolute inset-0 rounded-full bg-[#34C759]"
+            animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+            transition={{ duration: 1.6, ease: EASE_OUT, repeat: Infinity }}
+          />
+        ) : null}
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#3A3A3C] to-[#1C1C1E] text-base font-semibold text-white">
+          MK
+        </div>
+      </div>
+
+      <div className="text-center">
+        <p className="text-[15px] font-semibold leading-tight text-white">Maya Kaur</p>
+        <p className="text-[13px] leading-tight text-white/55">mobile · incoming</p>
+      </div>
+
+      <div className="mt-0.5 flex items-center gap-8">
+        <div className="flex flex-col items-center gap-1.5">
+          <IslandButton
+            label="Decline call"
+            size={48}
+            className="bg-[#FF3B30] text-white [@media(hover:hover)and(pointer:fine)]:hover:bg-[#FF554B]"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5 rotate-[135deg] fill-current" aria-hidden>
+              <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.58 3.57a1 1 0 0 1-.25 1l-2.23 2.23Z" />
+            </svg>
+          </IslandButton>
+          <span className="text-[11px] text-white/45">Decline</span>
+        </div>
+        <div className="flex flex-col items-center gap-1.5">
+          <IslandButton
+            label="Accept call"
+            size={48}
+            className="bg-[#34C759] text-white [@media(hover:hover)and(pointer:fine)]:hover:bg-[#40D964]"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+              <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.58 3.57a1 1 0 0 1-.25 1l-2.23 2.23Z" />
+            </svg>
+          </IslandButton>
+          <span className="text-[11px] text-white/45">Accept</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function NavigationExpanded() {
+  const metres = useNavigation();
+  const progress = 1 - metres / 120;
+
+  return (
+    <div className="flex w-[312px] flex-col gap-3 px-4 py-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-[#0A84FF]">
+          <svg viewBox="0 0 24 24" className="h-7 w-7 fill-white" aria-hidden>
+            <path d="M13.5 3.3a1 1 0 0 0-1.7.7v3H9a5 5 0 0 0-5 5v4a1 1 0 1 0 2 0v-4a3 3 0 0 1 3-3h2.8v3a1 1 0 0 0 1.7.7l5-5a1 1 0 0 0 0-1.4l-5-3Z" />
+          </svg>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-semibold leading-tight text-white">
+            <span className="tabular-nums">{metres}</span> m · Turn right
+          </p>
+          <p className="truncate text-[13px] leading-tight text-white/55">
+            onto Prinsengracht
+          </p>
+        </div>
+      </div>
+
+      <div className="h-[4px] w-full overflow-hidden rounded-full bg-white/15">
+        <motion.div
+          className="h-full rounded-full bg-[#0A84FF]"
+          animate={{ width: `${Math.max(0, Math.min(1, progress)) * 100}%` }}
+          transition={{ duration: 0.85, ease: "linear" }}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 border-t border-white/10 pt-2.5">
+        <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 -scale-x-100 fill-white/40" aria-hidden>
+          <path d="M13.5 3.3a1 1 0 0 0-1.7.7v3H9a5 5 0 0 0-5 5v4a1 1 0 1 0 2 0v-4a3 3 0 0 1 3-3h2.8v3a1 1 0 0 0 1.7.7l5-5a1 1 0 0 0 0-1.4l-5-3Z" />
+        </svg>
+        <span className="truncate text-[13px] text-white/50">
+          Then left onto Leidsestraat
+        </span>
+      </div>
+
+      <div className="flex items-baseline justify-between text-[13px]">
+        <span className="font-medium text-white">14 min</span>
+        <span className="tabular-nums text-white/45">2.3 km · 21:48</span>
+      </div>
+    </div>
+  );
+}
+
+export function ChargingExpanded() {
+  const percent = useBattery();
+  const minutesToFull = Math.max(1, Math.round(((100 - percent) / 36) * 24));
+
+  return (
+    <div className="flex w-[280px] flex-col gap-3 px-4 py-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-3xl font-light tabular-nums leading-none text-[#34C759]">
+            {percent}
+          </span>
+          <span className="text-lg font-light text-[#34C759]">%</span>
+        </div>
+        <div className="relative h-[18px] w-[36px] rounded-[5px] border border-white/40">
+          <motion.div
+            className="absolute inset-[2px] w-auto rounded-[3px] bg-[#34C759]"
+            animate={{ width: `calc(${percent}% - 4px)` }}
+            transition={{ type: "spring", bounce: 0.18, duration: 0.7 }}
+          />
+          <div className="absolute -right-[4px] top-1/2 h-[7px] w-[2.5px] -translate-y-1/2 rounded-r-sm bg-white/40" />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <svg viewBox="0 0 14 18" className="h-3.5 w-3.5 fill-[#34C759]" aria-hidden>
+          <path d="M7.9 0 1 10h4.3l-.9 8L12 7.6H7.3L7.9 0Z" />
+        </svg>
+        <span className="text-[13px] text-white/70">
+          Charging · {minutesToFull} min until full
+        </span>
       </div>
     </div>
   );
