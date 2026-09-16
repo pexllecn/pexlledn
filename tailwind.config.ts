@@ -94,6 +94,34 @@ const config = {
         "3xl": "calc(var(--radius) * 2)",
         full: "9999px",
       },
+      /* Motion utilities backed by the tokens in globals.css, so `ease-fluid`
+         and `duration-modal` mean the same thing everywhere and can be
+         retuned in one place. Named for the interaction rather than the
+         number: a component should ask for dropdown timing, not for 200ms. */
+      transitionTimingFunction: {
+        fluid: "var(--ease-fluid)",
+        "fluid-in-out": "var(--ease-fluid-in-out)",
+        drawer: "var(--ease-drawer)",
+      },
+      transitionDuration: {
+        press: "var(--duration-press)",
+        tooltip: "var(--duration-tooltip)",
+        dropdown: "var(--duration-dropdown)",
+        modal: "var(--duration-modal)",
+        drawer: "var(--duration-drawer)",
+      },
+      animationTimingFunction: {
+        fluid: "var(--ease-fluid)",
+        "fluid-in-out": "var(--ease-fluid-in-out)",
+        drawer: "var(--ease-drawer)",
+      },
+      animationDuration: {
+        press: "var(--duration-press)",
+        tooltip: "var(--duration-tooltip)",
+        dropdown: "var(--duration-dropdown)",
+        modal: "var(--duration-modal)",
+        drawer: "var(--duration-drawer)",
+      },
       keyframes: {
         "accordion-down": {
           from: {
@@ -129,10 +157,10 @@ const config = {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "collapsible-down": "collapsible-down 0.2s ease-out",
-        "collapsible-up": "collapsible-up 0.2s ease-out",
+        "accordion-down": "accordion-down var(--duration-dropdown) var(--ease-fluid)",
+        "accordion-up": "accordion-up var(--duration-dropdown) var(--ease-fluid)",
+        "collapsible-down": "collapsible-down var(--duration-dropdown) var(--ease-fluid)",
+        "collapsible-up": "collapsible-up var(--duration-dropdown) var(--ease-fluid)",
       },
     },
   },

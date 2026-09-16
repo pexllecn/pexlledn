@@ -7,6 +7,7 @@ import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { Toaster } from "sonner";
 import { ZoomPreventer } from "@/components/ZoomPreventer";
 import { ThemeCustomizerButton } from "@/components/theme-customizer-button";
+import { MotionProvider } from "@/providers/motion-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -28,12 +29,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={GeistSans.className}>
         <ThemeProvider>
-          <BreadcrumbProvider>
-            {children}
-            <ZoomPreventer />
-            <Toaster richColors position="top-center" />
-            <ThemeCustomizerButton />
-          </BreadcrumbProvider>
+          <MotionProvider>
+            <BreadcrumbProvider>
+              {children}
+              <ZoomPreventer />
+              <Toaster richColors position="top-center" />
+              <ThemeCustomizerButton />
+            </BreadcrumbProvider>
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

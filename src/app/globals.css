@@ -37,6 +37,26 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
     --bluesp: 216 98.36% 52.16%;
     --font-weight: 350;
+
+    /* Motion tokens. Same role as --radius: components name the kind of
+       motion they want and inherit the numbers, so the feel of the whole
+       product is tunable from one place. Kept in step with src/lib/motion.ts,
+       which is the Framer Motion half of the same vocabulary — a spring and a
+       CSS transition on the same interaction must not disagree about what
+       "fluid" means.
+
+       The built-in CSS curves are too weak to read as intentional; these are
+       the stronger variants. There is deliberately no ease-in token: it
+       delays the first frame, which is exactly where the user is looking. */
+    --ease-fluid: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-fluid-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+    --duration-press: 160ms;
+    --duration-tooltip: 150ms;
+    --duration-dropdown: 200ms;
+    --duration-modal: 300ms;
+    --duration-drawer: 400ms;
   }
 
   .dark {
@@ -1101,5 +1121,60 @@ body {
   .cloudfield__mask,
   .cloud {
     animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   App-wide motion defaults
+   --------------------------------------------------------------------------- */
+
+@layer utilities {
+  /* tailwindcss-animate ships every animate-in/animate-out at the CSS initial
+     timing function, which is plain `ease`. Retiming it here is the single
+     highest-leverage change available: every Radix primitive and every page
+     that uses these utilities picks up the fluid curve without being touched.
+     Components that genuinely need something else still override it with an
+     `ease-*` utility, which lands later in the cascade. */
+  .animate-in,
+  .animate-out {
+    animation-timing-function: var(--ease-fluid);
+  }
+
+  /* Popovers, dropdowns, selects and menus should grow out of the control
+     that opened them, not out of their own middle. Radix measures the
+     anchor and publishes the origin; this reads it wherever it exists.
+
+     Dialogs are deliberately not in this list. They are not anchored to a
+     trigger — they belong to the viewport — so centre is correct for them. */
+  [data-radix-popper-content-wrapper] > * {
+    transform-origin: var(--radix-popper-transform-origin);
+  }
+}
+
+/* Reduced motion is gentler, not absent. Opacity and colour survive, because
+   they are what explain that one state became another; travel, overshoot and
+   blur are what actually cause trouble. Durations collapse rather than going
+   to zero, so a state change still reads as a change and not as a jump cut. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-press: 1ms;
+    --duration-tooltip: 1ms;
+    --duration-dropdown: 1ms;
+    --duration-modal: 120ms;
+    --duration-drawer: 120ms;
+  }
+
+  .animate-in,
+  .animate-out {
+    animation-duration: 120ms !important;
+    /* Kill travel and scale, keep the fade. */
+    --tw-enter-translate-x: 0 !important;
+    --tw-enter-translate-y: 0 !important;
+    --tw-exit-translate-x: 0 !important;
+    --tw-exit-translate-y: 0 !important;
+    --tw-enter-scale: 1 !important;
+    --tw-exit-scale: 1 !important;
+    --tw-enter-rotate: 0 !important;
+    --tw-exit-rotate: 0 !important;
   }
 }
