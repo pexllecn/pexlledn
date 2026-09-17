@@ -16,6 +16,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { computeMorph, SYSTEM_PROFILE } from "@/lib/island-physics";
 
 export type IslandSize =
   | "idle"
@@ -44,25 +45,34 @@ export const ISLAND_SIZES: Record<IslandSize, SizeSpec> = {
   ultra: { width: 372, height: 252, radius: 44 },
 };
 
-const SHELL_SPRING = {
-  type: "spring" as const,
-  stiffness: 510,
-  damping: 34,
-  mass: 0.82,
-  restDelta: 0.08,
-  restSpeed: 0.08,
-};
+/**
+ * The shell spring is derived from the two sizes it is travelling between,
+ * not chosen from a pair of constants.
+ *
+ * The previous version had exactly two springs and picked between them on
+ * `expanded`, so idle→minimal (a 40px nudge) and idle→ultra (a 324px unfolding)
+ * were animated identically. What actually differs between those is not whether
+ * the island is opening — it is how far it has to go.
+ *
+ * `computeMorph` reads that distance off ISLAND_SIZES and falls out with a
+ * bounce that decreases as the morph grows and a response that lengthens. The
+ * SYSTEM_PROFILE scale keeps the result inside the voice this island already
+ * had (bounce ~0.17–0.20) rather than the demo's playful range.
+ *
+ * `restDelta`/`restSpeed` are kept: they end the spring once it is visually
+ * settled instead of letting it creep, which matters on width and height.
+ */
+const REST = { restDelta: 0.08, restSpeed: 0.08 } as const;
 
-// Expansion has a fraction more travel than retraction. This is what gives the
-// shell its soft, rubber-like overshoot without making every interaction slow.
-const EXPAND_SPRING = {
-  type: "spring" as const,
-  stiffness: 430,
-  damping: 31,
-  mass: 0.88,
-  restDelta: 0.08,
-  restSpeed: 0.08,
-};
+function shellSpring(from: SizeSpec, to: SizeSpec, reduceMotion: boolean) {
+  const { spring } = computeMorph(
+    { w: from.width, h: from.height },
+    { w: to.width, h: to.height },
+    SYSTEM_PROFILE,
+    reduceMotion,
+  );
+  return { ...spring, ...REST };
+}
 
 // Keep the physical black shell perfectly sharp. Blurring the shell itself
 // expands its painted bounds and can make the pill look horizontally stretched
@@ -257,6 +267,21 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
 
   const spec = ISLAND_SIZES[showExpanded ? openSize : collapsedSize];
 
+  /**
+   * The size the shell is travelling *from*. An entering island comes from
+   * idle; afterwards it comes from wherever it last settled. Holding this in a
+   * ref rather than state keeps it out of the render cycle — it only ever feeds
+   * the next transition, and writing it during render would be a second source
+   * of truth for something the DOM already knows.
+   */
+  const prevSpecRef = useRef<SizeSpec>(ISLAND_SIZES.idle);
+  const morphSpring = shellSpring(prevSpecRef.current, spec, Boolean(reduceMotion));
+  const exitSpring = shellSpring(spec, ISLAND_SIZES.idle, Boolean(reduceMotion));
+
+  useEffect(() => {
+    prevSpecRef.current = spec;
+  }, [spec]);
+
   const toggle = useCallback(() => {
     if (!canExpand) return;
 
@@ -268,7 +293,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
   return (
     <MotionConfig
       reducedMotion="user"
-      transition={reduceMotion ? { duration: 0.12 } : SHELL_SPRING}
+      transition={reduceMotion ? { duration: 0.12 } : morphSpring}
     >
       <div className="pointer-events-none fixed inset-x-0 top-3 z-[100000] flex justify-center">
         <AnimatePresence initial={false}>
@@ -293,11 +318,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 scaleY: 1,
                 y: 0,
                 opacity: 1,
-                transition: reduceMotion
-                  ? { duration: 0.12 }
-                  : showExpanded
-                    ? EXPAND_SPRING
-                    : SHELL_SPRING,
+                transition: reduceMotion ? { duration: 0.12 } : morphSpring,
               }}
               exit={{
                 width: ISLAND_SIZES.idle.width,
@@ -309,7 +330,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({
                 opacity: 0,
                 transition: reduceMotion
                   ? { duration: 0.1 }
-                  : { ...SHELL_SPRING, opacity: { duration: 0.1 } },
+                  : { ...exitSpring, opacity: { duration: 0.1 } },
               }}
               whileTap={
                 canExpand && !reduceMotion
