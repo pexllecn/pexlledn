@@ -59,9 +59,38 @@ export interface MotionProfile {
 }
 
 /**
+ * The profile for product surfaces, as opposed to the demo.
+ *
+ * The curves below were fitted to a demo whose hand-tuned constants are
+ * deliberately playful — bounce 0.26–0.52 across the range. A surface carrying
+ * fourteen real activities wants the same *derivation* but a quieter voice:
+ * measured against what the notification island already shipped (damping ratio
+ * 0.80–0.83, i.e. bounce 0.17–0.20), this scale reproduces that character at
+ * the travel those morphs actually cover, while keeping the part that matters —
+ * bounce falling as the morph grows.
+ *
+ * Resulting band: about 0.23 for a small shape change down to 0.13 for the
+ * largest. Restrained, and still physical.
+ *
+ * `island-physics.fixtures.ts` asserts this band, so a later change to the
+ * curves cannot quietly make a product surface bouncy.
+ */
+export const SYSTEM_PROFILE: MotionProfile = {
+  id: "system",
+  label: "System",
+  description:
+    "The restrained profile for product surfaces. Same derivation as the demo, scaled to the voice the notification island already had.",
+  bounceScale: 0.48,
+  durationScale: 1,
+};
+
+/**
  * The motion "variants" — the same physics, different personality. Per the
  * design-engineering rule that motion should match the mood of the thing:
  * a playful component can ring, a dashboard should be crisp.
+ *
+ * These are the demo's selectable profiles. Product surfaces use
+ * SYSTEM_PROFILE above rather than picking from this list.
  */
 export const MOTION_PROFILES: MotionProfile[] = [
   {
