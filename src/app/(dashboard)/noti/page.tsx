@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import PageHeader from "../demo/page-header";
 import DynamicIsland from "./components/DynamicIsland";
 
 export const metadata: Metadata = {
