@@ -49,11 +49,7 @@ export default function Page() {
       <main>
         <div className="px-4 pb-36 sm:px-6">
           <div className="mx-auto w-full max-w-4xl">
-            <PageHeader title="Dynamic Island">
-              Eight activities, five of them expandable on tap, four motion
-              profiles, and a morph computed from the geometry of the two
-              states rather than looked up in a table.
-            </PageHeader>
+            
 
             <DynamicIsland />
 
