@@ -327,6 +327,14 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
           notificationCount: "New",
         },
+        {
+          href: "/good-vs-great",
+          label: "Good vs Great",
+          active: pathname.includes("/good-vs-great"),
+          icon: Component,
+          submenus: [],
+          notificationCount: "New",
+        },
       ],
     },
     {
